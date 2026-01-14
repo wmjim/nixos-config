@@ -62,7 +62,7 @@
   networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
   # Select internationalisation properties.
-  i18n.defaultLocale = "zh_CN.UTF-8";
+  # i18n.defaultLocale = "zh_CN.UTF-8";
   # console = {
   #  font = "MapleMono-NF-CN--Regular.ttf";
   #  keyMap = "us";
@@ -148,12 +148,6 @@
   # Open ports in the firewall.
   # nixos 默认启用防火墙，需要允许放行22端口
   networking.firewall.allowedTCPPorts = [ 22 ];
-  # networking.firewall.allowedUDPPorts = [ ... ];
-  # Or disable the firewall altogether.
-  # networking.firewall.enable = false;
-  
-
-
   
   # Copy the NixOS configuration file and link it from the resulting system
   # (/run/current-system/configuration.nix). This is useful in case you
