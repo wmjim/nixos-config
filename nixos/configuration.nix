@@ -69,6 +69,17 @@
   #  useXkbConfig = true; # use xkb.options in tty.
   # };
 
+  # 字体配置
+  fonts.packages = with pkgs; [
+    # Maple Mono 字体
+    maple-mono.NF-CN-unhinted
+    maple-mono.truetype
+  ];
+
+  fonts.fontconfig.defaultFonts = {
+    monospace = [ "Maple Mono NF CN" ];
+  };
+
   # 启用图形系统（wayland）
   services.xserver.enable = true;
   # 启用基本图形支持，让系统提供 hyprland
