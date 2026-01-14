@@ -80,6 +80,11 @@
     monospace = [ "Maple Mono NF CN" ];
   };
 
+  # 光标主题
+  environment.variables = {
+    XCURSOR_THEME = "Adwaita";
+  };
+
   # 启用图形系统（wayland）
   services.xserver.enable = true;
   # 启用基本图形支持，让系统提供 hyprland

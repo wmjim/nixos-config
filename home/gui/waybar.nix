@@ -1,239 +1,205 @@
 { config, pkgs, ... }:
 
- {
-   # Waybar 配置
-   home.packages = with pkgs; [
-     waybar
-     # 依赖项
-     font-awesome
-     material-design-icons
-   ];
+{
+  # Waybar 配置
+  home.packages = with pkgs; [
+    waybar
+    font-awesome
+    material-design-icons
+  ];
 
-   # Waybar 配置文件
-   xdg.configFile."waybar/config".text = ''
-     {
-       "layer": "top",
-       "position": "top",
-       "height": 30,
-       "spacing": 0,
-       "margin-top": 6,
-       "margin-left": 10,
-       "margin-right": 10,
+  # 使用 programs.waybar 替代手动配置文件
+  programs.waybar = {
+    enable = true;
+    settings = {
+      mainBar = {
+        layer = "top";
+        position = "top";
+        height = 36;
+        spacing = 8;
+        margin-top = 4;
+        margin-bottom = 0;
+        margin-left = 4;
+        margin-right = 4;
 
-       "modules-left": ["hyprland/workspaces"],
-       "modules-center": ["clock"],
-       "modules-right": ["tray", "pulseaudio", "cpu", "memory", "network"],
+        modules-left = [ "hyprland/workspaces" ];
+        modules-center = [ "clock" ];
+        modules-right = [ "tray" "pulseaudio" "cpu" "memory" "network" ];
 
-       "hyprland/workspaces": {
-         "disable-scroll": false,
-         "all-outputs": true,
-         "format": "{name}",
-         "format-icons": {
-           "1": "1",
-           "2": "2",
-           "3": "3",
-           "4": "4",
-           "5": "5",
-           "urgent": "",
-           "active": "",
-           "default": ""
-         }
-       },
+        "hyprland/workspaces" = {
+          disable-scroll = false;
+          all-outputs = true;
+          format = "{name}";
+        };
 
-       "clock": {
-         "format": "{:%H:%M}",
-         "format-alt": "{:%Y-%m-%d %A}",
-         "tooltip-format": "<tt><small>{calendar}</small></tt>",
-         "calendar": {
-           "mode"          : "year",
-           "mode-mon-col"  : 3,
-           "weeks-pos"     : "right",
-           "format"        : {
-             "months":     "<span color='#efff78'><b>{}</b></span>",
-             "days":       "<span color='#efff78'>{}</span>",
-             "weeks":      "<span color='#50fa7b'>W{}</span>",
-             "weekdays":   "<span color='#ff79c6'>{}</span>",
-             "today":      "<span color='#ff5555'><b><u>{}</u></b></span>"
-           }
-         }
-       },
+        "clock" = {
+          format = "{:%H:%M}";
+          format-alt = "{:%Y-%m-%d}";
+          tooltip-format = "<tt><small>{calendar}</small></tt>";
+        };
 
-       "cpu": {
-         "format": "  {usage}%",
-         "tooltip": true,
-         "interval": 2
-       },
+        "cpu" = {
+          format = "{usage}%";
+          interval = 2;
+        };
 
-       "memory": {
-         "format": "  {}%",
-         "tooltip-format": "{used:0.1f}GB / {total:0.1f}GB",
-         "interval": 2
-       },
+        "memory" = {
+          format = "{}%";
+          interval = 2;
+        };
 
-       "network": {
-         "format-wifi": "  {signalStrength}%",
-         "format-ethernet": "  {ipaddr}",
-         "format-disconnected": "  ⚠",
-         "tooltip-format-wifi": "{essid} ({signalStrength}%)",
-         "tooltip-format-ethernet": "{ifname}: {ipaddr}",
-         "on-click-right": "nm-connection-editor"
-       },
+        "network" = {
+          format-wifi = "{bandwidthDownBytes}";
+          format-ethernet = "{bandwidthDownBytes}";
+          format-disconnected = "⚠";
+          format-linked = "{bandwidthDownBytes}";
+          tooltip-format-wifi = "{essid} ({signalStrength}%)\n⬇ {bandwidthDownBytes}\n⬆ {bandwidthUpBytes}";
+          tooltip-format-ethernet = "{ifname}\n⬇ {bandwidthDownBytes}\n⬆ {bandwidthUpBytes}";
+        };
 
-       "pulseaudio": {
-         "format": "{icon} {volume}%",
-         "format-bluetooth": "{icon}  {volume}% ",
-         "format-bluetooth-muted": "  {icon}  ",
-         "format-muted": "󰝟",
-         "format-source": "  {volume}%",
-         "format-source-muted": "",
-         "format-icons": {
-           "headphone": "",
-           "hands-free": "",
-           "headset": "",
-           "phone": "",
-           "portable": "",
-           "car": "",
-           "default": ["", "", ""]
-         },
-         "on-click": "pavucontrol",
-         "scroll-step": 5
-       },
+        "pulseaudio" = {
+          format = "{volume}%";
+          format-muted = "";
+          format-icons = {
+            default = "";
+          };
+          on-click = "pavucontrol";
+          scroll-step = 5;
+        };
 
-       "tray": {
-         "icon-size": 16,
-         "spacing": 8
-       }
-     }
-   '';
+        "tray" = {
+          icon-size = 18;
+          spacing = 10;
+        };
+      };
+    };
 
-   # Waybar 样式文件
-   xdg.configFile."waybar/style.css".text = ''
-     * {
-         font-family: "Maple Mono NF CN", "Symbols Nerd Font", "Font Awesome 6 Free", sans-serif;
-         font-size: 13px;
-         font-weight: bold;
-         min-height: 0;
-         margin: 0px;
-         padding: 0px;
-     }
+    style = ''
+      * {
+        font-family: "Maple Mono NF CN", "Font Awesome 6 Free", "Material Design Icons", sans-serif;
+        font-size: 13px;
+        font-weight: 600;
+        min-height: 0;
+        margin: 0px;
+        padding: 0px;
+      }
 
-     window#waybar {
-         background: rgba(30, 30, 46, 0.9);
-         border-radius: 12px;
-         border: 1px solid rgba(137, 180, 250, 0.2);
-         color: #cdd6f4;
-     }
+      /* Catppuccin Mocha 主题色 */
+      @define-color rosewater #f5e0dc;
+      @define-color flamingo #f2cdcd;
+      @define-color pink #f5c2e7;
+      @define-color mauve #cba6f7;
+      @define-color red #f38ba8;
+      @define-color maroon #eba0ac;
+      @define-color peach #fab387;
+      @define-color yellow #f9e2af;
+      @define-color green #a6e3a1;
+      @define-color teal #94e2d5;
+      @define-color sky #89dceb;
+      @define-color sapphire #74c7ec;
+      @define-color blue #89b4fa;
+      @define-color lavender #b4befe;
+      @define-color text #cdd6f4;
+      @define-color subtext1 #bac2de;
+      @define-color subtext0 #a6adc8;
+      @define-color overlay2 #9399b2;
+      @define-color overlay1 #7f849c;
+      @define-color overlay0 #6c7086;
+      @define-color surface2 #585b70;
+      @define-color surface1 #45475a;
+      @define-color surface0 #313244;
+      @define-color base #1e1e2e;
+      @define-color mantle #181825;
+      @define-color crust #11111b;
 
-     window#waybar.hidden {
-         opacity: 0.2;
-     }
+      window#waybar {
+        background: @base;
+        border-radius: 2px;
+        border: 2px solid @surface0;
+        border-bottom: none;
+        color: @text;
+      }
 
-     tooltip {
-         background: rgba(30, 30, 46, 0.95);
-         border: 1px solid rgba(137, 180, 250, 0.3);
-         border-radius: 8px;
-     }
+      tooltip {
+        background: @mantle;
+        border: 1px solid @surface0;
+        border-radius: 8px;
+      }
 
-     tooltip label {
-         color: #cdd6f4;
-         padding: 4px;
-     }
+      tooltip label {
+        color: @text;
+      }
 
-     #workspaces {
-         margin-left: 8px;
-     }
+      #workspaces {
+        margin-left: 6px;
+      }
 
-     #workspaces button {
-         padding: 0 10px;
-         color: #6c7086;
-         background: transparent;
-         border-radius: 8px;
-         margin: 4px 0;
-         transition: all 0.3s ease;
-     }
+      #workspaces button {
+        padding: 0 12px;
+        color: @overlay0;
+        background: transparent;
+        border-radius: 6px;
+        margin: 4px 2px;
+      }
 
-     #workspaces button:hover {
-         background: rgba(137, 180, 250, 0.15);
-         color: #cdd6f4;
-     }
+      #workspaces button:hover {
+        background: @surface0;
+        color: @text;
+      }
 
-     #workspaces button.active {
-         background: rgba(137, 180, 250, 0.25);
-         color: #cdd6f4;
-         border-radius: 8px;
-     }
+      #workspaces button.active {
+        background: @lavender;
+        color: @base;
+      }
 
-     #workspaces button.urgent {
-         background: rgba(243, 139, 168, 0.3);
-         color: #1e1e2e;
-     }
+      #clock {
+        color: @text;
+        font-weight: 700;
+      }
 
-     #clock,
-     #cpu,
-     #memory,
-     #network,
-     #pulseaudio,
-     #tray {
-         padding: 0 12px;
-         margin: 4px 0;
-         border-radius: 8px;
-     }
+      #cpu {
+        color: @blue;
+        padding: 0 8px;
+      }
 
-     #clock {
-         color: #cdd6f4;
-         font-weight: bold;
-     }
+      #memory {
+        color: @green;
+        padding: 0 8px;
+      }
 
-     #cpu {
-         color: #89b4fa;
-     }
+      #network {
+        color: @peach;
+        padding: 0 8px;
+      }
 
-     #cpu.warning {
-         color: #f9e2af;
-     }
+      #pulseaudio {
+        color: @mauve;
+        padding: 0 8px;
+      }
 
-     #cpu.critical {
-         color: #f38ba8;
-     }
+      #tray {
+        margin-right: 6px;
+      }
+    '';
+  };
 
-     #memory {
-         color: #a6e3a1;
-     }
+  # 确保 waybar 只运行一个实例
+  systemd.user.services.waybar = {
+    Unit = {
+      Description = "Waybar status bar";
+      PartOf = [ "graphical-session.target" ];
+      After = [ "graphical-session.target" ];
+      X-RestartIfChanged = true;
+    };
 
-     #memory.warning {
-         color: #f9e2af;
-     }
+    Service = {
+      ExecStart = "${pkgs.waybar}/bin/waybar";
+      Restart = "on-failure";
+      RestartSec = "5s";
+    };
 
-     #memory.critical {
-         color: #f38ba8;
-     }
-
-     #network {
-         color: #f38ba8;
-     }
-
-     #network.disconnected {
-         color: #6c7086;
-     }
-
-     #pulseaudio {
-         color: #cba6f7;
-     }
-
-     #pulseaudio.muted {
-         color: #6c7086;
-     }
-
-     #tray {
-         margin-right: 8px;
-     }
-
-     #tray > .passive {
-         -gtk-icon-effect: dim;
-     }
-
-     #tray > .needs-attention {
-         -gtk-icon-effect: highlight;
-     }
-   '';
- }
+    Install = {
+      WantedBy = [ "graphical-session.target" ];
+    };
+  };
+}

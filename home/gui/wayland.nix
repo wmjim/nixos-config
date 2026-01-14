@@ -31,6 +31,7 @@
       # 环境变量
       env = [
         "XCURSOR_SIZE,24"
+        "XCURSOR_THEME,Adwaita"
         "GTK_THEME,Catppuccin-Mocha-Standard-Blue-dark"
       ];
 
