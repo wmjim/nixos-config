@@ -7,5 +7,6 @@
     ./devel.nix
     ./shell.nix
     ./helix.nix
+    ./clash.nix
   ];
 }

@@ -49,7 +49,7 @@
   };
 
   # 启用硬件加速
-  hardware.opengl.enable = true;
+  hardware.graphics.enable = true;
   
   # Set your time zone.
   time.timeZone = "Asia/Shanghai";
@@ -58,8 +58,8 @@
   programs.nix-ld.enable = true;
 
   # Configure network proxy if necessary
-  # networking.proxy.default = "http://user:password@proxy:port/";
-  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
+  networking.proxy.default = "http://127.0.0.1:7897";
+  networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
   # Select internationalisation properties.
   i18n.defaultLocale = "zh_CN.UTF-8";
@@ -79,12 +79,16 @@
     enable = true;
     settings = {
       default_session = {
-        command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --cmd Hyprland";
+        command = "${pkgs.tuigreet}/bin/tuigreet --time --cmd Hyprland";
         user = "mengw";
       };
     };
   };
-  
+
+  boot.kernel.sysctl = {
+    "net.ipv4.ip_forward" = 1;
+  };
+  # networking.firewall.enable = false;
 
   # Configure keymap in X11
   # services.xserver.xkb.layout = "us";
@@ -107,7 +111,7 @@
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.mengw = {
     isNormalUser = true;
-    extraGroups = [ "wheel" "audio" "video" "input" ]; # Enable ‘sudo’ for the user.
+    extraGroups = [ "wheel" "audio" "video" "input" "network" ]; # Enable ‘sudo’ for the user.
     shell = pkgs.fish;
     packages = with pkgs; [
     ];
@@ -119,7 +123,7 @@
   # List packages installed in system profile.
   # You can use https://search.nixos.org/ to find more packages (and options).
   environment.systemPackages = with pkgs; [
-    greetd.tuigreet
+    # tuigreet  # greetd 的 TUI greeter
     vim
     wget
   ];
@@ -148,6 +152,8 @@
   # Or disable the firewall altogether.
   # networking.firewall.enable = false;
   
+
+
   
   # Copy the NixOS configuration file and link it from the resulting system
   # (/run/current-system/configuration.nix). This is useful in case you
