@@ -2,10 +2,11 @@
 
 {
   imports = [
-    ./terminal.nix
-    ./editors.nix
+    ./kitty.nix
+    ./git.nix
     ./devel.nix
     ./shell.nix
+    ./fish.nix
     ./helix.nix
     ./clash.nix
   ];

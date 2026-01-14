@@ -1,7 +1,6 @@
 { config, pkgs, ... }:
 
 {
-  # home.packages = with pkgs; [ helix ];
 
   programs.git = {
     enable = true;
