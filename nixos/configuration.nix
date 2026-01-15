@@ -21,7 +21,9 @@
     allowReboot = false;
   };
 
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.settings = {
+    experimental-features = [ "nix-command" "flakes" ];
+  };
 
   # 禁用 systemd 的自动挂起，合盖不休眠
   services.logind.settings.Login = {
@@ -39,7 +41,6 @@
     dates = "weekly";
     options = "--delete-older-than 7d";
   };
-  nix.settings.auto-optimise-store = true;
   # networking.hostName = "nixos"; # Define your hostname.
 
   # Configure network connections interactively with nmcli or nmtui.
@@ -58,8 +59,8 @@
   programs.nix-ld.enable = true;
 
   # Configure network proxy if necessary
-  networking.proxy.default = "http://127.0.0.1:7897";
-  networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
+  # networking.proxy.default = "http://127.0.0.1:7897";
+  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
   # Select internationalisation properties.
   # i18n.defaultLocale = "zh_CN.UTF-8";
@@ -139,8 +140,6 @@
   # List packages installed in system profile.
   # You can use https://search.nixos.org/ to find more packages (and options).
   environment.systemPackages = with pkgs; [
-    # tuigreet  # greetd 的 TUI greeter
-    vim
     wget
   ];
 

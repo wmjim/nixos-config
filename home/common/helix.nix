@@ -12,59 +12,37 @@
 
       # 编辑器核心配置
       editor = {
-        # 行号显示：相对行号（方便 Vim 操作）
-        line-number = "relative";
-
-        # 鼠标支持
-        mouse = true;
-
-        # 禁用中键粘贴
-        middle-click-paste = false;
-
-        # 每次滚动行数
-        scroll-lines = 3;
-
-        # Shell 集成（用于外部命令）
-        shell = ["fish" "-c"];
-
-        # 自动补全配置
-        auto-completion = true;
-        completion-timeout = 5;
-        preview-completion-insert = true;
-        completion-trigger-len = 2;
-
-        # 自动保存
-        auto-save = true;
-
-        # 自动显示类型信息
-        auto-info = true;
-
-        # 终端颜色支持
-        true-color = true;
-        undercurl = true;
-        color-modes = true;
-
+        color-modes = true;               # 启用颜色模式（根据主题自动适配亮/暗色）
+        cursorline = true;                # 高亮当前光标所在行
+        line-number = "relative";         # 行号显示：相对行号  
+        mouse = true;                     # 启用鼠标鼠标支持
+        middle-click-paste = false;       # 允许中键粘贴
+        scroll-lines = 3;                 # 滚动行数  
+        shell = ["fish" "-c"];            # Shell 集成（用于外部命令）
+        auto-completion = true;           # 启用自动补全功能
+        completion-timeout = 5;           # 设置补全超时时间为 5 s
+        preview-completion-insert = true; # 允许预览并插入补全内容
+        completion-trigger-len = 2;       # 设置补全触发长度为 2 个字符
+        auto-save = true;                 # 启用自动保存功能
+        auto-info = true;                 # 启用自动显示类型信息
+        true-color = true;                # 启用真彩色终端支持
+        undercurl = true;                 # 启用下划线样式
+        bufferline = "multiple";          # 显示多个 buffer
+        soft-wrap.enable = true;          # 启用软换行（长行自动折行显示）
+        end-of-line-diagnostics = "hint"; # 在行尾显示诊断信息（如错误/警告图标）
+        # 在光标行内联显示诊断（仅显示 warning 及以上级别）
+        inline-diagnostics.cursor-line = "warning";
         # 光标形状配置
         cursor-shape = {
-          normal = "block";    # 普通模式：块状光标
-          insert = "bar";      # 插入模式：条形光标
-          select = "underline"; # 选择模式：下划线光标
+          normal = "block";               # 普通模式：块状光标
+          insert = "bar";                 # 插入模式：条形光标
+          select = "underline";           # 选择模式：下划线光标
         };
-
         # 缩进指引配置
         indent-guides = {
-          render = true;        # 启用缩进指引
-          character = "│";      # 指引字符
-          skip-levels = 1;      # 跳过层级
-        };
-
-        # 软换行配置（未启用）
-        soft-wrap = {
-          enable = false;
-          max-wrap = 25;
-          max-indent-retain = 40;
-          wrap-indicator = "↪ ";
-          wrap-at-text-width = false;
+          render = true;                  # 启用缩进指引
+          character = "│";                # 指引字符
+          skip-levels = 1;                # 跳过层级
         };
 
         # 侧边栏配置（显示诊断信息、行号、diff）
@@ -78,23 +56,24 @@
         statusline = {
           # 左侧：模式、文件信息
           left = [
-            "mode"                        # 编辑模式
-            "spinner"                     # LSP 加载指示器
-            "file-name"                   # 文件名
-            "file-modification-indicator"  # 修改指示器
-            "read-only-indicator"          # 只读指示器
+            "mode"                          # 编辑模式
+            "file-name"                     # 文件名
+            "spinner"                       # LSP 加载指示器
+            "read-only-indicator"           # 只读指示器
+            "file-modification-indicator"   # 修改指示器
           ];
           # 中间：文件位置百分比
           center = ["position-percentage"];
           # 右侧：版本控制、诊断、编码等
           right = [
-            "version-control"    # Git 分支等信息
             "diagnostics"        # 诊断错误/警告
             "selections"         # 选择数量
             "register"           # 寄存器
-            "position"           # 光标位置
-            "file-encoding"      # 文件编码
             "file-type"          # 文件类型
+            "file-line-ending"   # 文件行尾符
+            "version-control"    # Git 分支等信息
+            "file-encoding"      # 文件编码
+            "position"           # 光标位置
           ];
           # 分隔符
           separator = "│";
