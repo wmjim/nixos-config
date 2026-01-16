@@ -29,43 +29,43 @@
       tab_powerline_style = "slanted";
       tab_separator = " ┇";
 
-      # 颜色主题（Catppuccin Mocha）
-      # Catppuccin Mocha - 深色主题
-      foreground = "#CDD6F4";
-      background = "#1E1E2E";
+      # 颜色主题（Catppuccin Frappe）
+      # Catppuccin Frappe - 深色主题
+      foreground = "#C6D0F5";
+      background = "#303446";
 
       # 磨砂玻璃效果
       background_opacity = "0.85";
       background_blur = "32";  # 模糊半径（像素）
       dynamic_background_opacity = "yes";
 
-      selection_foreground = "#1E1E2E";
-      selection_background = "#F5E0DC";
+      selection_foreground = "#303446";
+      selection_background = "#F2D5CF";
 
       # 光标颜色
-      cursor = "#F5E0DC";
-      cursor_text_color = "#1E1E2E";
+      cursor = "#F2D5CF";
+      cursor_text_color = "#303446";
 
       # URL 颜色
-      url_color = "#89B4FA";
+      url_color = "#8CAAEE";
 
-      # 终端颜色（Catppuccin Mocha）
-      color0 = "#45475A";   # black
-      color1 = "#F38BA8";   # red
-      color2 = "#A6E3A1";   # green
-      color3 = "#F9E2AF";   # yellow
-      color4 = "#89B4FA";   # blue
-      color5 = "#F5C2E7";   # magenta
-      color6 = "#94E2D5";   # cyan
-      color7 = "#BAC2DE";   # white
-      color8 = "#585B70";   # bright black
-      color9 = "#F38BA8";   # bright red
-      color10 = "#A6E3A1";  # bright green
-      color11 = "#F9E2AF";  # bright yellow
-      color12 = "#89B4FA";  # bright blue
-      color13 = "#F5C2E7";  # bright magenta
-      color14 = "#94E2D5";  # bright cyan
-      color15 = "#A6ADC8";  # bright white
+      # 终端颜色（Catppuccin Frappe）
+      color0 = "#51576D";   # black
+      color1 = "#E78284";   # red
+      color2 = "#A6D189";   # green
+      color3 = "#E5C890";   # yellow
+      color4 = "#8CAAEE";   # blue
+      color5 = "#F4B8E4";   # magenta
+      color6 = "#81C8BE";   # cyan
+      color7 = "#B5BFE2";   # white
+      color8 = "#626880";   # bright black
+      color9 = "#E78284";   # bright red
+      color10 = "#A6D189";  # bright green
+      color11 = "#E5C890";  # bright yellow
+      color12 = "#8CAAEE";  # bright blue
+      color13 = "#F4B8E4";  # bright magenta
+      color14 = "#81C8BE";  # bright cyan
+      color15 = "#A5ADCE";  # bright white
 
       # 滚动条
       scrollback_lines = "10000";

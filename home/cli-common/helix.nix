@@ -8,7 +8,7 @@
     # 基础设置
     settings = {
       # 默认主题
-      theme = "catppuccin_mocha";
+      theme = "catppuccin_frappe";
 
       # 编辑器核心配置
       editor = {
@@ -261,39 +261,39 @@
     };
   };
 
-  # Catppuccin Mocha 主题配置
-  xdg.configFile."helix/themes/catppuccin_mocha.toml".text = ''
+  # Catppuccin Frappe 主题配置
+  xdg.configFile."helix/themes/catppuccin_frappe.toml".text = ''
     # 继承默认主题
     inherits = "default"
 
-    # Catppuccin Mocha 调色板（26 种和谐的颜色）
+    # Catppuccin Frappe 调色板（26 种和谐的颜色）
     [palette]
-    rosewater = "#f5e0dc"  # 玫瑰水色
-    flamingo = "#f2cdcd"   # 火烈鸟色
-    pink = "#f5c2e7"       # 粉色
-    mauve = "#cba6f7"      # 藤紫色
-    red = "#f38ba8"        # 红色
-    maroon = "#eba0ac"     # 栗色
-    peach = "#fab387"      # 桃色
-    yellow = "#f9e2af"     # 黄色
-    green = "#a6e3a1"      # 绿色
-    teal = "#94e2d5"       # 青色
-    sky = "#89dceb"        # 天蓝色
-    sapphire = "#74c7ec"   # 蓝宝石色
-    blue = "#89b4fa"       # 蓝色
-    lavender = "#b4befe"    # 薰衣草色
-    text = "#cdd6f4"       # 文本色
-    subtext1 = "#bac2de"   # 次文本 1
-    subtext0 = "#a6adc8"   # 次文本 0
-    overlay2 = "#9399b2"   # 叠加层 2
-    overlay1 = "#7f849c"   # 叠加层 1
-    overlay0 = "#6c7086"   # 叠加层 0
-    surface2 = "#585b70"   # 表面 2
-    surface1 = "#45475a"   # 表面 1
-    surface0 = "#313244"   # 表面 0
-    base = "#1e1e2e"       # 基础色（背景）
-    mantle = "#181825"     # 地幔色
-    crust = "#11111b"      # 地壳色
+    rosewater = "#f2d5cf"  # 玫瑰水色
+    flamingo = "#eebebe"   # 火烈鸟色
+    pink = "#f4b8e4"       # 粉色
+    mauve = "#ca9ee6"      # 藤紫色
+    red = "#e78284"        # 红色
+    maroon = "#ea999c"     # 栗色
+    peach = "#ef9f76"      # 桃色
+    yellow = "#e5c890"     # 黄色
+    green = "#a6d189"      # 绿色
+    teal = "#81c8be"       # 青色
+    sky = "#99d1db"        # 天蓝色
+    sapphire = "#85c1dc"   # 蓝宝石色
+    blue = "#8caaee"       # 蓝色
+    lavender = "#babbf1"    # 薰衣草色
+    text = "#c6d0f5"       # 文本色
+    subtext1 = "#b5bfe2"   # 次文本 1
+    subtext0 = "#a5adce"   # 次文本 0
+    overlay2 = "#949cbb"   # 叠加层 2
+    overlay1 = "#838ba7"   # 叠加层 1
+    overlay0 = "#737994"   # 叠加层 0
+    surface2 = "#626880"   # 表面 2
+    surface1 = "#51576d"   # 表面 1
+    surface0 = "#414559"   # 表面 0
+    base = "#303446"       # 基础色（背景）
+    mantle = "#292c3c"     # 地幔色
+    crust = "#232634"      # 地壳色
 
     # UI 元素配色
     ["ui.background"]

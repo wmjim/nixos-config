@@ -13,20 +13,20 @@
     // ============================================
 
     // ============================================
-    // 主题颜色定义 - Catppuccin Mocha 配色方案
+    // 主题颜色定义 - Catppuccin Frappe 配色方案
     // ============================================
     theme "catppuccin" {
-        bg "#1e1e2e"          // 背景色 (base)
-        fg "#cdd6f4"          // 前景色/文本色 (text)
-        red "#f38ba8"         // 红色 - 用于错误信息
-        green "#a6e3a1"       // 绿色 - 用于成功信息
-        blue "#89b4fa"        // 蓝色 - 用于信息提示
-        yellow "#f9e2af"      // 黄色 - 用于警告信息
-        magenta "#cba6f7"     // 品红色/紫色 (mauve)
-        orange "#fab387"      // 橙色 (peach)
-        cyan "#94e2d5"        // 青色 (teal)
-        black "#181825"       // 黑色 (mantle)
-        white "#bac2de"       // 白色 (subtext1)
+        bg "#303446"          // 背景色 (base)
+        fg "#c6d0f5"          // 前景色/文本色 (text)
+        red "#e78284"         // 红色 - 用于错误信息
+        green "#a6d189"       // 绿色 - 用于成功信息
+        blue "#8caaee"        // 蓝色 - 用于信息提示
+        yellow "#e5c890"      // 黄色 - 用于警告信息
+        magenta "#ca9ee6"     // 品红色/紫色 (mauve)
+        orange "#ef9f76"      // 橙色 (peach)
+        cyan "#81c8be"        // 青色 (teal)
+        black "#292c3c"       // 黑色 (mantle)
+        white "#b5bfe2"       // 白色 (subtext1)
     }
 
     // ============================================
