@@ -7,7 +7,6 @@
     nodejs
     ripgrep
     net-tools
-    firefox
     claude-code
 
     # ========== C++ 现代开发环境 ==========

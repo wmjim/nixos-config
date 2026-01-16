@@ -4,6 +4,7 @@
   home.packages = with pkgs; [
     waybar                # 状态栏
     wofi                  # 应用启动器
+    google-chrome         # 浏览器
     wayshot               # 截图工具
     wl-clipboard          # 剪贴板管理
     wf-recorder           # 录屏工具
@@ -27,6 +28,7 @@
       "$mod" = "SUPER";
       "$terminal" = "kitty";
       "$fileManager" = "thunar";
+      "$browser" = "google-chrome";
       "$menu" = "wofi --show drun";
 
       # 环境变量
@@ -165,6 +167,7 @@
         "$mod, C, exec, hyprpicker"
         "$mod, V, exec, pavucontrol"
         "$mod, B, exec, blueman-manager"
+        "$mod SHIFT, B, exec, $browser"
         "$mod, W, exec, ~/.config/hypr/scripts/random-wallpaper.sh"
         "$mod, X, exec, wlogout"
 
