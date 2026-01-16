@@ -61,11 +61,6 @@
           passes = "3";
           new_optimizations = true;
         };
-        # drop_shadow = {
-        #   enabled = true;
-        #   size = "4";
-        #   alpha = "0.3";
-        # };
       };
 
       # 动画
