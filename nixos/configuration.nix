@@ -88,6 +88,8 @@
 
   # 启用图形系统（wayland）
   services.xserver.enable = true;
+  # 排除 xterm
+  services.xserver.excludePackages = with pkgs; [ xterm ];
   # 启用基本图形支持，让系统提供 hyprland
   programs.hyprland.enable = true;
 

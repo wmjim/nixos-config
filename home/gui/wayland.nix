@@ -11,7 +11,6 @@
     wlogout               # 注出菜单
     hyprpicker            # 取色器
     pavucontrol           # 音量控制
-    networkmanagerapplet  # 网络管理托盘
     blueman               # 蓝牙管理
     xdg-utils             # XDG 工具集
     xdg-desktop-portal-hyprland
@@ -87,6 +86,10 @@
         "float,class:^(wayshot)$"
         "size 50% 50%,class:^(wayshot)$"
         "center,class:^(wayshot)$"
+        # wofi 居中
+        "float,class:^(wofi)$"
+        "center,class:^(wofi)$"
+        "noborder,class:^(wofi)$"
       ];
 
       bind = [
