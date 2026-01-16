@@ -102,6 +102,16 @@
       find_file = ''
         fd -t f -H -I | fzf --multi --preview 'bat --color=always {}'
       '';
+
+      # Yazi 文件管理器集成
+      yy = ''
+        set tmp (mktemp -t "yazi-cwd.XXXXXX")
+        yazi $argv --cwd-file="$tmp"
+        if set cwd (command cat -- "$tmp"); and [ -n "$cwd" ]; and [ "$cwd" != "$PWD" ]
+          cd -- "$cwd"
+        end
+        rm -f -- "$tmp"
+      '';
     };
 
     # 环境变量

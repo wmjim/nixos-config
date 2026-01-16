@@ -4,7 +4,7 @@
   home.packages = with pkgs; [
     # ========== 基础工具 ==========
     tree          # 目录树显示
-    impala        # 终端文件管理器
+    yazi          # 现代化终端文件管理器
     nodejs        # Node.js 运行时
     ripgrep       # 快速文本搜索工具
     net-tools     # 网络工具集

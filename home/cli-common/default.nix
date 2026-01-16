@@ -8,5 +8,6 @@
     ./helix.nix
     ./zellij.nix
     ./devel.nix
+    ./yazi.nix
   ];
 }
