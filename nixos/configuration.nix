@@ -143,6 +143,8 @@
   # You can use https://search.nixos.org/ to find more packages (and options).
   environment.systemPackages = with pkgs; [
     wget
+    openssh
+    sshfs
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -159,8 +161,18 @@
   services.openssh = {
       enable = true;
       settings = {
-      PasswordAuthentication = false; # 禁用密码登录，只允许密钥登录
-    };
+        PasswordAuthentication = true;  # 临时启用密码登录用于测试
+        PermitRootLogin = "no";         # 禁止 root 登录
+        X11Forwarding = true;
+      };
+      # SFTP 子系统配置
+      extraConfig = ''
+        # SFTP 子系统
+        Subsystem sftp internal-sftp
+
+        # SFTP 日志（用于调试）
+        LogLevel VERBOSE
+      '';
   };
   # Open ports in the firewall.
   # nixos 默认启用防火墙，需要允许放行22端口
