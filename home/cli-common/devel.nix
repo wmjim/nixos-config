@@ -24,7 +24,6 @@
     ccache        # 编译缓存，加速重复编译
 
     # 调试和分析工具
-    gdb           # GNU 调试器
     lldb          # LLVM 调试器
     valgrind      # 内存泄漏和性能分析工具
 
