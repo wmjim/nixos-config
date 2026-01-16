@@ -100,6 +100,11 @@
         "float,class:^(wofi)$"
         "center,class:^(wofi)$"
         "noborder,class:^(wofi)$"
+        # btop 浮动窗口（Super+Ctrl+T）
+        "float,class:^(kitty)$,title:^(btop-float)$"
+        "size 80% 80%,class:^(kitty)$,title:^(btop-float)$"
+        "center,class:^(kitty)$,title:^(btop-float)$"
+        "pin,class:^(kitty)$,title:^(btop-float)$"
       ];
 
       bind = [
@@ -168,8 +173,11 @@
         "$mod, V, exec, pavucontrol"
         "$mod, B, exec, blueman-manager"
         "$mod SHIFT, B, exec, $browser"
+        "$mod CTRL, T, exec, $terminal --title btop-float btop"
+        "$mod, T, exec, $terminal --title btop-tile btop"
         "$mod, W, exec, ~/.config/hypr/scripts/random-wallpaper.sh"
         "$mod, X, exec, wlogout"
+
 
         # 调整窗口大小（使用 ALT 作为修饰键，避免干扰 shell）
         "$mod ALT, left, resizeactive, -20 0"

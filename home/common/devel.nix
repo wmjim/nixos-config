@@ -7,6 +7,7 @@
     nodejs
     ripgrep
     net-tools
+    btop
     claude-code
 
     # ========== C++ 现代开发环境 ==========
