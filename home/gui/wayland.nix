@@ -95,7 +95,7 @@
       bind = [
         # 基础快捷键
         "$mod, RETURN, exec, $terminal"
-        "$mod, D, exec, $menu"
+        "$mod, SPACE, exec, $menu"
         "$mod, Q, killactive"
         "$mod, F, fullscreen"
         "$mod SHIFT, SPACE, togglefloating"
