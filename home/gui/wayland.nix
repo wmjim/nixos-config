@@ -11,7 +11,7 @@
     swaylock-effects      # 锁屏
     wlogout               # 注出菜单
     hyprpicker            # 取色器
-    pavucontrol           # 音量控制
+    wireplumber           # 音频控制
     blueman               # 蓝牙管理
     swww                  # 壁纸管理工具
     libnotify             # 桌面通知
@@ -90,7 +90,6 @@
 
       # 窗口规则
       windowrulev2 = [
-        "float,class:^(pavucontrol)$"
         "float,class:^(blueman-manager)$"
         "float,class:^(nm-connection-editor)$"
         "float,class:^(wayshot)$"
@@ -105,6 +104,11 @@
         "size 80% 80%,class:^(kitty)$,title:^(btop-float)$"
         "center,class:^(kitty)$,title:^(btop-float)$"
         "pin,class:^(kitty)$,title:^(btop-float)$"
+        # wpctl 混音器浮动窗口（Super+Ctrl+A）
+        "float,class:^(kitty)$,title:^(wpctl-mixer)$"
+        "size 60% 80%,class:^(kitty)$,title:^(wpctl-mixer)$"
+        "center,class:^(kitty)$,title:^(wpctl-mixer)$"
+        "pin,class:^(kitty)$,title:^(wpctl-mixer)$"
       ];
 
       bind = [
@@ -170,11 +174,10 @@
         "$mod SHIFT, S, exec, wayshot - | wl-copy"
         "$mod, E, exec, $fileManager"
         "$mod, C, exec, hyprpicker"
-        "$mod, V, exec, pavucontrol"
+        "$mod CTRL, A, exec, $terminal --title wpctl-mixer sh -c 'wpctl-mixer || watch -n 1 wpctl status'"
+        "$mod CTRL, T, exec, $terminal --title btop-float btop"
         "$mod, B, exec, blueman-manager"
         "$mod SHIFT, B, exec, $browser"
-        "$mod CTRL, T, exec, $terminal --title btop-float btop"
-        "$mod, T, exec, $terminal --title btop-tile btop"
         "$mod, W, exec, ~/.config/hypr/scripts/random-wallpaper.sh"
         "$mod, X, exec, wlogout"
 
