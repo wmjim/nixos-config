@@ -60,7 +60,16 @@
         pkgs = nixpkgs.legacyPackages.x86_64-linux;
         modules = [
           ./home/cli-common   # 跨平台 CLI 工具
-          ./wsl/default.nix   # Linux 特定配置
+          ./wsl/default.nix   # WSL 特定配置
+        ];
+      };
+
+      # Arch Linux（非 WSL）：纯 Home Manager
+      homeConfigurations."mengw@linux" = home-manager.lib.homeManagerConfiguration {
+        pkgs = nixpkgs.legacyPackages.x86_64-linux;
+        modules = [
+          ./home/cli-common   # 跨平台 CLI 工具
+          ./linux/default.nix # Linux 特定配置
         ];
       };
     };
