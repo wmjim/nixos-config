@@ -70,6 +70,9 @@
         modules = [
           ./home/cli-common   # 跨平台 CLI 工具
           ./linux/default.nix # Linux 特定配置
+          {
+            home.stateVersion = "25.11";
+          }
         ];
       };
     };

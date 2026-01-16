@@ -1,10 +1,8 @@
 { config, pkgs, ... }:
 
 {
-  # WSL 使用跨平台 CLI 配置
-  imports = [
-    ../home/cli-common/default.nix
-  ];
+  # Home Manager 必须设置的选项
+  home.stateVersion = "25.11";
 
   # WSL 特定配置
   home.sessionVariables = {
@@ -38,21 +36,4 @@
       alias winhome='cd /mnt/c/Users/$USER'
     end
   '';
-
-  # WSL 相关的 systemd 用户服务（如果启用了 systemd）
-  systemd.user.services.wsl-clipboard = {
-    Unit = {
-      Description = "WSL Clipboard Sync";
-      After = ["graphical-session.target"];
-    };
-
-    Service = {
-      ExecStart = "${pkgs.wslu}/bin/wsl-bridge";
-      Restart = "on-failure";
-    };
-
-    Install = {
-      WantedBy = ["default.target"];
-    };
-  };
 }
