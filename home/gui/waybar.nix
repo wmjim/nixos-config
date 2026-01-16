@@ -98,16 +98,6 @@
           interval = 3;
         };
 
-        "bluetooth" = {
-          format = "";
-          format-off = "󰂲";
-          format-disabled = "󰂲";
-          format-connected = "󰂱";
-          format-no-controller = "";
-          tooltip-format = "Devices connected: {num_connections}";
-          on-click = "blueman-manager";
-        };
-
         "pulseaudio" = {
           format = "{icon}";
           on-click = "pavucontrol";

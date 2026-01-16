@@ -4,7 +4,7 @@
   imports = [
     ./wayland.nix
     ./fonts.nix
-    ./waybar.nix
+    # ./waybar.nix
     ./wofi.nix
   ];
 }

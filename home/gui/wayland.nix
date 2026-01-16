@@ -2,7 +2,7 @@
 
 {
   home.packages = with pkgs; [
-    waybar                # 状态栏
+    # waybar                # 状态栏
     wofi                  # 应用启动器
     google-chrome         # 浏览器
     wayshot               # 截图工具
@@ -10,9 +10,6 @@
     wf-recorder           # 录屏工具
     swaylock-effects      # 锁屏
     wlogout               # 注出菜单
-    hyprpicker            # 取色器
-    wireplumber           # 音频控制
-    blueman               # 蓝牙管理
     swww                  # 壁纸管理工具
     libnotify             # 桌面通知
     xdg-utils             # XDG 工具集
@@ -90,7 +87,6 @@
 
       # 窗口规则
       windowrulev2 = [
-        "float,class:^(blueman-manager)$"
         "float,class:^(nm-connection-editor)$"
         "float,class:^(wayshot)$"
         "size 50% 50%,class:^(wayshot)$"
@@ -176,7 +172,6 @@
         "$mod, C, exec, hyprpicker"
         "$mod CTRL, A, exec, $terminal --title wpctl-mixer sh -c 'wpctl-mixer || watch -n 1 wpctl status'"
         "$mod CTRL, T, exec, $terminal --title btop-float btop"
-        "$mod, B, exec, blueman-manager"
         "$mod SHIFT, B, exec, $browser"
         "$mod, W, exec, ~/.config/hypr/scripts/random-wallpaper.sh"
         "$mod, X, exec, wlogout"
