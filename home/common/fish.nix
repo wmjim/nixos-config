@@ -70,6 +70,9 @@
       cat = "bat";
       grep = "rg";
       find = "fd";
+
+      # 终端复用器，将 zellij 映射为 tmux
+      tmux = "zellij";
     };
 
     # Fish 函数

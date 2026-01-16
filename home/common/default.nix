@@ -8,6 +8,7 @@
     ./shell.nix
     ./fish.nix
     ./helix.nix
+    ./zellij.nix
     ./clash.nix
   ];
 }

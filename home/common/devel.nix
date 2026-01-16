@@ -12,13 +12,13 @@
 
     # ========== C++ 现代开发环境 ==========
     # 编译器工具链
-    gcc          # GCC 编译器（包含 g++, gcc）
     clang        # Clang 编译器（包含 clang++, clang）
     cmake        # 跨平台构建系统生成器
     ninja        # 快速构建工具
 
     # C++ 包管理器和依赖管理
-    conan        # C/C++ 依赖管理器
+    vcpkg        # C++ 包管理器
+    xmake        # 跨平台构建工具和包管理器
     ccache       # 编译缓存，加速重复编译
 
     # 调试和分析工具
@@ -47,7 +47,6 @@
 
     # 格式化工具
     nixpkgs-fmt  # Nix 格式化器
-    clang-tools  # C/C++ 格式化器 (包含 clang-format)
     black        # Python 格式化器
     prettierd    # JavaScript/TypeScript/JSON/Markdown/YAML 格式化器
   ];
