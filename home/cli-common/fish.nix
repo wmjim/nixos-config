@@ -53,9 +53,10 @@
     # Fish 别名
     shellAliases = {
       # 常用命令别名
-      ll = "ls -la";
-      la = "ls -A";
-      l = "ls -CF";
+      ls = "eza";
+      ll = "eza -la";
+      la = "eza -A";
+      l = "eza -CF";
       ".." = "cd ..";
       "..." = "cd ../..";
 
@@ -119,13 +120,8 @@
   # 安装 fish 相关的实用工具和插件
   home.packages = with pkgs; [
     bat      # cat 的替代品，支持语法高亮
-    ripgrep  # grep 的替代品，更快
     fd       # find 的替代品，更友好
-    fzf      # 模糊搜索工具，用于命令行增强
-
-    # 可选的额外工具
-    eza      # 更好的 ls 替代品（如果使用可以添加 alias ls=eza）
-    zoxide   # 更智能的 cd 替代品
+    eza      # 更好的 ls 替代品
     jq       # JSON 处理工具
     httpie   # 人性化的 HTTP 客户端
   ];

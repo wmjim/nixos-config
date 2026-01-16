@@ -27,9 +27,9 @@
             home-manager.useUserPackages = true;
             home-manager.users.mengw = {
               imports = [
-                ./home/common
-                ./home/gui
-                ./home/cli
+                ./home/cli-common   # 跨平台 CLI 工具（Arch/NixOS/macOS）
+                ./home/nixos-cli    # NixOS 专用 CLI 工具
+                ./home/gui          # NixOS GUI 应用
               ];
               home.stateVersion = "25.11";
             };
@@ -55,14 +55,13 @@
       #  ];
       # };
 
-      # Arch/WSL：纯 Home Manager
-      homeConfigurations."mengw@linux" = home-manager.lib.homeManagerConfiguration {
+      # Arch/WSL：纯 Home Manager（CLI only）
+      homeConfigurations."mengw@wsl" = home-manager.lib.homeManagerConfiguration {
         pkgs = nixpkgs.legacyPackages.x86_64-linux;
         modules = [
-          ./home/common
-          ./home/cli
-          ./linux/default.nix
+          ./home/cli-common   # 跨平台 CLI 工具
+          ./wsl/default.nix   # Linux 特定配置
         ];
-      };    
-    };           
+      };
+    };
 }
