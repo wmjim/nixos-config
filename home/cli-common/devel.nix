@@ -11,6 +11,8 @@
     btop          # 系统监控工具
     claude-code   # Claude Code CLI
     fastfetch     # 系统信息显示
+    impala        # 终端 WiFi 管理工具
+    bluetui       # 终端蓝牙管理工具
 
     # ========== C++ 现代开发环境 ==========
     # 编译器工具链
