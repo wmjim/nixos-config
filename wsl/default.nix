@@ -2,6 +2,8 @@
 
 {
   # Home Manager 必须设置的选项
+  home.username = "mengw";
+  home.homeDirectory = "/home/mengw";
   home.stateVersion = "25.11";
 
   # WSL 特定配置

@@ -1,6 +1,11 @@
 { config, pkgs, ... }:
 
 {
+  # Home Manager 必须设置的选项
+  home.username = "mengw";
+  home.homeDirectory = "/home/mengw";
+  home.stateVersion = "25.11";
+
   # Linux 特定配置
   home.sessionVariables = {
     # Linux 特定环境变量
