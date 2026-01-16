@@ -36,11 +36,14 @@
 
 
   # 垃圾回收配置
+  # 自动执行垃圾回收，每周运行一次，删除7天前的旧数据
   nix.gc = {
     automatic = true;
     dates = "weekly";
     options = "--delete-older-than 7d";
   };
+  # 启用自动优化存储功能，减少磁盘空间占用
+  nix.settings.auto-optimise-store = true;
   # networking.hostName = "nixos"; # Define your hostname.
 
   # Configure network connections interactively with nmcli or nmtui.
