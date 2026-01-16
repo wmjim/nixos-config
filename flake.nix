@@ -57,7 +57,10 @@
 
       # Arch/WSL：纯 Home Manager（CLI only）
       homeConfigurations."mengw@wsl" = home-manager.lib.homeManagerConfiguration {
-        pkgs = nixpkgs.legacyPackages.x86_64-linux;
+        pkgs = import nixpkgs {
+          system = "x86_64-linux";
+          config.allowUnfree = true;
+        };
         modules = [
           ./home/cli-common   # 跨平台 CLI 工具
           ./wsl/default.nix   # WSL 特定配置
@@ -66,7 +69,10 @@
 
       # Arch Linux（非 WSL）：纯 Home Manager
       homeConfigurations."mengw@linux" = home-manager.lib.homeManagerConfiguration {
-        pkgs = nixpkgs.legacyPackages.x86_64-linux;
+        pkgs = import nixpkgs {
+          system = "x86_64-linux";
+          config.allowUnfree = true;
+        };
         modules = [
           ./home/cli-common   # 跨平台 CLI 工具
           ./linux/default.nix # Linux 特定配置
