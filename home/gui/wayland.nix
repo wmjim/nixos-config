@@ -12,6 +12,8 @@
     hyprpicker            # 取色器
     pavucontrol           # 音量控制
     blueman               # 蓝牙管理
+    swww                  # 壁纸管理工具
+    libnotify             # 桌面通知
     xdg-utils             # XDG 工具集
     xdg-desktop-portal-hyprland
     xdg-desktop-portal-gtk
@@ -32,6 +34,12 @@
         "XCURSOR_SIZE,24"
         "XCURSOR_THEME,Adwaita"
         "GTK_THEME,Catppuccin-Mocha-Standard-Blue-dark"
+      ];
+
+      # 配置壁纸服务
+      exec-once = [
+        "swww-daemon"
+        "~/.config/hypr/scripts/init-wallpaper.sh"
       ];
 
       # 通用设置
@@ -157,6 +165,7 @@
         "$mod, C, exec, hyprpicker"
         "$mod, V, exec, pavucontrol"
         "$mod, B, exec, blueman-manager"
+        "$mod, W, exec, ~/.config/hypr/scripts/random-wallpaper.sh"
         "$mod, X, exec, wlogout"
 
         # 调整窗口大小（使用 ALT 作为修饰键，避免干扰 shell）
