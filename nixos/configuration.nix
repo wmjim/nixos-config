@@ -18,6 +18,7 @@ in
       ./hardware-configuration.nix
       ./nix-index.nix  # nix-index 自动更新服务
       ./docker.nix     # Docker 配置
+      ./mysql.nix      # MySQL 配置
     ];
 
   # Use the systemd-boot EFI boot loader.
