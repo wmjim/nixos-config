@@ -129,7 +129,35 @@
   };
 
   boot.kernel.sysctl = {
+    # 网络转发
     "net.ipv4.ip_forward" = 1;
+
+    # 网络性能优化
+    "net.core.default_qdisc" = "fq";           # 使用公平队列调度器
+    "net.ipv4.tcp_congestion_control" = "bbr";  # 使用 BBR 拥塞控制算法
+    "net.ipv4.tcp_fastopen" = 3;               # 启用 TCP Fast Open
+
+    # 网络缓冲区优化
+    "net.core.rmem_max" = 16777216;            # 最大接收缓冲区 (16MB)
+    "net.core.wmem_max" = 16777216;            # 最大发送缓冲区 (16MB)
+    "net.ipv4.tcp_rmem" = "4096 87380 16777216";  # TCP 接收缓冲区
+    "net.ipv4.tcp_wmem" = "4096 65536 16777216";  # TCP 发送缓冲区
+
+    # 文件系统优化
+    "fs.file-max" = 2097152;                   # 增加文件描述符限制
+    "fs.inotify.max_user_watches" = 524288;    # 增加文件监视数量
+
+    # 内存管理优化
+    "vm.swappiness" = 10;                      # 降低 swap 使用倾向
+    "vm.dirty_ratio" = 15;                     # 脏页比例达到 15% 时开始写入
+    "vm.dirty_background_ratio" = 5;           # 后台脏页写入比例
+
+    # 安全性优化
+    "net.ipv4.conf.all.rp_filter" = 1;         # 启用反向路径过滤
+    "net.ipv4.conf.default.rp_filter" = 1;
+    "net.ipv4.icmp_echo_ignore_broadcasts" = 1;  # 忽略 ICMP 广播
+    "net.ipv4.conf.all.accept_source_route" = 0;  # 禁止源路由
+    "net.ipv6.conf.all.accept_source_route" = 0;
   };
   # networking.firewall.enable = false;
 
