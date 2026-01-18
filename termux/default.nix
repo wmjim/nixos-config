@@ -3,7 +3,7 @@
 {
   # Home Manager 必须设置的选项
   # 注意：在 Termux 中需要根据实际情况修改用户名和主目录
-  home.username = "u0_a1234";  # 替换为你的 Termux 用户名（运行 whoami 查看）
+  home.username = "mengw";  # 替换为你的 Termux 用户名（运行 whoami 查看）
   home.homeDirectory = "/data/data/com.termux/files/home";  # Termux 默认主目录
   home.stateVersion = "25.11";
 
@@ -17,8 +17,8 @@
     BROWSER = "termux-open";
 
     # 编辑器
-    EDITOR = "nvim";
-    VISUAL = "nvim";
+    EDITOR = "hx";
+    VISUAL = "hx";
   };
 
   # Termux 相关包（只包含能在 Termux 上运行的）
@@ -35,7 +35,7 @@
     tmux          # 终端复用器
     git           # 版本控制
     lazygit       # Git TUI
-
+    helix
     # 注意：以下包可能需要在 Termux 中通过 pkg 安装而非 Nix
     # 因为某些包需要 Android 特定的编译配置
   ];
