@@ -39,12 +39,10 @@
 
     # 二进制缓存配置（加速包下载）
     substituters = [
-      "https://nixos.cachix.org"          # NixOS 官方缓存
       "https://nix-community.cachix.org"  # Nix Community 缓存
       "https://cache.nixos.org"           # NixOS 主缓存服务器
     ];
     trusted-public-keys = [
-      "nixos.cachix.org-1:6nCHg/5RvbLcP7QRHgPxlVHd/pLxgFJxC/kfMzPNEVg="
       "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkj5bg+wLbWLCTCfOj2Wc="
       "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
     ];
