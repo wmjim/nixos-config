@@ -23,6 +23,19 @@
 
   nix.settings = {
     experimental-features = [ "nix-command" "flakes" ];
+
+    # 多核并行构建优化
+    max-jobs = 8;                    # 自动检测所有逻辑核心数
+    cores = 8;                       # 一次构建过程中并发任务的最大数量
+
+    # 构建沙箱（安全性和隔离性）
+    sandbox = true;
+
+    # 构建优化
+    auto-optimise-store = true;      # 自动优化存储
+
+    # 并行下载优化
+    connect-timeout = 5;             # 连接超时时间
   };
 
   # 禁用 systemd 的自动挂起，合盖不休眠
@@ -42,8 +55,6 @@
     dates = "weekly";
     options = "--delete-older-than 7d";
   };
-  # 启用自动优化存储功能，减少磁盘空间占用
-  nix.settings.auto-optimise-store = true;
   # networking.hostName = "nixos"; # Define your hostname.
 
   # Configure network connections interactively with nmcli or nmtui.
