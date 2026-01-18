@@ -16,6 +16,7 @@ in
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
+      ./nix-index.nix  # nix-index 自动更新服务
     ];
 
   # Use the systemd-boot EFI boot loader.
@@ -218,6 +219,11 @@ in
     wget
     openssh
     sshfs
+
+    # Nix 包管理工具
+    nix-index               # 快速查找 nixpkgs 中的包
+    nix-tree                # 可视化 Nix 依赖树
+    nix-output-monitor      # 监控 Nix 构建输出
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
