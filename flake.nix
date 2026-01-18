@@ -86,5 +86,17 @@
           ./linux/default.nix # Linux 特定配置
         ];
       };
+
+      # Termux (Android ARM)：纯 Home Manager
+      homeConfigurations."termux" = home-manager.lib.homeManagerConfiguration {
+        pkgs = import nixpkgs {
+          system = "aarch64-linux";  # ARM 架构（大多数 Android 设备）
+          config.allowUnfree = true;
+        };
+        modules = [
+          ./home/cli-common   # 跨平台 CLI 工具
+          ./termux/default.nix # Termux 特定配置
+        ];
+      };
     };
 }
