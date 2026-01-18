@@ -96,13 +96,27 @@
 
   # 字体配置
   fonts.packages = with pkgs; [
-    # Maple Mono 字体
+    # Maple Mono 字体（中英文等宽字体）
     maple-mono.NF-CN-unhinted
     maple-mono.truetype
+
+    # 中文字体
+    noto-fonts-cjk-sans       # 思源黑体
+    noto-fonts-cjk-serif      # 思源宋体
+
+    # 英文字体
+    noto-fonts                # Noto 字体家族
+    liberation_ttf            # Liberation 字体
+
+    # Emoji 字体
+    noto-fonts-color-emoji    # 彩色 Emoji（已包含 noto-fonts-emoji）
   ];
 
   fonts.fontconfig.defaultFonts = {
+    serif = [ "Noto Serif CJK SC" "Noto Serif" ];
+    sansSerif = [ "Noto Sans CJK SC" "Noto Sans" ];
     monospace = [ "Maple Mono NF CN" ];
+    emoji = [ "Noto Color Emoji" ];
   };
 
   # 光标主题
