@@ -2,12 +2,17 @@
     description = "mengw's dotfiles";
     
     inputs = {
-        # nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+        # 稳定版 nixpkgs（用于系统）
         nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
+
+        # 不稳定版 nixpkgs（用于需要最新版本的包）
+        nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
+
 	      home-manager = {
             url = "github:nix-community/home-manager/release-25.11";
             inputs.nixpkgs.follows = "nixpkgs";
 	      };
+
 	      # darwin = {
         #   url = "github:LnL7/nix-darwin";
         #   inputs.nixpkgs.follows = "nixpkgs";
@@ -15,10 +20,13 @@
 	      # vscode-server.url = "github:nix-community/nixos-vscode-server";
     };
 
-    outputs = { self, nixpkgs, home-manager, ... }: {
+    outputs = { self, nixpkgs, nixpkgs-unstable, home-manager, ... }: {
       # NixOS：所有物理机共用这一份配置
       nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
+        specialArgs = {
+          inherit nixpkgs-unstable;
+        };
         modules = [
           ./nixos/configuration.nix
           home-manager.nixosModules.home-manager
