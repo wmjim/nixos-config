@@ -74,6 +74,9 @@
 
       # 终端复用器，将 zellij 映射为 tmux
       tmux = "zellij";
+
+      # NixOS 重建命令
+      nix-rebuild = "sudo nixos-rebuild switch --flake /home/mengw/nixos-config#nixos";
     };
 
     # Fish 函数
