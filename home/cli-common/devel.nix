@@ -10,6 +10,7 @@
     net-tools     # 网络工具集
     btop          # 系统监控工具
     claude-code   # Claude Code CLI
+    opencode
     fastfetch     # 系统信息显示
     impala        # 终端 WiFi 管理工具
     bluetui       # 终端蓝牙管理工具
