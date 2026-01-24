@@ -7,9 +7,7 @@
   home.stateVersion = "25.11";
 
   # 自动备份冲突文件
-  home.file.backupFileExtension = "backup";
-  xdg.configFile.backupFileExtension = "backup";
-  xdg.dataFile.backupFileExtension = "backup";
+  home.backupFileExtension = "backup";
 
   # WSL 特定配置
   home.sessionVariables = {
