@@ -27,7 +27,7 @@
   home.packages = with pkgs; [
     wslu          # WSL 实用工具集合（wslview, wslusc 等）
     wl-clipboard  # Wayland 剪贴板工具
-    mysql         # MySQL 客户端
+    mysql84       # MySQL 8.4 客户端（与 NixOS 保持一致）
   ];
 
   # 针对 WSL 的优化配置
