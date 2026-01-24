@@ -6,9 +6,6 @@
   home.homeDirectory = "/home/mengw";
   home.stateVersion = "25.11";
 
-  # 自动备份冲突文件
-  home.backupFileExtension = "backup";
-
   # WSL 特定配置
   home.sessionVariables = {
     # WSL 环境标识
@@ -22,6 +19,9 @@
     # 优化 WSL 性能
     WSL_UTF8 = "1";
   };
+
+  # 启用文件备份
+  xdg.enable = true;
 
   # WSL 相关包
   home.packages = with pkgs; [
