@@ -123,8 +123,8 @@
       # fish_add_path /path/to/bin
 
       # xlings 配置
-      if test -f /home/xlings/.xlings/env.fish
-        source /home/xlings/.xlings/env.fish
+      if test -f /home/xlings/.xlings/config/shell/xlings-profile.fish
+        source /home/xlings/.xlings/config/shell/xlings-profile.fish
       end
 
       # fzf 配置（如果安装了）
