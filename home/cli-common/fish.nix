@@ -123,6 +123,9 @@
       # fish_add_path /path/to/bin
 
       # xlings 配置
+      if test -d /home/xlings/.xlings/bin
+        fish_add_path /home/xlings/.xlings/bin
+      end
       if test -f /home/xlings/.xlings/config/shell/xlings-profile.fish
         source /home/xlings/.xlings/config/shell/xlings-profile.fish
       end
