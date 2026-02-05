@@ -122,6 +122,11 @@
       # 设置 PATH（如果需要添加额外的路径）
       # fish_add_path /path/to/bin
 
+      # xlings 配置
+      if test -f /home/xlings/.xlings/env.fish
+        source /home/xlings/.xlings/env.fish
+      end
+
       # fzf 配置（如果安装了）
       if type -q fzf
         set -gx FZF_DEFAULT_OPTS '--height 40% --layout=reverse --border --preview "bat --color=always {}" --preview-window=right:60%'
