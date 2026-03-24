@@ -174,12 +174,12 @@
   users.users.mengw = {
     isNormalUser = true;
     extraGroups = [ "wheel" "audio" "video" "input" "network" ]; # Enable ‘sudo’ for the user.
-    shell = pkgs.zsh;
+    shell = pkgs.fish;
     packages = with pkgs; [
    
     ];
   };
-  programs.zsh.enable = true;
+  programs.fish.enable = true;
 
   # programs.firefox.enable = true;
 

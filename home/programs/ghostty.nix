@@ -10,11 +10,12 @@
       font-thicken = true;
       adjust-cell-height = 2;
 
-      # 主题（Catppuccin Frappe）
-      theme = "dark:Catppuccin Frappe,light:Catppuccin Latte";
+      # 主题 - 使用内置 Dracula 主题
+      theme = "Catppuccin Frappe";
+
 
       # 窗口
-      background-opacity = 0.9;
+      # background-opacity = 0.9;
       background-blur-radius = 20;
       macos-titlebar-style = "transparent";
       window-padding-x = 10;
