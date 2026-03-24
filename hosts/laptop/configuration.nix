@@ -194,6 +194,14 @@
     allowUnfree = true;   # 允许所有 unfree 包
   };
 
+  programs.nixvim = {
+    enable = true;
+    colorschemes.catppuccin.enable = true;
+    plugins.lualine.enable = true;
+    defaultEditor = true;
+  };
+
+
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
   # programs.mtr.enable = true;

@@ -14,6 +14,14 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    nixvim = {
+      url = "github:nix-community/nixvim";
+      # If you are not running an unstable channel of nixpkgs, select the corresponding branch of Nixvim.
+      # url = "github:nix-community/nixvim/nixos-25.11";
+
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # noctalia-shell
     # noctalia = {
     #   url = "github:noctalia-dev/noctalia-shell";
@@ -21,7 +29,7 @@
     # };
   };
 
-  outputs = { self, nixpkgs, home-manager, ... }@inputs:
+  outputs = { self, nixpkgs, home-manager, nixvim, ... }@inputs:
     let
       system = "x86_64-linux";
     in {
@@ -32,6 +40,7 @@
 	  modules = [
 	    ./hosts/laptop/configuration.nix
             home-manager.nixosModules.home-manager
+            nixvim.nixosModules.nixvim
 	  ];
 	};
       };
