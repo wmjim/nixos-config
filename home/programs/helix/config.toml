@@ -1,0 +1,78 @@
+# Helix config.toml
+
+theme = "hardhacker"
+
+# 主编辑器设置
+[editor]
+line-number = "relative"
+cursorline = true
+mouse = true
+color-modes = true
+auto-save = true
+auto-format = true
+auto-completion = true
+auto-pairs = true
+bufferline = "multiple"
+true-color = true
+rulers = [100]
+shell = ["bash", "-c"]
+
+# 光标形状
+[editor.cursor-shape]
+insert = "bar"
+normal = "block"
+select = "underline"
+
+# 缩进指示线
+[editor.indent-guides]
+render = true
+character = "╎"
+skip-levels = 1
+
+# 状态栏配置
+[editor.statusline]
+left = ["mode", "spinner", "file-name", "file-modification-indicator"]
+center = ["file-type"]
+right = ["diagnostics", "selections", "position", "position-percentage", "file-encoding", "total-line-numbers"]
+separator = "│"
+mode.normal = "NORMAL"
+mode.insert = "INSERT"
+mode.select = "SELECT"
+
+# LSP 配置
+[editor.lsp]
+enable = true
+display-messages = true
+display-inlay-hints = true
+snippets = true
+auto-signature-help = true
+display-signature-help-docs = true
+
+[editor.file-picker]
+hidden = false
+
+[editor.search]
+smart-case = true
+
+[editor.whitespace.render]
+space = "none"
+tab = "all"
+newline = "none"
+
+[editor.whitespace.characters]
+tab = "→"
+tabpad = " "
+
+[editor.soft-wrap]
+enable = false
+wrap-at-text-width = false
+
+# 按键映射 (Normal 模式)
+[keys.normal]
+"C-s" = ":write"
+"C-w" = ":buffer-close"
+"C-right" = ":buffer-next"
+"C-left" = ":buffer-previous"
+
+[keys.insert]
+"C-s" = ["normal_mode", ":write"]

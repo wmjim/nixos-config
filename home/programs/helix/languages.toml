@@ -1,0 +1,204 @@
+# Helix languages.toml
+
+# Rust
+[[language]]
+name = "rust"
+scope = "source.rust"
+file-types = ["rs"]
+auto-format = true
+language-servers = ["rust-analyzer"]
+
+[language-server.rust-analyzer]
+command = "rust-analyzer"
+
+[language-server.rust-analyzer.config]
+checkOnSave.command = "clippy"
+inlayHints.parameterHints.enable = true
+inlayHints.typeHints.enable = true
+inlayHints.chainingHints.enable = true
+procMacro.enable = true
+cargo.features = "all"
+
+# Python
+[[language]]
+name = "python"
+scope = "source.python"
+file-types = ["py"]
+auto-format = true
+language-servers = ["pyright", "ruff"]
+formatter = { command = "ruff", args = ["format", "-"] }
+
+[language-server.pyright]
+command = "pyright-langserver"
+args = ["--stdio"]
+
+[language-server.pyright.config.python.analysis]
+typeCheckingMode = "standard"
+
+[language-server.ruff]
+command = "ruff"
+args = ["server"]
+
+# TypeScript
+[[language]]
+name = "typescript"
+scope = "source.ts"
+file-types = ["ts"]
+auto-format = true
+language-servers = ["typescript-language-server"]
+formatter = { command = "prettier", args = ["--parser", "typescript"] }
+
+[[language]]
+name = "tsx"
+scope = "source.tsx"
+file-types = ["tsx"]
+auto-format = true
+language-servers = ["typescript-language-server"]
+formatter = { command = "prettier", args = ["--parser", "babel"] }
+
+[[language]]
+name = "javascript"
+scope = "source.js"
+file-types = ["js"]
+auto-format = true
+language-servers = ["typescript-language-server"]
+formatter = { command = "prettier", args = ["--parser", "babel"] }
+
+[language-server.typescript-language-server]
+command = "typescript-language-server"
+args = ["--stdio"]
+
+[language-server.typescript-language-server.config]
+hostInfo = "helix"
+
+# Go
+[[language]]
+name = "go"
+scope = "source.go"
+file-types = ["go"]
+auto-format = true
+language-servers = ["gopls"]
+formatter = { command = "gofmt" }
+
+[language-server.gopls]
+command = "gopls"
+
+[language-server.gopls.config]
+hints.assignVariableTypes = true
+hints.compositeLiteralFields = true
+hints.functionTypeParameters = true
+hints.parameterNames = true
+hints.rangeVariableTypes = true
+analyses.unusedparams = true
+staticcheck = true
+
+# C / C++
+[[language]]
+name = "c"
+scope = "source.c"
+file-types = ["c", "h"]
+auto-format = true
+language-servers = ["clangd"]
+formatter = { command = "clang-format" }
+
+[[language]]
+name = "cpp"
+scope = "source.cpp"
+file-types = ["cpp", "cc", "cxx", "hpp", "hh", "hxx"]
+auto-format = true
+language-servers = ["clangd"]
+formatter = { command = "clang-format" }
+
+[language-server.clangd]
+command = "clangd"
+args = ["--background-index", "--clang-tidy", "--completion-style=detailed",
+        "--header-insertion=iwyu", "--pch-storage=memory"]
+
+# Lua
+[[language]]
+name = "lua"
+scope = "source.lua"
+file-types = ["lua"]
+auto-format = true
+language-servers = ["lua-language-server"]
+
+[language-server.lua-language-server]
+command = "lua-language-server"
+
+[language-server.lua-language-server.config.Lua]
+runtime.version = "LuaJIT"
+diagnostics.globals = ["vim"]
+completion.enable = true
+
+# Nix
+[[language]]
+name = "nix"
+scope = "source.nix"
+file-types = ["nix"]
+auto-format = true
+language-servers = ["nil"]
+formatter = { command = "nixpkgs-fmt" }
+
+[language-server.nil]
+command = "nil"
+
+[language-server.nil.config.nil]
+formatting.command = ["nixpkgs-fmt"]
+nix.flake.autoEvalInputs = true
+
+# JSON
+[[language]]
+name = "json"
+scope = "source.json"
+file-types = ["json"]
+auto-format = true
+language-servers = ["vscode-json-language-server"]
+formatter = { command = "prettier", args = ["--parser", "json"] }
+
+[language-server.vscode-json-language-server]
+command = "vscode-json-language-server"
+args = ["--stdio"]
+
+[language-server.vscode-json-language-server.config]
+provideFormatter = true
+
+# SQL
+[[language]]
+name = "sql"
+scope = "source.sql"
+file-types = ["sql"]
+language-servers = ["sqls"]
+formatter = { command = "sqlfluff", args = ["format", "-"] }
+
+[language-server.sqls]
+command = "sqls"
+
+# Assembly
+[[language]]
+name = "asm"
+scope = "source.asm"
+file-types = ["asm", "s", "S"]
+language-servers = ["asm-lsp"]
+
+[language-server.asm-lsp]
+command = "asm-lsp"
+
+# TOML
+[[language]]
+name = "toml"
+scope = "source.toml"
+file-types = ["toml"]
+auto-format = true
+language-servers = ["taplo"]
+
+[language-server.taplo]
+command = "taplo"
+args = ["lsp", "stdio"]
+
+# Markdown
+[[language]]
+name = "markdown"
+scope = "source.md"
+file-types = ["md"]
+soft-wrap.enable = true
+auto-format = false

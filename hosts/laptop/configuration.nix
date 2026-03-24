@@ -196,6 +196,7 @@
 
   programs.nixvim = {
     enable = true;
+    version.enableNixpkgsReleaseCheck = false;
     colorschemes.catppuccin.enable = true;
     plugins.lualine.enable = true;
     defaultEditor = true;

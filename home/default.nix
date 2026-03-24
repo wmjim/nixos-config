@@ -10,5 +10,6 @@
     ./programs/fish.nix
     ./programs/ghostty.nix
     ./programs/ai/ai.nix
+    ./programs/helix.nix
   ];
 }

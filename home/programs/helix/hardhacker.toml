@@ -1,0 +1,113 @@
+# HardHacker theme for Helix
+# author = "Miro Paintola"
+# license = "MIT"
+
+# Palette (index: color)
+"0" = "#282433"  # black (bg)
+"1" = "#e965a5"  # red
+"2" = "#b1f2a7"  # green
+"3" = "#ebde76"  # yellow
+"4" = "#b1baf4"  # blue
+"5" = "#e192ef"  # purple
+"6" = "#b3f4f3"  # cyan
+"7" = "#eee9fc"  # white (fg)
+"8" = "#938aad"  # bright black (comment)
+"9" = "#e965a5"  # bright red
+"10" = "#b1f2a7" # bright green
+"11" = "#ebde76" # bright yellow
+"12" = "#b1baf4" # bright blue
+"13" = "#e192ef" # bright purple
+"14" = "#b3f4f3" # bright cyan
+"15" = "#eee9fc" # bright white
+"16" = "#3f3a50" # selection
+"17" = "#211e2a" # darker bg
+
+# Syntax highlighting
+"keyword" = { fg = "1" }
+"keyword.control" = { fg = "1" }
+"keyword.control.conditional" = { fg = "1" }
+"keyword.control.repeat" = { fg = "1" }
+"keyword.control.import" = { fg = "1" }
+"keyword.return" = { fg = "1" }
+
+"type" = { fg = "6" }
+"type.builtin" = { fg = "6" }
+
+"function" = { fg = "4" }
+"function.builtin" = { fg = "4" }
+"function.method" = { fg = "4" }
+"function.call" = { fg = "4" }
+
+"variable" = { fg = "7" }
+"variable.builtin" = { fg = "7" }
+"variable.parameter" = { fg = "7" }
+
+"constant" = { fg = "5" }
+"constant.builtin" = { fg = "5" }
+"constant.numeric" = { fg = "3" }
+"constant.character" = { fg = "3" }
+
+"string" = { fg = "2" }
+"string.special" = { fg = "2" }
+
+"comment" = { fg = "8", italic = true }
+"comment.line" = { fg = "8", italic = true }
+"comment.block" = { fg = "8", italic = true }
+
+"number" = { fg = "3" }
+"boolean" = { fg = "3" }
+
+"operator" = { fg = "7" }
+"punctuation" = { fg = "7" }
+"punctuation.bracket" = { fg = "7" }
+"punctuation.delimiter" = { fg = "7" }
+
+"tag" = { fg = "6" }
+
+# UI colors
+"ui.background" = { fg = "7", bg = "0" }
+"ui.text" = { fg = "7" }
+"ui.text.focused" = { fg = "7" }
+"ui.cursor" = { fg = "0", bg = "7" }
+"ui.cursor.primary" = { fg = "0", bg = "1" }
+"ui.selection" = { fg = "0", bg = "16" }
+"ui.selection.primary" = { fg = "0", bg = "16" }
+"ui.inactive" = { fg = "8" }
+"ui.active" = { fg = "7" }
+"ui.match" = { fg = "3" }
+"ui.scrollbar" = { fg = "8" }
+"ui.scrollbar.focus" = { fg = "7" }
+"ui.line-number" = { fg = "8" }
+"ui.line-number.current" = { fg = "5" }
+"ui.info" = { fg = "8" }
+"ui.border" = { fg = "8" }
+"ui.menu" = { fg = "7", bg = "0" }
+"ui.menu.selected" = { fg = "0", bg = "7" }
+"ui.picker" = { fg = "7", bg = "0" }
+"ui.picker.selected" = { fg = "0", bg = "7" }
+"ui.editor" = { fg = "7", bg = "0" }
+
+"markup.heading" = { fg = "5" }
+"markup.bold" = { fg = "7", modifiers = ["bold"] }
+"markup.italic" = { fg = "7", modifiers = ["italic"] }
+"markup.raw" = { fg = "2" }
+"markup.link" = { fg = "4" }
+
+# Diagnostic
+"diagnostic" = { underline = { color = "1" } }
+"diagnostic.error" = { fg = "1" }
+"diagnostic.warning" = { fg = "3" }
+"diagnostic.info" = { fg = "6" }
+"diagnostic.hint" = { fg = "4" }
+
+# Diff
+"diff" = { }
+"diff.plus" = { fg = "2" }
+"diff.minus" = { fg = "1" }
+"diff.delta" = { fg = "3" }
+
+# Special
+"error" = { fg = "1" }
+"warning" = { fg = "3" }
+"hint" = { fg = "4" }
+"info" = { fg = "6" }

@@ -10,7 +10,7 @@
       set -g fish_greeting
 
       # 设置编辑器
-      set -gx EDITOR nvim
+      set -gx EDITOR hx
 
       # 设置语言环境
       set -gx LANG zh_CN.UTF-8
