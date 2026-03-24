@@ -21,6 +21,9 @@
     };
   };
 
+  # 禁用 XDG 用户目录自动创建
+  environment.etc."xdg/user-dirs.conf".text = "enabled=False\n";
+
   # libinput 用于触控板
   services.libinput.enable = true;
 

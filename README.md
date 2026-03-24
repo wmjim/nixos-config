@@ -36,6 +36,12 @@
 ```
 
 
+```bash
+# nixos
+sudo nixos-rebuild switch --flake ~/nixos-config#laptop
+```
+
+
 ## 通用开发环境
 
 CLI 使用 `home-manager` 管理，如：

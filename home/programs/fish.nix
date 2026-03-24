@@ -72,7 +72,8 @@
       nv  = "nvim";
 
       # 其他实用别名
-      cat = "bat";
+      bat = "bat --style=plain";
+      cat="bat --style=plain --paging=never";
       grep = "rg";
       find = "fd";
 
