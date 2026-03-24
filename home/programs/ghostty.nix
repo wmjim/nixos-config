@@ -1,6 +1,9 @@
 { config, pkgs, ... }:
 
 {
+  # 自定义主题文件
+  home.file.".config/ghostty/themes/hardhacker".source = ./ghostty/hardhacker.theme;
+
   programs.ghostty = {
     enable = true;
     settings = {
@@ -10,8 +13,8 @@
       font-thicken = true;
       adjust-cell-height = 2;
 
-      # 主题 - 使用内置 Dracula 主题
-      theme = "Catppuccin Frappe";
+      # 主题 - 使用自定义 HardHacker 主题
+      theme = "hardhacker";
 
 
       # 窗口
