@@ -33,5 +33,3 @@ selection-foreground = #eee9fc
 cursor-color = #eee9fc
 cursor-text = #282433
 
-# Links
-foreground-highlight = #e965a5
