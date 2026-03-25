@@ -11,6 +11,11 @@
   services.displayManager.gdm.enable = true;
   services.desktopManager.gnome.enable = true;
 
+  # RDP 远程桌面
+  services.gnome.gnome-remote-desktop.enable = true;
+  systemd.services.gnome-remote-desktop.wantedBy = [ "graphical.target" ];
+  networking.firewall.allowedTCPPorts = [ 3389 ];
+
   # GNOME 电源管理 - 合盖不休眠（通过 dconf）
   systemd.user.services."gnome-power-settings" = {
     wantedBy = ["graphical-session.target"];
