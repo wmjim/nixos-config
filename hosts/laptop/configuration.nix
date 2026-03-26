@@ -89,6 +89,11 @@
   # Enable the X11 windowing system.
   # services.xserver.enable = true;
 
+  # 启用 KVM 硬件虚拟化（libvirtd 已包含 QEMU 支持）
+  virtualisation.libvirtd.enable = true;
+  # 开启终端串口（让虚拟机直接输出到当前终端，核心！）
+  boot.kernelParams = [ "console=ttyS0" ];
+
   # 字体配置
   fonts.packages = with pkgs; [
     # Maple Mono 字体（中英文等宽字体）
@@ -173,7 +178,7 @@
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.mengw = {
     isNormalUser = true;
-    extraGroups = [ "wheel" "audio" "video" "input" "network" ]; # Enable ‘sudo’ for the user.
+    extraGroups = [ "wheel" "audio" "video" "input" "network" "libvirtd" "kvm" ]; # Enable ‘sudo’ for the user.
     shell = pkgs.fish;
     packages = with pkgs; [
    

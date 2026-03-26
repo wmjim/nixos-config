@@ -13,7 +13,6 @@
 
   # RDP 远程桌面
   services.gnome.gnome-remote-desktop.enable = true;
-  systemd.services.gnome-remote-desktop.wantedBy = [ "graphical.target" ];
   networking.firewall.allowedTCPPorts = [ 3389 ];
 
   # GNOME 电源管理 - 合盖不休眠（通过 dconf）
@@ -22,7 +21,22 @@
     serviceConfig = {
       Type = "oneshot";
       RemainAfterExit = true;
+      # 合盖不休眠
       ExecStart = "${pkgs.dconf}/bin/dconf write /org/gnome/settings-daemon/plugins/power/lid-close-ac-action \"'nothing'\"";
+    };
+  };
+
+  # RDP 远程桌面配置 - 防止锁屏断开连接
+  systemd.user.services."rdp-settings" = {
+    wantedBy = ["graphical-session.target"];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+      ExecStart = ''
+        ${pkgs.dconf}/bin/dconf write /org/gnome/desktop/remote-desktop/rdp/enabled true
+        ${pkgs.dconf}/bin/dconf write /org/gnome/desktop/remote-desktop/vnc/enabled true
+        ${pkgs.dconf}/bin/dconf write /org/gnome/desktop/remote-desktop/rdp/ignore-connection true
+      '';
     };
   };
 
@@ -44,7 +58,6 @@
     simple-scan       # 文档扫描仪
     totem             # 视频播放器
     gnome-console     # 控制台（终端）
-    # 旧版 GTK3 应用，用 GTK4 版本替换
     gedit             # 旧版文本编辑器
     eog               # 旧版图片查看器（已添加 gthumb）
     gnome-calculator  # 旧版计算器
@@ -60,14 +73,14 @@
     gnome-calculator      # 计算器（GTK4）
     gnome-screenshot      # 截图工具（GTK4）
     nautilus              # 文件管理器（GTK4）
-    gnome-tweaks          #
-    gnome-shell-extensions 
+    gnome-tweaks          # 优化
+    gnome-shell-extensions# gnome 扩展管理
     
 
     clash-verge-rev       # 网络代理
     microsoft-edge        # 浏览器
     vscode                # 代码编辑器
-    wechat                # 微信
+    wechat-uos            # 微信
     qq                    # QQ
     obsidian              # 笔记软件
     thunderbird           # 邮件客户端
@@ -79,6 +92,7 @@
     vitals                # 系统监控（CPU/内存）
     space-bar             # 工作区管理增强
     dash-to-dock          # 底部任务栏
+    dash-to-panel         # 
     clipboard-history     # 剪贴板历史
     caffeine              # 禁止屏幕休眠
   ]);
