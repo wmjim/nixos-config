@@ -46,6 +46,18 @@
   # libinput 用于触控板
   services.libinput.enable = true;
 
+  # Clash Verge 环境变量（修复 Wayland 剪贴板问题）
+  environment.sessionVariables = {
+    # Wayland 相关
+    XDG_CURRENT_DESKTOP = "GNOME";
+    XDG_SESSION_TYPE = "wayland";
+    GDK_BACKEND = "wayland";
+    # 允许访问剪贴板
+    CLASH_VERGE_ALLOW_CLIPBOARD = "1";
+    # 禁用某些可能冲突的功能
+    RUST_BACKTRACE = "1";
+  };
+
   environment.gnome.excludePackages = with pkgs; [
     # 指定不想安装的官方默认软件（GTK3/旧版应用）
     yelp              # 文档查看器
@@ -75,9 +87,10 @@
     nautilus              # 文件管理器（GTK4）
     gnome-tweaks          # 优化
     gnome-shell-extensions# gnome 扩展管理
-    
+
 
     clash-verge-rev       # 网络代理
+    # v2ray + v2raya        # 备选代理方案
     microsoft-edge        # 浏览器
     vscode                # 代码编辑器
     wechat-uos            # 微信
