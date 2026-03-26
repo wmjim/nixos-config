@@ -1,13 +1,63 @@
 { config, pkgs, ... }:
 
 {
+  # Starship 提示符 - Tokyo Night 主题
+  programs.starship = {
+    enable = true;
+    settings = {
+      format = "[░▒▓](#a3aed2)[   ](bg:#a3aed2 fg:#090c0c)[](bg:#769ff0 fg:#a3aed2)$directory[](fg:#769ff0 bg:#394260)$git_branch$git_status[](fg:#394260 bg:#212736)$nodejs$rust$golang$php[](fg:#212736 bg:#1d2230)$time[ ](fg:#1d2230)\n$character";
+
+      directory = {
+        style = "fg:#e3e5e5 bg:#769ff0";
+        format = "[ $path ]($style)";
+        truncation_length = 3;
+        truncation_symbol = "…/";
+      };
+
+      git_branch = {
+        symbol = "";
+        style = "bg:#394260";
+        format = "[[ $symbol $branch ](fg:#769ff0 bg:#394260)]($style)";
+      };
+
+      git_status = {
+        style = "bg:#394260";
+        format = "[[($all_status$ahead_behind )](fg:#769ff0 bg:#394260)]($style)";
+      };
+
+      nodejs = {
+        symbol = "";
+        style = "bg:#212736";
+        format = "[[ $symbol ($version) ](fg:#769ff0 bg:#212736)]($style)";
+      };
+
+      rust = {
+        symbol = "";
+        style = "bg:#212736";
+        format = "[[ $symbol ($version) ](fg:#769ff0 bg:#212736)]($style)";
+      };
+
+      golang = {
+        symbol = "";
+        style = "bg:#212736";
+        format = "[[ $symbol ($version) ](fg:#769ff0 bg:#212736)]($style)";
+      };
+
+      php = {
+        symbol = "";
+        style = "bg:#212736";
+        format = "[[ $symbol ($version) ](fg:#769ff0 bg:#212736)]($style)";
+      };
+    };
+  };
+
   programs.fish = {
     enable = true;
 
     # 交互式 shell 启动时执行的命令
     interactiveShellInit = ''
       # 禁用 greeting 消息
-      set -g fish_greeting
+      set fish_greeting ""
 
       # 设置编辑器
       set -gx EDITOR hx
@@ -15,6 +65,9 @@
       # 设置语言环境
       set -gx LANG zh_CN.UTF-8
       set -gx LC_ALL zh_CN.UTF-8
+
+      # 初始化 Starship 提示符
+      starship init fish | source
 
       # 初始化 Fisher 插件管理器
       if not functions -q fisher
