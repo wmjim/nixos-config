@@ -62,6 +62,10 @@
       # 设置编辑器
       set -gx EDITOR hx
 
+      # 设置代理
+      set -gx http_proxy http://127.0.0.1:7897
+      set -gx https_proxy http://127.0.0.1:7897
+
       # 设置语言环境
       set -gx LANG zh_CN.UTF-8
       set -gx LC_ALL zh_CN.UTF-8
