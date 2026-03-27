@@ -16,17 +16,11 @@
 
     nixvim = {
       url = "github:nix-community/nixvim";
-      # If you are not running an unstable channel of nixpkgs, select the corresponding branch of Nixvim.
+      # nixvim 稳定版本
       # url = "github:nix-community/nixvim/nixos-25.11";
 
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
-    # noctalia-shell
-    # noctalia = {
-    #   url = "github:noctalia-dev/noctalia-shell";
-    #   inputs.nixpkgs.follows = "nixpkgs-unstable";
-    # };
   };
 
   outputs = { self, nixpkgs, home-manager, nixvim, ... }@inputs:

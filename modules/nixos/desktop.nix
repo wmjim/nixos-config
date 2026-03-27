@@ -79,6 +79,7 @@
 
 
   environment.systemPackages = with pkgs; [
+    gtk4
 
     # 额外的 GNOME 应用（GTK4/libadwaita 现代样式）
     gnome-text-editor     # 文本编辑器（GTK4）

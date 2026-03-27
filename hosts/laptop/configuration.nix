@@ -47,26 +47,26 @@
   };
 
   # 打开 flakes
-  nix.settings = {
-    experimental-features = [ "nix-command" "flakes" ];
-    # 并行下载优化
-    connect-timeout = 5;             # 连接超时时间
-    # 二进制缓存配置（加速包下载）
-    substituters = [
-      # 1. 首选清华镜像
-      "https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store"
-      # 2. 备选：中科大镜像
-      "https://mirrors.ustc.edu.cn/nix-channels/store"
-      # 3. 最后是官方和社区源（保底）
-      "https://nix-community.cachix.org"  # Nix Community 缓存
-      "https://cache.nixos.org"           # NixOS 主缓存服务器
-    ];
-    # 信任二进制缓存
-    trusted-public-keys = [
-      "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkj5bg+wLbWLCTCfOj2Wc="
-      "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
-    ];
-  };
+  # nix.settings = {
+  #   experimental-features = [ "nix-command" "flakes" ];
+  #   # 并行下载优化
+  #   connect-timeout = 5;             # 连接超时时间
+  #   # 二进制缓存配置（加速包下载）
+  #   substituters = [
+  #     # 1. 首选清华镜像
+  #     "https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store"
+  #     # 2. 备选：中科大镜像
+  #     "https://mirrors.ustc.edu.cn/nix-channels/store"
+  #     # 3. 最后是官方和社区源（保底）
+  #     "https://nix-community.cachix.org"  # Nix Community 缓存
+  #     "https://cache.nixos.org"           # NixOS 主缓存服务器
+  #   ];
+  #   # 信任二进制缓存
+  #   trusted-public-keys = [
+  #     "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkj5bg+wLbWLCTCfOj2Wc="
+  #     "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
+  #   ];
+  # };
 
   # 引入 home-manager
   home-manager.useGlobalPkgs = true;
@@ -80,8 +80,8 @@
   time.timeZone = "Asia/Shanghai";
 
   # Configure network proxy if necessary
-  networking.proxy.default = "http://127.0.0.1:7897";
-  networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
+  # networking.proxy.default = "https://127.0.0.1:7897";
+  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
   # Select internationalisation properties.
   i18n.defaultLocale = "zh_CN.UTF-8";
