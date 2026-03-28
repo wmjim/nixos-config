@@ -79,7 +79,6 @@
   # 时区:上海
   time.timeZone = "Asia/Shanghai";
 
-  # Configure network proxy if necessary
   # 系统级代理设置
   networking.proxy = {
     default = "http://127.0.0.1:7897";
@@ -88,7 +87,7 @@
     noProxy = "localhost,127.0.0.1,::1,*.local";
   };
 
-  # Select internationalisation properties.
+  # 国际化属性
   i18n.defaultLocale = "zh_CN.UTF-8";
 
   # Enable the X11 windowing system.
@@ -180,7 +179,7 @@
   #   pulse.enable = true;
   # };
 
-  # Define a user account. Don't forget to set a password with ‘passwd’.
+  # 用户配置
   users.users.mengw = {
     isNormalUser = true;
     extraGroups = [ "wheel" "audio" "video" "input" "network" "libvirtd" "kvm" ]; # Enable ‘sudo’ for the user.
@@ -193,8 +192,7 @@
 
   # programs.firefox.enable = true;
 
-  # List packages installed in system profile.
-  # You can use https://search.nixos.org/ to find more packages (and options).
+  # 软件包
   environment.systemPackages = with pkgs; [
     iwd
     tlp
