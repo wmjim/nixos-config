@@ -5,6 +5,7 @@
   imports = [
     ./terminal/ghostty.nix
     ./fcitx5/fcitx5.nix
+    ./clash/clash.nix
   ];
 
   # GNOME 桌面环境
@@ -90,11 +91,9 @@
     gnome-shell-extensions# gnome 扩展管理
 
 
-    clash-verge-rev       # 网络代理
-    # v2ray + v2raya        # 备选代理方案
-    microsoft-edge        # 浏览器
+    microsoft-edge        # 浏览器 (临时禁用，因 SSL 代理问题)
     vscode                # 代码编辑器
-    wechat-uos            # 微信
+    wechat-uos            # 微信 (临时禁用，因 SSL 代理问题)
     qq                    # QQ
     obsidian              # 笔记软件
     thunderbird           # 邮件客户端

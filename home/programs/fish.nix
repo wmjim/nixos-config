@@ -62,10 +62,6 @@
       # 设置编辑器
       set -gx EDITOR hx
 
-      # 设置代理
-      set -gx http_proxy http://127.0.0.1:7897
-      set -gx https_proxy http://127.0.0.1:7897
-
       # 设置语言环境
       set -gx LANG zh_CN.UTF-8
       set -gx LC_ALL zh_CN.UTF-8
@@ -183,6 +179,9 @@
     shellInit = ''
       # 设置 PATH（如果需要添加额外的路径）
       # fish_add_path /path/to/bin
+
+      # npm 全局模块路径
+      fish_add_path /home/mengw/.npm-global/bin
 
       # xlings 配置
       if test -d /home/xlings/.xlings/bin

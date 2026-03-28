@@ -47,26 +47,26 @@
   };
 
   # 打开 flakes
-  # nix.settings = {
-  #   experimental-features = [ "nix-command" "flakes" ];
-  #   # 并行下载优化
-  #   connect-timeout = 5;             # 连接超时时间
-  #   # 二进制缓存配置（加速包下载）
-  #   substituters = [
-  #     # 1. 首选清华镜像
-  #     "https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store"
-  #     # 2. 备选：中科大镜像
-  #     "https://mirrors.ustc.edu.cn/nix-channels/store"
-  #     # 3. 最后是官方和社区源（保底）
-  #     "https://nix-community.cachix.org"  # Nix Community 缓存
-  #     "https://cache.nixos.org"           # NixOS 主缓存服务器
-  #   ];
-  #   # 信任二进制缓存
-  #   trusted-public-keys = [
-  #     "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkj5bg+wLbWLCTCfOj2Wc="
-  #     "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
-  #   ];
-  # };
+  nix.settings = {
+    experimental-features = [ "nix-command" "flakes" ];
+    # 并行下载优化
+    connect-timeout = 5;             # 连接超时时间
+    # 二进制缓存配置（加速包下载）
+    substituters = [
+      # 1. 首选清华镜像
+      "https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store"
+      # 2. 备选：中科大镜像
+      "https://mirrors.ustc.edu.cn/nix-channels/store"
+      # 3. 最后是官方和社区源（保底）
+      "https://nix-community.cachix.org"  # Nix Community 缓存
+      "https://cache.nixos.org"           # NixOS 主缓存服务器
+    ];
+    # 信任二进制缓存
+    trusted-public-keys = [
+      "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkj5bg+wLbWLCTCfOj2Wc="
+      "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
+    ];
+  };
 
   # 引入 home-manager
   home-manager.useGlobalPkgs = true;
@@ -80,8 +80,13 @@
   time.timeZone = "Asia/Shanghai";
 
   # Configure network proxy if necessary
-  networking.proxy.default = "https://127.0.0.1:7897";
-  networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
+  # 系统级代理设置
+  networking.proxy = {
+    default = "http://127.0.0.1:7897";
+    httpProxy = "http://127.0.0.1:7897";
+    httpsProxy = "http://127.0.0.1:7897";
+    noProxy = "localhost,127.0.0.1,::1,*.local";
+  };
 
   # Select internationalisation properties.
   i18n.defaultLocale = "zh_CN.UTF-8";
@@ -216,10 +221,8 @@
   #   enableSSHSupport = true;
   # };
 
-  # List services that you want to enable:
 
-  # Enable the OpenSSH daemon.
-  # services.openssh.enable = true;
+  # 启用 OpenSSH 守护进程
   services.openssh = {
     enable = true;
     settings = {
@@ -228,35 +231,18 @@
     };
   };
 
-  # Open ports in the firewall.
   # nixos 默认启用防火墙，需要允许放行22端口
   networking.firewall.allowedTCPPorts = [ 22 ];
   # networking.firewall.allowedUDPPorts = [ ... ];
-  # Or disable the firewall altogether.
+  # 禁用防火墙
   # networking.firewall.enable = false;
 
-  # Copy the NixOS configuration file and link it from the resulting system
-  # (/run/current-system/configuration.nix). This is useful in case you
-  # accidentally delete configuration.nix.
+  # 复制 NixOS 配置文件，并将其链接到生成的系统（/run/current-system/configuration.nix）
+  # 防止意外删除 configuration.nix
   # system.copySystemConfiguration = true;
 
-  # This option defines the first version of NixOS you have installed on this particular machine,
-  # and is used to maintain compatibility with application data (e.g. databases) created on older NixOS versions.
-  #
-  # Most users should NEVER change this value after the initial install, for any reason,
-  # even if you've upgraded your system to a new NixOS release.
-  #
-  # This value does NOT affect the Nixpkgs version your packages and OS are pulled from,
-  # so changing it will NOT upgrade your system - see https://nixos.org/manual/nixos/stable/#sec-upgrading for how
-  # to actually do that.
-  #
-  # This value being lower than the current NixOS release does NOT mean your system is
-  # out of date, out of support, or vulnerable.
-  #
-  # Do NOT change this value unless you have manually inspected all the changes it would make to your configuration,
-  # and migrated your data accordingly.
-  #
-  # For more information, see `man configuration.nix` or https://nixos.org/manual/nixos/stable/options#opt-system.stateVersion .
+  
+  # 此机器安装 nixos 版本，更多信息请 https://nixos.org/manual/nixos/stable/options#opt-system.stateVersion .
   system.stateVersion = "25.11"; # Did you read the comment?
 
 }
