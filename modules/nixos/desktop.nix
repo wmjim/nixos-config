@@ -90,7 +90,7 @@
     gnome-tweaks          # 优化
     gnome-shell-extensions# gnome 扩展管理
 
-
+    clash-nyanpasu
     microsoft-edge        # 浏览器 (临时禁用，因 SSL 代理问题)
     vscode                # 代码编辑器
     wechat-uos            # 微信 (临时禁用，因 SSL 代理问题)
