@@ -26,11 +26,10 @@
       nixosConfigurations = {
         laptop = nixpkgs.lib.nixosSystem {
           inherit system;
-          specialArgs = { inherit inputs; pkgs-unstable = pkgs-unstable; };
+          specialArgs = { inherit inputs; pkgs-unstable = pkgs-unstable; nixvimModule = nixvim.homeModules.default; };
           modules = [
             ./hosts/laptop/configuration.nix
                   home-manager.nixosModules.home-manager
-                  nixvim.nixosModules.nixvim
           ];
         };
       };

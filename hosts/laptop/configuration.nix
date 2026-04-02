@@ -2,7 +2,7 @@
 # your system. Help is available in the configuration.nix(5) man page, on
 # https://search.nixos.org/options and in the NixOS manual (`nixos-help`).
 
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, inputs, nixvimModule, ... }:
 
 {
   imports =
@@ -71,6 +71,7 @@
   # 引入 home-manager
   home-manager.useGlobalPkgs = true;
   home-manager.useUserPackages = true;
+  home-manager.extraSpecialArgs = { inherit inputs nixvimModule; };
   home-manager.users.mengw = import ../../home/default.nix;
 
   # 启用硬件加速
@@ -202,13 +203,7 @@
     allowUnfree = true;   # 允许所有 unfree 包
   };
 
-  programs.nixvim = {
-    enable = true;
-    version.enableNixpkgsReleaseCheck = false;
-    colorschemes.catppuccin.enable = true;
-    plugins.lualine.enable = true;
-    defaultEditor = true;
-  };
+  
 
 
   # Some programs need SUID wrappers, can be configured further or are
