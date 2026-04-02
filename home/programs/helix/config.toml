@@ -1,6 +1,6 @@
 # Helix config.toml
 
-theme = "hardhacker"
+theme = "onenight"
 
 # 主编辑器设置
 [editor]

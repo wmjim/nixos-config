@@ -91,9 +91,9 @@
     gnome-shell-extensions# gnome 扩展管理
 
     clash-nyanpasu
-    microsoft-edge        # 浏览器 (临时禁用，因 SSL 代理问题)
+    microsoft-edge        # 浏览器
     vscode                # 代码编辑器
-    wechat-uos            # 微信 (临时禁用，因 SSL 代理问题)
+    wechat-uos            # 微信
     qq                    # QQ
     obsidian              # 笔记软件
     thunderbird           # 邮件客户端
