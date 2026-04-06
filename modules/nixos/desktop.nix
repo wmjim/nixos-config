@@ -57,6 +57,8 @@
     CLASH_VERGE_ALLOW_CLIPBOARD = "1";
     # 禁用某些可能冲突的功能
     RUST_BACKTRACE = "1";
+    # GTK 图标主题
+    GTK_ICON_THEME = "Adwaita";
   };
 
   environment.gnome.excludePackages = with pkgs; [
@@ -81,6 +83,7 @@
 
   environment.systemPackages = with pkgs; [
     gtk4
+    adwaita-icon-theme    # GNOME 标准图标主题
 
     # 额外的 GNOME 应用（GTK4/libadwaita 现代样式）
     gnome-text-editor     # 文本编辑器（GTK4）
@@ -91,10 +94,11 @@
     gnome-shell-extensions# gnome 扩展管理
 
     clash-nyanpasu
+    tailscale             # VPN 客户端
     microsoft-edge        # 浏览器
     vscode                # 代码编辑器
-    wechat-uos            # 微信
-    qq                    # QQ
+    # wechat-uos            # 微信
+    # qq                    # QQ
     obsidian              # 笔记软件
     thunderbird           # 邮件客户端
   ] ++ (with gnomeExtensions; [

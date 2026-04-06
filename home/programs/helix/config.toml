@@ -1,6 +1,6 @@
 # Helix config.toml
 
-theme = "onenight"
+theme = "onedark"
 
 # 主编辑器设置
 [editor]
