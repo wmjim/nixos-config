@@ -80,12 +80,26 @@
   # 时区:上海
   time.timeZone = "Asia/Shanghai";
 
-  # 系统级代理设置
-  networking.proxy = {
-    default = "http://127.0.0.1:7897";
-    httpProxy = "http://127.0.0.1:7897";
-    httpsProxy = "http://127.0.0.1:7897";
-    noProxy = "localhost,127.0.0.1,::1,*.local";
+
+  # ==========================================
+  # 为 nix-daemon 设置代理 (核心！)
+  # ==========================================
+  systemd.services.nix-daemon.environment = {
+    http_proxy = "http://127.0.0.1:7897";
+    https_proxy = "http://127.0.0.1:7897";
+    ftp_proxy = "http://127.0.0.1:7897";
+    no_proxy = "localhost,127.0.0.1,local.domain,192.168.0.0/16";
+  };
+
+
+  # ==========================================
+  # 系统级用户会话代理设置 (修正变量名)
+  # ==========================================
+  environment.sessionVariables = {
+    http_proxy = "http://127.0.0.1:7897";
+    https_proxy = "http://127.0.0.1:7897";
+    ftp_proxy = "http://127.0.0.1:7897";
+    no_proxy = "localhost,127.0.0.1,local.domain,192.168.0.0/16";
   };
 
   # 国际化属性

@@ -93,7 +93,6 @@
     gnome-tweaks          # 优化
     gnome-shell-extensions# gnome 扩展管理
 
-    clash-nyanpasu
     tailscale             # VPN 客户端
     microsoft-edge        # 浏览器
     vscode                # 代码编辑器
