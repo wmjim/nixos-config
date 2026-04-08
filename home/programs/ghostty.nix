@@ -8,7 +8,7 @@
     enable = true;
     settings = {
       # 字体配置
-      font-family = "Maple Mono NF";
+      font-family = "Maple Mono NF Medium";
       font-size = 15;
       font-thicken = true;
       adjust-cell-height = 2;

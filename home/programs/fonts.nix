@@ -7,10 +7,10 @@
     enable = true;
 
     defaultFonts = {
-      # 无衬线字体：PingFang SC 优先
-      sansSerif = [ "PingFang SC" ];
+      # 无衬线字体：Harmony Sans SC Medium 优先
+      sansSerif = [ "Harmony Sans SC Medium" ];
       # 等宽字体：Maple Mono 为主，lxgw-wenkai-gb 为备选
-      monospace = [ "Maple Mono NF" "LXGW WenKai GB" ];
+      monospace = [ "Maple Mono NF Medium" "LXGW WenKai GB" ];
     };
   };
 }
