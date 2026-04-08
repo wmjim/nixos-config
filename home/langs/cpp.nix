@@ -1,7 +1,5 @@
 { pkgs, ... }:
-let
-    unstable = import <nixpkgs-unstable> { config = {}; overlays = []; };
-in
+
 {
   # C/C++ 开发环境
   home.packages = with pkgs; [

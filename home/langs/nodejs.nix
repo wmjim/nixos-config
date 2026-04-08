@@ -6,7 +6,7 @@
     nodejs_24
     yarn
     pnpm
-    nodePackages.typescript-language-server  # TypeScript/JavaScript LSP
-    prettierd             # JavaScript/TypeScript/JSON/Markdown/YAML 格式化器
+    typescript-language-server  # TypeScript/JavaScript LSP
+    prettierd                   # JavaScript/TypeScript/JSON/Markdown/YAML 格式化器
   ];
 }

@@ -2,6 +2,8 @@
 
 {
   home.stateVersion = "25.11";
+  # 禁用版本不匹配警告
+  home.enableNixpkgsReleaseCheck = false;
   imports = [
     nixvimModule
     ./langs
