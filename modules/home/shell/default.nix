@@ -34,4 +34,12 @@
   programs.fzf.enable = true;
   programs.bat.enable = true;
   programs.eza.enable = true;
+
+  # fastfetch 配置
+  # 将你的 config.jsonc 放在 ~/.config/fastfetch/ 下
+  # home-manager 会自动管理这个目录
+  home.file.".config/fastfetch/config.jsonc" = {
+    source = ./fastfetch/config.jsonc;
+    force = true;
+  };
 }
