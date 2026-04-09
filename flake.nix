@@ -3,7 +3,8 @@
 
   inputs = {
     # Nixpkgs - 使用 25.11 以匹配 home-manager
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
+    # nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     nixpkgs-darwin.url = "github:nixos/nixpkgs/nixpkgs-25.11-darwin";
 
     # Home Manager - 使用特定提交避免 mako 模块问题
