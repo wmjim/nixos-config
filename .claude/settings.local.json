@@ -3,7 +3,8 @@
     "allow": [
       "Bash(clash-verge-rev)",
       "Bash(nix-store -q --references /run/current-system)",
-      "Bash(xargs -I {} nix path-info {})"
+      "Bash(xargs -I {} nix path-info {})",
+      "Bash(git add:*)"
     ]
   }
 }
