@@ -56,6 +56,11 @@
               home-manager.useUserPackages = true;
               home-manager.extraSpecialArgs = { inherit inputs; };
               home-manager.users.mengw = import ./modules/home;
+
+              # 允许 home-manager 使用非自由软件包
+              home-manager.sharedModules = [{
+                nixpkgs.config.allowUnfree = true;
+              }];
             }
           ];
         };
@@ -80,6 +85,11 @@
               home-manager.useUserPackages = true;
               home-manager.extraSpecialArgs = { inherit inputs; };
               home-manager.users.mengw = import ./modules/home;
+
+              # 允许 home-manager 使用非自由软件包
+              home-manager.sharedModules = [{
+                nixpkgs.config.allowUnfree = true;
+              }];
             }
           ];
         };
