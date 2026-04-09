@@ -48,7 +48,7 @@ nixos-config/
 │   │
 │   └── home/                    # Home Manager 模块（跨平台）
 │       ├── shell/               # fish, starship, 终端工具
-│       ├── editors/             # neovim, helix
+│       ├── editors/             # helix
 │       ├── dev/                 # 语言环境
 │       │   ├── go.nix
 │       │   ├── rust.nix

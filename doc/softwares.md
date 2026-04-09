@@ -14,7 +14,7 @@
 
 ## 开发工具
 
-- **编辑器**: neovim
+- **编辑器**: hx
 - **Git 工具**: git
 - **AI 编程**: Claude Code
 

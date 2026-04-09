@@ -39,6 +39,8 @@
       "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkj5bg+wLbWLCTCfOj2Wc="
       "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
     ];
+    # 添加当前用户为 trusted user
+    trusted-users = [ "root" "mengw" ];
   };
 
   # 无线网络：iwd
