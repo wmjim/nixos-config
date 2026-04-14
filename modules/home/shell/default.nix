@@ -23,8 +23,10 @@
     enable = true;
     settings = {
       user.name = "meng.wang";
-      user.email = "meng.wang@example.com";  # 请修改为你的邮箱
+      user.email = "meng.w1016@outlook.com";
       init.defaultBranch = "main";
+      core.editor = "hx";
+      color.ui = "auto";
       push.autoSetupRemote = true;
     };
   };

@@ -8,6 +8,7 @@
 
   # RDP 远程桌面
   services.gnome.gnome-remote-desktop.enable = true;
+  networking.firewall.allowedTCPPorts = [ 3389 ];
 
   # GNOME 电源管理 - 合盖不休眠
   systemd.user.services."gnome-power-settings" = {

@@ -32,8 +32,8 @@
       # 2. 备选：中科大镜像
       "https://mirrors.ustc.edu.cn/nix-channels/store"
       # 3. 保底：最后是官方和社区镜像
-      "https://nix-community.cachix.org"
-      "https://cache.nixos.org"
+      # "https://nix-community.cachix.org"
+      # "https://cache.nixos.org"
     ];
     trusted-public-keys = [
       "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkj5bg+wLbWLCTCfOj2Wc="

@@ -6,7 +6,6 @@
     isNormalUser = true;
     extraGroups = [ "wheel" "audio" "video" "input" "network" "libvirtd" "kvm" ];
     shell = pkgs.fish;
-    packages = [];
   };
 
   programs.fish.enable = true;

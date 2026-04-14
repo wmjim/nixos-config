@@ -11,9 +11,12 @@
       # 设置编辑器
       set -gx EDITOR hx
 
-      # 设置语言环境
-      set -gx LANG zh_CN.UTF-8
-      set -gx LC_ALL zh_CN.UTF-8
+
+      # 配置交叉工具链
+      set -gx ARCH arm
+      set -gx CROSS_COMPILE arm-buildroot-linux-gnueabihf-
+      set -gx PATH $HOME/embed/100ask_imx6ull_mini-sdk/ToolChain/arm-buildroot-linux-gnueabihf_sdk-buildroot/bin $PATH
+
     '';
     shellAliases = {
       # 常用别名
@@ -51,6 +54,8 @@
 
       # npm 全局模块路径
       fish_add_path /home/mengw/.npm-global/bin
+      # repo
+      fish_add_path /home/mengw/app/repo
 
       # fzf 配置（如果安装了）
       if type -q fzf

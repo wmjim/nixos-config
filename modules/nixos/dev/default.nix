@@ -2,10 +2,6 @@
 { config, pkgs, ... }:
 
 {
-  # 虚拟化
-  virtualisation.libvirtd.enable = true;
-  boot.kernelParams = [ "console=ttyS0" ];
-
   # Docker（可选）
   # virtualisation.docker.enable = true;
 
