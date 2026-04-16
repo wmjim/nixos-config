@@ -17,6 +17,8 @@
     unzip
     tree
     bat
+    file
+    net-tools
     fastfetch
     btop
     yazi

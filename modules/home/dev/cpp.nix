@@ -6,6 +6,7 @@
     # 编译器工具链（只用 clang，避免与 gcc 冲突）
     clang         # Clang 编译器（包含 clang++, clang）
     cmake         # 跨平台构建系统生成器
+    gnumake
     ninja         # 快速构建工具
 
     # C++ 包管理器和依赖管理

@@ -80,7 +80,7 @@
     gnome-tweaks
     gnome-shell-extensions
     tailscale
-    microsoft-edge
+    # microsoft-edge  # 临时注释，网络恢复后取消注释
     vscode
     obsidian
     thunderbird
