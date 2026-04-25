@@ -162,7 +162,7 @@
         min_time = 0;
         show_milliseconds = true;
         style = "bg:lavender";
-        format = "[[  $duration ](fg:crust bg:lavender)]($style)";
+        format = "[[ $duration ](fg:crust bg:lavender)]($style)";
         disabled = false;
         show_notifications = true;
         min_time_to_notify = 45000;

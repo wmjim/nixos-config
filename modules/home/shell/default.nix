@@ -5,6 +5,7 @@
   imports = [
     ./fish.nix
     ./starship.nix
+    ./tmux.nix
   ];
 
   # 终端工具
