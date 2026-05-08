@@ -10,6 +10,7 @@
     ./editors
     ./dev
     ./apps
+    ./desktop
   ];
 
   # 通用包（跨平台）

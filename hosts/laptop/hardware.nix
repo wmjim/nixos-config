@@ -14,55 +14,55 @@
   boot.extraModulePackages = [ ];
 
   fileSystems."/" =
-    { device = "/dev/disk/by-uuid/38b53003-117e-453f-a2b8-d8f3b74431a3";
+    { device = "/dev/disk/by-uuid/e0d906dd-b7af-4537-95c2-24595906fbce";
       fsType = "btrfs";
       options = [ "subvol=@" ];
     };
 
   fileSystems."/home" =
-    { device = "/dev/disk/by-uuid/38b53003-117e-453f-a2b8-d8f3b74431a3";
+    { device = "/dev/disk/by-uuid/e0d906dd-b7af-4537-95c2-24595906fbce";
       fsType = "btrfs";
       options = [ "subvol=@home" ];
     };
 
   fileSystems."/nix" =
-    { device = "/dev/disk/by-uuid/38b53003-117e-453f-a2b8-d8f3b74431a3";
+    { device = "/dev/disk/by-uuid/e0d906dd-b7af-4537-95c2-24595906fbce";
       fsType = "btrfs";
       options = [ "subvol=@nix" ];
     };
 
   fileSystems."/var" =
-    { device = "/dev/disk/by-uuid/38b53003-117e-453f-a2b8-d8f3b74431a3";
+    { device = "/dev/disk/by-uuid/e0d906dd-b7af-4537-95c2-24595906fbce";
       fsType = "btrfs";
       options = [ "subvol=@var" ];
     };
 
   fileSystems."/var/log" =
-    { device = "/dev/disk/by-uuid/38b53003-117e-453f-a2b8-d8f3b74431a3";
+    { device = "/dev/disk/by-uuid/e0d906dd-b7af-4537-95c2-24595906fbce";
       fsType = "btrfs";
       options = [ "subvol=@log" ];
     };
 
   fileSystems."/var/lib/docker" =
-    { device = "/dev/disk/by-uuid/38b53003-117e-453f-a2b8-d8f3b74431a3";
+    { device = "/dev/disk/by-uuid/e0d906dd-b7af-4537-95c2-24595906fbce";
       fsType = "btrfs";
       options = [ "subvol=@docker" ];
     };
 
   fileSystems."/.snapshots" =
-    { device = "/dev/disk/by-uuid/38b53003-117e-453f-a2b8-d8f3b74431a3";
+    { device = "/dev/disk/by-uuid/e0d906dd-b7af-4537-95c2-24595906fbce";
       fsType = "btrfs";
       options = [ "subvol=@snapshots" ];
     };
 
   fileSystems."/boot" =
-    { device = "/dev/disk/by-uuid/8363-150D";
+    { device = "/dev/disk/by-uuid/1C91-1740";
       fsType = "vfat";
       options = [ "fmask=0022" "dmask=0022" ];
     };
 
   swapDevices =
-    [ { device = "/dev/disk/by-uuid/b00310a7-567f-40e2-aeea-4bba3406af35"; }
+    [ { device = "/dev/disk/by-uuid/6af40d3c-fdfa-42fc-ad9c-7c57966be306"; }
     ];
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
