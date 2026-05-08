@@ -47,7 +47,10 @@
     GDK_BACKEND = "wayland";
     CLASH_VERGE_ALLOW_CLIPBOARD = "1";
     RUST_BACKTRACE = "1";
+    GTK_THEME = "WhiteSur-Dark";
     GTK_ICON_THEME = "WhiteSur";
+    XCURSOR_THEME = "Bibata-Modern-Ice";
+    XCURSOR_SIZE = "24";
   };
 
   # 排除的 GNOME 包
@@ -72,7 +75,9 @@
   # 额外的 GNOME 应用
   environment.systemPackages = with pkgs; [
     gtk4
+    whitesur-gtk-theme
     whitesur-icon-theme
+    bibata-cursors
     gnome-text-editor
     gnome-calculator
     gnome-screenshot

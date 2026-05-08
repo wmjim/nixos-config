@@ -28,7 +28,4 @@
 
   fonts.fontconfig.subpixel.lcdfilter = "default";
   fonts.fontconfig.hinting.autohint = true;
-
-  # 光标主题
-  environment.variables.XCURSOR_THEME = "Adwaita";
 }
