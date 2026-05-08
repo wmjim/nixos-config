@@ -4,21 +4,27 @@
 {
   # 时区
   time.timeZone = "Asia/Shanghai";
-  i18n.defaultLocale = "en_US.UTF-8";
+  i18n.defaultLocale = "zh_CN.UTF-8";
 
   # 字体
   fonts.packages = with pkgs; [
-    maple-mono.NF
-    maple-mono.NF-CN
+    # 等宽字体
+    maple-mono.NormalNL-NF-CN-unhinted
+    maple-mono.NormalNL-NF-unhinted
+    # 中文无衬线/屏幕阅读字体
     lxgw-wenkai-screen
-    source-serif-pro
+    noto-fonts-cjk-serif      # 思源宋体
+    # 英文衬线字体
+    source-serif-pro          
     noto-fonts-color-emoji
+    # 中文无衬线回退
+    noto-fonts-cjk-sans       # 思源黑体
   ];
 
   fonts.fontconfig.defaultFonts = {
-    serif = [ "Source Serif Pro" "LXGW WenKai Screen" ];
-    sansSerif = [ ];
-    monospace = [ "Maple Mono NF" ];
+    serif = [ "Source Serif Pro" "Noto Serif CJK SC" ];
+    sansSerif = [ "Noto Sans Mono CJK SC" ];
+    monospace = [ "Maple Mono Normal NL NF CN" ];
     emoji = [ "Noto Color Emoji" ];
   };
 

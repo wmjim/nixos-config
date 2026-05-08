@@ -7,9 +7,9 @@
     enable = true;
     settings = {
       # 设置终端字体（支持 Nerd Font，适合图标）
-      font-family = "Maple Mono NF";
+      font-family = "Maple Mono Normal NL NF CN";
       # 设置字体大小
-      font-size = 15;
+      font-size = 14;
       # 启用字体加粗/加厚（提高可读性
       font-thicken = true;
       # 调整行高（1 表示轻微增加
@@ -71,9 +71,8 @@
       #避免root识别问题
       term = "xterm-256color";
 
-      # --- Keybindings ---
+      # --- 快捷键 ---
       keybind = [
-        # Tabs
         # 新建标签页
         "cmd+t=new_tab"
         # 切换到左侧标签页
@@ -97,7 +96,6 @@
         # 切换到下方分屏
         "cmd+alt+down=goto_split:bottom"
 
-        # Font size
         # 增大字体
         "cmd+plus=increase_font_size:1"
         # 减小字体
@@ -106,9 +104,8 @@
         "cmd+zero=reset_font_size"
 
         # 全局快捷键：打开/关闭下拉终端
-        "global:ctrl+grave_accent=toggle_quick_terminal"
+        # "global:ctrl+grave=toggle_quick_terminal"
 
-        # Splits management
         # 平均分配分屏大小
         "cmd+shift+e=equalize_splits"
         # 最大化/还原当前分屏

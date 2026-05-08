@@ -80,20 +80,24 @@
     gnome-tweaks
     gnome-shell-extensions
     tailscale
-    microsoft-edge  # 临时注释，网络恢复后取消注释
+    microsoft-edge
+    zed-editor
     vscode
     obsidian
     thunderbird
   ] ++ (with pkgs.gnomeExtensions; [
+    user-themes
+    hide-top-bar
+    clipboard-history
+    allow-locked-remote-desktop
+    burn-my-windows
+    coverflow-alt-tab
+    dash-to-panel
+    desktop-cube
+    just-perfection
+    rounded-corners
+    rounded-window-corners-reborn
     appindicator
     blur-my-shell
-    just-perfection
-    hide-top-bar
-    vitals
-    space-bar
-    dash-to-dock
-    dash-to-panel
-    clipboard-history
-    caffeine
   ]);
 }
