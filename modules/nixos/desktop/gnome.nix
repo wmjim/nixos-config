@@ -47,7 +47,7 @@
     GDK_BACKEND = "wayland";
     CLASH_VERGE_ALLOW_CLIPBOARD = "1";
     RUST_BACKTRACE = "1";
-    GTK_ICON_THEME = "Adwaita";
+    GTK_ICON_THEME = "WhiteSur";
   };
 
   # 排除的 GNOME 包
@@ -72,14 +72,13 @@
   # 额外的 GNOME 应用
   environment.systemPackages = with pkgs; [
     gtk4
-    adwaita-icon-theme
+    whitesur-icon-theme
     gnome-text-editor
     gnome-calculator
     gnome-screenshot
     nautilus
     gnome-tweaks
     gnome-shell-extensions
-    tailscale
     microsoft-edge
     zed-editor
     vscode
