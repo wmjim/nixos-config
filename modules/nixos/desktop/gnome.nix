@@ -58,6 +58,7 @@
     yelp
     gnome-tour
     gnome-software
+    gnome-contacts
     epiphany
     gnome-weather
     gnome-clocks
