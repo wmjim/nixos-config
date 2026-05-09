@@ -10,13 +10,17 @@
   services.gnome.gnome-remote-desktop.enable = true;
   networking.firewall.allowedTCPPorts = [ 3389 ];
 
-  # GNOME 电源管理 - 合盖不休眠
+  # GNOME 电源管理 - 合盖不休眠，熄屏不休眠
   systemd.user.services."gnome-power-settings" = {
     wantedBy = [ "graphical-session.target" ];
     serviceConfig = {
       Type = "oneshot";
       RemainAfterExit = true;
-      ExecStart = "${pkgs.dconf}/bin/dconf write /org/gnome/settings-daemon/plugins/power/lid-close-ac-action \"'nothing'\"";
+      ExecStart = ''
+        ${pkgs.dconf}/bin/dconf write /org/gnome/settings-daemon/plugins/power/lid-close-ac-action "'nothing'"
+        ${pkgs.dconf}/bin/dconf write /org/gnome/settings-daemon/plugins/power/sleep-inactive-ac-timeout "uint32 0"
+        ${pkgs.dconf}/bin/dconf write /org/gnome/settings-daemon/plugins/power/sleep-inactive-ac-type "'nothing'"
+      '';
     };
   };
 
