@@ -4,5 +4,6 @@
 {
   imports = [
     ./fcitx5.nix
+    ./niri
   ];
 }

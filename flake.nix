@@ -13,6 +13,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    dms-plugin-registry = {
+        url = "github:AvengeMedia/dms-plugin-registry";
+        inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # nix-darwin (macOS)
     nix-darwin = {
       url = "github:LnL7/nix-darwin";
@@ -20,7 +25,7 @@
     };
   };
 
-  outputs = { self, nixpkgs, nixpkgs-darwin, home-manager, nix-darwin, ... }@inputs:
+  outputs = { self, nixpkgs, dms-plugin-registry, nixpkgs-darwin, home-manager, nix-darwin, ... }@inputs:
     let
       # 使用 nixpkgs lib，不扩展以避免兼容性问题
       lib = nixpkgs.lib;

@@ -4,10 +4,10 @@
 {
   # 设置默认输入法环境变量
   home.sessionVariables = {
-    GTK_IM_MODULE = "fcitx";
     QT_IM_MODULE = "fcitx";
     XMODIFIERS = "@im=fcitx";
     SDL_IM_MODULE = "fcitx";
+    GTK_IM_MODULE = "";
   };
 
   # 用户 rime 配置

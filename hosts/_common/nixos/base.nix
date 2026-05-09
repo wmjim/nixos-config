@@ -56,6 +56,14 @@
   # 硬件加速
   hardware.graphics.enable = true;
 
+  # NixOS 配置中加入:
+  hardware.nvidia = {
+    open = false;
+    modesetting.enable = true;
+    powerManagement.enable = true;
+  };
+  services.xserver.videoDrivers = [ "nvidia" ];
+
   # 电源管理：合盖不休眠
   services.logind.settings.Login = {
     HandleLidSwitch = "ignore";               # 普通状态合盖
