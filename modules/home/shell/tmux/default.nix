@@ -2,6 +2,23 @@
 { config, pkgs, ... }:
 
 {
+  # 主题文件部署到 ~/.config/tmux/themes/theme.conf
+  xdg.configFile."tmux/themes/theme.conf".source = ./config/theme.conf;
+
+  # 主题脚本部署到 ~/.config/tmux/themes/scripts/（保留可执行权限）
+  xdg.configFile."tmux/themes/scripts/helpers.sh" = {
+    source = ./config/scripts/helpers.sh;
+    executable = true;
+  };
+  xdg.configFile."tmux/themes/scripts/cpu_percentage.sh" = {
+    source = ./config/scripts/cpu_percentage.sh;
+    executable = true;
+  };
+  xdg.configFile."tmux/themes/scripts/ram_percentage.sh" = {
+    source = ./config/scripts/ram_percentage.sh;
+    executable = true;
+  };
+
   programs.tmux = {
     enable = true;
     prefix = "C-a";
@@ -37,15 +54,8 @@
       bind -T copy-mode-vi v send -X begin-selection
       bind -T copy-mode-vi y send -X copy-selection-and-cancel
 
-      # ========== 状态栏设置 ==========
-      set -g status-position top            # 状态栏位置：顶部
-      set -g status-interval 5              # 状态栏更新间隔：5 秒
-      set -g status-justify left            # 状态栏对齐方式：左对齐
-      set -g status-left-length 40          # 状态栏左对齐长度：40 字符
-      set -g status-right-length 100        # 状态栏右对齐长度：100 字符
-      set -g window-status-separator ""     # 窗口状态分隔符：空字符串
-      set -gw automatic-rename on           # 自动重命名窗口：开启
-      # 自动重命名窗口格式：{当前面板路径}
+      # 自动重命名窗口
+      set -gw automatic-rename on
       set -gw automatic-rename-format '#{b:pane_current_path}'
 
       # ========== 面板相关快捷键 ==========
@@ -55,17 +65,17 @@
       # 退出当前面板：prefix + x
       bind x kill-pane
 
-      # 切换面板：Shift + ←/→/↑/↓
-      bind -n S-Left select-pane -L 
-      bind -n S-Right select-pane -R
-      bind -n S-Up select-pane -U
-      bind -n S-Down select-pane -D
+      # 切换面板：Alt + ←/→/↑/↓
+      bind -n M-Left select-pane -L
+      bind -n M-Right select-pane -R
+      bind -n M-Up select-pane -U
+      bind -n M-Down select-pane -D
 
-      # 调整面板大小：Ctrl + Shift + ←/→/↑/↓
-      bind -n C-S-Left resize-pane -L 5
-      bind -n C-S-Down resize-pane -D 5
-      bind -n C-S-Up resize-pane -U 5
-      bind -n C-S-Right resize-pane -R 5
+      # 调整面板大小：prefix + ←/→/↑/↓（可连续按）
+      bind -r Left resize-pane -L 5
+      bind -r Down resize-pane -D 5
+      bind -r Up resize-pane -U 5
+      bind -r Right resize-pane -R 5
 
       # ========== 窗口相关快捷键 ==========
       # 重命名窗口：prefix + r
@@ -75,13 +85,12 @@
       # 退出窗口：prefix + k
       bind k kill-window
 
-
-      # 切换窗口：Alt + ←/→
-      bind -n M-Left select-window -t -1
-      bind -n M-Right select-window -t +1
-      # 交换窗口：Shift + Alt + ←/→
-      bind -n M-S-Left swap-window -t -1 \; select-window -t -1
-      bind -n M-S-Right swap-window -t +1 \; select-window -t +1
+      # 切换窗口：Shift + ←/→
+      bind -n S-Left select-window -t -1
+      bind -n S-Right select-window -t +1
+      # 交换窗口：Ctrl + Shift + ←/→
+      bind -n C-S-Left swap-window -t -1 \; select-window -t -1
+      bind -n C-S-Right swap-window -t +1 \; select-window -t +1
 
       # ========== 会话相关快捷键 ==========
       # 重命名会话：prefix + R
@@ -90,12 +99,12 @@
       bind C new-session -c "#{pane_current_path}"
       # 退出会话：prefix + K
       bind K kill-session
-      # 切换会话：prefix + P/N
-      bind P switch-client -p
-      bind N switch-client -n
-      # 切换会话：Alt + ↑/↓
-      bind -n M-Up switch-client -p
-      bind -n M-Down switch-client -n
+      # 切换会话：Shift + ↑/↓
+      bind -n S-Up switch-client -p
+      bind -n S-Down switch-client -n
+
+      # ========== 主题 ==========
+      source-file ~/.config/tmux/themes/theme.conf
     '';
 
     plugins = with pkgs.tmuxPlugins; [
@@ -114,16 +123,6 @@
         plugin = tmux-fzf;
         extraConfig = ''
           set -g @tmux-fzf-launch-key 'F'
-        '';
-      }
-      # Dracula 主题
-      {
-        plugin = dracula;
-        extraConfig = ''
-          set -g @dracula-show-flags true
-          set -g @dracula-refresh-rate 3
-          set -g @dracula-border-contrast true
-          set -g @dracula-show-powerline true
         '';
       }
     ];

@@ -64,9 +64,9 @@
         # 新建标签页
         "cmd+t=new_tab"
         # 切换到左侧标签页
-        "shift+left=previous_tab"
+        # "shift+left=previous_tab"
         # 切换到右侧标签页
-        "shift+right=next_tab"
+        # "shift+right=next_tab"
         # 关闭当前标签/窗口
         "cmd+w=close_surface"
 
@@ -80,13 +80,13 @@
         # 最大化/还原当前分屏
         "cmd+shift+enter=toggle_split_zoom"
         # 切换到左侧分屏
-        "alt+left=goto_split:left"
+        # "alt+left=goto_split:left"
         # 切换到右侧分屏
-        "alt+right=goto_split:right"
+        # "alt+right=goto_split:right"
         # 切换到上方分屏
-        "alt+up=goto_split:top"
+        # "alt+up=goto_split:top"
         # 切换到下方分屏
-        "alt+down=goto_split:bottom"
+        # "alt+down=goto_split:bottom"
 
         # 增大字体
         "control+plus=increase_font_size:1"

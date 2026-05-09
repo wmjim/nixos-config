@@ -5,7 +5,7 @@
   imports = [
     ./fish.nix
     ./starship.nix
-    ./tmux.nix
+    ./tmux
   ];
 
   # 终端工具
@@ -17,6 +17,7 @@
     fd           # find 替代
     jq           # JSON 处理
     yq           # YAML 处理
+    sysstat      # iostat/sar 等系统监控工具（tmux 主题脚本依赖）
   ];
 
   # Git

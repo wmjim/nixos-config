@@ -53,6 +53,10 @@
       # fish_add_path /path/to/bin
 
       # npm 全局模块路径
+      # 同时显式设置 NPM_CONFIG_PREFIX，避免 npm 把 prefix 探测到只读的
+      # /nix/store/...nodejs.../，进而导致工具（如 claude-code）反复 fork
+      # `npm config get prefix` 触发 Node 冷启动、推高 CPU、风扇狂转。
+      set -gx NPM_CONFIG_PREFIX /home/mengw/.npm-global
       fish_add_path /home/mengw/.npm-global/bin
       # repo
       fish_add_path /home/mengw/app/repo

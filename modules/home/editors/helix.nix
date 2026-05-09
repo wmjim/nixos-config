@@ -68,7 +68,7 @@
         # 自定义空格字符
         whitespace.characters = {
           tab = "→";            # tab 显示为 →，更清晰
-          tabpad = " ";          # tab 填充显示为空格
+          tabpad = " ";         # tab 填充显示为空格
         };
 
         # 自动换行
