@@ -5,7 +5,7 @@
   # 设置默认输入法环境变量
   home.sessionVariables = {
     QT_IM_MODULE = "fcitx";
-    XMODIFIERS = "@im=fcitx";
+    XMODIFIERS = "@im=fcitx";  # 中文输入法环境变量
     SDL_IM_MODULE = "fcitx";
     GTK_IM_MODULE = "";
   };
@@ -16,5 +16,7 @@
       __include: rime_ice_suggestion:/
       __patch:
         menu/page_size: 5
+      schema_list:
+        - schema: rime_ice
   '';
 }

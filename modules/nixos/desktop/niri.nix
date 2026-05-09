@@ -89,7 +89,7 @@
   environment.systemPackages = with pkgs; [
     # niri 周边
     xwayland-satellite           # 运行 X11 应用
-    swaylock                     # 锁屏
+    swaylock-effects             # 锁屏
     swayidle                     # 空闲触发
     wl-clipboard                 # 剪贴板
     cliphist                     # 剪贴板历史
@@ -100,9 +100,14 @@
     pamixer                      # 音量控制
     networkmanagerapplet         # 网络托盘
     pavucontrol                  # 音量 GUI
-    libnotify                    # notify-send
+    libnotify                    # 通知相关库
+    polkit_gnome                 # 询问管理员权限
     fuzzel                       # 应用启动器
     kdePackages.dolphin          # 文件管理器
+    bluez                        # 蓝牙主体
+    blueman                      # 蓝牙图形界面
+    # awww                         # 壁纸切换功能
+    # waypaper                     # 壁纸图形界面
 
     # 常用应用
     microsoft-edge

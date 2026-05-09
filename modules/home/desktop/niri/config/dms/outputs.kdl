@@ -1,0 +1,8 @@
+// 显示器设置
+
+output "eDP-1" {
+    mode "1920x1080@59.977"
+    scale 1.25        // 缩放
+    position x=0 y=0  // 位置
+    focus-at-startup  // 默认聚焦显示器
+}

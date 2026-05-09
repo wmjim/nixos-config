@@ -74,7 +74,6 @@
     eog
     gnome-calculator
     gnome-screenshot
-    nautilus
   ];
 
   # 额外的 GNOME 应用
@@ -86,7 +85,7 @@
     gnome-text-editor
     gnome-calculator
     gnome-screenshot
-    nautilus
+    nautilus                  # 文件管理器
     gnome-tweaks
     gnome-shell-extensions
     microsoft-edge
