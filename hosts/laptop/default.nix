@@ -12,6 +12,13 @@
   # 主机名
   networking.hostName = "laptop";
 
+  # 风扇控制
+  services.auto-cpufreq.enable = true;
+  services.thermald.enable = true;
+
+  # 禁用 power-profiles-daemon，避免与 auto-cpufreq 冲突
+  services.power-profiles-daemon.enable = false;
+
   # 虚拟化
   virtualisation.libvirtd.enable = true;
   boot.kernelParams = [ "console=ttyS0" ];
