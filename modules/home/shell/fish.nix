@@ -11,12 +11,12 @@
       # 设置编辑器
       set -gx EDITOR hx
 
-
-      # 配置交叉工具链
-      set -gx ARCH arm
-      set -gx CROSS_COMPILE arm-buildroot-linux-gnueabihf-
-      set -gx PATH $HOME/embed/100ask_imx6ull_mini-sdk/ToolChain/arm-buildroot-linux-gnueabihf_sdk-buildroot/bin $PATH
-
+      # tmux 外启用 starship；tmux 内使用 fish 默认提示符
+      if not set -q TMUX
+        if test "$TERM" != dumb; and command -q starship
+          starship init fish | source
+        end
+      end
     '';
     shellAliases = {
       # 常用别名
