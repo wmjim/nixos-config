@@ -73,3 +73,7 @@ sudo nixos-rebuild switch --flake .#server
 # 构建 macOS（在 Mac 上）
 darwin-rebuild switch --flake .#macbook
 ```
+
+- 终端Shell：[Fish](https://github.com/fish-shell/fish-shell)
+- 终端编辑器：[Helix](https://github.com/helix-editor/helix)
+-
