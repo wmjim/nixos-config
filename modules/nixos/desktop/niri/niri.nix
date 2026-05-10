@@ -3,12 +3,23 @@
 
 {
   imports = [
-    ./dms.nix
+    ./noctalia.nix
     ../apps.nix
   ];
 
   # niri 合成器
   programs.niri.enable = true;
+
+  # 登录管理器：greetd + tuigreet → 启动 niri
+  services.greetd = {
+    enable = true;
+    settings = {
+      default_session = {
+        command = "${pkgs.tuigreet}/bin/tuigreet --time --remember --cmd niri-session";
+        user = "greeter";
+      };
+    };
+  };
 
   # 触控板
   services.libinput.enable = true;
@@ -40,7 +51,7 @@
     NIXOS_OZONE_WL = "1";
     CLASH_VERGE_ALLOW_CLIPBOARD = "1";
     RUST_BACKTRACE = "1";
-    GTK_THEME = "fluent-gtk-theme-dark";
+    GTK_THEME = "Orchis-Purple";
     GTK_ICON_THEME = "WhiteSur";
     XCURSOR_THEME = "Bibata-Modern-Ice";
     XCURSOR_SIZE = "24";
@@ -62,8 +73,7 @@
     networkmanagerapplet      # 网络托盘
     pavucontrol               # 音量 GUI
     fuzzel                    # 应用启动器
-
-
+    walker                    # 快捷键/命令搜索（中文输入法兼容）
   ];
 
   # RDP 远程桌面端口

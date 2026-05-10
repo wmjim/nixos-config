@@ -5,26 +5,33 @@ binds {
     // 第一部分：Shorin 核心快捷键配置
     // =========================================================
 
-    // 显示快捷键教程
-    Mod+Shift+Slash hotkey-overlay-title="快捷键教程 Keybind tutorial" { spawn-sh "~/.config/niri/scripts/niri-binds.sh"; }
-
+    // 快捷键
+    // Mod+Shift+Slash hotkey-overlay-title="快捷键教程 Keybind tutorial" { spawn-sh "~/.config/niri/scripts/niri-binds.sh"; }
     // Mod+F1 hotkey-overlay-title="开关输入法 Toggle fcitx" {spawn-sh "pkill fcitx5 || fcitx5 ";}
-    Mod+F2 hotkey-overlay-title="设置 Settings" { spawn-sh "dms ipc call settings focusOrToggle";}
-    Mod+F3 hotkey-overlay-title="录屏 Screen record" { spawn "shorin-screenrec-menu";}
-    Mod+F5 hotkey-overlay-title="快速存档 Quick save" {spawn "quicksave";}
-    Mod+F8 hotkey-overlay-title="快速读档 Quick load" {spawn "quickload";}
+    // Mod+F2 hotkey-overlay-title="设置 Settings" { spawn-sh "dms ipc call settings focusOrToggle";}
+    // Mod+F3 hotkey-overlay-title="录屏 Screen record" { spawn "shorin-screenrec-menu";}
+    // Mod+F5 hotkey-overlay-title="快速存档 Quick save" {spawn "quicksave";}
+    // Mod+F8 hotkey-overlay-title="快速读档 Quick load" {spawn "quickload";}
 
-    // 临时开一个浮动终端
+    // -------- Noctalia 特有绑定 --------
+    Mod+Shift+Slash hotkey-overlay-title="快捷键" { spawn-sh "~/.config/niri/scripts/niri-binds.sh"; } 
+    Mod+Space hotkey-overlay-title="应用启动器" { spawn "noctalia-shell" "ipc" "call" "launcher" "toggle"; }
+    Mod+Alt+L hotkey-overlay-title="锁屏" { spawn "noctalia-shell" "ipc" "call" "lockScreen" "lock"; }
+    Mod+Comma hotkey-overlay-title="设置" { spawn "noctalia-shell" "ipc" "call" "settings" "toggle"; }
+    Mod+S hotkey-overlay-title="控制面板" { spawn "noctalia-shell" "ipc" "call" "controlCenter" "toggle"; }
+
+
+    // -------- 启动应用 --------
+    Mod+Return hotkey-overlay-title="终端 Ghostty" { spawn "ghostty"; }
+    Mod+B hotkey-overlay-title="浏览器 Edge" { spawn "microsoft-edge"; }
+    Mod+Shift+F hotkey-overlay-title="文件管理器 Dolphin" { spawn-sh "dolphin --new-window"; }
     Mod+Slash hotkey-overlay-title="临时终端 Quick Terminal" {spawn "ghostty";}
     Mod+T hotkey-overlay-title="共享终端 Terminal" { spawn "ghostty"; }
-    // 浏览器-Edge：Mod + B
-    Mod+B hotkey-overlay-title="浏览器 Edge" { spawn "microsoft-edge"; }
-    // 终端-Ghostty：Mod + Enter
-    Mod+return hotkey-overlay-title="终端 Ghostty" { spawn "ghostty"; }
-    // 文件管理器-Dolphin：Mod + Shift + F
-    Mod+Shift+F hotkey-overlay-title="文件管理器 Dolphin" { spawn-sh "dolphin --new-window"; }
+
+
+
+    
     Mod+P hotkey-overlay-title="提取窗口信息 Pick information" { spawn-sh "~/.config/niri/scripts/niri-pick.sh focus"; }
-    Mod+Space hotkey-overlay-title="程序菜单 Applauncher" { spawn-sh "dms ipc call spotlight toggle || fuzzel"; }
     // dms 壁纸选择
     Mod+Alt+W hotkey-overlay-title="壁纸切换 Wallpaper" { spawn "dms" "ipc" "call" "dankdash" "wallpaper";}
     // 随机下载壁纸
@@ -83,8 +90,8 @@ binds {
     Mod+Ctrl+A  { move-column-left; }
     Mod+Ctrl+D { move-column-right; }
     // mod+S/W 上下切换窗口
-    Mod+S { move-window-down; }
-    Mod+W { move-window-up; }
+    // Mod+S { move-window-down; }
+    // Mod+W { move-window-up; }
 
     // 切换到第一个colume
     Mod+Home { focus-column-first; }
@@ -159,7 +166,7 @@ binds {
     Mod+D hotkey-overlay-title="向右移动窗口 Move window to right between columes" { consume-or-expel-window-right; }
 
     // mod+逗号/句号 把窗口合并或者踢出当前的colume
-    Mod+Comma  { consume-window-into-column; }
+    
     Mod+Period { expel-window-from-column; }
     // mod+shift+A/D 同效果
     Mod+Shift+A  { consume-window-into-column; }
@@ -230,8 +237,7 @@ binds {
     Mod+Alt+V hotkey-overlay-title="剪贴板 Clipboard" {spawn "dms" "ipc" "call" "clipboard" "toggle";}
     // 记事本
     Mod+Shift+N hotkey-overlay-title="记事本 Notepad" { spawn "dms" "ipc" "call" "notepad" "toggle"; }
-    // 锁屏
-    Mod+Alt+L hotkey-overlay-title="锁屏" { spawn "dms" "ipc" "call" "lock" "lock"; }
+    
     // 锁屏、关闭显示器、休眠
     Mod+Alt+P hotkey-overlay-title="挂起 Suspend" { spawn-sh "niri msg action power-off-monitors && dms ipc call lock lock && systemctl suspend";}
     // Ctrl+Alt+Del 呼出任务管理器

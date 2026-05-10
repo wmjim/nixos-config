@@ -13,7 +13,8 @@
 
     # GTK/Qt 主题
     gtk4                      # GTK4 运行时
-    fluent-gtk-theme          # 主题
+    orchis-theme              # 主题1
+    # fluent-gtk-theme          # 主题
     gnome-themes-extra        # 主题引擎
     whitesur-icon-theme       # 图标主题
     bibata-cursors            # 光标主题

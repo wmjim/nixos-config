@@ -81,6 +81,8 @@ input {
 }
 // 自动启动
 // spawn-at-startup "dms" "run" // 由 systemd 管理启动
+// noctalia shell
+spawn-at-startup "noctalia-shell"
 // 录屏修复
 spawn-sh-at-startup "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=niri & /usr/lib/xdg-desktop-portal-gnome"
 // GNOME tracker修复
@@ -104,8 +106,8 @@ hotkey-overlay {
      skip-at-startup
 }
 
-// 允许应用绘制 CSD 标题栏（保持现代外观）
-// prefer-no-csd
+// 隐藏标题栏
+prefer-no-csd
 
 // 默认窗口规则
 window-rule {
@@ -151,6 +153,11 @@ window-rule {
 window-rule {
     match app-id=r#"firefox$"# title="^Picture-in-Picture$"
     match app-id="zoom"
+    open-floating true
+}
+// 快捷键查看器浮窗
+window-rule {
+    match app-id="com.mitchellh.ghostty" title="快捷键"
     open-floating true
 }
 // Open dms windows as floating by default

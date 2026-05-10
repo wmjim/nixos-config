@@ -17,6 +17,11 @@
         inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    noctalia = {
+      url = "github:noctalia-dev/noctalia-shell";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # nix-darwin (macOS)
     nix-darwin = {
       url = "github:LnL7/nix-darwin";
@@ -24,7 +29,7 @@
     };
   };
 
-  outputs = { self, nixpkgs, dms-plugin-registry, nixpkgs-darwin, home-manager, nix-darwin, ... }@inputs:
+  outputs = { self, nixpkgs, dms-plugin-registry, noctalia, nixpkgs-darwin, home-manager, nix-darwin, ... }@inputs:
     let
       # 使用 nixpkgs lib，不扩展以避免兼容性问题
       lib = nixpkgs.lib;
@@ -59,6 +64,7 @@
             {
               home-manager.useGlobalPkgs = false;
               home-manager.useUserPackages = true;
+              home-manager.backupFileExtension = "hm-bak";
               home-manager.extraSpecialArgs = { inherit inputs; };
               home-manager.users.mengw = import ./modules/home;
 
@@ -88,6 +94,7 @@
             {
               home-manager.useGlobalPkgs = false;
               home-manager.useUserPackages = true;
+              home-manager.backupFileExtension = "hm-bak";
               home-manager.extraSpecialArgs = { inherit inputs; };
               home-manager.users.mengw = import ./modules/home;
 

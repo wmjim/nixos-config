@@ -1,62 +1,79 @@
 #!/usr/bin/env bash
+# niri 快捷键查看器 — 解析 KDL 配置，ghostty + fzf 交互展示
+NIRI_DIR="${NIRI_CONFIG_DIR:-$HOME/.config/niri}"
 
-NIRI_DIR="$HOME/.config/niri"
+parse_kdl() {
+  grep -Rhv '^[[:space:]]*//' "$NIRI_DIR" --include="*.kdl" 2>/dev/null \
+  | awk '
+    function trim(s) { gsub(/^[ \t]+|[ \t]+$/, "", s); return s }
 
-# === 界面尺寸设置 (在这里微调，下方的所有终端会自动应用) ===
-MENU_WIDTH=90
-MENU_HEIGHT=20
+    /^[[:space:]]*$/    { next }
+    /^[[:space:]]*binds[[:space:]]*\{/ { in_binds = 1; depth += cnt_braces($0); next }
+    !in_binds           { next }
 
-# 检查目录
-if [[ ! -d "$NIRI_DIR" ]]; then
-    echo "Error: 找不到配置目录 $NIRI_DIR"
-    exit 1
+    {
+      depth += cnt_braces($0)
+      if (depth <= 0) { in_binds = 0; depth = 0; next }
+
+      desc = ""
+      if (match($0, /hotkey-overlay-title="([^"]+)"/, m)) desc = m[1]
+      if (desc == "null") desc = ""
+
+      action = ""
+      if (match($0, /\{([^}]+)\}/, m)) {
+        action = m[1]
+        gsub(/^[[:space:];]+|[[:space:];]+$/, "", action)
+        gsub(/[[:space:]]+/, " ", action)
+        sub(/^spawn-sh?[[:space:]]+"?/, "", action)
+        gsub(/"/, "", action)
+        sub(/^niri msg action /, "", action)
+        sub(/^dms ipc call /, "dms: ", action)
+        sub(/^noctalia-shell ipc call /, "noctalia: ", action)
+      }
+
+      key = $0
+      sub(/[[:space:]]*\{.*/, "", key)
+      gsub(/hotkey-overlay-title="[^"]*"/, "", key)
+      gsub(/cooldown-ms=[0-9]+/, "", key)
+      gsub(/allow-when-locked=true/, "", key)
+      gsub(/allow-inhibiting=false/, "", key)
+      gsub(/repeat=false/, "", key)
+      key = trim(key)
+      if (key == "") next
+
+      text = (desc != "" ? desc : (action != "" ? action : ""))
+      if (text != "")
+        printf "%s │ %s\n", key, text
+      else
+        printf "%s\n", key
+    }
+
+    function cnt_braces(s) { return gsub(/\{/, "&", s) - gsub(/\}/, "&", s) }
+  ' | sort -u
+}
+
+items=$(parse_kdl)
+
+if [[ -z $items ]]; then
+  echo "未找到快捷键" >&2
+  exit 1
 fi
 
-# 提取并使用 column 对齐
-MENU_ITEMS=$(grep -Rh 'hotkey-overlay-title=' "$NIRI_DIR" --include="*.kdl" | \
-             grep -v '^[ \t]*//' | \
-             sed -n -E 's/^[ \t]*(.*)[ \t]+hotkey-overlay-title="([^"]+)".*/\1|\2/p' | \
-             sed -E 's/[ \t]*\|/\|/' | \
-             column -t -s '|')
-
-if [[ -z "$MENU_ITEMS" ]]; then
-    echo "没有找到有效的快捷键配置。"
-    exit 1
+if [[ ${1:-} == "--print" || ${1:-} == "-p" ]]; then
+  echo "$items" | column -t -s '│' -o '│'
 fi
 
-# Fzf 核心命令
-FZF_CMD="echo \"$MENU_ITEMS\" | fzf --reverse --prompt='󰌌 快捷键: ' --info=hidden --border=none > /dev/null"
+# 用 column 对齐，pipe 到 fzf 搜索
+FZF_CMD='echo "$ITEMS" | column -t -s "│" -o "│" | fzf --reverse --prompt="󰌌 快捷键: " --info=hidden --border=none --exact --preview-window=hidden'
 
-# 动态检测终端并使用对应的参数启动
 if command -v ghostty >/dev/null 2>&1; then
-    ghostty --class="niri-hotkey-menu" --title="快捷键菜单" \
-            -e bash -c "$FZF_CMD"
-
+  ITEMS="$items" ghostty --title="快捷键" -e bash -c "$FZF_CMD"
 elif command -v kitty >/dev/null 2>&1; then
-    kitty --class "niri-hotkey-menu" --title "快捷键菜单" \
-          -o remember_window_size=no -o initial_window_width=${MENU_WIDTH}c -o initial_window_height=${MENU_HEIGHT}c \
-          bash -c "$FZF_CMD"
-
+  ITEMS="$items" kitty --title "快捷键" \
+    -o "initial_window_width=90c" -o "initial_window_height=24c" bash -c "$FZF_CMD"
 elif command -v foot >/dev/null 2>&1; then
-    foot --app-id "niri-hotkey-menu" --title "快捷键菜单" \
-         --window-size-chars=${MENU_WIDTH}x${MENU_HEIGHT} \
-         bash -c "$FZF_CMD"
-
-elif command -v alacritty >/dev/null 2>&1; then
-    alacritty --class "niri-hotkey-menu" --title "快捷键菜单" \
-              -o window.dimensions.columns=${MENU_WIDTH} -o window.dimensions.lines=${MENU_HEIGHT} \
-              -e bash -c "$FZF_CMD"
-
-elif command -v wezterm >/dev/null 2>&1; then
-    wezterm start --class "niri-hotkey-menu" -- bash -c "$FZF_CMD"
-
-elif [[ -n "$TERMINAL" ]]; then
-    $TERMINAL -e bash -c "$FZF_CMD"
-
+  ITEMS="$items" foot --title "快捷键" \
+    --window-size-chars=90x24 bash -c "$FZF_CMD"
 else
-    echo "Error: 未检测到支持的终端模拟器。"
-    if command -v fuzzel >/dev/null 2>&1; then
-         # Fuzzel 降级方案也会自动读取顶层变量
-         echo "$MENU_ITEMS" | fuzzel --dmenu -i -p "󰌌 快捷键: " -w ${MENU_WIDTH} > /dev/null
-    fi
+  echo "$items" | column -t -s '│' -o '│' | fzf --reverse --prompt="󰌌 快捷键: " --info=hidden --border=none --preview-window=hidden
 fi
