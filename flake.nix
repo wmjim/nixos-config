@@ -6,6 +6,7 @@
     # nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     nixpkgs-darwin.url = "github:nixos/nixpkgs/nixpkgs-25.11-darwin";
+    nur.url = "github:nix-community/NUR";
 
     home-manager = {
       url = "github:nix-community/home-manager/release-25.11";
@@ -29,7 +30,7 @@
     };
   };
 
-  outputs = { self, nixpkgs, dms-plugin-registry, noctalia, nixpkgs-darwin, home-manager, nix-darwin, ... }@inputs:
+  outputs = { self, nixpkgs, nur, dms-plugin-registry, noctalia, nixpkgs-darwin, home-manager, nix-darwin, ... }@inputs:
     let
       # 使用 nixpkgs lib，不扩展以避免兼容性问题
       lib = nixpkgs.lib;
@@ -55,7 +56,6 @@
             ./hosts/_common/nixos/base.nix
             ./hosts/_common/nixos/users.nix
             ./hosts/_common/nixos/locale.nix
-
             # 主机特定配置
             ./hosts/laptop
 

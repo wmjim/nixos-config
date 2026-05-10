@@ -62,12 +62,6 @@
     force = true;
   };
 
-  xdg.configFile."niri/scripts/niri-force-kill-window.sh" = {
-    source = ./config/scripts/niri-force-kill-window.sh;
-    executable = true;
-    force = true;
-  };
-
   xdg.configFile."niri/scripts/niri-pick.sh" = {
     source = ./config/scripts/niri-pick.sh;
     executable = true;

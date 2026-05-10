@@ -1,5 +1,5 @@
 # NixOS 基础配置（所有 NixOS 主机共享）
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, inputs, ... }:
 
 {
   # Boot
@@ -101,6 +101,9 @@
 
   # 允许非自由软件
   nixpkgs.config.allowUnfree = true;
+
+  # NUR overlay
+  nixpkgs.overlays = [ inputs.nur.overlays.default ];
 
   # SSH
   services.openssh = {

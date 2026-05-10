@@ -13,36 +13,30 @@ binds {
     // Mod+F5 hotkey-overlay-title="快速存档 Quick save" {spawn "quicksave";}
     // Mod+F8 hotkey-overlay-title="快速读档 Quick load" {spawn "quickload";}
 
-    // -------- Noctalia 特有绑定 --------
-    Mod+Shift+Slash hotkey-overlay-title="快捷键" { spawn-sh "~/.config/niri/scripts/niri-binds.sh"; } 
-    Mod+Space hotkey-overlay-title="应用启动器" { spawn "noctalia-shell" "ipc" "call" "launcher" "toggle"; }
-    Mod+Alt+L hotkey-overlay-title="锁屏" { spawn "noctalia-shell" "ipc" "call" "lockScreen" "lock"; }
-    Mod+Comma hotkey-overlay-title="设置" { spawn "noctalia-shell" "ipc" "call" "settings" "toggle"; }
-    Mod+S hotkey-overlay-title="控制面板" { spawn "noctalia-shell" "ipc" "call" "controlCenter" "toggle"; }
+    // === Noctalia 特有绑定 ===
+    Mod+Slash   hotkey-overlay-title="快捷键"       { spawn-sh "~/.config/niri/scripts/niri-binds.sh"; } 
+    Mod+Space   hotkey-overlay-title="应用启动器"   { spawn "noctalia-shell" "ipc" "call" "launcher" "toggle"; }
+    Mod+Ctrl+L  hotkey-overlay-title="锁屏"         { spawn "noctalia-shell" "ipc" "call" "lockScreen" "lock"; }
+    Mod+Comma   hotkey-overlay-title="设置"         { spawn "noctalia-shell" "ipc" "call" "settings" "toggle"; }
+    Mod+S       hotkey-overlay-title="控制面板"     { spawn "noctalia-shell" "ipc" "call" "controlCenter" "toggle"; }
+    Mod+Alt+W   hotkey-overlay-title="壁纸切换"     { spawn "noctalia-shell" "ipc" "call" "wallpaper" "toggle"; }
 
 
-    // -------- 启动应用 --------
-    Mod+Return hotkey-overlay-title="终端 Ghostty" { spawn "ghostty"; }
-    Mod+B hotkey-overlay-title="浏览器 Edge" { spawn "microsoft-edge"; }
-    Mod+Shift+F hotkey-overlay-title="文件管理器 Dolphin" { spawn-sh "dolphin --new-window"; }
-    Mod+Slash hotkey-overlay-title="临时终端 Quick Terminal" {spawn "ghostty";}
-    Mod+T hotkey-overlay-title="共享终端 Terminal" { spawn "ghostty"; }
+    // === 启动应用 ===
+    Mod+Return  hotkey-overlay-title="终端"         { spawn "ghostty"; }
+    Mod+Shift+B hotkey-overlay-title="浏览器"       { spawn "microsoft-edge"; }
+    Mod+Shift+F hotkey-overlay-title="文件管理器"   { spawn-sh "dolphin --new-window"; }
 
 
 
-    
+
     Mod+P hotkey-overlay-title="提取窗口信息 Pick information" { spawn-sh "~/.config/niri/scripts/niri-pick.sh focus"; }
     // dms 壁纸选择
-    Mod+Alt+W hotkey-overlay-title="壁纸切换 Wallpaper" { spawn "dms" "ipc" "call" "dankdash" "wallpaper";}
     // 随机下载壁纸
     Mod+Shift+F10 hotkey-overlay-title="随机下载壁纸 Random wallpaper" { spawn "~/.local/bin/random-anime-wallpaper-dms";}
 
-    Mod+O hotkey-overlay-title="切换总览界面 toggle overview" repeat=false { toggle-overview; }
-    Mod+G hotkey-overlay-title="切换总览界面 toggle overview" repeat=false { toggle-overview; }
-    // 关闭聚焦窗口
-    Mod+Q hotkey-overlay-title="关闭聚焦窗口 Close focus window" repeat=false { close-window; }
-    Alt+F4  hotkey-overlay-title="强制杀死窗口 Force kill -9 window" repeat=false { spawn "~/.config/niri/scripts/niri-force-kill-window"; }
-    Alt+Shift+F4  hotkey-overlay-title="强制杀死窗口以及关联进程 Force kill -9 a window tree" repeat=false { spawn "~/.config/niri/scripts/niri-force-kill-window" "-f"; }
+    
+    
 
     // niri-sidebar扩展相关
     // 切换 移动聚焦窗口至侧边栏 （建议配合切换浮动聚焦的快捷键使用，我设置的是super+n）
@@ -62,30 +56,17 @@ binds {
     //Mod+Shift+W hotkey-overlay-title="快速聚焦到微信 Quick focus Wechat" {spawn "nirius" "focus" "--app-id" "wechat" ;}
 
 
-    // mod+鼠标中键 关闭窗口
-    Mod+MouseMiddle  { close-window; }
 
-    // 切换聚焦
-    // super+方向键
-    Mod+Left hotkey-overlay-title=null { focus-column-left; }
-    Mod+Down  { focus-window-down; }
-    Mod+Up    { focus-window-up; }
-    Mod+Right { focus-column-right; }
-    // super+vim key
-    Mod+H     { focus-column-left; }
-    Mod+J     { focus-window-down; }
-    Mod+K     { focus-window-up; }
-    Mod+L     { focus-column-right; }
 
     // 移动colume（列）
     // super+ctrl+方向键
-    Mod+Ctrl+Left hotkey-overlay-title=null { move-column-left; }
-    Mod+Ctrl+Right hotkey-overlay-title=null { move-column-right; }
+    // Mod+Ctrl+Left hotkey-overlay-title=null { move-column-left; }
+    // Mod+Ctrl+Right hotkey-overlay-title=null { move-column-right; }
     // super+ctrl+vimkey
-    Mod+Ctrl+H     { move-column-left; }
-    Mod+Ctrl+J     { move-window-down; }
-    Mod+Ctrl+K     { move-window-up; }
-    Mod+Ctrl+L     { move-column-right; }
+    // Mod+Ctrl+H     { move-column-left; }
+    // Mod+Ctrl+J     { move-window-down; }
+    // Mod+Ctrl+K     { move-window-up; }
+    // Mod+Ctrl+L     { move-column-right; }
     // super+ctrl+a/d 向左/右移动列
     Mod+Ctrl+A  { move-column-left; }
     Mod+Ctrl+D { move-column-right; }
@@ -158,12 +139,7 @@ binds {
     Mod+Ctrl+WheelScrollDown { move-column-right; }
     Mod+Ctrl+WheelScrollUp   { move-column-left; }
 
-    // mod+左右方括号 移动窗口（不是移动colume，是允许移动到另一个colume的窗口移动）
-    Mod+BracketLeft  { consume-or-expel-window-left; }
-    Mod+BracketRight { consume-or-expel-window-right; }
-    // mod+A/D 同效果
-    Mod+A hotkey-overlay-title="向左移动窗口 Move window to left between columes" { consume-or-expel-window-left; }
-    Mod+D hotkey-overlay-title="向右移动窗口 Move window to right between columes" { consume-or-expel-window-right; }
+
 
     // mod+逗号/句号 把窗口合并或者踢出当前的colume
     
@@ -179,21 +155,15 @@ binds {
     Mod+MouseForward { focus-window-up; }
     Mod+MouseBack    { focus-window-down; }
 
-    // 按照预设切换窗口宽度
-    Mod+R  hotkey-overlay-title="按预设切换宽度 Switch width " { switch-preset-column-width; }
-    // 按照预设切换窗口高度
-    Mod+Shift+R  { switch-preset-window-height; }
+    
+    
     // 重置窗口高度
-    Mod+Ctrl+R { reset-window-height; }
+    
 
-    Mod+F  hotkey-overlay-title="最大化 maximize" { maximize-column; }
-    Mod+Alt+F hotkey-overlay-title="全屏 fullscreen"  { fullscreen-window; }
+    
+    
 
-    // 增加窗口宽度占满空闲空间
-    Mod+Ctrl+F { expand-column-to-available-width; }
-    // 居中当前聚焦的colume
-    Mod+C { center-column; }
-    Mod+Ctrl+C { center-visible-columns; }
+    
 
     // mod+加减号调整窗口宽度
     Mod+Minus { set-column-width "-5%"; }
@@ -203,13 +173,12 @@ binds {
     Mod+Shift+Minus { set-window-height "-5%"; }
     Mod+Shift+Equal { set-window-height "+5%"; }
 
-    // 切换浮动模式
-    Mod+V   hotkey-overlay-title="切换浮动 Toggle floating"    { toggle-window-floating; }
+    
     // 在浮动模式和非浮动模式之间切换聚焦
-    Mod+Shift+V hotkey-overlay-title=null { switch-focus-between-floating-and-tiling; }
-    Mod+N hotkey-overlay-title="切换浮动聚焦 Change focus to floating" { switch-focus-between-floating-and-tiling; }
-    Alt+grave hotkey-overlay-title=null { switch-focus-between-floating-and-tiling; }
-    Mod+Alt+N hotkey-overlay-title=null { switch-focus-between-floating-and-tiling; }
+    // Mod+Shift+V hotkey-overlay-title=null { switch-focus-between-floating-and-tiling; }
+    // Mod+N hotkey-overlay-title="切换浮动聚焦 Change focus to floating" { switch-focus-between-floating-and-tiling; }
+    // Alt+grave hotkey-overlay-title=null { switch-focus-between-floating-and-tiling; }
+    // Mod+Alt+N hotkey-overlay-title=null { switch-focus-between-floating-and-tiling; }
 
     // 截图相关
     Mod+Alt+A  hotkey-overlay-title="选取区域截图 Select screenshot"  {spawn-sh "niri msg action screenshot --show-pointer false && pkill -f -USR1 screenshot-sound.sh";}
@@ -261,6 +230,21 @@ binds {
     XF86MonBrightnessUp allow-when-locked=true { spawn "dms" "ipc" "call" "brightness" "increment" "5" ""; }
     XF86MonBrightnessDown allow-when-locked=true { spawn "dms" "ipc" "call" "brightness" "decrement" "5" ""; }
 
+
+
+
+
+
+
+
+
+
+
+
+    // =========================================================
+    // 第三部分：工作区
+    // =========================================================
+
     // === 工作区导航补充 (无冲突项) ===
     Mod+Page_Down          { focus-workspace-down; }
     Mod+Page_Up            { focus-workspace-up; }
@@ -270,34 +254,72 @@ binds {
     Mod+Ctrl+U             { move-column-to-workspace-down; }
     Mod+Ctrl+I             { move-column-to-workspace-up; }
 
+    // 重命名工作区
+    Ctrl+Shift+R hotkey-overlay-title="Rename Workspace" { spawn "dms" "ipc" "call" "workspace-rename" "open"; }
+
+    // === 切换工作区 ===
+    Mod+1   hotkey-overlay-title="切换工作区1"      { focus-workspace 1; }
+    Mod+2   hotkey-overlay-title="切换工作区2"      { focus-workspace 2; }
+    Mod+3   hotkey-overlay-title="切换工作区3"      { focus-workspace 3; }
+    Mod+4   hotkey-overlay-title="切换工作区4"      { focus-workspace 4; }
+    Mod+5   hotkey-overlay-title="切换工作区5"      { focus-workspace 5; }
+    Mod+6   hotkey-overlay-title="切换工作区6"      { focus-workspace 6; }
+    Mod+7   hotkey-overlay-title="切换工作区7"      { focus-workspace 7; }
+    Mod+8   hotkey-overlay-title="切换工作区8"      { focus-workspace 8; }
+    Mod+9   hotkey-overlay-title="切换工作区9"      { focus-workspace 9; }
+
+    // === 移动到指定工作区 ===
+    Mod+Ctrl+1   hotkey-overlay-title="移动至工作区1"   { move-column-to-workspace 1; }
+    Mod+Ctrl+2   hotkey-overlay-title="移动至工作区2"   { move-column-to-workspace 2; }
+    Mod+Ctrl+3   hotkey-overlay-title="移动至工作区3"   { move-column-to-workspace 3; }
+    Mod+Ctrl+4   hotkey-overlay-title="移动至工作区4"   { move-column-to-workspace 4; }
+    Mod+Ctrl+5   hotkey-overlay-title="移动至工作区5"   { move-column-to-workspace 5; }
+    Mod+Ctrl+6   hotkey-overlay-title="移动至工作区6"   { move-column-to-workspace 6; }
+    Mod+Ctrl+7   hotkey-overlay-title="移动至工作区7"   { move-column-to-workspace 7; }
+    Mod+Ctrl+8   hotkey-overlay-title="移动至工作区8"   { move-column-to-workspace 8; }
+    Mod+Ctrl+9   hotkey-overlay-title="移动至工作区9"   { move-column-to-workspace 9; }
+
+    // === 工作区上下切换 ===
     Mod+Shift+Page_Down    { move-workspace-down; }
     Mod+Shift+Page_Up      { move-workspace-up; }
     Mod+Shift+U            { move-workspace-down; }
     Mod+Shift+I            { move-workspace-up; }
 
-    // 重命名工作区
-    Ctrl+Shift+R hotkey-overlay-title="Rename Workspace" { spawn "dms" "ipc" "call" "workspace-rename" "open"; }
 
-    // === 数字工作区 (1-9) ===
-    Mod+1 { focus-workspace 1; }
-    Mod+2 { focus-workspace 2; }
-    Mod+3 { focus-workspace 3; }
-    Mod+4 { focus-workspace 4; }
-    Mod+5 { focus-workspace 5; }
-    Mod+6 { focus-workspace 6; }
-    Mod+7 { focus-workspace 7; }
-    Mod+8 { focus-workspace 8; }
-    Mod+9 { focus-workspace 9; }
 
-    Mod+Ctrl+1 { move-column-to-workspace 1; }
-    Mod+Ctrl+2 { move-column-to-workspace 2; }
-    Mod+Ctrl+3 { move-column-to-workspace 3; }
-    Mod+Ctrl+4 { move-column-to-workspace 4; }
-    Mod+Ctrl+5 { move-column-to-workspace 5; }
-    Mod+Ctrl+6 { move-column-to-workspace 6; }
-    Mod+Ctrl+7 { move-column-to-workspace 7; }
-    Mod+Ctrl+8 { move-column-to-workspace 8; }
-    Mod+Ctrl+9 { move-column-to-workspace 9; }
+    // =========================================================
+    // 第四部分：窗口管理
+    // =========================================================
+
+    // -------- 窗口管理 --------
+    // repeat=false 只触发一次，直到你松手后再重新按
+    Mod+Q       hotkey-overlay-title="关闭当前窗口" repeat=false        { close-window; }
+    Mod+F       hotkey-overlay-title="窗口最大化"                       { maximize-column; }
+    Mod+Ctrl+F  hotkey-overlay-title="全屏"                             { fullscreen-window; }
+    Mod+T       hotkey-overlay-title="浮动/平铺"                        { toggle-window-floating; }
+    Mod+Ctrl+T  hotkey-overlay-title="切换浮动/平铺焦点" repeat=false   { switch-focus-between-floating-and-tiling; }
+    Mod+C       hotkey-overlay-title="居中列"                           { center-column; }
+    // Mod+Ctrl+C  hotkey-overlay-title="居中列"                           { center-visible-columns; }
+    Mod+W       hotkey-overlay-title="按预设切换列宽"                   { switch-preset-column-width; }
+    Mod+H       hotkey-overlay-title="按预设切换列高"                   { switch-preset-window-height; }
+    // Mod+R     hotkey-overlay-title="重置窗口宽度"                     { reset-window-width; }
+    // Mod+R     hotkey-overlay-title="重置窗口高度"                     { reset-window-height; }
+    Mod+O       hotkey-overlay-title="窗口总览"                         { toggle-overview; }
+    Mod+BracketLeft     hotkey-overlay-title="窗口靠左" repeat=false    { consume-or-expel-window-left; }
+    Mod+BracketRight    hotkey-overlay-title="窗口靠右" repeat=false    { consume-or-expel-window-right; } 
+
+    // 切换窗口聚焦：super + ↑↓←→
+    Mod+Up      hotkey-overlay-title="窗口焦点上移"   { focus-window-up; }
+    Mod+Down    hotkey-overlay-title="窗口焦点下移"   { focus-window-down; }
+    Mod+Left    hotkey-overlay-title="窗口焦点左移"   { focus-column-left; }
+    Mod+Right   hotkey-overlay-title="窗口焦点右移"   { focus-column-right; }
+
+
+
+
+
+
+
 
     // === 其他备用快捷键 ===
     // 备用截图键

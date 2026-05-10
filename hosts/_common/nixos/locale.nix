@@ -28,16 +28,16 @@
     maple-mono.NormalNL-NF-CN-unhinted
     maple-mono.NormalNL-NF-unhinted
     # 中文无衬线/屏幕阅读字体
-    lxgw-wenkai-screen
-    sarasa-gothic
+
     # 英文衬线字体
     source-serif-pro          
     noto-fonts-color-emoji
+    pkgs.nur.repos.guanran928.harmonyos-sans
   ];
 
   fonts.fontconfig.defaultFonts = {
-    serif = [ "Source Serif Pro" "LXGW WenKai Screen"];
-    sansSerif = [ "Sarasa UI SC" ];
+    serif = [ "Source Serif Pro"];
+    sansSerif = [ "HarmonyOS Sans SC" ];
     monospace = [ "Maple Mono Normal NL NF CN" ];
     emoji = [ "Noto Color Emoji" ];
   };
