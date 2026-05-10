@@ -13,10 +13,9 @@
   # 用户 rime 配置
   home.file.".local/share/fcitx5/rime/default.custom.yaml".text = ''
     patch:
+      # 引入雾凇拼音的默认推荐配置
       __include: rime_ice_suggestion:/
       __patch:
-        menu/page_size: 5
-      schema_list:
-        - schema: rime_ice
+        menu/page_size: 7   #候选词个数
   '';
 }
