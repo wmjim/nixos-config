@@ -42,6 +42,9 @@
     emoji = [ "Noto Color Emoji" ];
   };
 
+  # 字体渲染优化（接近 Ubuntu 的平滑效果）
+  fonts.fontconfig.subpixel.rgba = "rgb";
   fonts.fontconfig.subpixel.lcdfilter = "default";
+  fonts.fontconfig.hinting.style = "slight";
   fonts.fontconfig.hinting.autohint = true;
 }

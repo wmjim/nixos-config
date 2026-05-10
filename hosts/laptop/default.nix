@@ -16,6 +16,22 @@
   virtualisation.libvirtd.enable = true;
   boot.kernelParams = [ "console=ttyS0" ];
 
+  # 修复 libvirtd TPM2 凭证解密失败 (TPM "No locks available")
+  systemd.services.libvirtd.serviceConfig.LoadCredentialEncrypted = lib.mkForce [];
+  systemd.services.libvirtd.serviceConfig.LoadCredential = [
+    "secrets-encryption-key:/var/lib/libvirt/secrets/secrets-encryption-key"
+  ];
+  system.activationScripts.libvirtSecretsKey = {
+    text = ''
+      if [ ! -f /var/lib/libvirt/secrets/secrets-encryption-key ]; then
+        mkdir -p /var/lib/libvirt/secrets
+        ${pkgs.openssl}/bin/openssl rand -base64 32 > /var/lib/libvirt/secrets/secrets-encryption-key
+        chmod 600 /var/lib/libvirt/secrets/secrets-encryption-key
+      fi
+    '';
+    deps = [];
+  };
+
   # ==========================================
   # 为 nix-daemon 设置代理 (核心！)
   # ==========================================

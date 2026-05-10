@@ -104,8 +104,8 @@ hotkey-overlay {
      skip-at-startup
 }
 
-// 隐藏窗口标题栏
-prefer-no-csd
+// 允许应用绘制 CSD 标题栏（保持现代外观）
+// prefer-no-csd
 
 // 默认窗口规则
 window-rule {

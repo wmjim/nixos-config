@@ -55,12 +55,23 @@
 
   # 硬件加速
   hardware.graphics.enable = true;
+  # WiFi 管理
+  networking.networkmanager.enable = true;
+  # 蓝牙支持
+  hardware.bluetooth.enable = true;
+  # 电源配置
+  services.power-profiles-daemon.enable = true;
+  # 电池功能
+  services.upower.enable = true;
 
-  # NixOS 配置中加入:
+  # NVIDIA 驱动 — MX150 (Pascal) 需使用 580.x Legacy 分支
   hardware.nvidia = {
-    open = false;
+    open = false;                   # MX150 不支持开源驱动，使用闭源驱动
     modesetting.enable = true;
     powerManagement.enable = true;
+    prime.offload.enable = false;   # 保持 dGPU 关闭以省电
+    # 锁定 580.x Legacy 驱动
+    package = config.boot.kernelPackages.nvidiaPackages.legacy_580;
   };
   services.xserver.videoDrivers = [ "nvidia" ];
 

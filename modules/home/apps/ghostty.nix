@@ -11,7 +11,7 @@
             
       # --- 字体 ---
       font-family = "Maple Mono Normal NL NF CN";
-      font-size = 14;
+      font-size = 12;
       font-thicken = true;    # 加粗
       adjust-cell-height = 2; # 行高
 

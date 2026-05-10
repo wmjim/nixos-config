@@ -2,6 +2,8 @@
 { config, pkgs, ... }:
 
 {
+  imports = [ ./apps.nix ];
+
   # 显示管理器
   services.displayManager.gdm.enable = true;
   services.desktopManager.gnome.enable = true;
@@ -80,19 +82,12 @@
   environment.systemPackages = with pkgs; [
     gtk4
     whitesur-gtk-theme
-    whitesur-icon-theme
-    bibata-cursors
     gnome-text-editor
     gnome-calculator
     gnome-screenshot
     nautilus                  # 文件管理器
     gnome-tweaks
     gnome-shell-extensions
-    microsoft-edge
-    zed-editor
-    vscode
-    obsidian
-    thunderbird
   ] ++ (with pkgs.gnomeExtensions; [
     user-themes
     hide-top-bar
