@@ -26,32 +26,6 @@
     wget
   ];
 
-  # macOS 系统设置
-  system.defaults = {
-    # Finder
-    finder.AppleShowAllExtensions = true;
-    finder.FXEnableExtensionChangeWarning = false;
-    finder.ShowPathbar = true;
-    finder.ShowStatusBar = true;
-
-    # Dock
-    dock.autohide = true;
-    dock.mru-spaces = false;
-    dock.show-recents = false;
-
-    # 键盘
-    NSGlobalDomain.AppleKeyboardUIMode = 3;
-    NSGlobalDomain.KeyRepeat = 2;
-    NSGlobalDomain.InitialKeyRepeat = 15;
-
-    # 触控板
-    trackpad.Clicking = true;
-    trackpad.TrackpadRightClick = true;
-
-    # 登录
-    loginwindow.GuestEnabled = false;
-  };
-
   # 键盘
   system.keyboard.enableKeyMapping = true;
   system.keyboard.remapCapsLockToControl = false;

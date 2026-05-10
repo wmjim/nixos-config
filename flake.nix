@@ -47,7 +47,7 @@
     {
       # NixOS 配置
       nixosConfigurations = {
-        # 笔记本（GNOME 桌面）
+        # 笔记本（完整桌面）
         laptop = nixpkgs.lib.nixosSystem {
           system = systems.x86_64-linux;
           specialArgs = { inherit inputs lib; };
@@ -59,14 +59,19 @@
             # 主机特定配置
             ./hosts/laptop
 
-            # Home Manager
+            # Home Manager（CLI/TUI + GUI/DE）
             home-manager.nixosModules.home-manager
             {
               home-manager.useGlobalPkgs = false;
               home-manager.useUserPackages = true;
               home-manager.backupFileExtension = "hm-bak";
               home-manager.extraSpecialArgs = { inherit inputs; };
-              home-manager.users.mengw = import ./modules/home;
+              home-manager.users.mengw = {
+                imports = [
+                  ./modules/home
+                  ./modules/home/gui-de
+                ];
+              };
 
               # 允许 home-manager 使用非自由软件包
               home-manager.sharedModules = [{
@@ -89,7 +94,67 @@
             # 主机特定配置
             ./hosts/server
 
-            # Home Manager
+            # Home Manager（仅 CLI/TUI）
+            home-manager.nixosModules.home-manager
+            {
+              home-manager.useGlobalPkgs = false;
+              home-manager.useUserPackages = true;
+              home-manager.backupFileExtension = "hm-bak";
+              home-manager.extraSpecialArgs = { inherit inputs; };
+              home-manager.users.mengw = import ./modules/home;
+
+              # 允许 home-manager 使用非自由软件包
+              home-manager.sharedModules = [{
+                nixpkgs.config.allowUnfree = true;
+              }];
+            }
+          ];
+        };
+
+        # 台式机（完整桌面）
+        desktop = nixpkgs.lib.nixosSystem {
+          system = systems.x86_64-linux;
+          specialArgs = { inherit inputs lib; };
+          modules = [
+            # 基础配置
+            ./hosts/_common/nixos/base.nix
+            ./hosts/_common/nixos/users.nix
+            ./hosts/_common/nixos/locale.nix
+
+            # 主机特定配置
+            ./hosts/desktop
+
+            # Home Manager（CLI/TUI + GUI/DE）
+            home-manager.nixosModules.home-manager
+            {
+              home-manager.useGlobalPkgs = false;
+              home-manager.useUserPackages = true;
+              home-manager.backupFileExtension = "hm-bak";
+              home-manager.extraSpecialArgs = { inherit inputs; };
+              home-manager.users.mengw = {
+                imports = [
+                  ./modules/home
+                  ./modules/home/gui-de
+                ];
+              };
+
+              # 允许 home-manager 使用非自由软件包
+              home-manager.sharedModules = [{
+                nixpkgs.config.allowUnfree = true;
+              }];
+            }
+          ];
+        };
+
+        # WSL（仅 CLI/TUI）
+        wsl = nixpkgs.lib.nixosSystem {
+          system = systems.x86_64-linux;
+          specialArgs = { inherit inputs lib; };
+          modules = [
+            # 主机特定配置（WSL 有自己的 base，不走 _common/nixos）
+            ./hosts/wsl
+
+            # Home Manager（仅 CLI/TUI）
             home-manager.nixosModules.home-manager
             {
               home-manager.useGlobalPkgs = false;

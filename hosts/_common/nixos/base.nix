@@ -43,61 +43,14 @@
     trusted-users = [ "root" "mengw" ];
   };
 
-  # 无线网络：iwd
-  systemd.services.iwd = {
-    enable = true;
-    wantedBy = [ "multi-user.target" ];
-    serviceConfig = {
-      ExecStart = "${pkgs.iwd}/libexec/iwd";
-      Restart = "on-failure";
-    };
-  };
-
-  # 硬件加速
+  # 硬件加速（所有硬件 NixOS 主机通用）
   hardware.graphics.enable = true;
-  # WiFi 管理
-  networking.networkmanager.enable = true;
-  # 蓝牙支持
-  hardware.bluetooth.enable = true;
-  # 电源配置
-  services.power-profiles-daemon.enable = true;
-  # 电池功能
-  services.upower.enable = true;
-
-  # NVIDIA 驱动 — MX150 (Pascal) 需使用 580.x Legacy 分支
-  hardware.nvidia = {
-    open = false;                   # MX150 不支持开源驱动，使用闭源驱动
-    modesetting.enable = true;
-    powerManagement.enable = true;
-    prime.offload.enable = false;   # 保持 dGPU 关闭以省电
-    # 锁定 580.x Legacy 驱动
-    package = config.boot.kernelPackages.nvidiaPackages.legacy_580;
-  };
-  services.xserver.videoDrivers = [ "nvidia" ];
-
-  # 电源管理：合盖不休眠
-  services.logind.settings.Login = {
-    HandleLidSwitch = "ignore";               # 普通状态合盖
-    HandleLidSwitchDocked = "ignore";         # 外接显示器时合盖  
-    HandleLidSwitchExternalPower = "ignore";  # 外接电源时合盖
-  };
 
   # FHS 兼容
   programs.nix-ld.enable = true;
 
-  # Portal
-  xdg.portal = {
-    enable = true;
-    extraPortals = with pkgs; [ xdg-desktop-portal-gtk ];
-  };
+  # 系统总线（所有 NixOS 主机都需要）
   services.dbus.enable = true;
-
-  # 音频
-  services.pipewire = {
-    enable = true;
-    pulse.enable = true;
-    alsa.enable = true;
-  };
 
   # 允许非自由软件
   nixpkgs.config.allowUnfree = true;

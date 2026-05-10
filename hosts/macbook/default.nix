@@ -3,19 +3,9 @@
 
 {
   imports = [
-    ../../hosts/_common/darwin/homebrew.nix
+    ../../modules/darwin                     # macOS GUI 管理（系统默认值 + Homebrew casks）
   ];
 
   # 主机名
   networking.hostName = "macbook";
-
-  # macOS 特定配置
-  # 更多配置在 _common/darwin/base.nix
-
-  # 用户包
-  homebrew.casks = [
-    "visual-studio-code"
-    "obsidian"
-    "microsoft-edge"
-  ];
 }

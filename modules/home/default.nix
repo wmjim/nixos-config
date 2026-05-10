@@ -9,26 +9,7 @@
   nixpkgs.overlays = [ inputs.nur.overlays.default ];
 
   imports = [
-    ./shell
-    ./editors
-    ./dev
-    ./apps
-    ./desktop
-  ];
-
-  # 通用包（跨平台）
-  home.packages = with pkgs; [
-    fastfetch
-    unzip
-    tree
-    bat
-    file
-    net-tools
-    btop
-    yazi
-    glow
-    hugo
-    # 
-    pkgs.nur.repos.definfo.cc-switch-cli
+    ./cli-tui
+    # 需要 GUI/DE 的主机在 flake.nix 中额外导入 ./gui-de
   ];
 }
