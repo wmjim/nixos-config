@@ -11,6 +11,11 @@
   # 主机名
   networking.hostName = "wsl";
 
+  # WSL 默认登录用户（nixos-wsl 特有选项）
+  wsl.enable = true;
+  wsl.defaultUser = "mengw";
+
+
   # WSL 根文件系统（占位，安装后替换为实际设备）
   fileSystems."/" = {
     device = "/dev/disk/by-label/nixos";

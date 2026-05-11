@@ -23,6 +23,12 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # wsl
+    nixos-wsl = {
+      url = "github:nix-community/NixOS-WSL";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # nix-darwin (macOS)
     nix-darwin = {
       url = "github:LnL7/nix-darwin";
@@ -30,7 +36,7 @@
     };
   };
 
-  outputs = { self, nixpkgs, nur, dms-plugin-registry, noctalia, nixpkgs-darwin, home-manager, nix-darwin, ... }@inputs:
+  outputs = { self, nixpkgs, nur, dms-plugin-registry, noctalia, nixpkgs-darwin, home-manager, nixos-wsl, nix-darwin, ... }@inputs:
     let
       # 使用 nixpkgs lib，不扩展以避免兼容性问题
       lib = nixpkgs.lib;
@@ -156,6 +162,8 @@
           system = systems.x86_64-linux;
           specialArgs = { inherit inputs lib; };
           modules = [
+            # 通过 Flake 引入 WSL 模块
+            inputs.nixos-wsl.nixosModules.default 
             # 主机特定配置（WSL 有自己的 base，不走 _common/nixos）
             ./hosts/wsl
 
