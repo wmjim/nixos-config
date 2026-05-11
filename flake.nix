@@ -68,7 +68,9 @@
               home-manager.extraSpecialArgs = { inherit inputs; };
               home-manager.users.mengw = {
                 imports = [
+                  # 基础 CLI 环境
                   ./modules/home
+                  # 扩展 GUI+DE
                   ./modules/home/gui-de
                 ];
               };
@@ -101,6 +103,7 @@
               home-manager.useUserPackages = true;
               home-manager.backupFileExtension = "hm-bak";
               home-manager.extraSpecialArgs = { inherit inputs; };
+              # 基础 CLI 环境
               home-manager.users.mengw = import ./modules/home;
 
               # 允许 home-manager 使用非自由软件包
@@ -133,7 +136,9 @@
               home-manager.extraSpecialArgs = { inherit inputs; };
               home-manager.users.mengw = {
                 imports = [
+                  # 基础 CLI 环境
                   ./modules/home
+                  # 扩展 GUI+DE
                   ./modules/home/gui-de
                 ];
               };

@@ -3,10 +3,11 @@
 
 {
   imports = [
+    # 磁盘分区
     ./hardware.nix
+    # 桌面设置
     ../../modules/nixos/hardware               # NVIDIA + 蓝牙 + 音频 + 网络 + 笔记本电源
     ../../modules/nixos/gui-de
-    ../../modules/nixos/cli-tui
   ];
 
   # 主机名

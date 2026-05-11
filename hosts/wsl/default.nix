@@ -4,9 +4,8 @@
 {
   imports = [
     ../_common/wsl/base.nix
-    ../_common/nixos/users.nix
+    ../_common/wsl/users.nix
     ../_common/nixos/locale.nix
-    ../../modules/nixos/cli-tui
   ];
 
   # 主机名

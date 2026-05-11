@@ -45,9 +45,6 @@
   # NUR overlay
   nixpkgs.overlays = [ inputs.nur.overlays.default ];
 
-  # WSL 不需要 SSH 服务（通过 Windows 终端访问）
-  # WSL 不需要防火墙
-
   # 系统级包
   environment.systemPackages = with pkgs; [
     git

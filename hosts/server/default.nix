@@ -3,8 +3,7 @@
 
 {
   imports = [
-    ./hardware.nix
-    ../../modules/nixos/cli-tui                # dev + network + server
+    ./hardware.nix               # dev + network + server
   ];
 
   # 主机名
