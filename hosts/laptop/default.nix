@@ -5,6 +5,8 @@
   imports = [
     # 磁盘分区
     ./hardware.nix
+    # 电池和风扇
+    ./laptop.nix
     # 桌面设置
     ../../modules/nixos/hardware               # NVIDIA + 蓝牙 + 音频 + 网络 + 笔记本电源
     ../../modules/nixos/gui-de

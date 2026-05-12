@@ -10,7 +10,11 @@
 
   boot.initrd.availableKernelModules = [ "xhci_pci" "ahci" "nvme" "usb_storage" "sd_mod" ];
   boot.initrd.kernelModules = [ ];
-  boot.kernelModules = [ "kvm-intel" ];
+  # 加载 ec_sys 开启写权限
+  boot.kernelModules = [ "kvm-intel" "ec_sys" ];
+  boot.extraModprobeConfig = ''
+    options ec_sys write_support=1
+  '';
   boot.extraModulePackages = [ ];
 
   fileSystems."/" =

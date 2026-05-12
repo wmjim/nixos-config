@@ -4,6 +4,7 @@
 {
   imports = [
       ./tmux
+      ./zellij.nix
     ];
 
   home.packages = with pkgs; [

@@ -6,6 +6,5 @@
     ./bluetooth.nix
     ./audio.nix
     ./network.nix
-    ./laptop.nix
   ];
 }
