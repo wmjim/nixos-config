@@ -17,7 +17,6 @@
     jq           # JSON 处理
     yq           # YAML 处理
     sysstat      # iostat/sar 等系统监控工具（tmux 主题脚本依赖）
-    zoxide
     fzf
     bat
     eza

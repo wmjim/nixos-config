@@ -23,6 +23,12 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # niri 26.04 — 原生模糊效果支持
+    niri = {
+      url = "github:YaLTeR/niri/v26.04";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # wsl
     nixos-wsl = {
       url = "github:nix-community/NixOS-WSL";
@@ -36,7 +42,7 @@
     };
   };
 
-  outputs = { self, nixpkgs, nur, dms-plugin-registry, noctalia, nixpkgs-darwin, home-manager, nixos-wsl, nix-darwin, ... }@inputs:
+  outputs = { self, nixpkgs, nur, dms-plugin-registry, noctalia, niri, nixpkgs-darwin, home-manager, nixos-wsl, nix-darwin, ... }@inputs:
     let
       # 使用 nixpkgs lib，不扩展以避免兼容性问题
       lib = nixpkgs.lib;

@@ -16,11 +16,12 @@
     tree
     file
     net-tools
+    nvtopPackages.nvidia
     btop
     yazi
     glow
     hugo
-    pkgs.nur.repos.definfo.cc-switch-cli
+    # pkgs.nur.repos.definfo.cc-switch-cli
   ];
 
   home.sessionVariables = {

@@ -19,6 +19,10 @@
     source = ./config/blur.kdl;
     force = true;
   };
+  xdg.configFile."niri/frosted-glass.kdl" = {
+    source = ./config/frosted-glass.kdl;
+    force = true;
+  };
   xdg.configFile."niri/shorin-windowrules.kdl" = {
     source = ./config/shorin-windowrules.kdl;
     force = true;

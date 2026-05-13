@@ -16,7 +16,7 @@
       adjust-cell-height = 2; # 行高
 
       # --- 窗口外观 ---
-      background-opacity = 0.88;    # 背景透明度
+      background-opacity = 1;       # 背景透明度
       background-blur-radius = 20;  # 背景模糊半径
       # 标题栏样式（透明）
       macos-titlebar-style = "transparent";

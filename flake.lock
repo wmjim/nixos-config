@@ -78,6 +78,28 @@
         "type": "github"
       }
     },
+    "niri": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "rust-overlay": "rust-overlay"
+      },
+      "locked": {
+        "lastModified": 1777115961,
+        "narHash": "sha256-ehSMsSpE+0k8r+2Vseu8kangsYxToZv3vinynsDp9zs=",
+        "owner": "YaLTeR",
+        "repo": "niri",
+        "rev": "8ed0da44d974c32c6877d2f4630c314da0717ecb",
+        "type": "github"
+      },
+      "original": {
+        "owner": "YaLTeR",
+        "ref": "v26.04",
+        "repo": "niri",
+        "type": "github"
+      }
+    },
     "nix-darwin": {
       "inputs": {
         "nixpkgs": [
@@ -234,12 +256,34 @@
       "inputs": {
         "dms-plugin-registry": "dms-plugin-registry",
         "home-manager": "home-manager",
+        "niri": "niri",
         "nix-darwin": "nix-darwin",
         "nixos-wsl": "nixos-wsl",
         "nixpkgs": "nixpkgs",
         "nixpkgs-darwin": "nixpkgs-darwin",
         "noctalia": "noctalia",
         "nur": "nur"
+      }
+    },
+    "rust-overlay": {
+      "inputs": {
+        "nixpkgs": [
+          "niri",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1757989933,
+        "narHash": "sha256-9cpKYWWPCFhgwQTww8S94rTXgg8Q8ydFv9fXM6I8xQM=",
+        "owner": "oxalica",
+        "repo": "rust-overlay",
+        "rev": "8249aa3442fb9b45e615a35f39eca2fe5510d7c3",
+        "type": "github"
+      },
+      "original": {
+        "owner": "oxalica",
+        "repo": "rust-overlay",
+        "type": "github"
       }
     },
     "systems": {

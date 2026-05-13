@@ -13,13 +13,16 @@
 
 ```bash
 # 构建 NixOS 笔记本
-sudo nixos-rebuild switch --flake .#laptop
+sudo nixos-rebuild switch --flake ~/nixos-config#laptop
+
+# 构建 WSL
+sudo nixos-rebuild switch --flake ~/nixos-config#wsl
 
 # 构建 NixOS 服务器
-sudo nixos-rebuild switch --flake .#server
+sudo nixos-rebuild switch --flake ~/nixos-config#server
 
 # 构建 macOS（在 Mac 上）
-darwin-rebuild switch --flake .#macbook
+darwin-rebuild switch --flake ~/nixos-config#macbook
 ```
 
 - 终端Shell：[Fish](https://github.com/fish-shell/fish-shell)

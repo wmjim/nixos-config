@@ -1,9 +1,18 @@
 // --- NIRI BLUR START ---
-// 顶层的blur配置，细节调整blur的效果
+// 磨砂玻璃桌面 — 全局模糊参数（niri v26.04+）
+//
+// GPU 性能分级参考：
+//   【低档】旧款集显 (HD Graphics, 旧 Radeon iGPU)
+//          blur { passes 2; offset 3.0; noise 0.03; saturation 1.1; }
+//   【中档】主流 iGPU / 入门独显 (680M/780M, Iris Xe, GTX 1650)
+//          blur { passes 3; offset 4.0; noise 0.02; saturation 1.2; }
+//   【高档】高性能独显 (RTX 3060+, RX 6600+)
+//          blur { passes 4; offset 5.0; noise 0.02; saturation 1.3; }
+
 blur {
-    passes 3
-    offset 3
-    noise 0.02
-    saturation 1.5
+    passes 2        // 模糊迭代次数：2=轻薄, 3=明显磨砂, 4=浓重毛玻璃
+    offset 3.0      // 采样半径：越大模糊越扩散，磨砂质感越强
+    noise 0.03      // 噪点：减少色带伪影
+    saturation 1.1  // 背景饱和度：>1.0 让背景色彩透过玻璃更鲜艳
 }
 // --- NIRI BLUR END ---

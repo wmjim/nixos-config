@@ -1,0 +1,144 @@
+// ============================================================
+// 磨砂玻璃桌面 — 统一窗口规则（niri v26.04）
+// ============================================================
+//
+// Noctalia Shell 的界面元素（启动器、控制中心、overview）使用 layer-shell，
+// window-rule 对 layer-shell 无效，必须用 layer-rule 启用模糊。
+
+// --- Noctalia Shell 覆盖层磨砂 ---
+// layer-rule {
+//     match layer="overlay"
+//     match layer="top"
+//     background-effect {
+//         blur true
+//         xray false
+//     }
+// }
+// 设计：opacity（透明度）+ background-effect blur（背景模糊）+ xray false（非穿透模糊）
+//
+// 透明度层级一览（压低透明度才能看清模糊后的背景）：
+//   0.70–0.75   终端模拟器 — 最透，磨砂核心
+//   0.78–0.82   代码编辑器、文件管理器
+//   0.85        浏览器
+//   0.90        设置面板、浮动对话框
+//   1.00        视频/图片/游戏 — 不透明，无模糊
+//
+// 需要调整 GPU 负载时，改 blur.kdl 里的 passes 参数即可。
+// ============================================================
+
+// --- 终端模拟器：磨砂玻璃的黄金场景 ---
+window-rule {
+    // match app-id="Alacritty"
+    match app-id="com.mitchellh.ghostty"
+    opacity 0.70
+    background-effect {
+        blur true
+        xray false
+    }
+}
+
+// --- 代码编辑器 ---
+window-rule {
+    match app-id="code"
+    match app-id="codium"
+    match app-id="zed"
+    match app-id="cursor"
+    opacity 0.78
+    background-effect {
+        blur true
+        xray false
+    }
+}
+
+// --- 浏览器 ---
+// window-rule {
+//     match app-id="microsoft-edge"
+//     // match app-id="zen"
+//     opacity 0.85
+//     background-effect {
+//         blur true
+//         xray false
+//     }
+// }
+
+// --- 文件管理器 ---
+window-rule {
+    match app-id="dolphin"
+    opacity 0.80
+    background-effect {
+        blur true
+        xray false
+    }
+}
+
+// --- GNOME 设置面板 ---
+// window-rule {
+//     match app-id=r#"^org\.gnome\."#
+//     opacity 0.90
+//     background-effect {
+//         blur true
+//         xray false
+//     }
+// }
+
+
+// --- 弹出菜单背 ---
+window-rule {
+    match app-id="Loupe"
+
+    popups {
+        geometry-corner-radius 15
+
+        // Note: it'll look better to set background opacity
+        // through your GTK theme CSS and not here.
+        // This is just an example that makes it look obvious.
+        opacity 0.5
+
+        background-effect {
+            blur true
+        }
+    }
+}
+
+// --- 浮动工具窗口（dms、quickshell 等）---
+window-rule {
+    match app-id="org.quickshell"
+    match app-id="dms"
+    opacity 0.90
+    background-effect {
+        blur true
+        xray false
+    }
+}
+
+// --- 视频播放器：完全不透明，无模糊 ---
+window-rule {
+    match app-id="mpv"
+    match app-id="celluloid"
+    opacity 1.0
+}
+
+// --- 图片/视频预览：完全不透明 ---
+window-rule {
+    match title="图片查看器"
+    match title="画中画"
+    match title="图片和视频"
+    match title="视频播放器"
+    opacity 1.0
+}
+
+// --- 游戏 / Steam：不透明，无模糊 ---
+window-rule {
+    match app-id="steam"
+    opacity 1.0
+}
+
+// --- 全局默认：轻微磨砂 ---
+window-rule {
+    opacity 0.85
+    background-effect {
+        blur true
+        xray false
+    }
+}
+// ============================================================

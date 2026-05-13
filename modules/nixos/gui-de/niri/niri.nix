@@ -7,7 +7,10 @@
     ../apps.nix
   ];
 
-  # niri 合成器
+  # 使用 niri v26.04（原生模糊效果支持）
+  nixpkgs.overlays = [ inputs.niri.overlays.default ];
+
+  # 启用 niri
   programs.niri.enable = true;
 
   # 登录管理器：greetd + tuigreet → 启动 niri

@@ -109,7 +109,8 @@ hotkey-overlay {
 // 隐藏标题栏
 prefer-no-csd
 
-// 默认窗口规则
+// === 默认窗口规则===
+
 window-rule {
     // This regular expression is intentionally made as specific as possible,
     // since this is the default config, and we want no false positives.
@@ -177,5 +178,7 @@ include "dms/layout.kdl"
 
 // include "dms/colors.kdl"
 
-// 取消下面这行的注释启动shorin预先准备好的blur配置
-// include "blur.kdl" // blur 节点 niri 原生不支持
+// 磨砂玻璃桌面：全局模糊参数
+include "blur.kdl"
+// 磨砂玻璃桌面：统一窗口规则（opacity + background-effect）
+include "frosted-glass.kdl"
