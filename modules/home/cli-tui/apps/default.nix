@@ -16,7 +16,7 @@
     tree
     file
     net-tools
-    nvtopPackages.nvidia
+    # nvtopPackages.nvidia
     btop
     yazi
     glow

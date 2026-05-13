@@ -22,7 +22,7 @@
       # 常用别名
       ".."="cd ..";
       "..."="cd ../..";
-      updatewsl="";
+      updatewsl="sudo nixos-rebuild switch --flake ~/nixos-config#wsl";
       
       # eza 推荐别名
       # 基础替换：带图标、目录优先、文件类型颜色
