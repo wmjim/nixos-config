@@ -75,6 +75,7 @@
     iwd
     git
     wget
+    vim
   ];
 
   system.stateVersion = "25.11";
