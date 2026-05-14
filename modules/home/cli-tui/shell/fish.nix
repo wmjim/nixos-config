@@ -44,9 +44,9 @@
       gp = "git push";
       gl = "git log --oneline --graph --decorate";
 
-      # batcat 推荐别名
-      bat="batcat --style=plain";
-      cat="batcat --style=plain --paging=never";
+      # bat 推荐别名
+      bat="bat --style=plain";
+      cat="bat --style=plain --paging=never";
 
       # duf 推荐别名
       df="duf --only local";           # 替代 df，只显示本地磁盘
