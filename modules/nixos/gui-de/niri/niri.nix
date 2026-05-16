@@ -3,7 +3,8 @@
 
 {
   imports = [
-    ./noctalia.nix
+    # ./noctalia.nix
+    ./dms.nix
     ../apps.nix
   ];
 
@@ -13,16 +14,7 @@
   # 启用 niri
   programs.niri.enable = true;
 
-  # 登录管理器：greetd + tuigreet → 启动 niri
-  services.greetd = {
-    enable = true;
-    settings = {
-      default_session = {
-        command = "${pkgs.tuigreet}/bin/tuigreet --time --remember --cmd niri-session";
-        user = "greeter";
-      };
-    };
-  };
+  # greetd 由 dms-greeter 模块管理，此处不再重复配置
 
   # 触控板
   services.libinput.enable = true;

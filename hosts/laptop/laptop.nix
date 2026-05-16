@@ -13,6 +13,9 @@
     HandleLidSwitchExternalPower = "ignore";  # 外接电源时合盖
   };
 
+  # 禁用默认的 power-profiles-daemon，避免与 auto-cpufreq/tlp 冲突
+  services.power-profiles-daemon.enable = false;
+
   # 电源管理：电池模式降频降噪，插电恢复性能
   services.auto-cpufreq.enable = true;
   services.auto-cpufreq.settings = {

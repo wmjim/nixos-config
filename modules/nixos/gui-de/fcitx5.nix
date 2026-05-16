@@ -16,11 +16,10 @@
         fcitx5-gtk
         # 输入法主题
         fcitx5-mellow-themes
-        # fcitx5-rime 中文输入引擎
-        # rime-ice 中文词库
-        # 构建 fcitx5-rime 的同时，将 rime-ice 数据文件一同打包）
+        # fcitx5-rime 中文输入引擎 + 万象拼音词库
         (fcitx5-rime.override {
-          rimeDataPkgs = [ pkgs.rime-ice ];
+          # rimeDataPkgs = [ pkgs.rime-ice ];
+          rimeDataPkgs = [ pkgs.rime-wanxiang ];
         })
       ];
     };

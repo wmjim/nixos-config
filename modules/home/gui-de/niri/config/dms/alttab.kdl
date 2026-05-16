@@ -3,8 +3,8 @@
         // ! CHANGES WILL BE OVERWRITTEN !
         // ! PLACE YOUR CUSTOM CONFIGURATION ELSEWHERE !
 
-        recent-windows {
-        highlight {
+recent-windows {
+    highlight {
         corner-radius 12
-        }
-        }
+    }
+}

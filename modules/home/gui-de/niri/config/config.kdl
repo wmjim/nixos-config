@@ -6,12 +6,15 @@
 
 // 自25.11版本起，niri的配置文件支持了拆分，每一条include都代表把已经拆分出去的配置文件嵌入进来。
 
-include "layout.kdl"
 include "animations.kdl"
+
+prefer-no-csd   // 隐藏标题栏
+
 // 截图保存位置
 screenshot-path "~/files/pictures/screenshots/niri/%Y-%m-%d_%H-%M-%S.png"
-// 环境变量
 
+
+// 环境变量
 environment {
     //LC_CTYPE "zh_CN.UTF-8" 会导致输入法出现漏字
     //LC_MESSAGES "zh_CN.UTF-8" 让系统全局使用英文，仅主要界面为英文时使用这个环境变量
@@ -82,7 +85,7 @@ input {
 // 自动启动
 // spawn-at-startup "dms" "run" // 由 systemd 管理启动
 // noctalia shell
-spawn-at-startup "noctalia-shell"
+// spawn-at-startup "noctalia-shell"
 // 录屏修复
 spawn-sh-at-startup "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=niri & /usr/lib/xdg-desktop-portal-gnome"
 // GNOME tracker修复
@@ -106,8 +109,8 @@ hotkey-overlay {
      skip-at-startup
 }
 
-// 隐藏标题栏
-prefer-no-csd
+
+
 
 // === 默认窗口规则===
 
@@ -170,7 +173,6 @@ window-rule {
 include "dms/binds.kdl"
 include "dms/alttab.kdl"
 include "dms/supertab.kdl"
-// include optional=true "shorin-windowrules.kdl" // optional 语法不支持
 // include optional=true "dms/windowrules.kdl"
 include "dms/cursor.kdl"
 include "dms/outputs.kdl"

@@ -85,7 +85,6 @@ window-rule {
 // --- 弹出菜单背 ---
 window-rule {
     match app-id="Loupe"
-
     popups {
         geometry-corner-radius 15
 

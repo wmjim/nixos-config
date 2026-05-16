@@ -11,20 +11,12 @@
     source = ./config/animations.kdl;
     force = true;
   };
-  xdg.configFile."niri/layout.kdl" = {
-    source = ./config/layout.kdl;
-    force = true;
-  };
   xdg.configFile."niri/blur.kdl" = {
     source = ./config/blur.kdl;
     force = true;
   };
   xdg.configFile."niri/frosted-glass.kdl" = {
     source = ./config/frosted-glass.kdl;
-    force = true;
-  };
-  xdg.configFile."niri/shorin-windowrules.kdl" = {
-    source = ./config/shorin-windowrules.kdl;
     force = true;
   };
 
@@ -62,12 +54,6 @@
 
   xdg.configFile."niri/scripts/niri-binds.sh" = {
     source = ./config/scripts/niri-binds.sh;
-    executable = true;
-    force = true;
-  };
-
-  xdg.configFile."niri/scripts/niri-pick.sh" = {
-    source = ./config/scripts/niri-pick.sh;
     executable = true;
     force = true;
   };
