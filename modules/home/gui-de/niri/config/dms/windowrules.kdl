@@ -1,0 +1,6 @@
+// === 窗口规则===
+// 设置全屏
+window-rule {
+    // match fullscreen true
+    // fullscreen
+}

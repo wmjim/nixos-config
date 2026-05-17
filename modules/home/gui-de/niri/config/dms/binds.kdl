@@ -160,15 +160,6 @@ binds {
     // Alt+grave hotkey-overlay-title=null { switch-focus-between-floating-and-tiling; }
     // Mod+Alt+N hotkey-overlay-title=null { switch-focus-between-floating-and-tiling; }
 
-    // 截图相关
-    Mod+Alt+A  hotkey-overlay-title="选取区域截图 Select screenshot"  {spawn-sh "niri msg action screenshot --show-pointer false && pkill -f -USR1 screenshot-sound.sh";}
-    Mod+Alt+Ctrl+A  hotkey-overlay-title="截取聚焦窗口 Focus-window screenshot" { spawn-sh "niri msg action screenshot-window && pkill -f -USR1 screenshot-sound.sh"; }
-    Mod+Alt+Ctrl+Shift+A  hotkey-overlay-title="截取显示器 Monitor screenshot" { spawn-sh "niri msg action screenshot-screen --show-pointer false && pkill -f -USR1 screenshot-sound.sh"; }
-    Print  hotkey-overlay-title=null {spawn-sh "niri msg action screenshot --show-pointer false && pkill -f -USR1 screenshot-sound.sh";}
-    Ctrl+Print  hotkey-overlay-title=null { spawn-sh "niri msg action screenshot-window --show-pointer false && pkill -f -USR1 screenshot-sound.sh"; }
-    Shift+Print  hotkey-overlay-title=null { spawn-sh "niri msg action screenshot-screen --show-pointer false && pkill -f -USR1 screenshot-sound.sh"; }
-    Mod+Shift+S  hotkey-overlay-title="截图后按下此键进行编辑 Edit the image after screenshot" { spawn-sh "wl-paste | satty -f -";}
-
     Mod+Escape allow-inhibiting=false { toggle-keyboard-shortcuts-inhibit; }
     Mod+Shift+E hotkey-overlay-title="退出niri Quit niri" { quit; }
 
@@ -291,11 +282,7 @@ binds {
 
 
     // === 其他备用快捷键 ===
-    // 备用截图键
-    XF86Launch1 { screenshot; }
-    Ctrl+XF86Launch1 { screenshot-screen; }
-    Alt+XF86Launch1 { screenshot-window; }
-
-    // 关闭显示器备用
-    Mod+Shift+P { power-off-monitors; }
+    // 截图
+    Mod+P       hotkey-overlay-title="区域截图"         { screenshot; }
+    Mod+Ctrl+P  hotkey-overlay-title="全屏截图"         { screenshot-screen; }
 }

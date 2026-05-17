@@ -4,5 +4,6 @@
 {
   imports = [
     ./ghostty.nix
+    ./dolphin.nix
   ];
 }

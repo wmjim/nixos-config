@@ -46,11 +46,17 @@
     NIXOS_OZONE_WL = "1";
     CLASH_VERGE_ALLOW_CLIPBOARD = "1";
     RUST_BACKTRACE = "1";
-    GTK_THEME = "Orchis";
-    GTK_ICON_THEME = "WhiteSur";
     XCURSOR_THEME = "Bibata-Modern-Ice";
     XCURSOR_SIZE = "24";
   };
+
+  # 将 KDE/Qt 主题目录加入系统 profile（默认白名单不含这些路径）
+  environment.pathsToLink = [
+    "/share/Kvantum"
+    "/share/aurorae"
+    "/share/color-schemes"
+    "/share/plasma"
+  ];
 
   # niri 周边工具和主题
   environment.systemPackages = with pkgs; [

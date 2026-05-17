@@ -32,6 +32,10 @@
     source = ./config/dms/cursor.kdl;
     force = true;
   };
+  xdg.configFile."niri/dms/windowrules.kdl" = {
+    source = ./config/dms/windowrules.kdl;
+    force = true;
+  };
   xdg.configFile."niri/dms/layout.kdl" = {
     source = ./config/dms/layout.kdl;
     force = true;

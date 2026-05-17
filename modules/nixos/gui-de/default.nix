@@ -8,5 +8,6 @@
     ./niri/niri.nix
     ./clash.nix
     ./fcitx5.nix
+    ./plymouth.nix
   ];
 }

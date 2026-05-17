@@ -10,7 +10,7 @@
       theme = "Catppuccin Mocha";
             
       # --- 字体 ---
-      font-family = "Maple Mono Normal NL NF CN";
+      font-family = ["Maple Mono Normal NL NF" "LXGW WenKai Mono"];
       font-size = 12;
       font-thicken = true;    # 加粗
       adjust-cell-height = 2; # 行高

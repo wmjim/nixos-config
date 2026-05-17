@@ -38,17 +38,17 @@ window-rule {
 }
 
 // --- 代码编辑器 ---
-window-rule {
-    match app-id="code"
-    match app-id="codium"
-    match app-id="zed"
-    match app-id="cursor"
-    opacity 0.78
-    background-effect {
-        blur true
-        xray false
-    }
-}
+// window-rule {
+//     match app-id="code"
+//     match app-id="codium"
+//     match app-id="zed"
+//     match app-id="cursor"
+//     opacity 0.78
+//     background-effect {
+//         blur true
+//         xray false
+//     }
+// }
 
 // --- 浏览器 ---
 // window-rule {
@@ -62,14 +62,14 @@ window-rule {
 // }
 
 // --- 文件管理器 ---
-window-rule {
-    match app-id="dolphin"
-    opacity 0.80
-    background-effect {
-        blur true
-        xray false
-    }
-}
+// window-rule {
+//     match app-id="dolphin"
+//     opacity 0.80
+//     background-effect {
+//         blur true
+//         xray false
+//     }
+// }
 
 // --- GNOME 设置面板 ---
 // window-rule {
@@ -83,61 +83,61 @@ window-rule {
 
 
 // --- 弹出菜单背 ---
-window-rule {
-    match app-id="Loupe"
-    popups {
-        geometry-corner-radius 15
+// window-rule {
+//     match app-id="Loupe"
+//     popups {
+//         geometry-corner-radius 15
 
-        // Note: it'll look better to set background opacity
-        // through your GTK theme CSS and not here.
-        // This is just an example that makes it look obvious.
-        opacity 0.5
+//         // Note: it'll look better to set background opacity
+//         // through your GTK theme CSS and not here.
+//         // This is just an example that makes it look obvious.
+//         opacity 0.5
 
-        background-effect {
-            blur true
-        }
-    }
-}
+//         background-effect {
+//             blur true
+//         }
+//     }
+// }
 
 // --- 浮动工具窗口（dms、quickshell 等）---
-window-rule {
-    match app-id="org.quickshell"
-    match app-id="dms"
-    opacity 0.90
-    background-effect {
-        blur true
-        xray false
-    }
-}
+// window-rule {
+//     match app-id="org.quickshell"
+//     match app-id="dms"
+//     opacity 0.90
+//     background-effect {
+//         blur true
+//         xray false
+//     }
+// }
 
 // --- 视频播放器：完全不透明，无模糊 ---
-window-rule {
-    match app-id="mpv"
-    match app-id="celluloid"
-    opacity 1.0
-}
+// window-rule {
+//     match app-id="mpv"
+//     match app-id="celluloid"
+//     opacity 1.0
+// }
 
 // --- 图片/视频预览：完全不透明 ---
-window-rule {
-    match title="图片查看器"
-    match title="画中画"
-    match title="图片和视频"
-    match title="视频播放器"
-    opacity 1.0
-}
+// window-rule {
+//     match title="图片查看器"
+//     match title="画中画"
+//     match title="图片和视频"
+//     match title="视频播放器"
+//     opacity 1.0
+// }
 
 // --- 游戏 / Steam：不透明，无模糊 ---
-window-rule {
-    match app-id="steam"
-    opacity 1.0
-}
+// window-rule {
+//     match app-id="steam"
+//     opacity 1.0
+// }
 
 // --- 全局默认：轻微磨砂 ---
-window-rule {
-    opacity 0.85
-    background-effect {
-        blur true
-        xray false
-    }
-}
+// window-rule {
+//     opacity 0.85
+//     background-effect {
+//         blur true
+//         xray false
+//     }
+// }
 // ============================================================

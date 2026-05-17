@@ -5,9 +5,24 @@
 //  ██████  ██   ██  ██████  ██   ██ ██ ██   ████
 
 // 自25.11版本起，niri的配置文件支持了拆分，每一条include都代表把已经拆分出去的配置文件嵌入进来。
-
+// 动画
 include "animations.kdl"
+// 磨砂玻璃桌面：全局模糊参数
+// include "blur.kdl"
+// 磨砂玻璃桌面：统一窗口规则（opacity + background-effect）
+// include "frosted-glass.kdl"
 
+
+include "dms/binds.kdl"
+include "dms/alttab.kdl"
+include "dms/supertab.kdl"
+// include optional=true "dms/windowrules.kdl"
+include "dms/cursor.kdl"
+include "dms/outputs.kdl"
+include "dms/layout.kdl"
+
+
+// === 省略其客户端装饰 ===
 prefer-no-csd   // 隐藏标题栏
 
 // 截图保存位置
@@ -25,8 +40,8 @@ environment {
     // 输入法环境变量
     XMODIFIERS "@im=fcitx"
     // qt主题
-    QT_QPA_PLATFORMTHEME "gtk4"
-    QT_QPA_PLATFORMTHEME_QT6 "gtk4"
+    QT_QPA_PLATFORMTHEME "qt6ct"
+    QT_QPA_PLATFORMTHEME_QT6 "qt6ct"
     // 解决quickshell图标主题缺失问题
     QS_ICON_THEME "Adwaita"
     // GTK软件使用的渲染器，可以解决n卡双显卡导致的GTK应用启动缓慢问题，AMD或Intel单显卡不需要这行设置可以注释掉
@@ -82,7 +97,15 @@ input {
         // middle-emulation
     }
 }
-// 自动启动
+
+// === 概览 ===
+overview {
+    zoom 0.40
+    backdrop-color "#777777"
+}
+
+
+// 开机时启动
 // spawn-at-startup "dms" "run" // 由 systemd 管理启动
 // noctalia shell
 // spawn-at-startup "noctalia-shell"
@@ -103,84 +126,12 @@ spawn-at-startup "systemctl" "--user" "start" "linuxqq-clipsync"
 // 询问管理员权限功能的自动启动
 spawn-at-startup "/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1"
 
-// 取消启动niri时自动开启快捷键教程
+// niri开启时不自动展示快捷键
 hotkey-overlay {
-    // Uncomment this line to disable the "Important Hotkeys" pop-up at startup.
      skip-at-startup
 }
 
 
 
 
-// === 默认窗口规则===
 
-window-rule {
-    // This regular expression is intentionally made as specific as possible,
-    // since this is the default config, and we want no false positives.
-    // You can get away with just app-id="wezterm" if you want.
-    match app-id=r#"^org\.wezfurlong\.wezterm$"#
-    default-column-width {}
-}
-window-rule {
-    match app-id=r#"^org\.gnome\."#
-    draw-border-with-background false
-    geometry-corner-radius 12
-    clip-to-geometry true
-}
-window-rule {
-    match app-id=r#"^gnome-control-center$"#
-    match app-id=r#"^pavucontrol$"#
-    match app-id=r#"^nm-connection-editor$"#
-    default-column-width { proportion 0.5; }
-    open-floating false
-}
-window-rule {
-    match app-id=r#"^gnome-calculator$"#
-    match app-id=r#"^galculator$"#
-    match app-id=r#"^blueman-manager$"#
-    match app-id=r#"^xdg-desktop-portal$"#
-    open-floating true
-}
-window-rule {
-    match app-id=r#"^steam$"# title=r#"^notificationtoasts_\d+_desktop$"#
-    default-floating-position x=10 y=10 relative-to="bottom-right"
-    open-focused false
-}
-window-rule {
-    match app-id=r#"^org\.wezfurlong\.wezterm$"#
-    match app-id="Alacritty"
-    match app-id="zen"
-    match app-id="com.mitchellh.ghostty"
-    match app-id="kitty"
-    draw-border-with-background false
-}
-window-rule {
-    match app-id=r#"firefox$"# title="^Picture-in-Picture$"
-    match app-id="zoom"
-    open-floating true
-}
-// 快捷键查看器浮窗
-window-rule {
-    match app-id="com.mitchellh.ghostty" title="快捷键"
-    open-floating true
-}
-// Open dms windows as floating by default
-window-rule {
-    match app-id=r#"org.quickshell$"#
-    open-floating true
-}
-
-include "dms/binds.kdl"
-include "dms/alttab.kdl"
-include "dms/supertab.kdl"
-// include optional=true "dms/windowrules.kdl"
-include "dms/cursor.kdl"
-include "dms/outputs.kdl"
-include "dms/layout.kdl"
-
-// include "dms/colors.kdl"
-
-// 磨砂玻璃桌面：全局模糊参数
-include "blur.kdl"
-// 磨砂玻璃桌面：统一窗口规则（opacity + background-effect）
-include "frosted-glass.kdl"

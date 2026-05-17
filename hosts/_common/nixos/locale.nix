@@ -22,23 +22,28 @@
     LC_TIME = "zh_CN.UTF-8";
   };
 
-  # 字体
+  # 启用默认字体包，补充基础 Unicode 覆盖
+  fonts.enableDefaultPackages = true;
+  # Flatpak 兼容，Flatpak 应用可访问系统字体
+  fonts.fontDir.enable = true;
+
   fonts.packages = with pkgs; [
     # 等宽字体
     maple-mono.NormalNL-NF-CN-unhinted
     maple-mono.NormalNL-NF-unhinted
     # 中文无衬线/屏幕阅读字体
-
-    # 英文衬线字体
-    source-serif-pro          
-    noto-fonts-color-emoji
     pkgs.nur.repos.guanran928.harmonyos-sans
+    # 中文衬线字体 (霞鹜文楷 + 霞鹜文楷等宽)
+    lxgw-wenkai
+    # 英文衬线字体
+    source-serif-pro
+    noto-fonts-color-emoji
   ];
 
   fonts.fontconfig.defaultFonts = {
-    serif = [ "Source Serif Pro"];
+    serif = [ "Source Serif Pro" "LXGW WenKai" ];
     sansSerif = [ "HarmonyOS Sans SC" ];
-    monospace = [ "Maple Mono Normal NL NF CN" ];
+    monospace = [ "Maple Mono Normal NL NF" "LXGW WenKai Mono" ];
     emoji = [ "Noto Color Emoji" ];
   };
 

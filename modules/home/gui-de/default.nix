@@ -3,6 +3,7 @@
 
 {
   imports = [
+    ./themes
     ./apps
     ./niri
     ./fcitx5.nix
