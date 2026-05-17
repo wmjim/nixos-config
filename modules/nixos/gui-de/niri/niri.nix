@@ -50,19 +50,6 @@
     XCURSOR_SIZE = "24";
   };
 
-  # 将 KDE/Qt 主题目录加入系统 profile（默认白名单不含这些路径）
-  environment.pathsToLink = [
-    "/share/Kvantum"
-    "/share/aurorae"
-    "/share/color-schemes"
-    "/share/plasma"
-  ];
-
-  # niri 周边工具和主题
-  environment.systemPackages = with pkgs; [
-    # --- niri 周边 ---
-  ];
-
   # RDP 远程桌面端口
   networking.firewall.allowedTCPPorts = [ 3389 ];
 }
