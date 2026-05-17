@@ -1,8 +1,8 @@
 // niri 窗口布局配置
 // https://niri-wm.github.io/niri/Configuration%3A-Layout.html
 layout {
-    background-color "transparent"   // 工作区透明
     gaps 4      // 窗口和屏幕边缘的间距
+    background-color "transparent"  // 工作区透明
     center-focused-column "never"   // 无特殊居中效果
     // 新窗口的默认宽度
     default-column-width { proportion 0.5; }

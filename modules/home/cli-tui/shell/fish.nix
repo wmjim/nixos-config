@@ -55,6 +55,10 @@
       dufjson="duf --json";            # JSON 输出，用于脚本
 
       cc  = "claude --dangerously-skip-permissions";
+
+      # 查询快捷键
+      # 可用 niri、
+      key = "dms ipc call keybinds toggle";
     };
 
     # 环境变量

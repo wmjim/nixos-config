@@ -3,56 +3,24 @@
 
 binds {
     // =========================================================
-    // 第一部分：Shorin 核心快捷键配置
+    // 第一部分：niri 核心快捷键配置
     // =========================================================
+    // 截图相关
+    Mod+P       hotkey-overlay-title="区域截图"         { screenshot; }
+    Mod+Ctrl+P  hotkey-overlay-title="全屏截图"         { screenshot-screen; }
 
-    // 快捷键
-    // Mod+Shift+Slash hotkey-overlay-title="快捷键教程 Keybind tutorial" { spawn-sh "~/.config/niri/scripts/niri-binds.sh"; }
-    // Mod+F1 hotkey-overlay-title="开关输入法 Toggle fcitx" {spawn-sh "pkill fcitx5 || fcitx5 ";}
-    // Mod+F2 hotkey-overlay-title="设置 Settings" { spawn-sh "dms ipc call settings focusOrToggle";}
-    // Mod+F3 hotkey-overlay-title="录屏 Screen record" { spawn "shorin-screenrec-menu";}
-    // Mod+F5 hotkey-overlay-title="快速存档 Quick save" {spawn "quicksave";}
-    // Mod+F8 hotkey-overlay-title="快速读档 Quick load" {spawn "quickload";}
-
-    // === Noctalia 特有绑定 ===
-    // Mod+Slash   hotkey-overlay-title="快捷键"       { spawn-sh "~/.config/niri/scripts/niri-binds.sh"; } 
-    // Mod+Space   hotkey-overlay-title="应用启动器"   { spawn "noctalia-shell" "ipc" "call" "launcher" "toggle"; }
-    // Mod+Ctrl+L  hotkey-overlay-title="锁屏"         { spawn "noctalia-shell" "ipc" "call" "lockScreen" "lock"; }
-    // Mod+Comma   hotkey-overlay-title="设置"         { spawn "noctalia-shell" "ipc" "call" "settings" "toggle"; }
-    // Mod+S       hotkey-overlay-title="控制面板"     { spawn "noctalia-shell" "ipc" "call" "controlCenter" "toggle"; }
-    // Mod+Alt+W   hotkey-overlay-title="壁纸切换"     { spawn "noctalia-shell" "ipc" "call" "wallpaper" "toggle"; }
-
-    // === DMS 特有绑定 ===
-    Mod+Slash   hotkey-overlay-title="快捷键"       { spawn-sh "~/.config/niri/scripts/niri-binds.sh"; } 
-    Mod+Space   hotkey-overlay-title="应用启动器"   { spawn "dms" "ipc" "call" "launcher" "toggle"; }
-    Mod+Ctrl+L  hotkey-overlay-title="锁屏"         { spawn "dms" "ipc" "call" "lockScreen" "lock"; }
-    Mod+Comma   hotkey-overlay-title="设置"         { spawn "dms" "ipc" "call" "settings" "toggle"; }
-    Mod+S       hotkey-overlay-title="控制面板"     { spawn "dms" "ipc" "call" "controlCenter" "toggle"; }
-    Mod+Alt+W   hotkey-overlay-title="壁纸切换"     { spawn "dms" "ipc" "call" "wallpaper" "toggle"; }
-    // === 启动应用 ===
-    Mod+Return  hotkey-overlay-title="终端"         { spawn "ghostty"; }
-    Mod+Shift+B hotkey-overlay-title="浏览器"       { spawn "microsoft-edge"; }
-    Mod+Shift+F hotkey-overlay-title="文件管理器"   { spawn-sh "dolphin --new-window"; }
-
+    Mod+Shift+E hotkey-overlay-title="退出niri"         { quit; }
     
-
     // niri-sidebar扩展相关
-    // 切换 移动聚焦窗口至侧边栏 （建议配合切换浮动聚焦的快捷键使用，我设置的是super+n）
-    Mod+Alt+S hotkey-overlay-title="收起窗口 Move to Sidebar" { spawn "niri-sidebar" "toggle-window"; }
-    Mod+M hotkey-overlay-title="收起窗口 Move to Sidebar" { spawn "niri-sidebar" "toggle-window"; }
-    // 切换 收起/展开侧边栏
-    Mod+Alt+Z hotkey-overlay-title="展开/收起侧边栏 Toggle Sidebar" { spawn "niri-sidebar" "toggle-visibility";}
-    // 反向排序侧边栏
-    Mod+Alt+X hotkey-overlay-title=null { spawn "niri-sidebar" "flip";}
+    // 移动聚焦窗口至/移出侧边栏
+    Mod+S       hotkey-overlay-title="移动至侧边栏"     { spawn "niri-sidebar" "toggle-window"; }
+    // 收起/展开侧边栏（peek 模式）
+    Mod+Shift+S hotkey-overlay-title="切换侧边栏可见性" { spawn "niri-sidebar" "toggle-visibility"; }
+    // 反向排序侧边栏（Mod+Alt+X 已被电源菜单占用，改为 F=Flip）
+    Mod+Ctrl+S  hotkey-overlay-title="反向排序侧边栏"   { spawn "niri-sidebar" "flip"; }
     // 重新排列侧边栏中的窗口（侧边栏中的窗口本质是一个浮动窗口，你有时候可能会把它移动到别的地方
     // 例如 ctrl+c居中。此时按下此键可以重新排列）
-    Mod+Alt+R hotkey-overlay-title="重置侧边栏 Reorder Sidebar"  { spawn "niri-sidebar" "reorder"; }
-
-    // 以下功能需要安装nirius并启动niriusd
-    //Mod+Ctrl+G hotkey-overlay-title="在切换工作区时自动跟随 Follow when switch workspaces" {spawn "nirius" "toggle-follow-mode" ;}
-    //Mod+Shift+Q hotkey-overlay-title="快速聚焦到QQ Quick focus QQ" {spawn "nirius" "focus" "--app-id" "QQ" ;}
-    //Mod+Shift+W hotkey-overlay-title="快速聚焦到微信 Quick focus Wechat" {spawn "nirius" "focus" "--app-id" "wechat" ;}
-
+    Mod+Alt+R   hotkey-overlay-title="重新排列侧边栏"  { spawn "niri-sidebar" "reorder"; }
 
 
 
@@ -66,93 +34,89 @@ binds {
     // Mod+Ctrl+K     { move-window-up; }
     // Mod+Ctrl+L     { move-column-right; }
     // super+ctrl+a/d 向左/右移动列
-    Mod+Ctrl+A  { move-column-left; }
-    Mod+Ctrl+D { move-column-right; }
+    // Mod+Ctrl+A  { move-column-left; }
+    // Mod+Ctrl+D { move-column-right; }
     // mod+S/W 上下切换窗口
     // Mod+S { move-window-down; }
     // Mod+W { move-window-up; }
 
     // 切换到第一个colume
-    Mod+Home { focus-column-first; }
+    // Mod+Home { focus-column-first; }
     // 切换到最后一个colume
-    Mod+End  { focus-column-last; }
+    // Mod+End  { focus-column-last; }
     // 移动colume到第一个
-    Mod+Ctrl+Home { move-column-to-first; }
+    // Mod+Ctrl+Home { move-column-to-first; }
     // 移动colume到最后一个
-    Mod+Ctrl+End  { move-column-to-last; }
+    // Mod+Ctrl+End  { move-column-to-last; }
 
     // 切换显示器聚焦
     // mod+shift+方向键
-    Mod+Shift+Left  { focus-monitor-left; }
-    Mod+Shift+Down  { focus-monitor-down; }
-    Mod+Shift+Up    { focus-monitor-up; }
-    Mod+Shift+Right { focus-monitor-right; }
+    // Mod+Shift+Left  { focus-monitor-left; }
+    // Mod+Shift+Down  { focus-monitor-down; }
+    // Mod+Shift+Up    { focus-monitor-up; }
+    // Mod+Shift+Right { focus-monitor-right; }
     // mod+shift+vimkey
-    Mod+Shift+H     { focus-monitor-left; }
-    Mod+Shift+J     { focus-monitor-down; }
-    Mod+Shift+K     { focus-monitor-up; }
-    Mod+Shift+L     { focus-monitor-right; }
+    // Mod+Shift+H     { focus-monitor-left; }
+    // Mod+Shift+J     { focus-monitor-down; }
+    // Mod+Shift+K     { focus-monitor-up; }
+    // Mod+Shift+L     { focus-monitor-right; }
     // 跨显示器移动colume
-    Mod+Shift+Ctrl+Left  { move-column-to-monitor-left; }
-    Mod+Shift+Ctrl+Down  { move-column-to-monitor-down; }
-    Mod+Shift+Ctrl+Up    { move-column-to-monitor-up; }
-    Mod+Shift+Ctrl+Right { move-column-to-monitor-right; }
-    Mod+Shift+Ctrl+H     { move-column-to-monitor-left; }
-    Mod+Shift+Ctrl+J     { move-column-to-monitor-down; }
-    Mod+Shift+Ctrl+K     { move-column-to-monitor-up; }
-    Mod+Shift+Ctrl+L     { move-column-to-monitor-right; }
-    Mod+Shift+Ctrl+A     { move-column-to-monitor-left; }
-    Mod+Shift+Ctrl+S     { move-column-to-monitor-down; }
-    Mod+Shift+Ctrl+W     { move-column-to-monitor-up; }
-    Mod+Shift+Ctrl+D     { move-column-to-monitor-right; }
+    // Mod+Shift+Ctrl+Left  { move-column-to-monitor-left; }
+    // Mod+Shift+Ctrl+Down  { move-column-to-monitor-down; }
+    // Mod+Shift+Ctrl+Up    { move-column-to-monitor-up; }
+    // Mod+Shift+Ctrl+Right { move-column-to-monitor-right; }
+    // Mod+Shift+Ctrl+H     { move-column-to-monitor-left; }
+    // Mod+Shift+Ctrl+J     { move-column-to-monitor-down; }
+    // Mod+Shift+Ctrl+K     { move-column-to-monitor-up; }
+    // Mod+Shift+Ctrl+L     { move-column-to-monitor-right; }
+    // Mod+Shift+Ctrl+A     { move-column-to-monitor-left; }
+    // Mod+Shift+Ctrl+S     { move-column-to-monitor-down; }
+    // Mod+Shift+Ctrl+W     { move-column-to-monitor-up; }
+    // Mod+Shift+Ctrl+D     { move-column-to-monitor-right; }
 
     // 移动整个工作区
     // mod+shift跨显示器，alt代表移动整个工作区，再加上三组方向键
-    Mod+Shift+Alt+W  { move-workspace-to-monitor-up; }
-    Mod+Shift+Alt+S  { move-workspace-to-monitor-down; }
-    Mod+Shift+Alt+D  { move-workspace-to-monitor-right; }
-    Mod+Shift+Alt+A  { move-workspace-to-monitor-left; }
+    // Mod+Shift+Alt+W  { move-workspace-to-monitor-up; }
+    // Mod+Shift+Alt+S  { move-workspace-to-monitor-down; }
+    // Mod+Shift+Alt+D  { move-workspace-to-monitor-right; }
+    // Mod+Shift+Alt+A  { move-workspace-to-monitor-left; }
 
-    Mod+Shift+Alt+K  { move-workspace-to-monitor-up; }
-    Mod+Shift+Alt+J  { move-workspace-to-monitor-down; }
-    Mod+Shift+Alt+L  { move-workspace-to-monitor-right; }
-    Mod+Shift+Alt+H  { move-workspace-to-monitor-left; }
+    // Mod+Shift+Alt+K  { move-workspace-to-monitor-up; }
+    // Mod+Shift+Alt+J  { move-workspace-to-monitor-down; }
+    // Mod+Shift+Alt+L  { move-workspace-to-monitor-right; }
+    // Mod+Shift+Alt+H  { move-workspace-to-monitor-left; }
 
-    Mod+Shift+Alt+Up  { move-workspace-to-monitor-up; }
-    Mod+Shift+Alt+Down  { move-workspace-to-monitor-down; }
-    Mod+Shift+Alt+Right  { move-workspace-to-monitor-right; }
-    Mod+Shift+Alt+Left  { move-workspace-to-monitor-left; }
+    // Mod+Shift+Alt+Up  { move-workspace-to-monitor-up; }
+    // Mod+Shift+Alt+Down  { move-workspace-to-monitor-down; }
+    // Mod+Shift+Alt+Right  { move-workspace-to-monitor-right; }
+    // Mod+Shift+Alt+Left  { move-workspace-to-monitor-left; }
 
     // mod+shitf+滚轮上下切换工作区
-    Mod+Shift+WheelScrollDown  hotkey-overlay-title="切换工作区 Change workspaces"    cooldown-ms=150 { focus-workspace-down; }
-    Mod+Shift+WheelScrollUp        cooldown-ms=150 { focus-workspace-up; }
+    // Mod+Shift+WheelScrollDown  hotkey-overlay-title="切换工作区 Change workspaces"    cooldown-ms=150 { focus-workspace-down; }
+    // Mod+Shift+WheelScrollUp        cooldown-ms=150 { focus-workspace-up; }
     //再加上ctrl移动窗口
-    Mod+Ctrl+Shift+WheelScrollDown cooldown-ms=150 { move-column-to-workspace-down; }
-    Mod+Ctrl+Shift+WheelScrollUp   cooldown-ms=150 { move-column-to-workspace-up; }
+    // Mod+Ctrl+Shift+WheelScrollDown cooldown-ms=150 { move-column-to-workspace-down; }
+    // Mod+Ctrl+Shift+WheelScrollUp   cooldown-ms=150 { move-column-to-workspace-up; }
 
     // mod+滚轮上下 左右切换聚焦
-    Mod+WheelScrollDown   hotkey-overlay-title="滚轮切换聚焦 Change focus with wheel"   { focus-column-right; }
-    Mod+WheelScrollUp        { focus-column-left; }
+    // Mod+WheelScrollDown   hotkey-overlay-title="滚轮切换聚焦 Change focus with wheel"   { focus-column-right; }
+    // Mod+WheelScrollUp        { focus-column-left; }
     // 再加上ctrl移动colume
-    Mod+Ctrl+WheelScrollDown { move-column-right; }
-    Mod+Ctrl+WheelScrollUp   { move-column-left; }
+    // Mod+Ctrl+WheelScrollDown { move-column-right; }
+    // Mod+Ctrl+WheelScrollUp   { move-column-left; }
 
 
 
-    // mod+逗号/句号 把窗口合并或者踢出当前的colume
-    
-    Mod+Period { expel-window-from-column; }
-    // mod+shift+A/D 同效果
-    Mod+Shift+A  { consume-window-into-column; }
-    Mod+Shift+D { expel-window-from-column; }
+
 
     // 开启colume的标签页模式
-    Mod+Shift+X { toggle-column-tabbed-display; }
+    // Mod+Shift+X { toggle-column-tabbed-display; }
     //Mod+X { toggle-column-tabbed-display; }
     // mod+鼠标侧键 上下切换聚焦
-    Mod+MouseForward { focus-window-up; }
-    Mod+MouseBack    { focus-window-down; }
+    // Mod+MouseForward { focus-window-up; }
+    // Mod+MouseBack    { focus-window-down; }
 
+    // Mod+Escape allow-inhibiting=false { toggle-keyboard-shortcuts-inhibit; }
     
     // 在浮动模式和非浮动模式之间切换聚焦
     // Mod+Shift+V hotkey-overlay-title=null { switch-focus-between-floating-and-tiling; }
@@ -160,46 +124,46 @@ binds {
     // Alt+grave hotkey-overlay-title=null { switch-focus-between-floating-and-tiling; }
     // Mod+Alt+N hotkey-overlay-title=null { switch-focus-between-floating-and-tiling; }
 
-    Mod+Escape allow-inhibiting=false { toggle-keyboard-shortcuts-inhibit; }
-    Mod+Shift+E hotkey-overlay-title="退出niri Quit niri" { quit; }
+
+
+    // =========================================================
+    // 第二部分：Noctalia 特有组件、工作区导航与媒体/亮度控制
+    // =========================================================
+
+    // Mod+Slash   hotkey-overlay-title="快捷键"       { spawn-sh "~/.config/niri/scripts/niri-binds.sh"; } 
+    // Mod+Space   hotkey-overlay-title="应用启动器"   { spawn "noctalia-shell" "ipc" "call" "launcher" "toggle"; }
+    // Mod+Ctrl+L  hotkey-overlay-title="锁屏"         { spawn "noctalia-shell" "ipc" "call" "lockScreen" "lock"; }
+    // Mod+Comma   hotkey-overlay-title="设置"         { spawn "noctalia-shell" "ipc" "call" "settings" "toggle"; }
+    // Mod+S       hotkey-overlay-title="控制面板"     { spawn "noctalia-shell" "ipc" "call" "controlCenter" "toggle"; }
+    // Mod+Alt+W   hotkey-overlay-title="壁纸切换"     { spawn "noctalia-shell" "ipc" "call" "wallpaper" "toggle"; }
 
 
     // =========================================================
     // 第二部分：DMS 特有组件、工作区导航与媒体/亮度控制
     // =========================================================
 
-    // === DMS 特有组件 ===
-    // 电源菜单 (Super+X)
-    Super+X hotkey-overlay-title="Power Menu: Toggle" { spawn "dms" "ipc" "call" "powermenu" "toggle"; }
-    // 壁纸选择器 (Mod+Y，作为 Mod+Alt+W 的备用)
-    Mod+Y hotkey-overlay-title="Browse Wallpapers" { spawn "dms" "ipc" "call" "dankdash" "wallpaper"; }
-    // 剪贴板
-    Mod+Alt+V hotkey-overlay-title="剪贴板 Clipboard" {spawn "dms" "ipc" "call" "clipboard" "toggle";}
-    // 记事本
-    Mod+Shift+N hotkey-overlay-title="记事本 Notepad" { spawn "dms" "ipc" "call" "notepad" "toggle"; }
+    Mod+Slash       hotkey-overlay-title="快捷键"       { spawn "dms" "ipc" "call" "keybinds" "toggle" "niri"; } 
+    Mod+Space       hotkey-overlay-title="应用启动器"   { spawn "dms" "ipc" "call" "spotlight" "toggle"; }
+    Mod+Comma       hotkey-overlay-title="设置"         { spawn "dms" "ipc" "call" "settings" "toggle"; }
+    Mod+Alt+L       hotkey-overlay-title="锁屏"         { spawn "dms" "ipc" "call" "lock" "lock"; }
+    Mod+Alt+P       hotkey-overlay-title="挂起"         { spawn-sh "niri msg action power-off-monitors && dms ipc call lock lock && systemctl suspend";}
+    Mod+Alt+X       hotkey-overlay-title="电源菜单"     { spawn "dms" "ipc" "call" "powermenu" "toggle"; }
+    Mod+Alt+V       hotkey-overlay-title="剪贴板"       { spawn "dms" "ipc" "call" "clipboard" "toggle"; }
+    Mod+Alt+N       hotkey-overlay-title="通知中心"     { spawn "dms" "ipc" "call" "notifications" "toggle"; }
+    Mod+Alt+W       hotkey-overlay-title="壁纸切换"     { spawn "dms" "ipc" "call" "dankdash" "wallpaper"; }
+    Ctrl+Alt+Delete hotkey-overlay-title="任务管理器"   { spawn "dms" "ipc" "call" "processlist" "focusOrToggle"; }
     
-    // 锁屏、关闭显示器、休眠
-    Mod+Alt+P hotkey-overlay-title="挂起 Suspend" { spawn-sh "niri msg action power-off-monitors && dms ipc call lock lock && systemctl suspend";}
-    // Ctrl+Alt+Del 呼出任务管理器
-    Ctrl+Alt+Delete hotkey-overlay-title="任务管理器 Task Manager" { spawn "dms" "ipc" "call" "processlist" "focusOrToggle"; }
-    // 创建窗口规则 (Mod+Shift+W)
-    Mod+Shift+W hotkey-overlay-title="Create window rule" { spawn "dms" "ipc" "call" "window-rules" "toggle"; }
+    // === 音频控制 ===
+    XF86AudioRaiseVolume    allow-when-locked=true hotkey-overlay-title="音量+"        { spawn "dms" "ipc" "call" "audio" "increment" "3"; }
+    XF86AudioLowerVolume    allow-when-locked=true hotkey-overlay-title="音量-"        { spawn "dms" "ipc" "call" "audio" "decrement" "3"; }
+    XF86AudioMute           allow-when-locked=true hotkey-overlay-title="麦克风开启"   { spawn "dms" "ipc" "call" "audio" "mute"; }
+    XF86AudioMicMute        allow-when-locked=true hotkey-overlay-title="麦克风静音"   { spawn "dms" "ipc" "call" "audio" "micmute"; }
 
-    // === 媒体控制 ===
-    XF86AudioRaiseVolume allow-when-locked=true { spawn "dms" "ipc" "call" "audio" "increment" "3"; }
-    XF86AudioLowerVolume allow-when-locked=true { spawn "dms" "ipc" "call" "audio" "decrement" "3"; }
-    XF86AudioMute allow-when-locked=true { spawn "dms" "ipc" "call" "audio" "mute"; }
-    XF86AudioMicMute allow-when-locked=true { spawn "dms" "ipc" "call" "audio" "micmute"; }
-    XF86AudioPause allow-when-locked=true { spawn "dms" "ipc" "call" "mpris" "playPause"; }
-    XF86AudioPlay allow-when-locked=true { spawn "dms" "ipc" "call" "mpris" "playPause"; }
-    XF86AudioPrev allow-when-locked=true { spawn "dms" "ipc" "call" "mpris" "previous"; }
-    XF86AudioNext allow-when-locked=true { spawn "dms" "ipc" "call" "mpris" "next"; }
-    Ctrl+XF86AudioRaiseVolume allow-when-locked=true { spawn "dms" "ipc" "call" "mpris" "increment" "3"; }
-    Ctrl+XF86AudioLowerVolume allow-when-locked=true { spawn "dms" "ipc" "call" "mpris" "decrement" "3"; }
 
     // === 亮度控制 ===
-    XF86MonBrightnessUp allow-when-locked=true { spawn "dms" "ipc" "call" "brightness" "increment" "5" ""; }
-    XF86MonBrightnessDown allow-when-locked=true { spawn "dms" "ipc" "call" "brightness" "decrement" "5" ""; }
+    XF86MonBrightnessUp     allow-when-locked=true hotkey-overlay-title="亮度+"     { spawn "dms" "ipc" "call" "brightness" "increment" "5" ""; }
+    XF86MonBrightnessDown   allow-when-locked=true hotkey-overlay-title="亮度-"     { spawn "dms" "ipc" "call" "brightness" "decrement" "5" ""; }
+    
 
 
     // =========================================================
@@ -207,16 +171,16 @@ binds {
     // =========================================================
 
     // === 工作区导航补充 (无冲突项) ===
-    Mod+Page_Down          { focus-workspace-down; }
-    Mod+Page_Up            { focus-workspace-up; }
-    Mod+U                  { focus-workspace-down; }
-    Mod+I                  { focus-workspace-up; }
+    Mod+Page_Down   hotkey-overlay-title="下个工作区"         { focus-workspace-down; }
+    Mod+Page_Up     hotkey-overlay-title="上个工作区"         { focus-workspace-up; }
+    Mod+U           hotkey-overlay-title="下个工作区"         { focus-workspace-down; }
+    Mod+I           hotkey-overlay-title="上个工作区"         { focus-workspace-up; }
 
-    Mod+Ctrl+U             { move-column-to-workspace-down; }
-    Mod+Ctrl+I             { move-column-to-workspace-up; }
+    Mod+Ctrl+U      hotkey-overlay-title="当前窗口移至下个工作区"       { move-column-to-workspace-down; }
+    Mod+Ctrl+I      hotkey-overlay-title="当前窗口移至上个工作区"       { move-column-to-workspace-up; }
 
     // 重命名工作区
-    Ctrl+Shift+R hotkey-overlay-title="Rename Workspace" { spawn "dms" "ipc" "call" "workspace-rename" "open"; }
+    Ctrl+Shift+R hotkey-overlay-title="命名工作区" { spawn "dms" "ipc" "call" "workspace-rename" "open"; }
 
     // === 切换工作区 ===
     Mod+1   hotkey-overlay-title="切换工作区1"      { focus-workspace 1; }
@@ -241,10 +205,10 @@ binds {
     Mod+Ctrl+9   hotkey-overlay-title="移动至工作区9"   { move-column-to-workspace 9; }
 
     // === 工作区上下切换 ===
-    Mod+Shift+Page_Down    { move-workspace-down; }
-    Mod+Shift+Page_Up      { move-workspace-up; }
-    Mod+Shift+U            { move-workspace-down; }
-    Mod+Shift+I            { move-workspace-up; }
+    Mod+Shift+Page_Down    hotkey-overlay-title="工作区下移"        { move-workspace-down; }
+    Mod+Shift+Page_Up      hotkey-overlay-title="工作区上移"        { move-workspace-up; }
+    Mod+Shift+U            hotkey-overlay-title="工作区下移"        { move-workspace-down; }
+    Mod+Shift+I            hotkey-overlay-title="工作区上移"        { move-workspace-up; }
 
 
 
@@ -279,10 +243,25 @@ binds {
     Mod+Left    hotkey-overlay-title="窗口焦点左移"   { focus-column-left; }
     Mod+Right   hotkey-overlay-title="窗口焦点右移"   { focus-column-right; }
 
+    // mod+逗号/句号 把窗口合并或者踢出当前的colume
+    Mod+Period  hotkey-overlay-title="踢出窗口"         { expel-window-from-column; }
+
+    Mod+Shift+A hotkey-overlay-title="合并窗口"         { consume-window-into-column; }
+    Mod+Shift+D hotkey-overlay-title="踢出窗口"         { expel-window-from-column; }
 
 
-    // === 其他备用快捷键 ===
-    // 截图
-    Mod+P       hotkey-overlay-title="区域截图"         { screenshot; }
-    Mod+Ctrl+P  hotkey-overlay-title="全屏截图"         { screenshot-screen; }
+    // =========================================================
+    // 第五部分：应用快捷键
+    // =========================================================
+    Mod+Return  hotkey-overlay-title="终端"         { spawn "ghostty"; }
+    Mod+Shift+B hotkey-overlay-title="浏览器"       { spawn "microsoft-edge"; }
+    Mod+Shift+F hotkey-overlay-title="文件管理器"   { spawn-sh "dolphin --new-window"; }
+
+
+
+
+    // =========================================================
+    // 第五部分：其他备用快捷键
+    // =========================================================
+
 }

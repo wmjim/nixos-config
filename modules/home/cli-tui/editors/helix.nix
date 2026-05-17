@@ -22,8 +22,8 @@
 
         # 光标形状
         cursor-shape = {
-          insert = "bar";         # 插入模式：竖线光标
           normal = "block";       # 普通模式：块状光标
+          insert = "bar";         # 插入模式：竖线光标
           select = "underline";   # 选择模式：下划线光标
         };
 

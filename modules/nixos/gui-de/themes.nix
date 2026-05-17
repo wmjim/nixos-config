@@ -27,6 +27,7 @@
 
     # 图标和光标
     whitesur-icon-theme               # WhiteSur 图标主题
+    kdePackages.qtsvg                 # KDE SVG 支持（图标渲染）
     bibata-cursors                    # Bibata 光标主题
   ];
 }

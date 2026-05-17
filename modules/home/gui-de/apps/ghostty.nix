@@ -7,7 +7,9 @@
     enable = true;
     settings = {
       # --- 主题 ---
-      theme = "Catppuccin Mocha";
+      # theme = "Catppuccin Mocha";
+      theme = "GitHub Light Default";
+
             
       # --- 字体 ---
       font-family = ["Maple Mono Normal NL NF" "LXGW WenKai Mono"];
@@ -72,13 +74,13 @@
 
         # Splits
         # 向右分屏
-        "cmd+d=new_split:right"
+        # "cmd+d=new_split:right"
         # 向下分屏
-        "cmd+shift+d=new_split:down"
+        # "cmd+shift+d=new_split:down"
         # 平均分配分屏大小
-        "cmd+shift+e=equalize_splits"
+        # "cmd+shift+e=equalize_splits"
         # 最大化/还原当前分屏
-        "cmd+shift+enter=toggle_split_zoom"
+        # "cmd+shift+enter=toggle_split_zoom"
         # 切换到左侧分屏
         # "alt+left=goto_split:left"
         # 切换到右侧分屏

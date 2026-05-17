@@ -6,14 +6,11 @@
 // window-rule 对 layer-shell 无效，必须用 layer-rule 启用模糊。
 
 // --- Noctalia Shell 覆盖层磨砂 ---
-// layer-rule {
-//     match layer="overlay"
-//     match layer="top"
-//     background-effect {
-//         blur true
-//         xray false
-//     }
-// }
+// 将模糊壁纸放置在概览中
+layer-rule {
+    match namespace="dms:blurwallpaper"
+    place-within-backdrop true
+}
 // 设计：opacity（透明度）+ background-effect blur（背景模糊）+ xray false（非穿透模糊）
 //
 // 透明度层级一览（压低透明度才能看清模糊后的背景）：
