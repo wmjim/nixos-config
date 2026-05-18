@@ -4,6 +4,8 @@
     environment.systemPackages = with pkgs; [
         (vscode-with-extensions.override {
             vscodeExtensions = with vscode-extensions; [
+            # claude
+            anthropic.claude-code
             jnoortheen.nix-ide
             ms-python.python
             ms-azuretools.vscode-docker

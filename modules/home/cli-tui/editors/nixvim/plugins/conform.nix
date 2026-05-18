@@ -16,7 +16,7 @@
       gosimports
       gofumpt
       prettierd
-      nixfmt-rfc-style
+      pkgs.nixfmt
     ];
 
     # Autoformat
