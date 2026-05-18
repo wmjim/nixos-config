@@ -23,6 +23,9 @@ sudo nixos-rebuild switch --flake ~/nixos-config#server
 
 # 构建 macOS（在 Mac 上）
 darwin-rebuild switch --flake ~/nixos-config#macbook
+
+# 删除所有旧版本的配置文件
+nix-collect-garbage --delete-old
 ```
 
 - 终端Shell：[Fish](https://github.com/fish-shell/fish-shell)
