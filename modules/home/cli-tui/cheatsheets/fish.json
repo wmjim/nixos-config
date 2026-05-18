@@ -1,0 +1,182 @@
+{
+  "title": "Fish Shell 快捷键",
+  "provider": "fish",
+  "binds": {
+    "光标移动": [
+      {
+        "key": "Ctrl + A",
+        "desc": "跳到行首",
+        "action": " "
+      },
+      {
+        "key": "Ctrl + E",
+        "desc": "跳到行尾",
+        "action": " "
+      },
+      {
+        "key": "Ctrl + F",
+        "desc": "前进一个字符",
+        "action": " "
+      },
+      {
+        "key": "Ctrl + B",
+        "desc": "后退一个字符",
+        "action": " "
+      },
+      {
+        "key": "Alt + F",
+        "desc": "前进一个单词",
+        "action": " "
+      },
+      {
+        "key": "Alt + B",
+        "desc": "后退一个单词",
+        "action": " "
+      }
+    ],
+    "编辑": [
+      {
+        "key": "Ctrl + U",
+        "desc": "删除从光标到行首",
+        "action": " "
+      },
+      {
+        "key": "Ctrl + K",
+        "desc": "删除从光标到行尾",
+        "action": " "
+      },
+      {
+        "key": "Ctrl + W",
+        "desc": "删除前一个单词",
+        "action": " "
+      },
+      {
+        "key": "Alt + D",
+        "desc": "删除下一个单词",
+        "action": " "
+      },
+      {
+        "key": "Alt + Backspace",
+        "desc": "删除前一个单词",
+        "action": " "
+      },
+      {
+        "key": "Ctrl + D",
+        "desc": "删除光标处字符",
+        "subcat": "删除",
+        "action": " "
+      },
+      {
+        "key": "Ctrl + H",
+        "desc": "删除光标前字符",
+        "subcat": "删除",
+        "action": " "
+      },
+      {
+        "key": "Ctrl + T",
+        "desc": "交换前后两个字符",
+        "subcat": "交换",
+        "action": " "
+      },
+      {
+        "key": "Alt + T",
+        "desc": "交换前后两个单词",
+        "subcat": "交换",
+        "action": " "
+      },
+      {
+        "key": "Ctrl + _",
+        "desc": "撤销上一次编辑",
+        "action": " "
+      },
+      {
+        "key": "Ctrl + /",
+        "desc": "撤销上一次编辑",
+        "action": " "
+      }
+    ],
+    "历史": [
+      {
+        "key": "Ctrl + P",
+        "desc": "上一个命令",
+        "action": " "
+      },
+      {
+        "key": "Ctrl + N",
+        "desc": "下一个命令",
+        "action": " "
+      },
+      {
+        "key": "Ctrl + R",
+        "desc": "搜索命令历史",
+        "action": " "
+      },
+      {
+        "key": "Alt + Up",
+        "desc": "上一个包含当前输入的命令",
+        "action": " "
+      },
+      {
+        "key": "Alt + Down",
+        "desc": "下一个包含当前输入的命令",
+        "action": " "
+      }
+    ],
+    "补全": [
+      {
+        "key": "Tab",
+        "desc": "补全",
+        "action": " "
+      },
+      {
+        "key": "Ctrl + Space",
+        "desc": "展开补全列表",
+        "action": " "
+      },
+      {
+        "key": "Alt + /",
+        "desc": "自动补全文件名",
+        "action": " "
+      }
+    ],
+    "控制": [
+      {
+        "key": "Ctrl + C",
+        "desc": "取消当前命令",
+        "action": " "
+      },
+      {
+        "key": "Ctrl + D",
+        "desc": "退出 shell (EOF)",
+        "action": " "
+      },
+      {
+        "key": "Ctrl + L",
+        "desc": "清屏",
+        "action": " "
+      },
+      {
+        "key": "Ctrl + Z",
+        "desc": "挂起当前进程",
+        "action": " "
+      },
+      {
+        "key": "Ctrl + S",
+        "desc": "暂停输出",
+        "action": " "
+      },
+      {
+        "key": "Ctrl + Q",
+        "desc": "恢复输出",
+        "action": " "
+      }
+    ],
+    "自定义": [
+      {
+        "key": "Ctrl + O",
+        "desc": "命令收藏夹查询",
+        "action": " "
+      }
+    ]
+  }
+}

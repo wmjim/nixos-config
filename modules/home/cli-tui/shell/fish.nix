@@ -78,9 +78,75 @@
         set -gx FZF_DEFAULT_OPTS '--height 40% --layout=reverse --border --preview "bat --color=always {}" --preview-window=right:60%'
         set -gx FZF_DEFAULT_COMMAND 'fd --type f --hidden --follow --exclude .git'
       end
+
+      # fzf 命令收藏夹，从 ~/.config/fish/commands 中查询并插入命令行
+      # 文件格式：命令  |  备注（用 | 分割）
+      function fish_command_picker
+        set -l commands_file ~/.config/fish/commands
+        if not test -f $commands_file
+          echo "commands file not found: $commands_file"
+          return 1
+        end
+        set -l selected (grep -v '^\s*#' $commands_file | grep -v '^\s*$' | env FZF_DEFAULT_OPTS="" fzf --prompt="Cmd > " --height=40% --layout=reverse --border --no-hscroll)
+        if test -n "$selected"
+          set -l cmd (string trim -- (string split -m1 '|' -- $selected)[1])
+          commandline --replace -- $cmd
+          commandline -f repaint
+        end
+      end
+      bind \co fish_command_picker
+
+      # 快捷键速查表查询工具
+      # 用法: cheat [provider]  — 不带参数则通过 fzf 选择
+      function cheat
+        set -l dir ~/.config/DankMaterialShell/cheatsheets
+
+        if not test -d $dir
+          echo "cheatsheets directory not found: $dir"
+          return 1
+        end
+
+        set -l provider $argv[1]
+
+        if test -z "$provider"
+          set provider (for f in $dir/*.json
+            jq -r '"\(.provider): \(.title)"' $f
+          end | env FZF_DEFAULT_OPTS="" fzf \
+            --prompt="Cheatsheet > " \
+            --height=40% \
+            --layout=reverse \
+            --border \
+            --preview "jq -r '.binds | to_entries[] | .key as \$cat | .value[] | \"  \" + .key + \"\t\" + .desc + (if .subcat then \" [\" + .subcat + \"]\" else \"\" end)' $dir/{1}.json" \
+            --preview-window=right:60% \
+            --delimiter=':')
+
+          if test -z "$provider"
+            return
+          end
+          set provider (string split -m1 ':' -- $provider | head -1 | string trim)
+        end
+
+        set -l file $dir/$provider.json
+        if not test -f $file
+          echo "cheatsheet not found: $provider"
+          return 1
+        end
+
+        echo ""
+        jq -r '.title + " (" + .provider + ")"' $file
+        echo "────────────────────────────────────────────"
+        jq -r '
+          .binds | to_entries[] |
+          "\n" + .key + ":",
+          (.value[] | "  " + .key + "\t" + .desc + (if .subcat then " [" + .subcat + "]" else "" end))
+        ' $file
+      end
     '';
   };
   # zoxide 替代 cd
   programs.zoxide.enable = true;
   programs.zoxide.enableFishIntegration = true;
+
+  # fzf 命令收藏夹文件
+  xdg.configFile."fish/commands".source = ./fish-commands;
 }

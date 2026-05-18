@@ -12,9 +12,9 @@
     modesetting.enable = true;
     powerManagement.enable = true;
     # 副显卡:按需渲染
-    # prime.offload.enable = true;
+    prime.offload.enable = true;
     #主显卡
-    prime.sync.enable = true;
+    # prime.sync.enable = true;
     prime.intelBusId = "PCI:0:2:0";
     prime.nvidiaBusId = "PCI:1:0:0";
     # 锁定 580.x Legacy 驱动

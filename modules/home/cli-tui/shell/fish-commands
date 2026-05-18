@@ -1,0 +1,15 @@
+# NixOS 重建
+sudo nixos-rebuild switch --flake ~/nixos-config#wsl     | 更新 WSL 系统
+sudo nixos-rebuild switch --flake ~/nixos-config#laptop  | 更新 laptop 系统
+
+# dms 相关
+dms keybinds list                                        | 列出所有可用的快捷键提供者
+dms keybinds show niri                                   | 以JSON格式显示指定提供者的快捷键
+dms ipc call keybinds toggle niri                        | 通过IPC在DMS中直接显示按键绑定
+
+# tmux 相关
+tmux list-keys                                           | 查看tmux所有快捷键
+tmux new -s <name>                                       | 新建命名会话
+tmux ls                                                  | 列出所有会话
+tmux attach -t <name>                                    | 附加到指定会话
+tmux kill-session -t <name>                              | 关闭指定会话

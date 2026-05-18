@@ -1,0 +1,1501 @@
+{
+  "title": "Helix 快捷键",
+  "provider": "helix",
+  "binds": {
+    "基本移动": [
+      {
+        "key": "h / Left",
+        "desc": "左移",
+        "subcat": "方向",
+        "action": " "
+      },
+      {
+        "key": "j / Down",
+        "desc": "下移",
+        "subcat": "方向",
+        "action": " "
+      },
+      {
+        "key": "k / Up",
+        "desc": "上移",
+        "subcat": "方向",
+        "action": " "
+      },
+      {
+        "key": "l / Right",
+        "desc": "右移",
+        "subcat": "方向",
+        "action": " "
+      },
+      {
+        "key": "w",
+        "desc": "下一个单词词首",
+        "subcat": "单词",
+        "action": " "
+      },
+      {
+        "key": "b",
+        "desc": "上一个单词词首",
+        "subcat": "单词",
+        "action": " "
+      },
+      {
+        "key": "e",
+        "desc": "下一个单词词尾",
+        "subcat": "单词",
+        "action": " "
+      },
+      {
+        "key": "W",
+        "desc": "下一个 WORD 词首",
+        "subcat": "WORD",
+        "action": " "
+      },
+      {
+        "key": "B",
+        "desc": "上一个 WORD 词首",
+        "subcat": "WORD",
+        "action": " "
+      },
+      {
+        "key": "E",
+        "desc": "下一个 WORD 词尾",
+        "subcat": "WORD",
+        "action": " "
+      },
+      {
+        "key": "f / F",
+        "desc": "查找下一个/上一个字符",
+        "subcat": "查找字符",
+        "action": " "
+      },
+      {
+        "key": "t / T",
+        "desc": "移动到下一个/上一个字符前",
+        "subcat": "查找字符",
+        "action": " "
+      },
+      {
+        "key": "Alt + .",
+        "desc": "重复上一次动作",
+        "subcat": "跳转",
+        "action": " "
+      },
+      {
+        "key": "G",
+        "desc": "跳转到第 n 行",
+        "subcat": "跳转",
+        "action": " "
+      },
+      {
+        "key": "Home",
+        "desc": "行首",
+        "subcat": "跳转",
+        "action": " "
+      },
+      {
+        "key": "End",
+        "desc": "行尾",
+        "subcat": "跳转",
+        "action": " "
+      },
+      {
+        "key": "Ctrl + b / PageUp",
+        "desc": "向上翻页",
+        "subcat": "翻页",
+        "action": " "
+      },
+      {
+        "key": "Ctrl + f / PageDown",
+        "desc": "向下翻页",
+        "subcat": "翻页",
+        "action": " "
+      },
+      {
+        "key": "Ctrl + u",
+        "desc": "向上翻半页",
+        "subcat": "翻页",
+        "action": " "
+      },
+      {
+        "key": "Ctrl + d",
+        "desc": "向下翻半页",
+        "subcat": "翻页",
+        "action": " "
+      },
+      {
+        "key": "Ctrl + i",
+        "desc": "跳转列表前进",
+        "subcat": "跳转列表",
+        "action": " "
+      },
+      {
+        "key": "Ctrl + o",
+        "desc": "跳转列表后退",
+        "subcat": "跳转列表",
+        "action": " "
+      },
+      {
+        "key": "Ctrl + s",
+        "desc": "保存当前位置到跳转列表",
+        "subcat": "跳转列表",
+        "action": " "
+      }
+    ],
+    "编辑修改": [
+      {
+        "key": "i",
+        "desc": "光标前插入",
+        "subcat": "插入",
+        "action": " "
+      },
+      {
+        "key": "a",
+        "desc": "光标后插入",
+        "subcat": "插入",
+        "action": " "
+      },
+      {
+        "key": "I",
+        "desc": "行首插入",
+        "subcat": "插入",
+        "action": " "
+      },
+      {
+        "key": "A",
+        "desc": "行尾插入",
+        "subcat": "插入",
+        "action": " "
+      },
+      {
+        "key": "o",
+        "desc": "下方插入新行",
+        "subcat": "插入",
+        "action": " "
+      },
+      {
+        "key": "O",
+        "desc": "上方插入新行",
+        "subcat": "插入",
+        "action": " "
+      },
+      {
+        "key": "r",
+        "desc": "替换为指定字符",
+        "subcat": "替换",
+        "action": " "
+      },
+      {
+        "key": "R",
+        "desc": "替换为已复制文本",
+        "subcat": "替换",
+        "action": " "
+      },
+      {
+        "key": "~",
+        "desc": "切换大小写",
+        "subcat": "大小写",
+        "action": " "
+      },
+      {
+        "key": "`",
+        "desc": "转为小写",
+        "subcat": "大小写",
+        "action": " "
+      },
+      {
+        "key": "Alt + `",
+        "desc": "转为大写",
+        "subcat": "大小写",
+        "action": " "
+      },
+      {
+        "key": "d",
+        "desc": "删除选中内容",
+        "subcat": "删除",
+        "action": " "
+      },
+      {
+        "key": "Alt + d",
+        "desc": "删除选中内容(不复制)",
+        "subcat": "删除",
+        "action": " "
+      },
+      {
+        "key": "c",
+        "desc": "修改选中内容(删除并插入)",
+        "subcat": "修改",
+        "action": " "
+      },
+      {
+        "key": "Alt + c",
+        "desc": "修改选中内容(不复制)",
+        "subcat": "修改",
+        "action": " "
+      },
+      {
+        "key": "y",
+        "desc": "复制选中内容",
+        "subcat": "复制粘贴",
+        "action": " "
+      },
+      {
+        "key": "p",
+        "desc": "光标后粘贴",
+        "subcat": "复制粘贴",
+        "action": " "
+      },
+      {
+        "key": "P",
+        "desc": "光标前粘贴",
+        "subcat": "复制粘贴",
+        "action": " "
+      },
+      {
+        "key": "\" <reg>",
+        "desc": "选择寄存器",
+        "subcat": "寄存器",
+        "action": " "
+      },
+      {
+        "key": "u",
+        "desc": "撤销",
+        "subcat": "撤销重做",
+        "action": " "
+      },
+      {
+        "key": "U",
+        "desc": "重做",
+        "subcat": "撤销重做",
+        "action": " "
+      },
+      {
+        "key": "Alt + u",
+        "desc": "历史后退",
+        "subcat": "撤销重做",
+        "action": " "
+      },
+      {
+        "key": "Alt + U",
+        "desc": "历史前进",
+        "subcat": "撤销重做",
+        "action": " "
+      },
+      {
+        "key": ">",
+        "desc": "增加缩进",
+        "subcat": "缩进",
+        "action": " "
+      },
+      {
+        "key": "<",
+        "desc": "减少缩进",
+        "subcat": "缩进",
+        "action": " "
+      },
+      {
+        "key": "=",
+        "desc": "格式化选中内容 (LSP)",
+        "subcat": "格式化",
+        "action": " "
+      },
+      {
+        "key": "Ctrl + a",
+        "desc": "递增数字",
+        "subcat": "数值",
+        "action": " "
+      },
+      {
+        "key": "Ctrl + x",
+        "desc": "递减数字",
+        "subcat": "数值",
+        "action": " "
+      },
+      {
+        "key": ".",
+        "desc": "重复上一次插入",
+        "subcat": "重复",
+        "action": " "
+      },
+      {
+        "key": "Q",
+        "desc": "开始/停止录制宏",
+        "subcat": "宏",
+        "action": " "
+      },
+      {
+        "key": "q",
+        "desc": "播放已录制宏",
+        "subcat": "宏",
+        "action": " "
+      }
+    ],
+    "Shell 管道": [
+      {
+        "key": "|",
+        "desc": "管道选中内容到 shell，替换为输出",
+        "action": " "
+      },
+      {
+        "key": "Alt + |",
+        "desc": "管道到 shell，忽略输出",
+        "action": " "
+      },
+      {
+        "key": "!",
+        "desc": "运行 shell 命令，插入输出到选中前",
+        "action": " "
+      },
+      {
+        "key": "Alt + !",
+        "desc": "运行 shell 命令，追加输出到选中后",
+        "action": " "
+      },
+      {
+        "key": "$",
+        "desc": "管道选中到 shell，保留返回 0 的选区",
+        "action": " "
+      }
+    ],
+    "选择操作": [
+      {
+        "key": "v",
+        "desc": "进入选择(扩展)模式",
+        "subcat": "模式切换",
+        "action": " "
+      },
+      {
+        "key": "s",
+        "desc": "选中所有正则匹配",
+        "subcat": "选择",
+        "action": " "
+      },
+      {
+        "key": "S",
+        "desc": "按正则匹配分割选区",
+        "subcat": "选择",
+        "action": " "
+      },
+      {
+        "key": "Alt + s",
+        "desc": "按换行分割选区",
+        "subcat": "选择",
+        "action": " "
+      },
+      {
+        "key": "C",
+        "desc": "复制选区到下一行(向下添加光标)",
+        "subcat": "多光标",
+        "action": " "
+      },
+      {
+        "key": "Alt + C",
+        "desc": "复制选区到上一行(向上添加光标)",
+        "subcat": "多光标",
+        "action": " "
+      },
+      {
+        "key": ";",
+        "desc": "合并选区的所有光标",
+        "subcat": "选区操作",
+        "action": " "
+      },
+      {
+        "key": "Alt + ;",
+        "desc": "翻转选区锚点和光标",
+        "subcat": "选区操作",
+        "action": " "
+      },
+      {
+        "key": "Alt + :",
+        "desc": "确保选区为正向",
+        "subcat": "选区操作",
+        "action": " "
+      },
+      {
+        "key": ",",
+        "desc": "仅保留主选区",
+        "subcat": "选区操作",
+        "action": " "
+      },
+      {
+        "key": "Alt + ,",
+        "desc": "移除主选区",
+        "subcat": "选区操作",
+        "action": " "
+      },
+      {
+        "key": "(",
+        "desc": "主选区向后轮转",
+        "subcat": "选区操作",
+        "action": " "
+      },
+      {
+        "key": ")",
+        "desc": "主选区向前轮转",
+        "subcat": "选区操作",
+        "action": " "
+      },
+      {
+        "key": "Alt + (",
+        "desc": "选区内容向后轮转",
+        "subcat": "选区操作",
+        "action": " "
+      },
+      {
+        "key": "Alt + )",
+        "desc": "选区内容向前轮转",
+        "subcat": "选区操作",
+        "action": " "
+      },
+      {
+        "key": "Alt + -",
+        "desc": "合并选区",
+        "subcat": "选区操作",
+        "action": " "
+      },
+      {
+        "key": "Alt + _",
+        "desc": "合并连续选区",
+        "subcat": "选区操作",
+        "action": " "
+      },
+      {
+        "key": "%",
+        "desc": "选中整个文件",
+        "subcat": "选区操作",
+        "action": " "
+      },
+      {
+        "key": "x",
+        "desc": "选中当前行，已选中则扩展到下一行",
+        "subcat": "行操作",
+        "action": " "
+      },
+      {
+        "key": "X",
+        "desc": "扩展选区到行边界(行选取)",
+        "subcat": "行操作",
+        "action": " "
+      },
+      {
+        "key": "Alt + x",
+        "desc": "收缩选区到行边界",
+        "subcat": "行操作",
+        "action": " "
+      },
+      {
+        "key": "J",
+        "desc": "连接选区内的行",
+        "subcat": "行操作",
+        "action": " "
+      },
+      {
+        "key": "Alt + J",
+        "desc": "连接行并选中插入的空格",
+        "subcat": "行操作",
+        "action": " "
+      },
+      {
+        "key": "K",
+        "desc": "保留匹配正则的选区",
+        "subcat": "过滤",
+        "action": " "
+      },
+      {
+        "key": "Alt + K",
+        "desc": "移除匹配正则的选区",
+        "subcat": "过滤",
+        "action": " "
+      },
+      {
+        "key": "&",
+        "desc": "对齐选区为列",
+        "subcat": "对齐",
+        "action": " "
+      },
+      {
+        "key": "_",
+        "desc": "去除选区空白",
+        "subcat": "空白",
+        "action": " "
+      },
+      {
+        "key": "Ctrl + c",
+        "desc": "注释/取消注释",
+        "subcat": "注释",
+        "action": " "
+      }
+    ],
+    "语法树操作 (TS)": [
+      {
+        "key": "Alt + o / Alt + Up",
+        "desc": "扩展到父语法节点",
+        "subcat": "选择",
+        "action": " "
+      },
+      {
+        "key": "Alt + i / Alt + Down",
+        "desc": "收缩语法树对象选择",
+        "subcat": "选择",
+        "action": " "
+      },
+      {
+        "key": "Alt + p / Alt + Left",
+        "desc": "选择上一个兄弟节点",
+        "subcat": "导航",
+        "action": " "
+      },
+      {
+        "key": "Alt + n / Alt + Right",
+        "desc": "选择下一个兄弟节点",
+        "subcat": "导航",
+        "action": " "
+      },
+      {
+        "key": "Alt + a",
+        "desc": "选择所有兄弟节点",
+        "subcat": "选择",
+        "action": " "
+      },
+      {
+        "key": "Alt + I / Alt + Shift + Down",
+        "desc": "选择所有子节点",
+        "subcat": "选择",
+        "action": " "
+      },
+      {
+        "key": "Alt + e",
+        "desc": "移动到父节点末尾",
+        "subcat": "导航",
+        "action": " "
+      },
+      {
+        "key": "Alt + b",
+        "desc": "移动到父节点开头",
+        "subcat": "导航",
+        "action": " "
+      }
+    ],
+    "查找搜索": [
+      {
+        "key": "/",
+        "desc": "向前搜索正则",
+        "action": " "
+      },
+      {
+        "key": "?",
+        "desc": "向后搜索正则",
+        "action": " "
+      },
+      {
+        "key": "n",
+        "desc": "下一个匹配",
+        "action": " "
+      },
+      {
+        "key": "N",
+        "desc": "上一个匹配",
+        "action": " "
+      },
+      {
+        "key": "*",
+        "desc": "用当前选中词搜索(自动加 \\b)",
+        "action": " "
+      },
+      {
+        "key": "Alt + *",
+        "desc": "用当前选中词搜索(不加 \\b)",
+        "action": " "
+      }
+    ],
+    "模式入口": [
+      {
+        "key": "v",
+        "desc": "进入选择(扩展)模式",
+        "action": " "
+      },
+      {
+        "key": "g",
+        "desc": "进入 Goto 模式",
+        "action": " "
+      },
+      {
+        "key": "m",
+        "desc": "进入匹配模式",
+        "action": " "
+      },
+      {
+        "key": ":",
+        "desc": "进入命令模式",
+        "action": " "
+      },
+      {
+        "key": "z",
+        "desc": "进入视图模式",
+        "action": " "
+      },
+      {
+        "key": "Z",
+        "desc": "进入粘滞视图模式",
+        "action": " "
+      },
+      {
+        "key": "Ctrl + w",
+        "desc": "进入窗口模式",
+        "action": " "
+      },
+      {
+        "key": "Space",
+        "desc": "进入 Space 模式",
+        "action": " "
+      }
+    ],
+    "Goto 模式 (g)": [
+      {
+        "key": "g",
+        "desc": "跳转到第 n 行，否则文件开头",
+        "action": " "
+      },
+      {
+        "key": "e",
+        "desc": "跳转到文件末尾",
+        "action": " "
+      },
+      {
+        "key": "f",
+        "desc": "跳转到选中内容指向的文件",
+        "action": " "
+      },
+      {
+        "key": "h",
+        "desc": "跳转到行首",
+        "action": " "
+      },
+      {
+        "key": "l",
+        "desc": "跳转到行尾",
+        "action": " "
+      },
+      {
+        "key": "s",
+        "desc": "跳转到行首非空白字符",
+        "action": " "
+      },
+      {
+        "key": "t",
+        "desc": "跳转到屏幕顶行",
+        "action": " "
+      },
+      {
+        "key": "c",
+        "desc": "跳转到屏幕中间行",
+        "action": " "
+      },
+      {
+        "key": "b",
+        "desc": "跳转到屏幕底行",
+        "action": " "
+      },
+      {
+        "key": "d",
+        "desc": "跳转到定义 (LSP)",
+        "action": " "
+      },
+      {
+        "key": "y",
+        "desc": "跳转到类型定义 (LSP)",
+        "action": " "
+      },
+      {
+        "key": "r",
+        "desc": "跳转到引用 (LSP)",
+        "action": " "
+      },
+      {
+        "key": "i",
+        "desc": "跳转到实现 (LSP)",
+        "action": " "
+      },
+      {
+        "key": "a",
+        "desc": "跳转到上一个访问/交替文件",
+        "action": " "
+      },
+      {
+        "key": "m",
+        "desc": "跳转到上一个修改文件",
+        "action": " "
+      },
+      {
+        "key": "n",
+        "desc": "跳转到下一个缓冲区",
+        "action": " "
+      },
+      {
+        "key": "p",
+        "desc": "跳转到上一个缓冲区",
+        "action": " "
+      },
+      {
+        "key": ".",
+        "desc": "跳转到最后一次修改位置",
+        "action": " "
+      },
+      {
+        "key": "j",
+        "desc": "向下移动一行(文本行为单位)",
+        "action": " "
+      },
+      {
+        "key": "k",
+        "desc": "向上移动一行(文本行为单位)",
+        "action": " "
+      },
+      {
+        "key": "w",
+        "desc": "显示单词标签并选择",
+        "action": " "
+      }
+    ],
+    "匹配模式 (m)": [
+      {
+        "key": "m",
+        "desc": "跳转到匹配括号 (TS)",
+        "action": " "
+      },
+      {
+        "key": "s <char>",
+        "desc": "用 <char> 包围当前选区",
+        "action": " "
+      },
+      {
+        "key": "r <from><to>",
+        "desc": "替换包围字符 <from> 为 <to>",
+        "action": " "
+      },
+      {
+        "key": "d <char>",
+        "desc": "删除包围字符 <char>",
+        "action": " "
+      },
+      {
+        "key": "a <object>",
+        "desc": "选择文本对象外围",
+        "action": " "
+      },
+      {
+        "key": "i <object>",
+        "desc": "选择文本对象内部",
+        "action": " "
+      }
+    ],
+    "视图模式 (z/Z)": [
+      {
+        "key": "z / c",
+        "desc": "垂直居中当前行",
+        "action": " "
+      },
+      {
+        "key": "t",
+        "desc": "对齐到屏幕顶部",
+        "action": " "
+      },
+      {
+        "key": "b",
+        "desc": "对齐到屏幕底部",
+        "action": " "
+      },
+      {
+        "key": "m",
+        "desc": "水平居中当前行",
+        "action": " "
+      },
+      {
+        "key": "j / Down",
+        "desc": "向下滚动视图",
+        "action": " "
+      },
+      {
+        "key": "k / Up",
+        "desc": "向上滚动视图",
+        "action": " "
+      },
+      {
+        "key": "Ctrl + f / PageDown",
+        "desc": "向下翻页",
+        "action": " "
+      },
+      {
+        "key": "Ctrl + b / PageUp",
+        "desc": "向上翻页",
+        "action": " "
+      },
+      {
+        "key": "Ctrl + u",
+        "desc": "向上翻半页",
+        "action": " "
+      },
+      {
+        "key": "Ctrl + d",
+        "desc": "向下翻半页",
+        "action": " "
+      }
+    ],
+    "窗口模式 (Ctrl+w)": [
+      {
+        "key": "v / Ctrl + v",
+        "desc": "垂直分割(右侧)",
+        "subcat": "分割",
+        "action": " "
+      },
+      {
+        "key": "s / Ctrl + s",
+        "desc": "水平分割(下侧)",
+        "subcat": "分割",
+        "action": " "
+      },
+      {
+        "key": "f",
+        "desc": "打开选中文件(水平分割)",
+        "subcat": "分割",
+        "action": " "
+      },
+      {
+        "key": "F",
+        "desc": "打开选中文件(垂直分割)",
+        "subcat": "分割",
+        "action": " "
+      },
+      {
+        "key": "h / Left",
+        "desc": "移动到左侧窗口",
+        "subcat": "导航",
+        "action": " "
+      },
+      {
+        "key": "j / Down",
+        "desc": "移动到下方窗口",
+        "subcat": "导航",
+        "action": " "
+      },
+      {
+        "key": "k / Up",
+        "desc": "移动到上方窗口",
+        "subcat": "导航",
+        "action": " "
+      },
+      {
+        "key": "l / Right",
+        "desc": "移动到右侧窗口",
+        "subcat": "导航",
+        "action": " "
+      },
+      {
+        "key": "H",
+        "desc": "窗口向左交换",
+        "subcat": "交换",
+        "action": " "
+      },
+      {
+        "key": "J",
+        "desc": "窗口向下交换",
+        "subcat": "交换",
+        "action": " "
+      },
+      {
+        "key": "K",
+        "desc": "窗口向上交换",
+        "subcat": "交换",
+        "action": " "
+      },
+      {
+        "key": "L",
+        "desc": "窗口向右交换",
+        "subcat": "交换",
+        "action": " "
+      },
+      {
+        "key": "q / Ctrl + q",
+        "desc": "关闭当前窗口",
+        "subcat": "管理",
+        "action": " "
+      },
+      {
+        "key": "o / Ctrl + o",
+        "desc": "只保留当前窗口",
+        "subcat": "管理",
+        "action": " "
+      }
+    ],
+    "Space 模式": [
+      {
+        "key": "f",
+        "desc": "打开文件选择器(LSP 工作区)",
+        "subcat": "文件",
+        "action": " "
+      },
+      {
+        "key": "F",
+        "desc": "打开文件选择器(当前目录)",
+        "subcat": "文件",
+        "action": " "
+      },
+      {
+        "key": "b",
+        "desc": "打开缓冲区选择器",
+        "subcat": "文件",
+        "action": " "
+      },
+      {
+        "key": "j",
+        "desc": "打开跳转列表选择器",
+        "subcat": "导航",
+        "action": " "
+      },
+      {
+        "key": "g",
+        "desc": "打开已修改文件选择器",
+        "subcat": "导航",
+        "action": " "
+      },
+      {
+        "key": "'",
+        "desc": "打开上次模糊选择器",
+        "subcat": "导航",
+        "action": " "
+      },
+      {
+        "key": "k",
+        "desc": "显示光标下项目文档 (LSP)",
+        "subcat": "LSP",
+        "action": " "
+      },
+      {
+        "key": "s",
+        "desc": "打开文档符号选择器 (LSP)",
+        "subcat": "LSP",
+        "action": " "
+      },
+      {
+        "key": "S",
+        "desc": "打开工作区符号选择器 (LSP)",
+        "subcat": "LSP",
+        "action": " "
+      },
+      {
+        "key": "d",
+        "desc": "打开文档诊断选择器 (LSP)",
+        "subcat": "LSP",
+        "action": " "
+      },
+      {
+        "key": "D",
+        "desc": "打开工作区诊断选择器 (LSP)",
+        "subcat": "LSP",
+        "action": " "
+      },
+      {
+        "key": "r",
+        "desc": "重命名符号 (LSP)",
+        "subcat": "LSP",
+        "action": " "
+      },
+      {
+        "key": "a",
+        "desc": "应用代码操作 (LSP)",
+        "subcat": "LSP",
+        "action": " "
+      },
+      {
+        "key": "h",
+        "desc": "选择符号引用 (LSP)",
+        "subcat": "LSP",
+        "action": " "
+      },
+      {
+        "key": "w",
+        "desc": "进入窗口模式",
+        "subcat": "模式",
+        "action": " "
+      },
+      {
+        "key": "c",
+        "desc": "行注释/取消注释",
+        "subcat": "注释",
+        "action": " "
+      },
+      {
+        "key": "C",
+        "desc": "块注释/取消注释",
+        "subcat": "注释",
+        "action": " "
+      },
+      {
+        "key": "Alt + c",
+        "desc": "行注释/取消注释",
+        "subcat": "注释",
+        "action": " "
+      },
+      {
+        "key": "p",
+        "desc": "粘贴系统剪贴板(光标后)",
+        "subcat": "剪贴板",
+        "action": " "
+      },
+      {
+        "key": "P",
+        "desc": "粘贴系统剪贴板(光标前)",
+        "subcat": "剪贴板",
+        "action": " "
+      },
+      {
+        "key": "y",
+        "desc": "复制选中内容到剪贴板",
+        "subcat": "剪贴板",
+        "action": " "
+      },
+      {
+        "key": "Y",
+        "desc": "复制主选区到剪贴板",
+        "subcat": "剪贴板",
+        "action": " "
+      },
+      {
+        "key": "R",
+        "desc": "用剪贴板内容替换选中",
+        "subcat": "剪贴板",
+        "action": " "
+      },
+      {
+        "key": "/",
+        "desc": "工作区全局搜索",
+        "subcat": "搜索",
+        "action": " "
+      },
+      {
+        "key": "?",
+        "desc": "打开命令面板",
+        "subcat": "命令",
+        "action": " "
+      }
+    ],
+    "插入模式": [
+      {
+        "key": "Escape",
+        "desc": "返回普通模式",
+        "action": " "
+      },
+      {
+        "key": "Ctrl + x",
+        "desc": "自动补全",
+        "action": " "
+      },
+      {
+        "key": "Ctrl + r",
+        "desc": "插入寄存器内容",
+        "action": " "
+      },
+      {
+        "key": "Ctrl + w / Alt + Backspace",
+        "desc": "删除前一个单词",
+        "subcat": "删除",
+        "action": " "
+      },
+      {
+        "key": "Alt + d / Alt + Delete",
+        "desc": "删除下一个单词",
+        "subcat": "删除",
+        "action": " "
+      },
+      {
+        "key": "Ctrl + u",
+        "desc": "删除到行首",
+        "subcat": "删除",
+        "action": " "
+      },
+      {
+        "key": "Ctrl + k",
+        "desc": "删除到行尾",
+        "subcat": "删除",
+        "action": " "
+      },
+      {
+        "key": "Ctrl + h / Backspace",
+        "desc": "删除前一个字符",
+        "subcat": "删除",
+        "action": " "
+      },
+      {
+        "key": "Ctrl + d / Delete",
+        "desc": "删除下一个字符",
+        "subcat": "删除",
+        "action": " "
+      },
+      {
+        "key": "Ctrl + j / Enter",
+        "desc": "插入新行",
+        "subcat": "编辑",
+        "action": " "
+      },
+      {
+        "key": "Ctrl + s",
+        "desc": "提交撤销检查点",
+        "subcat": "编辑",
+        "action": " "
+      }
+    ],
+    "选择器": [
+      {
+        "key": "Tab / Ctrl + n / Down",
+        "desc": "下一个条目",
+        "subcat": "导航",
+        "action": " "
+      },
+      {
+        "key": "Shift + Tab / Ctrl + p / Up",
+        "desc": "上一个条目",
+        "subcat": "导航",
+        "action": " "
+      },
+      {
+        "key": "PageUp / Ctrl + u",
+        "desc": "上一页",
+        "subcat": "导航",
+        "action": " "
+      },
+      {
+        "key": "PageDown / Ctrl + d",
+        "desc": "下一页",
+        "subcat": "导航",
+        "action": " "
+      },
+      {
+        "key": "Home",
+        "desc": "第一个条目",
+        "subcat": "导航",
+        "action": " "
+      },
+      {
+        "key": "End",
+        "desc": "最后一个条目",
+        "subcat": "导航",
+        "action": " "
+      },
+      {
+        "key": "Enter",
+        "desc": "打开选中项",
+        "subcat": "操作",
+        "action": " "
+      },
+      {
+        "key": "Alt + Enter",
+        "desc": "后台打开选中项(不关闭选择器)",
+        "subcat": "操作",
+        "action": " "
+      },
+      {
+        "key": "Ctrl + s",
+        "desc": "水平分割打开",
+        "subcat": "操作",
+        "action": " "
+      },
+      {
+        "key": "Ctrl + v",
+        "desc": "垂直分割打开",
+        "subcat": "操作",
+        "action": " "
+      },
+      {
+        "key": "Ctrl + t",
+        "desc": "切换预览",
+        "subcat": "操作",
+        "action": " "
+      },
+      {
+        "key": "Escape / Ctrl + c",
+        "desc": "关闭选择器",
+        "subcat": "操作",
+        "action": " "
+      }
+    ],
+    "提示符": [
+      {
+        "key": "Ctrl + a / Home",
+        "desc": "移动到开头",
+        "subcat": "移动",
+        "action": " "
+      },
+      {
+        "key": "Ctrl + e / End",
+        "desc": "移动到末尾",
+        "subcat": "移动",
+        "action": " "
+      },
+      {
+        "key": "Alt + b / Ctrl + Left",
+        "desc": "后退一个单词",
+        "subcat": "移动",
+        "action": " "
+      },
+      {
+        "key": "Alt + f / Ctrl + Right",
+        "desc": "前进一个单词",
+        "subcat": "移动",
+        "action": " "
+      },
+      {
+        "key": "Ctrl + b / Left",
+        "desc": "后退一个字符",
+        "subcat": "移动",
+        "action": " "
+      },
+      {
+        "key": "Ctrl + f / Right",
+        "desc": "前进一个字符",
+        "subcat": "移动",
+        "action": " "
+      },
+      {
+        "key": "Ctrl + u",
+        "desc": "删除到行首",
+        "subcat": "删除",
+        "action": " "
+      },
+      {
+        "key": "Ctrl + k",
+        "desc": "删除到行尾",
+        "subcat": "删除",
+        "action": " "
+      },
+      {
+        "key": "Ctrl + w / Alt + Backspace",
+        "desc": "删除前一个单词",
+        "subcat": "删除",
+        "action": " "
+      },
+      {
+        "key": "Alt + d / Alt + Delete",
+        "desc": "删除下一个单词",
+        "subcat": "删除",
+        "action": " "
+      },
+      {
+        "key": "Backspace / Ctrl + h",
+        "desc": "删除前一个字符",
+        "subcat": "删除",
+        "action": " "
+      },
+      {
+        "key": "Delete / Ctrl + d",
+        "desc": "删除下一个字符",
+        "subcat": "删除",
+        "action": " "
+      },
+      {
+        "key": "Ctrl + s",
+        "desc": "插入文档中光标下的单词",
+        "subcat": "编辑",
+        "action": " "
+      },
+      {
+        "key": "Ctrl + r",
+        "desc": "插入指定寄存器内容",
+        "subcat": "编辑",
+        "action": " "
+      },
+      {
+        "key": "Ctrl + p / Up",
+        "desc": "上一个历史",
+        "subcat": "历史",
+        "action": " "
+      },
+      {
+        "key": "Ctrl + n / Down",
+        "desc": "下一个历史",
+        "subcat": "历史",
+        "action": " "
+      },
+      {
+        "key": "Tab",
+        "desc": "下一个补全项",
+        "subcat": "补全",
+        "action": " "
+      },
+      {
+        "key": "BackTab",
+        "desc": "上一个补全项",
+        "subcat": "补全",
+        "action": " "
+      },
+      {
+        "key": "Enter",
+        "desc": "打开选中项",
+        "subcat": "操作",
+        "action": " "
+      },
+      {
+        "key": "Escape / Ctrl + c",
+        "desc": "关闭提示符",
+        "subcat": "操作",
+        "action": " "
+      }
+    ],
+    "Unimpaired 映射": [
+      {
+        "key": "]d",
+        "desc": "下一个诊断 (LSP)",
+        "subcat": "诊断",
+        "action": " "
+      },
+      {
+        "key": "[d",
+        "desc": "上一个诊断 (LSP)",
+        "subcat": "诊断",
+        "action": " "
+      },
+      {
+        "key": "]D",
+        "desc": "最后一个诊断 (LSP)",
+        "subcat": "诊断",
+        "action": " "
+      },
+      {
+        "key": "[D",
+        "desc": "第一个诊断 (LSP)",
+        "subcat": "诊断",
+        "action": " "
+      },
+      {
+        "key": "]f",
+        "desc": "下一个函数 (TS)",
+        "subcat": "语法树",
+        "action": " "
+      },
+      {
+        "key": "[f",
+        "desc": "上一个函数 (TS)",
+        "subcat": "语法树",
+        "action": " "
+      },
+      {
+        "key": "]t",
+        "desc": "下一个类型定义 (TS)",
+        "subcat": "语法树",
+        "action": " "
+      },
+      {
+        "key": "[t",
+        "desc": "上一个类型定义 (TS)",
+        "subcat": "语法树",
+        "action": " "
+      },
+      {
+        "key": "]a",
+        "desc": "下一个参数 (TS)",
+        "subcat": "语法树",
+        "action": " "
+      },
+      {
+        "key": "[a",
+        "desc": "上一个参数 (TS)",
+        "subcat": "语法树",
+        "action": " "
+      },
+      {
+        "key": "]c",
+        "desc": "下一个注释 (TS)",
+        "subcat": "语法树",
+        "action": " "
+      },
+      {
+        "key": "[c",
+        "desc": "上一个注释 (TS)",
+        "subcat": "语法树",
+        "action": " "
+      },
+      {
+        "key": "]T",
+        "desc": "下一个测试 (TS)",
+        "subcat": "语法树",
+        "action": " "
+      },
+      {
+        "key": "[T",
+        "desc": "上一个测试 (TS)",
+        "subcat": "语法树",
+        "action": " "
+      },
+      {
+        "key": "]p",
+        "desc": "下一个段落",
+        "subcat": "段落",
+        "action": " "
+      },
+      {
+        "key": "[p",
+        "desc": "上一个段落",
+        "subcat": "段落",
+        "action": " "
+      },
+      {
+        "key": "]g",
+        "desc": "下一个修改",
+        "subcat": "修改",
+        "action": " "
+      },
+      {
+        "key": "[g",
+        "desc": "上一个修改",
+        "subcat": "修改",
+        "action": " "
+      },
+      {
+        "key": "]G",
+        "desc": "最后一个修改",
+        "subcat": "修改",
+        "action": " "
+      },
+      {
+        "key": "[G",
+        "desc": "第一个修改",
+        "subcat": "修改",
+        "action": " "
+      },
+      {
+        "key": "]Space",
+        "desc": "下方添加新行",
+        "subcat": "编辑",
+        "action": " "
+      },
+      {
+        "key": "[Space",
+        "desc": "上方添加新行",
+        "subcat": "编辑",
+        "action": " "
+      }
+    ],
+    "补全菜单": [
+      {
+        "key": "Tab / Ctrl + n / Down",
+        "desc": "下一个补全项",
+        "action": " "
+      },
+      {
+        "key": "Shift + Tab / Ctrl + p / Up",
+        "desc": "上一个补全项",
+        "action": " "
+      },
+      {
+        "key": "Enter",
+        "desc": "接受补全",
+        "action": " "
+      },
+      {
+        "key": "Ctrl + c",
+        "desc": "关闭菜单，拒绝补全",
+        "action": " "
+      }
+    ]
+  }
+}

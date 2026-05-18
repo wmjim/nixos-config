@@ -1,0 +1,542 @@
+{
+  "title": "Vim 快捷键",
+  "provider": "vim",
+  "binds": {
+    "基本移动": [
+      {
+        "key": "h",
+        "desc": "左移",
+        "subcat": "字符",
+        "action": " "
+      },
+      {
+        "key": "j",
+        "desc": "下移",
+        "subcat": "字符",
+        "action": " "
+      },
+      {
+        "key": "k",
+        "desc": "上移",
+        "subcat": "字符",
+        "action": " "
+      },
+      {
+        "key": "l",
+        "desc": "右移",
+        "subcat": "字符",
+        "action": " "
+      },
+      {
+        "key": "w",
+        "desc": "下一个单词词首",
+        "subcat": "单词",
+        "action": " "
+      },
+      {
+        "key": "e",
+        "desc": "当前/下一个单词词尾",
+        "subcat": "单词",
+        "action": " "
+      },
+      {
+        "key": "b",
+        "desc": "上一个单词词首",
+        "subcat": "单词",
+        "action": " "
+      },
+      {
+        "key": "ge",
+        "desc": "上一个单词词尾",
+        "subcat": "单词",
+        "action": " "
+      },
+      {
+        "key": "0",
+        "desc": "行首",
+        "subcat": "行",
+        "action": " "
+      },
+      {
+        "key": "^",
+        "desc": "行首非空白字符",
+        "subcat": "行",
+        "action": " "
+      },
+      {
+        "key": "$",
+        "desc": "行尾",
+        "subcat": "行",
+        "action": " "
+      },
+      {
+        "key": "gg",
+        "desc": "文件首行",
+        "subcat": "行",
+        "action": " "
+      },
+      {
+        "key": "G",
+        "desc": "文件末行",
+        "subcat": "行",
+        "action": " "
+      },
+      {
+        "key": "nG",
+        "desc": "跳转到第 n 行",
+        "subcat": "行",
+        "action": " "
+      },
+      {
+        "key": "H",
+        "desc": "屏幕顶行",
+        "subcat": "屏幕",
+        "action": " "
+      },
+      {
+        "key": "M",
+        "desc": "屏幕中间行",
+        "subcat": "屏幕",
+        "action": " "
+      },
+      {
+        "key": "L",
+        "desc": "屏幕底行",
+        "subcat": "屏幕",
+        "action": " "
+      },
+      {
+        "key": "Ctrl + u",
+        "desc": "上翻半页",
+        "subcat": "屏幕",
+        "action": " "
+      },
+      {
+        "key": "Ctrl + d",
+        "desc": "下翻半页",
+        "subcat": "屏幕",
+        "action": " "
+      },
+      {
+        "key": "Ctrl + b",
+        "desc": "上翻一页",
+        "subcat": "屏幕",
+        "action": " "
+      },
+      {
+        "key": "Ctrl + f",
+        "desc": "下翻一页",
+        "subcat": "屏幕",
+        "action": " "
+      }
+    ],
+    "插入模式": [
+      {
+        "key": "i",
+        "desc": "在光标前插入",
+        "action": " "
+      },
+      {
+        "key": "I",
+        "desc": "在行首插入",
+        "action": " "
+      },
+      {
+        "key": "a",
+        "desc": "在光标后插入",
+        "action": " "
+      },
+      {
+        "key": "A",
+        "desc": "在行尾插入",
+        "action": " "
+      },
+      {
+        "key": "o",
+        "desc": "在当前行下方插入新行",
+        "action": " "
+      },
+      {
+        "key": "O",
+        "desc": "在当前行上方插入新行",
+        "action": " "
+      },
+      {
+        "key": "Esc",
+        "desc": "退出插入模式",
+        "action": " "
+      }
+    ],
+    "删除": [
+      {
+        "key": "x",
+        "desc": "删除光标处字符",
+        "action": " "
+      },
+      {
+        "key": "X",
+        "desc": "删除光标前字符",
+        "action": " "
+      },
+      {
+        "key": "d{MOTION}",
+        "desc": "删除移动范围文本",
+        "action": " "
+      },
+      {
+        "key": "dd",
+        "desc": "删除当前行",
+        "action": " "
+      },
+      {
+        "key": "D",
+        "desc": "删除到行尾",
+        "action": " "
+      },
+      {
+        "key": "n dd",
+        "desc": "删除 n 行",
+        "action": " "
+      }
+    ],
+    "修改": [
+      {
+        "key": "r{char}",
+        "desc": "替换光标处字符",
+        "action": " "
+      },
+      {
+        "key": "R",
+        "desc": "进入替换模式",
+        "action": " "
+      },
+      {
+        "key": "c{MOTION}",
+        "desc": "修改移动范围文本",
+        "action": " "
+      },
+      {
+        "key": "cc",
+        "desc": "修改当前行",
+        "action": " "
+      },
+      {
+        "key": "C",
+        "desc": "修改到行尾",
+        "action": " "
+      },
+      {
+        "key": "n cc",
+        "desc": "修改 n 行",
+        "action": " "
+      },
+      {
+        "key": "s",
+        "desc": "删除字符并插入",
+        "action": " "
+      },
+      {
+        "key": "S",
+        "desc": "删除当前行并插入",
+        "action": " "
+      }
+    ],
+    "复制粘贴": [
+      {
+        "key": "y{MOTION}",
+        "desc": "复制移动范围文本",
+        "action": " "
+      },
+      {
+        "key": "yy",
+        "desc": "复制当前行",
+        "action": " "
+      },
+      {
+        "key": "Y",
+        "desc": "复制当前行",
+        "action": " "
+      },
+      {
+        "key": "p",
+        "desc": "在光标后粘贴",
+        "action": " "
+      },
+      {
+        "key": "P",
+        "desc": "在光标前粘贴",
+        "action": " "
+      }
+    ],
+    "撤销与重做": [
+      {
+        "key": "u",
+        "desc": "撤销",
+        "action": " "
+      },
+      {
+        "key": "Ctrl + r",
+        "desc": "重做",
+        "action": " "
+      },
+      {
+        "key": "U",
+        "desc": "撤销整行修改",
+        "action": " "
+      }
+    ],
+    "查找": [
+      {
+        "key": "/{PATTERN}",
+        "desc": "向前查找",
+        "action": " "
+      },
+      {
+        "key": "?{PATTERN}",
+        "desc": "向后查找",
+        "action": " "
+      },
+      {
+        "key": "n",
+        "desc": "下一个匹配",
+        "action": " "
+      },
+      {
+        "key": "N",
+        "desc": "上一个匹配",
+        "action": " "
+      },
+      {
+        "key": "*",
+        "desc": "向前查找光标下单词",
+        "action": " "
+      },
+      {
+        "key": "#",
+        "desc": "向后查找光标下单词",
+        "action": " "
+      }
+    ],
+    "替换": [
+      {
+        "key": ":s/old/new",
+        "desc": "替换当前行第一个匹配",
+        "action": " "
+      },
+      {
+        "key": ":s/old/new/g",
+        "desc": "替换当前行所有匹配",
+        "action": " "
+      },
+      {
+        "key": ":%s/old/new/g",
+        "desc": "替换文件所有匹配",
+        "action": " "
+      },
+      {
+        "key": ":%s/old/new/gc",
+        "desc": "替换文件所有匹配(确认)",
+        "action": " "
+      }
+    ],
+    "可视模式": [
+      {
+        "key": "v",
+        "desc": "字符可视模式",
+        "subcat": "选择",
+        "action": " "
+      },
+      {
+        "key": "V",
+        "desc": "行可视模式",
+        "subcat": "选择",
+        "action": " "
+      },
+      {
+        "key": "Ctrl + v",
+        "desc": "块可视模式",
+        "subcat": "选择",
+        "action": " "
+      },
+      {
+        "key": "d",
+        "desc": "删除选中文本",
+        "subcat": "操作",
+        "action": " "
+      },
+      {
+        "key": "y",
+        "desc": "复制选中文本",
+        "subcat": "操作",
+        "action": " "
+      },
+      {
+        "key": "c",
+        "desc": "修改选中文本",
+        "subcat": "操作",
+        "action": " "
+      },
+      {
+        "key": ">",
+        "desc": "缩进选中文本",
+        "subcat": "操作",
+        "action": " "
+      },
+      {
+        "key": "<",
+        "desc": "取消缩进选中文本",
+        "subcat": "操作",
+        "action": " "
+      },
+      {
+        "key": "=",
+        "desc": "自动缩进选中文本",
+        "subcat": "操作",
+        "action": " "
+      }
+    ],
+    "保存退出": [
+      {
+        "key": ":w",
+        "desc": "保存",
+        "action": " "
+      },
+      {
+        "key": ":w {name}",
+        "desc": "另存为",
+        "action": " "
+      },
+      {
+        "key": ":wq",
+        "desc": "保存并退出",
+        "action": " "
+      },
+      {
+        "key": ":x",
+        "desc": "保存并退出(有修改时)",
+        "action": " "
+      },
+      {
+        "key": ":q",
+        "desc": "退出",
+        "action": " "
+      },
+      {
+        "key": ":q!",
+        "desc": "强制退出(放弃修改)",
+        "action": " "
+      },
+      {
+        "key": ":e!",
+        "desc": "重新加载文件(放弃修改)",
+        "action": " "
+      }
+    ],
+    "窗口管理": [
+      {
+        "key": ":split",
+        "desc": "水平分割窗口",
+        "action": " "
+      },
+      {
+        "key": ":vsplit",
+        "desc": "垂直分割窗口",
+        "action": " "
+      },
+      {
+        "key": "Ctrl + w w",
+        "desc": "切换到下一个窗口",
+        "action": " "
+      },
+      {
+        "key": "Ctrl + w h",
+        "desc": "切换到左侧窗口",
+        "action": " "
+      },
+      {
+        "key": "Ctrl + w j",
+        "desc": "切换到下方窗口",
+        "action": " "
+      },
+      {
+        "key": "Ctrl + w k",
+        "desc": "切换到上方窗口",
+        "action": " "
+      },
+      {
+        "key": "Ctrl + w l",
+        "desc": "切换到右侧窗口",
+        "action": " "
+      },
+      {
+        "key": ":close",
+        "desc": "关闭当前窗口",
+        "action": " "
+      },
+      {
+        "key": ":only",
+        "desc": "只保留当前窗口",
+        "action": " "
+      }
+    ],
+    "Tab 管理": [
+      {
+        "key": ":tabnew",
+        "desc": "新建 Tab 页",
+        "action": " "
+      },
+      {
+        "key": ":tabnext",
+        "desc": "切换到下一个 Tab",
+        "action": " "
+      },
+      {
+        "key": ":tabprevious",
+        "desc": "切换到上一个 Tab",
+        "action": " "
+      },
+      {
+        "key": ":tabfirst",
+        "desc": "切换到第一个 Tab",
+        "action": " "
+      },
+      {
+        "key": ":tablast",
+        "desc": "切换到最后一个 Tab",
+        "action": " "
+      },
+      {
+        "key": ":tabclose",
+        "desc": "关闭当前 Tab",
+        "action": " "
+      },
+      {
+        "key": ":tabonly",
+        "desc": "只保留当前 Tab",
+        "action": " "
+      }
+    ],
+    "宏": [
+      {
+        "key": "q{reg}",
+        "desc": "开始录制宏到寄存器",
+        "action": " "
+      },
+      {
+        "key": "q",
+        "desc": "停止录制宏",
+        "action": " "
+      },
+      {
+        "key": "@{reg}",
+        "desc": "执行寄存器中的宏",
+        "action": " "
+      },
+      {
+        "key": "@@",
+        "desc": "再次执行上次的宏",
+        "action": " "
+      }
+    ]
+  }
+}

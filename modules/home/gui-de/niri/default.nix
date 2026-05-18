@@ -49,6 +49,8 @@
     force = true;
   };
 
+  # DMS 快捷键速查表 — 由 cli-tui/shell 统一部署到 ~/.config/DankMaterialShell/cheatsheets/
+
   # 脚本部署到 ~/.config/niri/scripts/（保留可执行权限）
   xdg.configFile."niri/scripts/screenshot-sound.sh" = {
     source = ./config/scripts/screenshot-sound.sh;

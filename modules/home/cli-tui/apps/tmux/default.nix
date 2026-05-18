@@ -123,6 +123,7 @@
         plugin = tmux-fzf;
         extraConfig = ''
           set -g @tmux-fzf-launch-key 'F'
+          set -g @tmux-fzf-options '--no-preview'
         '';
       }
     ];

@@ -1,0 +1,195 @@
+{
+  "title": "Tmux 快捷键 (Prefix = Ctrl+A)",
+  "provider": "tmux",
+  "binds": {
+    "会话": [
+      {
+        "key": "Prefix + s",
+        "desc": "列出所有会话",
+        "action": " "
+      },
+      {
+        "key": "Prefix + R",
+        "desc": "重命名会话",
+        "action": " "
+      },
+      {
+        "key": "Prefix + C",
+        "desc": "新建会话",
+        "action": " "
+      },
+      {
+        "key": "Prefix + K",
+        "desc": "关闭会话",
+        "action": " "
+      },
+      {
+        "key": "Shift + Up",
+        "desc": "上一个会话",
+        "action": " "
+      },
+      {
+        "key": "Shift + Down",
+        "desc": "下一个会话",
+        "action": " "
+      }
+    ],
+    "窗口": [
+      {
+        "key": "Prefix + r",
+        "desc": "重命名窗口",
+        "action": " "
+      },
+      {
+        "key": "Prefix + c",
+        "desc": "新建窗口",
+        "action": " "
+      },
+      {
+        "key": "Prefix + k",
+        "desc": "关闭窗口",
+        "action": " "
+      },
+      {
+        "key": "Shift + Left",
+        "desc": "上一个窗口",
+        "action": " "
+      },
+      {
+        "key": "Shift + Right",
+        "desc": "下一个窗口",
+        "action": " "
+      },
+      {
+        "key": "Ctrl + Shift + Left",
+        "desc": "向左交换窗口",
+        "action": " "
+      },
+      {
+        "key": "Ctrl + Shift + Right",
+        "desc": "向右交换窗口",
+        "action": " "
+      }
+    ],
+    "面板": [
+      {
+        "key": "Prefix + h",
+        "desc": "上下分割",
+        "subcat": "分割",
+        "action": " "
+      },
+      {
+        "key": "Prefix + v",
+        "desc": "左右分割",
+        "subcat": "分割",
+        "action": " "
+      },
+      {
+        "key": "Alt + Left",
+        "desc": "选择左侧面板",
+        "subcat": "导航",
+        "action": " "
+      },
+      {
+        "key": "Alt + Right",
+        "desc": "选择右侧面板",
+        "subcat": "导航",
+        "action": " "
+      },
+      {
+        "key": "Alt + Up",
+        "desc": "选择上方面板",
+        "subcat": "导航",
+        "action": " "
+      },
+      {
+        "key": "Alt + Down",
+        "desc": "选择下方面板",
+        "subcat": "导航",
+        "action": " "
+      },
+      {
+        "key": "Prefix + Ctrl + Left",
+        "desc": "向左调整大小",
+        "subcat": "调整大小",
+        "action": " "
+      },
+      {
+        "key": "Prefix + Ctrl + Right",
+        "desc": "向右调整大小",
+        "subcat": "调整大小",
+        "action": " "
+      },
+      {
+        "key": "Prefix + Ctrl + Up",
+        "desc": "向上调整大小",
+        "subcat": "调整大小",
+        "action": " "
+      },
+      {
+        "key": "Prefix + Ctrl + Down",
+        "desc": "向下调整大小",
+        "subcat": "调整大小",
+        "action": " "
+      },
+      {
+        "key": "Prefix + z",
+        "desc": "最大化/还原面板",
+        "subcat": "管理",
+        "action": " "
+      },
+      {
+        "key": "Prefix + e",
+        "desc": "自动调整布局",
+        "subcat": "管理",
+        "action": " "
+      },
+      {
+        "key": "Prefix + q",
+        "desc": "显示面板编号",
+        "subcat": "管理",
+        "action": " "
+      },
+      {
+        "key": "Prefix + x",
+        "desc": "关闭面板",
+        "subcat": "管理",
+        "action": " "
+      }
+    ],
+    "复制模式": [
+      {
+        "key": "Prefix + [",
+        "desc": "进入复制模式",
+        "action": " "
+      },
+      {
+        "key": "v",
+        "desc": "开始选择",
+        "action": " "
+      },
+      {
+        "key": "y",
+        "desc": "复制选中内容",
+        "action": " "
+      }
+    ],
+    "其他": [
+      {
+        "key": "Prefix + p",
+        "desc": "重载配置",
+        "action": " "
+      },
+      {
+        "key": "Prefix + d",
+        "desc": "分离当前会话",
+        "action": " "
+      },
+      {
+        "key": "Prefix + F",
+        "desc": "FZF 会话选择器",
+        "action": " "
+      }
+    ]
+  }
+}

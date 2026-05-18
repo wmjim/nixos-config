@@ -25,7 +25,7 @@
     # 字体
     font = {
       name = "HarmonyOS Sans SC";
-      size = 13;
+      size = 12;
     };
   };
 
@@ -34,11 +34,11 @@
     # KDE 全局字体设置
     "kdeglobals".text = ''
       [General]
-      font=HarmonyOS Sans SC,13,-1,5,50,0,0,0,0,0
-      fixed=Maple Mono Normal NL NF CN,13,-1,5,50,0,0,0,0,0
-      smallestReadableFont=HarmonyOS Sans SC,11,-1,5,50,0,0,0,0,0
-      toolBarFont=HarmonyOS Sans SC,13,-1,5,50,0,0,0,0,0
-      menuFont=HarmonyOS Sans SC,13,-1,5,50,0,0,0,0,0
+      font=HarmonyOS Sans SC,12,-1,5,50,0,0,0,0,0
+      fixed=Maple Mono Normal NL NF CN,12,-1,5,50,0,0,0,0,0
+      smallestReadableFont=HarmonyOS Sans SC,10,-1,5,50,0,0,0,0,0
+      toolBarFont=HarmonyOS Sans SC,12,-1,5,50,0,0,0,0,0
+      menuFont=HarmonyOS Sans SC,12,-1,5,50,0,0,0,0,0
     '';
 
     # Qt6CT 配置
@@ -48,8 +48,8 @@
       style=kvantum
 
       [Fonts]
-      fixed="Maple Mono Normal NL NF CN,13,-1,5,50,0,0,0,0,0"
-      general="HarmonyOS Sans SC,13,-1,5,50,0,0,0,0,0"
+      fixed="Maple Mono Normal NL NF CN,12,-1,5,50,0,0,0,0,0"
+      general="HarmonyOS Sans SC,12,-1,5,50,0,0,0,0,0"
     '';
 
     # Qt5CT 配置
@@ -59,8 +59,8 @@
       style=kvantum
 
       [Fonts]
-      fixed="Maple Mono Normal NL NF CN,13,-1,5,50,0,0,0,0,0"
-      general="HarmonyOS Sans SC,13,-1,5,50,0,0,0,0,0"
+      fixed="Maple Mono Normal NL NF CN,12,-1,5,50,0,0,0,0,0"
+      general="HarmonyOS Sans SC,12,-1,5,50,0,0,0,0,0"
     '';
 
     # Kvantum 主题引擎

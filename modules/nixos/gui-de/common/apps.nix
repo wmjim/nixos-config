@@ -19,8 +19,13 @@
     obs-studio          # 录屏
     anki                # 助记卡片
     picgo               # 图床管理
-    bilibili            # 哔哩哔哩
-    eudic               # 欧陆英语词典
+    # 哔哩哔哩
+    (bilibili.override { electron = electron_40; })
+    # 欧陆英语词典（闭源 Qt5 应用，只支持 XCB 插件，需覆盖 QT_QPA_PLATFORM）
+    (pkgs.writeShellScriptBin "eudic" ''
+      export QT_QPA_PLATFORM=xcb
+      exec ${pkgs.eudic}/bin/eudic "$@"
+    '')
     folo                # 信息聚合平台
     localsend           # 跨平台文件共享
     wechat              # 微信
@@ -28,6 +33,6 @@
     feishu              # 飞书
 
     # 划词和OCR翻译
-    pkgs.nur.repos.awa2333.pot-translation
+    # pkgs.nur.repos.awa2333.pot-translation
   ];
 }

@@ -2,10 +2,11 @@
 { config, pkgs, ... }:
 
 {
-  imports = [ ./apps.nix ];
+  imports = [ ../common/apps.nix ];
 
   # 显示管理器
   services.displayManager.gdm.enable = true;
+  # GNOME 桌面环境
   services.desktopManager.gnome.enable = true;
 
   # RDP 远程桌面

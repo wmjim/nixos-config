@@ -4,6 +4,8 @@
 //       ██ ██   ██ ██    ██ ██   ██ ██ ██  ██ ██
 //  ██████  ██   ██  ██████  ██   ██ ██ ██   ████
 
+// ~/.config/niri/config.kdl
+
 // 自25.11版本起，niri的配置文件支持了拆分，每一条include都代表把已经拆分出去的配置文件嵌入进来。
 // 动画
 include "animations.kdl"
@@ -108,7 +110,7 @@ overview {
 
 
 // 开机时启动
-spawn-at-startup "dms" "run" // 由 systemd 管理启动
+// spawn-at-startup "dms" "run" // 由 systemd 管理启动
 // noctalia shell
 // spawn-at-startup "noctalia-shell"
 // 录屏修复

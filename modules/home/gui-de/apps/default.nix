@@ -5,6 +5,6 @@
   imports = [
     ./ghostty.nix
     ./dolphin.nix
-    ./pot.nix
+    # ./pot.nix
   ];
 }

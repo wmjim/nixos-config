@@ -7,6 +7,13 @@
     ./starship.nix
   ];
 
+  # 快捷键速查表 — 供终端查询和 DMS 共用
+  xdg.configFile."DankMaterialShell/cheatsheets/" = {
+    source = ../cheatsheets;
+    recursive = true;
+    force = true;
+  };
+
   # 终端工具
   home.packages = with pkgs; [
     eza          # ls 替代

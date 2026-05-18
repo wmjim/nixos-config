@@ -42,7 +42,7 @@
     http_proxy = "http://127.0.0.1:7897";
     https_proxy = "http://127.0.0.1:7897";
     ftp_proxy = "http://127.0.0.1:7897";
-    no_proxy = "localhost,127.0.0.1,local.domain,192.168.0.0/16";
+    no_proxy = "localhost,127.0.0.1,local.domain,192.168.0.0/16,bilibili.com,*.bilibili.com";
   };
 
   # ==========================================
@@ -52,7 +52,7 @@
     http_proxy = "http://127.0.0.1:7897";
     https_proxy = "http://127.0.0.1:7897";
     ftp_proxy = "http://127.0.0.1:7897";
-    no_proxy = "localhost,127.0.0.1,local.domain,192.168.0.0/16";
+    no_proxy = "localhost,127.0.0.1,local.domain,192.168.0.0/16,bilibili.com,*.bilibili.com";
   };
 
   # RDP 防火墙端口

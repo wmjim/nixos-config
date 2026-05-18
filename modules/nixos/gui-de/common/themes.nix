@@ -11,6 +11,8 @@
   ];
 
   environment.systemPackages = with pkgs; [
+    xwayland-satellite              # XWayland 兼容层（Wayland 环境下运行 X11 应用）
+
     # GTK 主题
     gtk4                              # GTK4 运行时
     adapta-gtk-theme                  # Adapta GTK 主题（GTK 3/4）

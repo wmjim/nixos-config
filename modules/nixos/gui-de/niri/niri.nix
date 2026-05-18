@@ -5,7 +5,7 @@
   imports = [
     # ./noctalia.nix
     ./dms.nix
-    ../apps.nix
+    ../common/apps.nix
   ];
 
   # 使用 niri v26.04（原生模糊效果支持）

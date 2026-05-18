@@ -3,12 +3,9 @@
 
 {
   imports = [
-    ./portal.nix
-    # ./gnome.nix      # 切换到 niri 后保留文件以备调试回退
-    ./themes.nix
-    ./niri/niri.nix
-    ./clash.nix
-    ./fcitx5.nix
-    ./plymouth.nix
+    ./common
+    # ./gnome          # 切换到 KDE 后保留以备调试回退
+    ./kde
+    # ./niri
   ];
 }
