@@ -14,8 +14,8 @@
     };
 
     dms-plugin-registry = {
-        url = "github:AvengeMedia/dms-plugin-registry";
-        inputs.nixpkgs.follows = "nixpkgs";
+      url = "github:AvengeMedia/dms-plugin-registry";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     noctalia = {
@@ -47,18 +47,28 @@
     };
   };
 
-  outputs = { 
-    self, nixpkgs, nur, dms-plugin-registry, 
-    noctalia, niri, nixpkgs-darwin, home-manager, 
-    nixos-wsl, nix-darwin, nixvim, ... 
-  }@inputs:
+  outputs =
+    {
+      self,
+      nixpkgs,
+      nur,
+      dms-plugin-registry,
+      noctalia,
+      niri,
+      nixpkgs-darwin,
+      home-manager,
+      nixos-wsl,
+      nix-darwin,
+      nixvim,
+      ...
+    }@inputs:
     let
       # 使用 nixpkgs lib，不扩展以避免兼容性问题
       lib = nixpkgs.lib;
 
       # 系统类型（只保留你需要的平台）
       systems = {
-        x86_64-linux = "x86_64-linux";    # NixOS 笔记本/服务器
+        x86_64-linux = "x86_64-linux"; # NixOS 笔记本/服务器
         aarch64-darwin = "aarch64-darwin"; # M系列 Mac
       };
 
@@ -182,7 +192,7 @@
           specialArgs = { inherit inputs lib; };
           modules = [
             # 通过 Flake 引入 WSL 模块
-            inputs.nixos-wsl.nixosModules.default 
+            inputs.nixos-wsl.nixosModules.default
             # 主机特定配置（WSL 有自己的 base，不走 _common/nixos）
             ./hosts/wsl
 
@@ -234,7 +244,8 @@
       };
 
       # 开发 shell
-      devShells = forAllSystems (system:
+      devShells = forAllSystems (
+        system:
         let
           pkgs = nixpkgs.legacyPackages.${system};
         in
@@ -245,7 +256,8 @@
               nixpkgs-fmt
             ];
           };
-        });
+        }
+      );
 
       # 格式化配置
       formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.nixpkgs-fmt);

@@ -1,3 +1,9 @@
+# Treesitter
+# 现代语法高亮
+# 增量解析
+# 代码折叠
+# 语义感知
+
 {
   config,
   pkgs,

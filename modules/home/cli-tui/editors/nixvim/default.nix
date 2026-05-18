@@ -13,6 +13,8 @@
       settings.style = "night";
     };
     plugins.lightline.enable = true;
+    # 显示快捷键提示
+    plugins.which-key.enable = true;
     globals = {
       # Set <space> as the leader key
       # See `:help mapleader`
@@ -60,8 +62,8 @@
       # Decrease update time
       updatetime = 250;
 
-      # Decrease mapped sequence wait time
-      # Displays which-key popup sooner
+      # 减少映射序列等待时间
+      # 更早显示 which-key 弹窗
       timeoutlen = 300;
 
       # Configure how new splits should be opened
