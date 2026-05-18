@@ -47,7 +47,11 @@
     };
   };
 
-  outputs = { self, nixpkgs, nur, dms-plugin-registry, noctalia, niri, nixpkgs-darwin, home-manager, nixos-wsl, nix-darwin, nixvim, ... }@inputs:
+  outputs = { 
+    self, nixpkgs, nur, dms-plugin-registry, 
+    noctalia, niri, nixpkgs-darwin, home-manager, 
+    nixos-wsl, nix-darwin, nixvim, ... 
+  }@inputs:
     let
       # 使用 nixpkgs lib，不扩展以避免兼容性问题
       lib = nixpkgs.lib;
