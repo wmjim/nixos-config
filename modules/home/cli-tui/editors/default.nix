@@ -4,5 +4,6 @@
 {
   imports = [
     ./helix.nix
+    ./nixvim
   ];
 }

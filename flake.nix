@@ -23,6 +23,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    nixvim = {
+      url = "github:nix-community/nixvim";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # niri 26.04 — 原生模糊效果支持
     niri = {
       url = "github:YaLTeR/niri/v26.04";
@@ -42,7 +47,7 @@
     };
   };
 
-  outputs = { self, nixpkgs, nur, dms-plugin-registry, noctalia, niri, nixpkgs-darwin, home-manager, nixos-wsl, nix-darwin, ... }@inputs:
+  outputs = { self, nixpkgs, nur, dms-plugin-registry, noctalia, niri, nixpkgs-darwin, home-manager, nixos-wsl, nix-darwin, nixvim, ... }@inputs:
     let
       # 使用 nixpkgs lib，不扩展以避免兼容性问题
       lib = nixpkgs.lib;
@@ -87,10 +92,11 @@
                 ];
               };
 
-              # 允许 home-manager 使用非自由软件包
-              home-manager.sharedModules = [{
-                nixpkgs.config.allowUnfree = true;
-              }];
+              # 允许 home-manager 使用非自由软件包；注入 nixvim 模块
+              home-manager.sharedModules = [
+                inputs.nixvim.homeModules.nixvim
+                { nixpkgs.config.allowUnfree = true; }
+              ];
             }
           ];
         };
@@ -118,10 +124,11 @@
               # 基础 CLI 环境
               home-manager.users.mengw = import ./modules/home;
 
-              # 允许 home-manager 使用非自由软件包
-              home-manager.sharedModules = [{
-                nixpkgs.config.allowUnfree = true;
-              }];
+              # 允许 home-manager 使用非自由软件包；注入 nixvim 模块
+              home-manager.sharedModules = [
+                inputs.nixvim.homeModules.nixvim
+                { nixpkgs.config.allowUnfree = true; }
+              ];
             }
           ];
         };
@@ -155,10 +162,12 @@
                 ];
               };
 
-              # 允许 home-manager 使用非自由软件包
-              home-manager.sharedModules = [{
-                nixpkgs.config.allowUnfree = true;
-              }];
+              # 允许 home-manager 使用非自由软件包；
+              home-manager.sharedModules = [
+                # 注入 nixvim 模块
+                inputs.nixvim.homeModules.nixvim
+                { nixpkgs.config.allowUnfree = true; }
+              ];
             }
           ];
         };
@@ -182,10 +191,11 @@
               home-manager.extraSpecialArgs = { inherit inputs; };
               home-manager.users.mengw = import ./modules/home;
 
-              # 允许 home-manager 使用非自由软件包
-              home-manager.sharedModules = [{
-                nixpkgs.config.allowUnfree = true;
-              }];
+              # 允许 home-manager 使用非自由软件包；注入 nixvim 模块
+              home-manager.sharedModules = [
+                inputs.nixvim.homeModules.nixvim
+                { nixpkgs.config.allowUnfree = true; }
+              ];
             }
           ];
         };
@@ -211,6 +221,9 @@
               home-manager.useUserPackages = true;
               home-manager.extraSpecialArgs = { inherit inputs lib; };
               home-manager.users.mengw = import ./modules/home;
+              home-manager.sharedModules = [
+                inputs.nixvim.homeModules.nixvim
+              ];
             }
           ];
         };

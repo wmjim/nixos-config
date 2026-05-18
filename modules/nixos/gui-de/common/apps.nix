@@ -9,7 +9,7 @@
     kdePackages.dolphin # 文件管理器
     microsoft-edge      # 浏览器
     zed-editor          # 代码编辑器-加速
-    vscode              # 代码编辑器
+    # vscode              # 代码编辑器
     notepad-next        # 文本编辑器
     typora              # markdownb 编辑器
     obsidian            # 笔记
