@@ -9,13 +9,20 @@
   # GNOME 桌面环境
   services.desktopManager.gnome.enable = true;
 
-  # RDP 远程桌面
+  # === RDP 远程桌面 ===
   services.gnome.gnome-remote-desktop.enable = true;
+  systemd.services.gnome-remote-desktop = {
+    # 启动时启用并启动 systemd 单元 
+    wantedBy = [ "graphical.target" ];
+  };
+  services.displayManager.autoLogin.enable = false;
   networking.firewall.allowedTCPPorts = [ 3389 ];
+
 
   # GNOME 电源管理 - 合盖不休眠，熄屏不休眠
   systemd.user.services."gnome-power-settings" = {
-    wantedBy = [ "graphical-session.target" ];
+    
+    wantedBy = [ "graphical.target" ];
     serviceConfig = {
       Type = "oneshot";
       RemainAfterExit = true;
