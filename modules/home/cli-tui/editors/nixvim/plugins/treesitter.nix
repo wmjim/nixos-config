@@ -3,7 +3,6 @@
 # 增量解析
 # 代码折叠
 # 语义感知
-
 {
   config,
   pkgs,
@@ -13,46 +12,51 @@
 
 {
   programs.nixvim = {
-    # Highlight, edit, and navigate code
     # https://nix-community.github.io/nixvim/plugins/treesitter/index.html
     plugins.treesitter = {
       enable = true;
 
-      # TODO: Don't think I need this as nixGrammars is true which should atuo install these???
-      ensureInstalled = [
-        "bash"
-        "c"
-        "diff"
-        "html"
-        "lua"
-        "luadoc"
-        "markdown"
-        "vim"
-        "vimdoc"
-      ];
+      # 可自定义安装的语法解析器列表，默认安装所有语法解析器
+      # grammarPackages = with pkgs.vimPlugins.nvim-treesitter.builtGrammars; [
+      #   c
+      #   cpp
+      #   rust
+      #   bash
+      #   lua
+      #   luadoc
+      #   make
+      #   markdown
+      #   nix
+      #   regex
+      #   toml
+      #   vim
+      #   vimdoc
+      #   xml
+      #   yaml
+      #   html
+      #   json
+      # ];
 
-      # TODO: Figure out how to do this
-      #highlight = {
-      #  enable = true;
-
-      # Some languages depend on vim's regex highlighting system (such as Ruby) for indent rules.
-      #  If you are experiencing weird indenting issues, add the language to
-      #  the list of additional_vim_regex_highlighting and disabled languages for indent.
+      # 语法高亮
+      highlight = {
+       enable = true;
+       
+       # 额外启用 Vim 的正则高亮，兼容某些特殊语法
       #  additional_vim_regex_highlighting = [
       #    "ruby"
       #  ];
-      #};
-
-      indent = {
-        enable = true;
       };
 
-      # There are additional nvim-treesitter modules that you can use to interact
-      # with nvim-treesitter. You should go explore a few and see what interests you:
-      #
-      #    - Incremental selection: Included, see `:help nvim-treesitter-incremental-selection-mod`
-      #    - Show your current context: https://nix-community.github.io/nixvim/plugins/treesitter-context/index.html
-      #    - Treesitter + textobjects: https://nix-community.github.io/nixvim/plugins/treesitter-textobjects/index.html
+      # 基于 treesitter 的智能缩进
+      # treesitter 的 indent 模块质量参差不齐，某些语言可能不如自带的缩进规则
+      # indent = {
+      #   enable = true;
+      # };
+
+      # 基于 treesitter 的代码折叠
+      # folding = {
+      #   enable = true;
+      # };
     };
   };
 }

@@ -7,13 +7,6 @@
 
 {
   programs.nixvim = {
-    # Dependencies
-    #
-    # https://nix-community.github.io/nixvim/plugins/cmp-nvim-lsp.html
-    plugins.cmp-nvim-lsp = {
-      enable = true;
-    };
-
     # Useful status updates for LSP.
     # https://nix-community.github.io/nixvim/plugins/fidget/index.html
     plugins.fidget = {
@@ -224,7 +217,7 @@
           {
             mode = "n";
             key = "gd";
-            action.__raw = "require('telescope.builtin').lsp_definitions";
+            action.__raw = "function() Snacks.picker.lsp_definitions() end";
             options = {
               desc = "LSP: [G]oto [D]efinition";
             };
@@ -233,7 +226,7 @@
           {
             mode = "n";
             key = "gr";
-            action.__raw = "require('telescope.builtin').lsp_references";
+            action.__raw = "function() Snacks.picker.lsp_references() end";
             options = {
               desc = "LSP: [G]oto [R]eferences";
             };
@@ -243,7 +236,7 @@
           {
             mode = "n";
             key = "gI";
-            action.__raw = "require('telescope.builtin').lsp_implementations";
+            action.__raw = "function() Snacks.picker.lsp_implementations() end";
             options = {
               desc = "LSP: [G]oto [I]mplementation";
             };
@@ -254,7 +247,7 @@
           {
             mode = "n";
             key = "<leader>D";
-            action.__raw = "require('telescope.builtin').lsp_type_definitions";
+            action.__raw = "function() Snacks.picker.lsp_type_definitions() end";
             options = {
               desc = "LSP: Type [D]efinition";
             };
@@ -264,7 +257,7 @@
           {
             mode = "n";
             key = "<leader>ds";
-            action.__raw = "require('telescope.builtin').lsp_document_symbols";
+            action.__raw = "function() Snacks.picker.lsp_symbols() end";
             options = {
               desc = "LSP: [D]ocument [S]ymbols";
             };
