@@ -8,7 +8,8 @@
     settings = {
       # --- 主题 ---
       # theme = "Catppuccin Mocha";
-      theme = "GitHub Light Default";
+      # theme = "GitHub Light Default";
+      theme = "iTerm2 Smoooooth";
 
             
       # --- 字体 ---
