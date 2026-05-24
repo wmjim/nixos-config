@@ -3,8 +3,8 @@
 
 {
   imports = [
-      ./tmux
-      ./zellij.nix
+      # ./tmux
+      ./zellij
     ];
 
   home.packages = with pkgs; [

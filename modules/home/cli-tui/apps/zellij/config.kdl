@@ -1,0 +1,31 @@
+// ── 界面精简 ──────────────────────────────────────────────
+simplified_ui true
+show_startup_tips false
+
+// ── 默认布局 ──────────────────────────────────────────────
+default_layout "default"
+
+// ── 主题设置 ──────────────────────────────────────────────
+theme "catppuccin-mocha"
+
+// ── 插件 ──────────────────────────────────────────────────
+// plugins {
+//     zjstatus location="https://github.com/dj95/zjstatus/releases/latest/download/zjstatus.wasm"
+
+//     zjstatus-hints location="https://github.com/b0o/zjstatus-hints/releases/latest/download/zjstatus-hints.wasm" {
+//         // 显示的最大字符数
+//         max_length 0 // 0 = unlimited
+//         // 截断时追加的字符串
+//         overflow_str "..." // default
+//         // Name of the pipe for zjstatus integration
+//         pipe_name "zjstatus_hints" // default
+//         // 在基础模式下隐藏提示
+//         hide_in_base_mode false // default
+//     }
+// }
+
+// // 加载插件
+// load_plugins {
+//     zjstatus
+//     zjstatus-hints
+// }

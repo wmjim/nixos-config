@@ -7,5 +7,6 @@
     ./rust.nix
     ./go.nix
     ./cpp.nix
+    # ./latex.nix
   ];
 }
