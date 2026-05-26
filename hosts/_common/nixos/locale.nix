@@ -22,6 +22,8 @@
     LC_TIME = "zh_CN.UTF-8";
   };
 
+
+
   # 启用默认字体包，补充基础 Unicode 覆盖
   fonts.enableDefaultPackages = true;
   # Flatpak 兼容，Flatpak 应用可访问系统字体

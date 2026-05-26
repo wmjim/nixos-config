@@ -67,6 +67,12 @@
     };
   };
 
+  # 键盘布局
+  services.xserver.xkb = {
+    layout = "us";
+    options = "caps:escape";
+  };
+
   # 防火墙：默认启用，需放行 22 端口
   networking.firewall.allowedTCPPorts = [ 22 ];
 

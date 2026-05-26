@@ -5,6 +5,6 @@
   imports = [
     ./helix.nix
     # ./nixvim
-    ./neovim
+    # ./neovim
   ];
 }
