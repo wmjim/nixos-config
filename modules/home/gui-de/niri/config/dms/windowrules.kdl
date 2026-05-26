@@ -1,6 +1,6 @@
 // === 窗口规则===
 window-rule {
-    geometry-corner-radius 20  // 设置圆角
+    geometry-corner-radius 10  // 设置圆角
     clip-to-geometry true      // 将窗口内容裁剪到圆角边界内
     draw-border-with-background true // 禁止边框画到窗口的背景里
 }

@@ -7,7 +7,8 @@
   programs.noctalia = {
     enable = true;
 
-    settings = { # This may also be a string or path to a .toml file.
+    settings = {
+      # 指定当 source 是 "builtin" 时使用哪个内置主题
       theme = {
         mode = "dark";
         source = "builtin";
@@ -17,6 +18,16 @@
       wallpaper = {
         enabled = true;
         default.path = "/home/mengw/files/pictures/wallpaper/wallpaper.png";
+      };
+
+      # 音频
+      audio = {
+        enable = true;
+        enable_overdrive = false;   # 是否允许音量滑块超过100%（最高150%）
+        enable_sounds = false;      # 禁用所有界面音效播放
+        sound_volume = 0.5;         # 全局音量（0.0 - 1.0）
+        volume_change_sound = "";   # 空，内置默认  sounds/volume-change.wav
+        notification_sound = "";    # 空，内置默认  sounds/notification.wav
       };
     };
   };
