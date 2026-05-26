@@ -15,7 +15,8 @@
     python313Packages.black       # 代码格式化工具
     python313Packages.isort       # import 排序工具
     python313Packages.ruff        # 超快速的 Python linter
-
+    python313Packages.huggingface-hub # Huggingface 下载工具
+    
     # Python 类型检查
     python313Packages.mypy        # 静态类型检查器
 

@@ -54,6 +54,10 @@
       dufall="duf --all";              # 查看所有（含伪文件系统）
       dufjson="duf --json";            # JSON 输出，用于脚本
 
+      # zoxide 别名
+      zquery="zoxide query -l -s";
+
+      
       cc  = "claude --dangerously-skip-permissions";
 
       # 查询快捷键

@@ -13,3 +13,8 @@ tmux new -s <name>                                       | 新建命名会话
 tmux ls                                                  | 列出所有会话
 tmux attach -t <name>                                    | 附加到指定会话
 tmux kill-session -t <name>                              | 关闭指定会话
+
+# Git
+git config --list                                        | 列出git当前所有配置
+git reset --hard <commit_id>                             | 强制git仓库回退到某个历史提交
+git revert <commit_id>                                   | 生成一个反向提交，抵消某次历史提交
