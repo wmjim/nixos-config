@@ -10,7 +10,8 @@
       HomeUrl=file:///home/mengw
       OpenExternallyCalledFolderInNewTab=true
       RememberOpenedTabs=true
-      ShowFullPathInTitlebar=true
+      ShowFullPathInTitlebar=false
+      ShowTitleBar=false
       ShowSpaceInfo=true
       UseTabForSwitchingSplit=false
       ShowTerminalPanel=false

@@ -2,6 +2,11 @@
 { config, pkgs, lib, ... }:
 
 {
+
+  imports = [
+    ./noctalia.nix
+  ];
+
   # 主配置文件部署到 ~/.config/niri/
   xdg.configFile."niri/config.kdl" = {
     source = ./config/config.kdl;

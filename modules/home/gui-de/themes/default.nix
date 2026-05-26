@@ -63,6 +63,15 @@
       general="HarmonyOS Sans SC,12,-1,5,50,0,0,0,0,0"
     '';
 
+    # Breeze 窗口装饰: 缩小标题栏
+    "breezerc".text = ''
+      [Common]
+      DrawTitleBarSeparator=false
+
+      [Windeco]
+      ButtonSize=0
+    '';
+
     # Kvantum 主题引擎
     "Kvantum/kvantum.kvconfig".text = ''
       [General]

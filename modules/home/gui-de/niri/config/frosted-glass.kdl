@@ -7,9 +7,14 @@
 
 // --- Noctalia Shell 覆盖层磨砂 ---
 // 将模糊壁纸放置在概览中
+// layer-rule {
+//     match namespace="dms:blurwallpaper"
+//     place-within-backdrop true
+// }
+// 将 Noctalia 的专用背景层置于 Niri 概览背景之中
 layer-rule {
-    match namespace="dms:blurwallpaper"
-    place-within-backdrop true
+  match namespace="^noctalia-backdrop"
+  place-within-backdrop true
 }
 // 设计：opacity（透明度）+ background-effect blur（背景模糊）+ xray false（非穿透模糊）
 //
@@ -23,16 +28,37 @@ layer-rule {
 // 需要调整 GPU 负载时，改 blur.kdl 里的 passes 参数即可。
 // ============================================================
 
-// --- 终端模拟器：磨砂玻璃的黄金场景 ---
+// 全部模糊处理，不显示透视效果，使其看起来更真实。
 window-rule {
-    // match app-id="Alacritty"
-    match app-id="com.mitchellh.ghostty"
-    opacity 0.70
-    background-effect {
-        blur true
-        xray false
-    }
+  background-effect {
+    blur true
+    xray false
+  }
 }
+
+// 在所有表面上禁用X光效果，使其看起来更真实。
+// 此处无需将模糊设置为“true”，它是自动的
+layer-rule {
+  match namespace="^noctalia-(bar-[^\"]+|notification|dock|panel)$"
+  background-effect {
+    xray false
+    //blur false
+  }
+}
+
+
+
+
+// --- 终端模拟器：磨砂玻璃的黄金场景 ---
+// window-rule {
+//     // match app-id="Alacritty"
+//     match app-id="com.mitchellh.ghostty"
+//     opacity 0.70
+//     background-effect {
+//         blur true
+//         xray false
+//     }
+// }
 
 // --- 代码编辑器 ---
 // window-rule {

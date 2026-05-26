@@ -10,15 +10,15 @@
 // 动画
 include "animations.kdl"
 // 磨砂玻璃桌面：全局模糊参数
-// include "blur.kdl"
+include "blur.kdl"
 // 磨砂玻璃桌面：统一窗口规则（opacity + background-effect）
-// include "frosted-glass.kdl"
+include "frosted-glass.kdl"
 
 
 include "dms/binds.kdl"
 include "dms/alttab.kdl"
 include "dms/supertab.kdl"
-// include optional=true "dms/windowrules.kdl"
+include "dms/windowrules.kdl"
 include "dms/cursor.kdl"
 include "dms/outputs.kdl"
 include "dms/layout.kdl"
@@ -49,7 +49,6 @@ environment {
     //GSK_RENDERER "gl"
     // 默认文本编辑器
     EDITOR "hx"
-
 }
 
 // === 输入设备 ===
@@ -110,9 +109,8 @@ overview {
 
 
 // 开机时启动
-// spawn-at-startup "dms" "run" // 由 systemd 管理启动
 // noctalia shell
-// spawn-at-startup "noctalia-shell"
+spawn-at-startup "noctalia"
 // 录屏修复
 spawn-sh-at-startup "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=niri & /usr/lib/xdg-desktop-portal-gnome"
 // GNOME tracker修复
@@ -120,7 +118,7 @@ spawn-sh-at-startup "systemctl --user set-environment XDG_SESSION_CLASS=user"
 // 输入法自动启动
 spawn-at-startup "fcitx5"
 // 截图音效的守护进程
-spawn-at-startup "~/.config/niri/scripts/screenshot-sound.sh"
+// spawn-at-startup "~/.config/niri/scripts/screenshot-sound.sh"
 // 允许root通过用户的xwayland打开窗口
 spawn-at-startup "xhost" "+si:localuser:root"
 // dms 搜索
@@ -129,8 +127,6 @@ spawn-at-startup "dsearch" "serve"
 spawn-at-startup "systemctl" "--user" "start" "linuxqq-clipsync"
 // 询问管理员权限功能的自动启动
 spawn-at-startup "/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1"
-// niri-sidebar 守护进程：监听窗口关闭事件，自动重新排列侧边栏
-spawn-at-startup "niri-sidebar" "listen"
 
 // niri开启时不自动展示快捷键
 hotkey-overlay {

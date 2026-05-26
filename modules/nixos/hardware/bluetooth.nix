@@ -2,5 +2,6 @@
 { ... }:
 
 {
+  # 蓝牙管理
   hardware.bluetooth.enable = true;
 }
