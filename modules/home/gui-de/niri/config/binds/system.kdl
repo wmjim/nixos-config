@@ -1,0 +1,19 @@
+// 系统级快捷键：截图、会话、快捷键查看器
+binds {
+    // 截图
+    Mod+P       hotkey-overlay-title="区域截图"         { screenshot; }
+    Mod+Ctrl+P  hotkey-overlay-title="全屏截图"         { screenshot-screen; }
+
+    // 退出
+    Mod+Shift+E hotkey-overlay-title="退出 niri"        { quit; }
+
+    // 快捷键查看器
+    Mod+Slash   hotkey-overlay-title="快捷键"           { spawn-sh "~/.config/niri/scripts/niri-binds.sh"; }
+
+    // 锁屏与会话
+    Mod+Alt+L   hotkey-overlay-title="锁屏"             { spawn-sh "noctalia msg screen-lock"; }
+    Mod+Alt+X   hotkey-overlay-title="会话菜单"         { spawn-sh "noctalia msg panel-toggle session"; }
+    Mod+Comma   hotkey-overlay-title="设置"             { spawn-sh "noctalia msg settings-toggle"; }
+    Mod+S       hotkey-overlay-title="控制中心"         { spawn "noctalia msg panel-toggle control-center"; }
+    Mod+Alt+W   hotkey-overlay-title="壁纸切换"         { spawn-sh "noctalia msg panel-toggle wallpaper"; }
+}

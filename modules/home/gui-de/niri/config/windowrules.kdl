@@ -1,0 +1,42 @@
+// 窗口规则
+// 全局
+window-rule {
+    geometry-corner-radius 10
+    clip-to-geometry true
+    draw-border-with-background false
+}
+
+// Noctalia 设置窗口浮动打开
+window-rule {
+    match app-id="dev.noctalia.Noctalia.Settings"
+    open-floating true
+    // default-column-width { fixed 1080; }
+    // default-window-height { fixed 920; }
+}
+
+// 允许 Noctalia 执行通知操作和激活窗口
+debug {
+    honor-xdg-activation-with-invalid-serial
+}
+
+// GNOME 应用
+window-rule {
+    match app-id=r#"^org\.gnome\."#
+    geometry-corner-radius 12
+    clip-to-geometry true
+}
+
+// 终端模拟器：不在窗口背景上绘制边框
+window-rule {
+    match app-id=r#"^org\.wezfurlong\.wezterm$"#
+    match app-id="Alacritty"
+    match app-id="zen"
+    match app-id="com.mitchellh.ghostty"
+    match app-id="kitty"
+}
+
+// Ghostty 默认浮动打开
+window-rule {
+    match app-id="com.mitchellh.ghostty"
+    open-floating true
+}

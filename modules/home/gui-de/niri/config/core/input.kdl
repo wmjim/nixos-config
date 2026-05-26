@@ -1,0 +1,38 @@
+// 输入设备
+input {
+    // 键盘
+    keyboard {
+        xkb {
+        }
+        repeat-delay 250
+        repeat-rate 35
+        numlock
+    }
+
+    // 触摸板
+    touchpad {
+        tap
+        dwtp
+        drag true
+        drag-lock
+        natural-scroll
+    }
+
+    // 鼠标
+    mouse {
+        accel-speed -0.15
+        accel-profile "flat"
+        scroll-factor horizontal=2.0 vertical=-1.0
+    }
+
+    trackpoint {
+        // off
+        // natural-scroll
+        // accel-speed 0.2
+        // accel-profile "flat"
+        // scroll-method "on-button-down"
+        // scroll-button 273
+        // scroll-button-lock
+        // middle-emulation
+    }
+}

@@ -1,0 +1,7 @@
+// 显示器设置
+output "eDP-1" {
+    mode "1920x1080@59.977"
+    scale 1.25
+    position x=0 y=0
+    focus-at-startup
+}

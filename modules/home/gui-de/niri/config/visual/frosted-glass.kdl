@@ -1,0 +1,39 @@
+// ============================================================
+// 磨砂玻璃桌面 — 统一窗口规则（niri v26.04）
+// ============================================================
+//
+// Noctalia Shell 的界面元素（启动器、控制中心、overview）使用 layer-shell，
+// window-rule 对 layer-shell 无效，必须用 layer-rule 启用模糊。
+
+
+// 全局：所有窗口启用模糊
+window-rule {
+    background-effect {
+        blur true
+        xray false
+    }
+}
+
+// --- 终端模拟器：磨砂玻璃的黄金场景 ---
+window-rule {
+    match app-id="com.mitchellh.ghostty"
+    opacity 0.70
+    background-effect {
+        blur true
+        xray true
+    }
+}
+
+// --- Noctalia Shell 覆盖层磨砂 ---
+layer-rule {
+    match namespace="^noctalia-backdrop"
+    place-within-backdrop true
+}
+// 在所有表面上禁用 X 光效果
+layer-rule {
+    match namespace="^noctalia-(bar-[^\"]+|notification|dock|panel)$"
+    background-effect {
+        xray true
+        blur true
+    }
+}

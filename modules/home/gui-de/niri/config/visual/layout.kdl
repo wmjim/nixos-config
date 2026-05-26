@@ -8,20 +8,14 @@ layout {
     default-column-width { proportion 0.5; }
 
     // 焦点环，用于指示活动窗口
-    // 仅绘制在活动窗口周围
     focus-ring {
         on          // 开启焦点环
         width 3     // 边框宽度
-        // 活动窗口周围焦点环颜色
-        // active-color "green"
-        // 非活动窗口周围焦点环颜色
-        // inactive-color "#505050"
         // 活动窗口周围焦点环渐变颜色
         active-gradient from="#80c8ff" to="#bbddff" angle=45
     }
 
     // 边框，用于指示活动窗口
-    // 绘制在所有窗口周围
     border {
         off
         width 4

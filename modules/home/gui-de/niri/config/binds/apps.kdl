@@ -1,0 +1,20 @@
+// 应用启动器、媒体控制与应用快捷键
+binds {
+    // Noctalia 启动器
+    Mod+Space   hotkey-overlay-title="应用启动器"   { spawn-sh "noctalia msg panel-toggle launcher"; }
+
+    // 音频控制
+    XF86AudioRaiseVolume    allow-when-locked=true hotkey-overlay-title="音量+"        { spawn-sh "noctalia msg volume-up"; }
+    XF86AudioLowerVolume    allow-when-locked=true hotkey-overlay-title="音量-"        { spawn-sh "noctalia msg volume-down"; }
+    XF86AudioMute           allow-when-locked=true hotkey-overlay-title="麦克风开启"   { spawn-sh "noctalia msg volume-mute"; }
+    XF86AudioMicMute        allow-when-locked=true hotkey-overlay-title="麦克风静音"   { spawn-sh "noctalia msg volume-micmute"; }
+
+    // 亮度控制
+    XF86MonBrightnessUp     allow-when-locked=true hotkey-overlay-title="亮度+"     { spawn-sh "noctalia msg brightness-up"; }
+    XF86MonBrightnessDown   allow-when-locked=true hotkey-overlay-title="亮度-"     { spawn-sh "noctalia msg brightness-down"; }
+
+    // 应用快捷方式
+    Mod+Return  hotkey-overlay-title="终端"         { spawn "ghostty"; }
+    Mod+Shift+B hotkey-overlay-title="浏览器"       { spawn "microsoft-edge"; }
+    Mod+Shift+F hotkey-overlay-title="文件管理器"   { spawn-sh "dolphin --new-window"; }
+}

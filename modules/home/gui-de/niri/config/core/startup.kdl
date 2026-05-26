@@ -1,0 +1,20 @@
+// 开机自启
+// noctalia shell
+spawn-at-startup "noctalia"
+// 录屏修复
+spawn-sh-at-startup "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=niri & /usr/lib/xdg-desktop-portal-gnome"
+// GNOME tracker 修复
+spawn-sh-at-startup "systemctl --user set-environment XDG_SESSION_CLASS=user"
+// 输入法
+spawn-at-startup "fcitx5"
+// 允许 root 通过用户的 xwayland 打开窗口
+spawn-at-startup "xhost" "+si:localuser:root"
+// 剪贴板同步
+spawn-at-startup "systemctl" "--user" "start" "linuxqq-clipsync"
+// polkit 认证代理
+spawn-at-startup "/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1"
+
+// niri 启动时不自动展示快捷键覆盖层
+hotkey-overlay {
+    skip-at-startup
+}

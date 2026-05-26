@@ -1,139 +1,29 @@
-//  ██████  ██   ██  ██████  ███████ ██ ███    ██
-//  ██      ██   ██ ██    ██ ██   ██    ██ ██  ██
-//  ███████ ███████ ██    ██ ██████  ██ ██ ██  ██
-//       ██ ██   ██ ██    ██ ██   ██ ██ ██  ██ ██
-//  ██████  ██   ██  ██████  ██   ██ ██ ██   ████
+// ~/.config/niri/config.kdl — niri 主配置文件
 
-// ~/.config/niri/config.kdl
+// 核心配置：环境变量、输入设备、自启程序、显示器
+include "core/env.kdl"
+include "core/input.kdl"
+include "core/startup.kdl"
+include "core/outputs.kdl"
 
-// 自25.11版本起，niri的配置文件支持了拆分，每一条include都代表把已经拆分出去的配置文件嵌入进来。
-// 动画
-include "animations.kdl"
-// 磨砂玻璃桌面：全局模糊参数
-include "blur.kdl"
-// 磨砂玻璃桌面：统一窗口规则（opacity + background-effect）
-include "frosted-glass.kdl"
+// 视觉效果：动画、模糊、磨砂玻璃、布局、光标、概览
+include "visual/animations.kdl"
+include "visual/blur.kdl"
+include "visual/frosted-glass.kdl"
+include "visual/layout.kdl"
+include "visual/cursor.kdl"
+include "visual/overview.kdl"
 
+// 快捷键：系统、导航、应用
+include "binds/system.kdl"
+include "binds/navigation.kdl"
+include "binds/apps.kdl"
 
-include "dms/binds.kdl"
-include "dms/alttab.kdl"
-include "dms/supertab.kdl"
-include "dms/windowrules.kdl"
-include "dms/cursor.kdl"
-include "dms/outputs.kdl"
-include "dms/layout.kdl"
+// 窗口规则
+include "windowrules.kdl"
 
-
-// === 省略其客户端装饰 ===
-prefer-no-csd   // 隐藏标题栏
+// 隐藏客户端标题栏
+prefer-no-csd
 
 // 截图保存位置
 screenshot-path "~/files/pictures/screenshots/niri/%Y-%m-%d_%H-%M-%S.png"
-
-
-// 环境变量
-environment {
-    //LC_CTYPE "zh_CN.UTF-8" 会导致输入法出现漏字
-    //LC_MESSAGES "zh_CN.UTF-8" 让系统全局使用英文，仅主要界面为英文时使用这个环境变量
-    // 设置界面语言
-    LANGUAGE "zh_CN.UTF-8"
-    LANG "zh_CN.UTF-8"
-    LC_CTYPE "en_US.UTF-8" //这一项可以解决漏字问题，但是也许会导致steam之类的x11应用无法使用中文输入法
-    // 输入法环境变量
-    XMODIFIERS "@im=fcitx"
-    XDG_CURRENT_DESKTOP "niri"
-    // qt主题
-    // 解决quickshell图标主题缺失问题
-    QS_ICON_THEME "Adwaita"
-    // GTK软件使用的渲染器，可以解决n卡双显卡导致的GTK应用启动缓慢问题，AMD或Intel单显卡不需要这行设置可以注释掉
-    //GSK_RENDERER "gl"
-    // 默认文本编辑器
-    EDITOR "hx"
-}
-
-// === 输入设备 ===
-input {
-    // 键盘
-    keyboard {
-        xkb {
-        }
-        repeat-delay 250
-	    repeat-rate 35
-        numlock            // 数字锁定
-    }
-
-    // 触摸板
-    touchpad {
-        // off
-        tap               // 点击触摸
-        dwtp              // 打字时禁用
-        // dwtp
-        drag true         // 启用点按和拖拽 
-        drag-lock         // 启用拖拽锁定（拖动时不需要一直按着）
-        natural-scroll    // 自然滚动
-        // accel-speed -0.5
-        // accel-profile "flat"
-        // scroll-method "two-finger"
-        // disabled-on-external-mouse
-
-    }
-
-    // 鼠标
-    mouse {
-        // off
-        // natural-scroll
-        accel-speed -0.15           // 鼠标速度
-        accel-profile "flat"        // 关闭鼠标加速
-        // scroll-method "no-scroll"
-        // 滚轮速度
-        scroll-factor horizontal=2.0 vertical=-1.0
-    }
-
-    trackpoint {
-        // off
-        // natural-scroll
-        // accel-speed 0.2
-        // accel-profile "flat"
-        // scroll-method "on-button-down"
-        // scroll-button 273
-        // scroll-button-lock
-        // middle-emulation
-    }
-}
-
-// === 概览 ===
-overview {
-    zoom 0.40
-    backdrop-color "#777777"
-}
-
-
-// 开机时启动
-// noctalia shell
-spawn-at-startup "noctalia"
-// 录屏修复
-spawn-sh-at-startup "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=niri & /usr/lib/xdg-desktop-portal-gnome"
-// GNOME tracker修复
-spawn-sh-at-startup "systemctl --user set-environment XDG_SESSION_CLASS=user"
-// 输入法自动启动
-spawn-at-startup "fcitx5"
-// 截图音效的守护进程
-// spawn-at-startup "~/.config/niri/scripts/screenshot-sound.sh"
-// 允许root通过用户的xwayland打开窗口
-spawn-at-startup "xhost" "+si:localuser:root"
-// dms 搜索
-spawn-at-startup "dsearch" "serve"
-// x11<--> 剪贴板同步
-spawn-at-startup "systemctl" "--user" "start" "linuxqq-clipsync"
-// 询问管理员权限功能的自动启动
-spawn-at-startup "/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1"
-
-// niri开启时不自动展示快捷键
-hotkey-overlay {
-     skip-at-startup
-}
-
-
-
-
-
