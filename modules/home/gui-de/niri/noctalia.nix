@@ -8,6 +8,10 @@
     enable = true;
 
     settings = {
+      shell = {
+        font_family = "HarmonyOS Sans SC";
+      };
+
       # 指定当 source 是 "builtin" 时使用哪个内置主题
       theme = {
         mode = "dark";

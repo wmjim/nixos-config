@@ -4,13 +4,14 @@
 //
 // Noctalia Shell 的界面元素（启动器、控制中心、overview）使用 layer-shell，
 // window-rule 对 layer-shell 无效，必须用 layer-rule 启用模糊。
+// xray：让窗口背景透过下面的其它窗口层
 
 
 // 全局：所有窗口启用模糊
 window-rule {
     background-effect {
         blur true
-        xray false
+        xray true
     }
 }
 
@@ -33,7 +34,7 @@ layer-rule {
 layer-rule {
     match namespace="^noctalia-(bar-[^\"]+|notification|dock|panel)$"
     background-effect {
-        xray true
         blur true
+        xray false
     }
 }
