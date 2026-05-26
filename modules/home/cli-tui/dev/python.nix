@@ -3,12 +3,12 @@
 {
   # Python 环境
   home.packages = with pkgs; [
-# Python 解释器
+    # Python 解释器
     python313     # Python 3.13 解释器（稳定且依赖完全兼容）
 
     # 现代 Python 包管理工具
-    uv            # 极速 Python 包和项目管理工具（替代 pip/poetry）
-    python313Packages.pip  # 传统包管理器（兼容性）
+    uv                      # 极速 Python 包和项目管理工具（替代 pip/poetry）
+    python313Packages.pip   # 传统包管理器（兼容性）
 
     # Python 开发工具
     python313Packages.virtualenv  # 虚拟环境管理

@@ -1,0 +1,184 @@
+
+
+# === C/C++ ===
+[[language]]
+name = "c"
+file-types = ["c", "h"]
+language-servers = ["clangd"]
+formatter = { command = "clang-format" }
+auto-format = true
+
+[[language]]
+name = "cpp"
+file-types = ["cpp", "cc", "cxx", "hpp", "hcc", "hxx"]
+language-servers = ["clangd"]
+formatter = { command = "clang-format" }
+auto-format = true
+
+
+
+# === Rust ===
+[[language]]
+name = "rust"
+formatter = { command = "bash", args = ["-c", "rustfmt | dx fmt -f -"] }
+
+[language-server.rust-analyzer.config.cargo]
+features = "all"
+
+[language-server.rust-analyzer.config.check]
+command = "clippy"
+
+[language-server.rust-analyzer.config.rustfmt]
+overrideCommand = ["rustfmt", "+nightly"]
+
+[language-server.rust-analyzer.config.procMacro]
+enabled = true
+
+[language-server.rust-analyzer.config.completion]
+callable.snippets = "fill_arguments"
+
+# === TOML ===
+[[language]]
+name = "toml"
+# https://github.com/tamasfe/taplo/issues/580#issuecomment-2004174721
+roots = ["."]
+language-servers = ["taplo"]
+formatter = { command = "taplo", args = ["format", "-"] }
+auto-format = true
+
+# === Typst ===
+[[language]]
+name = "typst"
+formatter.command = "typstyle"
+auto-format = true
+
+
+# === Python ===
+[[language]]
+name = "python"
+language-servers = ["pylsp", "ruff"]
+formatter = { command = "black", args = ["--quiet", "-"] }
+auto-format = true
+
+[language-server.ruff]
+command = "ruff-lsp"
+
+
+# === html, css, scss ===
+[[language]]
+name = "html"
+formatter = { command = 'prettier', args = ["--parser", "html"] }
+auto-format = true
+
+[[language]]
+name = "css"
+formatter = { command = 'prettier', args = ["--parser", "css"] }
+auto-format = true
+
+[[language]]
+name = "scss"
+formatter = { command = 'prettier', args = ["--parser", "scss"] }
+auto-format = true
+
+
+# === TypeScript ===
+[[language]]
+name = "javascript"
+language-servers = [
+  "typescript-language-server", # optional
+  "vscode-eslint-language-server",
+]
+formatter = { command = 'prettier', args = ["--parser", "typescript"] }
+auto-format = true
+
+[[language]]
+name = "jsx"
+language-servers = [
+  "typescript-language-server",
+  "vscode-eslint-language-server",
+]
+
+[[language]]
+name = "typescript"
+language-servers = [
+  "typescript-language-server",
+  "vscode-eslint-language-server",
+]
+formatter = { command = 'prettier', args = ["--parser", "typescript"] }
+auto-format = true
+
+[[language]]
+name = "tsx"
+language-servers = [
+  "typescript-language-server",
+  "vscode-eslint-language-server",
+]
+formatter = { command = 'prettier', args = ["--parser", "typescript"] }
+auto-format = true
+
+
+# === Markdown ===
+[[language]]
+name = "markdown"
+language-servers = [ "marksman", "ltex-ls-plus" ]
+formatter = { command = 'prettier', args = ["--parser", "markdown"] }
+auto-format = true
+
+[language-server.ltex-ls-plus.config]
+ltex.ltex-ls.logLevel = "warning"
+ltex.diagnosticSeverity = "warning"
+ltex.disabledRules = { "en-US" = ["PROFANITY"], "en-GB" = ["PROFANITY"] }
+ltex.dictionary = { "en-US" = ["builtin"], "en-GB" = ["builtin"] }
+
+
+#  === Fish ===
+[[language]]
+name = "fish"
+formatter = { command = "fish_indent" }
+auto-format = true
+
+# === Bash ===
+[[language]]
+name = "bash"
+language-servers = ["bash-language-server"]
+auto-format = true
+
+
+# === Nix ===
+[[language]]
+name = "nix"
+language-servers = ["nil"]
+formatter = { command = "nixfmt" }
+auto-format = true
+
+# === Lua ===
+[[language]]
+name = "lua"
+language-servers = ["lua-language-server"]
+formatter = { command = "stylua", args = [ "-" ] }
+auto-format = true
+
+
+# === YAML ===
+[language-server.yaml-language-server.config.yaml]
+name = "yaml"
+formatter = { command = "prettier", args = ["--parser", "yaml"] }
+auto-format = true
+validation = true
+
+[language-server.yaml-language-server.config.yaml.schemas]
+"https://json.schemastore.org/github-workflow.json" = ".github/workflows/*.{yml,yaml}"
+"https://raw.githubusercontent.com/ansible-community/schemas/main/f/ansible-tasks.json" = "roles/{tasks,handlers}/*.{yml,yaml}"
+
+
+# === JSON ===
+[[language]]
+name = "json"
+language-servers = ["vscode-json-language-server"]
+formatter = { command = 'prettier', args = ["--parser", "json"] }
+auto-format = true
+
+[[language]]
+name = "jsonc"
+formatter = { command = 'prettier', args = ["--parser", "jsonc"] }
+auto-format = true

@@ -7,6 +7,6 @@
     yarn
     pnpm
     typescript-language-server  # TypeScript/JavaScript LSP
-    prettierd                   # JavaScript/TypeScript/JSON/Markdown/YAML 格式化器
+    prettier                    # JavaScript/TypeScript/JSON/Markdown/YAML 格式化器
   ];
 }

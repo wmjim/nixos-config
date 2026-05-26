@@ -3,7 +3,7 @@
 
 {
   imports = [
-    ./helix.nix
+    ./helix
     # ./nixvim
     # ./neovim
   ];
