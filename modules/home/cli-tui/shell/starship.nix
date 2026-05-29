@@ -10,6 +10,8 @@
 
       format = "[](red)$os$username[](bg:peach fg:red)$directory[](bg:yellow fg:peach)$git_branch$git_status[](fg:yellow bg:green)$c$rust$golang$nodejs$php$java$kotlin$haskell$python[](fg:green bg:sapphire)$conda[](fg:sapphire bg:lavender)$cmd_duration[ ](fg:lavender)$line_break$character";
 
+      scan_timeout = 100;
+
       palette = "catppuccin_mocha";
 
       os = {
