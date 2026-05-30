@@ -6,7 +6,15 @@
 
   environment.systemPackages = with pkgs; [
     # 常用应用
+    kdePackages.ark     # 解压工具
+    readest             # 电子书阅读
+    kdePackages.okular  # 通用文档阅读器
+    sublime4            # 文本编辑器
+    qview               # 图片查看器   
     kdePackages.dolphin # 文件管理器
+    mpv                 # 视频播放器
+    flameshot           # 截图工具
+    freetube            # YouTube 客户端
     microsoft-edge      # 浏览器
     zed-editor          # 代码编辑器-加速
     notepad-next        # 文本编辑器
@@ -27,8 +35,11 @@
     '')
     folo                # 信息聚合平台
     localsend           # 跨平台文件共享
+    # === 通讯工具 ===
     wechat              # 微信
     qq                  # qq
+    discord             # Discord
+    telegram-desktop    # Telegram
     feishu              # 飞书
 
     # 划词和OCR翻译

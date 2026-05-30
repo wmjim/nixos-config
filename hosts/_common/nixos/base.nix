@@ -55,6 +55,11 @@
   # 允许非自由软件
   nixpkgs.config.allowUnfree = true;
 
+  # 允许不安全的包（闭源应用的旧依赖）
+  nixpkgs.config.permittedInsecurePackages = [
+    "openssl-1.1.1w"
+  ];
+
   # NUR overlay
   nixpkgs.overlays = [ inputs.nur.overlays.default ];
 
