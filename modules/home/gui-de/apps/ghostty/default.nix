@@ -7,9 +7,7 @@
     enable = true;
     settings = {
       # --- 主题 ---
-      # theme = "Catppuccin Mocha";
-      # theme = "GitHub Light Default";
-      theme = "iTerm2 Smoooooth";
+      theme = "Catppuccin Mocha";
 
             
       # --- 字体 ---
@@ -31,9 +29,19 @@
       # gtk-titlebar = false;         # 保留边框，禁用标题栏
 
       # --- 光标 ---
-      cursor-style = "bar";       # 样式（竖线）
+      cursor-style = "block";     # 样式（block — 游标着色器在 bar/underline 下有 bug，见 ghostty#7893）
       cursor-style-blink = true;  # 闪烁
       cursor-opacity = 0.8;       # 光标透明度
+
+      # --- 光标着色器特效 ---
+      # https://github.com/KroneCorylus/ghostty-shader-playground
+      # 游标跳跃拖尾（Neovide 风格） + 模式切换涟漪
+      custom-shader = [
+        "${config.home.homeDirectory}/.config/ghostty/shader/cursor_smear_rainbow.glsl"
+        "${config.home.homeDirectory}/.config/ghostty/shader/party_sparks.glsl"
+      ];
+      # 让着色器持续渲染（否则拖尾动画会冻结）
+      custom-shader-animation = "always";
 
       # --- 鼠标 ---
       # 输入时自动隐藏鼠标
@@ -55,6 +63,8 @@
 
       # --- shell 集成 ---
       shell-integration = "fish";
+      # 禁止 shell integration 修改光标形状（否则提示符处会变 bar，导致光标着色器失效）
+      shell-integration-features = "no-cursor";
 
       # 滚动缓冲区大小（25MB，大约可回滚很多历史）
       scrollback-limit = 25000000;
@@ -107,5 +117,11 @@
         "cmd+shift+comma=reload_config"
       ];
     };
+  };
+
+  # 将 shader 文件部署到 ~/.config/ghostty/shader/
+  xdg.configFile = {
+    "ghostty/shader/cursor_smear_rainbow.glsl".source = ./shader/cursor_smear_rainbow.glsl;
+    "ghostty/shader/party_sparks.glsl".source = ./shader/party_sparks.glsl;
   };
 }
