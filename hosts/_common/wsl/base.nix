@@ -1,5 +1,11 @@
 # WSL 基础配置（所有 WSL 主机共享）
-{ config, pkgs, lib, inputs, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  inputs,
+  ...
+}:
 
 {
   # WSL 以容器模式运行，不需要 bootloader
@@ -20,7 +26,10 @@
 
   # Nix 配置
   nix.settings = {
-    experimental-features = [ "nix-command" "flakes" ];
+    experimental-features = [
+      "nix-command"
+      "flakes"
+    ];
     connect-timeout = 5;
     substituters = [
       "https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store"
@@ -30,7 +39,10 @@
       "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkj5bg+wLbWLCTCfOj2Wc="
       "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
     ];
-    trusted-users = [ "root" "mengw" ];
+    trusted-users = [
+      "root"
+      "mengw"
+    ];
   };
 
   # FHS 兼容
@@ -51,5 +63,5 @@
     wget
   ];
 
-  system.stateVersion = "25.11";
+  system.stateVersion = "26.05";
 }

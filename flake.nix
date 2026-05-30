@@ -2,14 +2,14 @@
   description = "NixOS + macOS 统一配置";
 
   inputs = {
-    # Nixpkgs - 使用 25.11 以匹配 home-manager
-    # nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
+    # Nixpkgs - 使用 26.05 以匹配 home-manager
+    # nixpkgs.url = "github:nixos/nixpkgs/nixos-26.05";
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    nixpkgs-darwin.url = "github:nixos/nixpkgs/nixpkgs-25.11-darwin";
+    nixpkgs-darwin.url = "github:nixos/nixpkgs/nixpkgs-26.05-darwin";
     nur.url = "github:nix-community/NUR";
 
     home-manager = {
-      url = "github:nix-community/home-manager/release-25.11";
+      url = "github:nix-community/home-manager/release-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 

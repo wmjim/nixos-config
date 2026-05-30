@@ -1,12 +1,18 @@
 # NixOS 基础配置（所有 NixOS 主机共享）
-{ config, pkgs, lib, inputs, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  inputs,
+  ...
+}:
 
 {
   # Boot
-  boot.loader.systemd-boot.enable = true;           # 启用 systemd-boot 引导加载器
+  boot.loader.systemd-boot.enable = true; # 启用 systemd-boot 引导加载器
   boot.loader.systemd-boot.configurationLimit = 10; # 最多保留 10 个配置
-  boot.loader.efi.canTouchEfiVariables = true;      # 允许修改 EFI 变量
-  boot.kernelPackages = pkgs.linuxPackages_latest;  # 最新内核
+  boot.loader.efi.canTouchEfiVariables = true; # 允许修改 EFI 变量
+  boot.kernelPackages = pkgs.linuxPackages_latest; # 最新内核
 
   # 开机自动升级
   system.autoUpgrade = {
@@ -14,7 +20,7 @@
     allowReboot = false;
   };
 
-  # 垃圾回收配置 
+  # 垃圾回收配置
   # 自动垃圾回收，每周执行一次，删除 7 天前的垃圾
   nix.gc = {
     automatic = true;
@@ -24,7 +30,10 @@
 
   # Nix 配置
   nix.settings = {
-    experimental-features = [ "nix-command" "flakes" ];
+    experimental-features = [
+      "nix-command"
+      "flakes"
+    ];
     connect-timeout = 5;
     substituters = [
       # 1. 首选清华镜像
@@ -40,7 +49,10 @@
       "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
     ];
     # 添加当前用户为 trusted user
-    trusted-users = [ "root" "mengw" ];
+    trusted-users = [
+      "root"
+      "mengw"
+    ];
   };
 
   # 硬件加速（所有硬件 NixOS 主机通用）
@@ -88,5 +100,5 @@
     wget
   ];
 
-  system.stateVersion = "25.11";
+  system.stateVersion = "26.05";
 }
