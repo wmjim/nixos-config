@@ -5,6 +5,7 @@
   services.upower.enable = true;
   # Intel CPU 主动温控，防止 BIOS 因温度波动暴力拉风扇
   services.thermald.enable = true;
+  services.throttled.enable = true;
 
   # 电源管理：合盖不休眠
   services.logind.settings.Login = {
@@ -24,12 +25,22 @@
       turbo = "never";
     };
     charger = {
-      governor = "performance";
+      governor = "powersave";
       turbo = "auto";
     };
   };
   # TLP 进阶电源管理（部分机型可影响风扇策略）
-  services.tlp.enable = true;  
+  services.tlp.enable = true;
+
+  # auto-cpufreq GUI 通过 pkexec 提权，Wayland 下无 polkit agent 会失败
+  # 允许 wheel 组成员免密码执行 auto-cpufreq
+  security.polkit.extraConfig = ''
+    polkit.addRule(function(action, subject) {
+      if (action.id == "org.auto-cpufreq.pkexec" && subject.isInGroup("wheel")) {
+        return polkit.Result.YES;
+      }
+    });
+  '';  
   # 温度监控工具
   environment.systemPackages = with pkgs; [ lm_sensors ];
 }
