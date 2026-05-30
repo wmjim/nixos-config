@@ -30,6 +30,7 @@ layer-rule {
     match namespace="^noctalia-backdrop"
     place-within-backdrop true
 }
+
 // 在所有表面上禁用 X 光效果
 layer-rule {
     match namespace="^noctalia-(bar-[^\"]+|notification|dock|panel)$"

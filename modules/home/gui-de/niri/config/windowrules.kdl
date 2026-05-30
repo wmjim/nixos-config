@@ -1,27 +1,15 @@
 // 窗口规则
 // 全局：默认所有窗口最大化打开
 window-rule {
-    geometry-corner-radius 10
+    geometry-corner-radius 3
     clip-to-geometry true
     draw-border-with-background false
     open-maximized true                 // 默认以最大化状态打开
 }
 
-// Noctalia 设置窗口浮动打开
-window-rule {
-    match app-id="dev.noctalia.Noctalia.Settings"
-}
-
 // 允许 Noctalia 执行通知操作和激活窗口
 debug {
     honor-xdg-activation-with-invalid-serial
-}
-
-// GNOME 应用
-window-rule {
-    match app-id=r#"^org\.gnome\."#
-    geometry-corner-radius 12
-    clip-to-geometry true
 }
 
 // Ghostty 默认浮动打开，不强制最大化
