@@ -14,6 +14,6 @@ binds {
     Mod+Alt+L   hotkey-overlay-title="锁屏"             { spawn-sh "noctalia msg screen-lock"; }
     Mod+Alt+X   hotkey-overlay-title="会话菜单"         { spawn-sh "noctalia msg panel-toggle session"; }
     Mod+Comma   hotkey-overlay-title="设置"             { spawn-sh "noctalia msg settings-toggle"; }
-    Mod+S       hotkey-overlay-title="控制中心"         { spawn "noctalia msg panel-toggle control-center"; }
+    Mod+S       hotkey-overlay-title="控制中心"         { spawn-sh "noctalia msg panel-toggle control-center"; }
     Mod+Alt+W   hotkey-overlay-title="壁纸切换"         { spawn-sh "noctalia msg panel-toggle wallpaper"; }
 }
