@@ -1,5 +1,5 @@
 # 蓝牙支持
-{ ... }:
+{ pkgs, ... }:
 
 {
   # 蓝牙管理
@@ -12,4 +12,17 @@
   boot.extraModprobeConfig = ''
     options ideapad_laptop rfkill_sw_state=1
   '';
+
+  # systemd-rfkill 会在启动时恢复上次关机时保存的 rfkill 状态，
+  # 覆盖内核参数。这个服务在 systemd-rfkill 之后强制解锁蓝牙。
+  systemd.services.unblock-bluetooth = {
+    description = "Unblock Bluetooth rfkill after systemd-rfkill restore";
+    after = [ "systemd-rfkill.service" ];
+    wantedBy = [ "bluetooth.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = "${pkgs.util-linux}/bin/rfkill unblock bluetooth";
+      RemainAfterExit = true;
+    };
+  };
 }

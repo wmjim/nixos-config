@@ -35,6 +35,9 @@
     # 插电时稍微激进一点的温控策略（温度低一点再起风扇）
     PLATFORM_PROFILE_ON_AC = "balanced";
     PLATFORM_PROFILE_ON_BAT = "low-power";
+
+    # 防止 TLP 自动挂起蓝牙 USB 设备导致蓝牙被关闭
+    USB_EXCLUDE_BTUSB = "1";
   };
 
 
