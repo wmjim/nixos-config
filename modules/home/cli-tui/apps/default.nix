@@ -19,6 +19,7 @@
     net-tools
     # nvtopPackages.nvidia
     btop
+    duf
     glow
     hugo
     # pkgs.nur.repos.definfo.cc-switch-cli
