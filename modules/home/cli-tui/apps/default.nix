@@ -3,6 +3,7 @@
 
 {
   imports = [
+      ./yazi
       # ./tmux
       ./zellij
     ];
@@ -18,7 +19,6 @@
     net-tools
     # nvtopPackages.nvidia
     btop
-    yazi
     glow
     hugo
     # pkgs.nur.repos.definfo.cc-switch-cli
