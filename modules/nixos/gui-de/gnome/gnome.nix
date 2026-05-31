@@ -2,7 +2,7 @@
 { config, pkgs, ... }:
 
 {
-  imports = [ ../common/apps.nix ];
+  imports = [ ../common/apps.nix ../common/wayland-env.nix ];
 
   # 显示管理器
   services.displayManager.gdm.enable = true;
@@ -54,13 +54,9 @@
   # 触控板
   services.libinput.enable = true;
 
-  # 环境变量
+  # GNOME 专属环境变量（Wayland 通用变量在 common/wayland-env.nix）
   environment.sessionVariables = {
     XDG_CURRENT_DESKTOP = "GNOME";
-    XDG_SESSION_TYPE = "wayland";
-    GDK_BACKEND = "wayland";
-    CLASH_VERGE_ALLOW_CLIPBOARD = "1";
-    RUST_BACKTRACE = "1";
     GTK_THEME = "WhiteSur-Dark";
     GTK_ICON_THEME = "WhiteSur";
     XCURSOR_THEME = "Bibata-Modern-Ice";

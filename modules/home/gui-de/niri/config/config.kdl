@@ -1,7 +1,6 @@
 // ~/.config/niri/config.kdl — niri 主配置文件
 
-// 核心配置：环境变量、输入设备、自启程序、显示器
-include "core/env.kdl"
+// 核心配置：输入设备、自启程序、显示器
 include "core/input.kdl"
 include "core/startup.kdl"
 include "core/outputs.kdl"

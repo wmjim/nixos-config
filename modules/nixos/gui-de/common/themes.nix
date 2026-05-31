@@ -1,5 +1,5 @@
 # GTK/Qt 主题包（NixOS 系统层面）
-{ pkgs, ... }:
+{ pkgs, self, ... }:
 
 {
   # 将 KDE/Qt 主题目录加入系统 profile（默认白名单不含这些路径）
@@ -15,7 +15,7 @@
 
     # GTK 主题
     gtk4                              # GTK4 运行时
-    adapta-gtk-theme                  # Adapta GTK 主题（GTK 3/4）
+    catppuccin-gtk                    # Catppuccin GTK 主题（GTK 3/4）
     gnome-themes-extra                # GTK 主题引擎
 
     # Qt 主题工具
@@ -25,11 +25,12 @@
     libsForQt5.qtstyleplugin-kvantum  # Kvantum 主题引擎 Qt5
 
     # KDE/Kvantum 主题
-    adapta-kde-theme                  # Adapta KDE 主题（Kvantum + Aurorae + 颜色方案）
+    catppuccin-kde                    # Catppuccin KDE 主题（Aurorae + 颜色方案 + Plasma）
+    catppuccin-kvantum                # Catppuccin Kvantum 主题
 
     # 图标和光标
-    whitesur-icon-theme               # WhiteSur 图标主题
+    papirus-icon-theme                # Papirus 图标主题
     kdePackages.qtsvg                 # KDE SVG 支持（图标渲染）
-    bibata-cursors                    # Bibata 光标主题
+    catppuccin-cursors.frappeBlue     # Catppuccin 光标主题（Frappé Blue）
   ];
 }

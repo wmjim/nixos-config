@@ -10,5 +10,6 @@
     ./plymouth.nix
     ./portal.nix
     ./themes.nix
+    ./wayland-env.nix
   ];
 }

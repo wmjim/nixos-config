@@ -8,18 +8,18 @@
     enable = true;
     # 样式主题
     theme = {
-      package = pkgs.adapta-gtk-theme;
-      name = "Adapta-Nokto";
+      package = pkgs.catppuccin-gtk;
+      name = "catppuccin-frappe-blue-standard";
     };
     # 图标主题
     iconTheme = {
-      package = pkgs.whitesur-icon-theme;
-      name = "WhiteSur";
+      package = pkgs.papirus-icon-theme;
+      name = "Papirus";
     };
     # 光标主题
     cursorTheme = {
-      package = pkgs.bibata-cursors;
-      name = "Bibata-Modern-Ice";
+      package = pkgs.catppuccin-cursors.frappeBlue;
+      name = "catppuccin-frappe-blue-cursors";
       size = 24;
     };
     # 字体
@@ -44,7 +44,7 @@
     # Qt6CT 配置
     "qt6ct/qt6ct.conf".text = ''
       [Appearance]
-      icon_theme=WhiteSur
+      icon_theme=Papirus
       style=kvantum
 
       [Fonts]
@@ -55,7 +55,7 @@
     # Qt5CT 配置
     "qt5ct/qt5ct.conf".text = ''
       [Appearance]
-      icon_theme=WhiteSur
+      icon_theme=Papirus
       style=kvantum
 
       [Fonts]
@@ -63,25 +63,15 @@
       general="HarmonyOS Sans SC,12,-1,5,50,0,0,0,0,0"
     '';
 
-    # Breeze 窗口装饰: 缩小标题栏
-    "breezerc".text = ''
-      [Common]
-      DrawTitleBarSeparator=false
-
-      [Windeco]
-      ButtonSize=0
-    '';
-
     # Kvantum 主题引擎
     "Kvantum/kvantum.kvconfig".text = ''
       [General]
-      theme=Adapta
+      theme=catppuccin-frappe-blue
     '';
   };
 
-  # 环境变量: Qt 使用 qt6ct 读取配置, 强制 Kvantum 风格
+  # 环境变量: 强制 Kvantum 风格（QT_QPA_PLATFORMTHEME 由系统级 wayland-env.nix 统一管理）
   home.sessionVariables = {
-    QT_QPA_PLATFORMTHEME = "qt6ct";
     QT_STYLE_OVERRIDE = "kvantum";
   };
 }

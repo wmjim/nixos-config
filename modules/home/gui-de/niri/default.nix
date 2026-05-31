@@ -13,11 +13,7 @@
     force = true;
   };
 
-  # 核心配置：环境变量、输入设备、自启程序、显示器
-  xdg.configFile."niri/core/env.kdl" = {
-    source = ./config/core/env.kdl;
-    force = true;
-  };
+  # 核心配置：输入设备、自启程序、显示器
   xdg.configFile."niri/core/input.kdl" = {
     source = ./config/core/input.kdl;
     force = true;

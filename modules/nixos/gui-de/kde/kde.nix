@@ -1,6 +1,10 @@
 { config, pkgs, ... }:
 
 {
+  imports = [
+    ../common/wayland-env.nix
+  ];
+
   # 启用 Plasma 桌面
   services.desktopManager.plasma6.enable = true;
 
@@ -22,20 +26,9 @@
   '';
 
 
-  # KDE 会话环境变量
+  # KDE 专属环境变量（Wayland 通用变量在 common/wayland-env.nix）
   environment.sessionVariables = {
     XDG_CURRENT_DESKTOP = "KDE";
-    XDG_SESSION_TYPE = "wayland";
-    GDK_BACKEND = "wayland";
-    QT_QPA_PLATFORM = "wayland";
-    QT_QPA_PLATFORMTHEME = "qt6ct";
-    QT_QPA_PLATFORMTHEME_QT6 = "qt6ct";
-    ELECTRON_OZONE_PLATFORM_HINT = "auto";
-    QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
-    MOZ_ENABLE_WAYLAND = "1";
-    NIXOS_OZONE_WL = "1";
-    CLASH_VERGE_ALLOW_CLIPBOARD = "1";
-    RUST_BACKTRACE = "1";
     GTK_THEME = "Adapta-Nokto";
     GTK_ICON_THEME = "WhiteSur";
     XCURSOR_THEME = "Bibata-Modern-Ice";

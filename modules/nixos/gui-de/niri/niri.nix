@@ -6,6 +6,7 @@
     ./noctalia.nix
     # ./dms.nix
     ../common/apps.nix
+    ../common/wayland-env.nix
   ];
 
   # 使用 niri v26.04（原生模糊效果支持）
@@ -29,30 +30,17 @@
     extraPortals = with pkgs; [
       xdg-desktop-portal-gtk
       xdg-desktop-portal-gnome
+      # KDE port 后端
+      kdePackages.xdg-desktop-portal-kde
     ];
     config.niri = {
-      default = [ "gnome" "gtk" ];
+      default = lib.mkForce "gnome;gtk;kde";
     };
   };
 
-  # Wayland / niri 环境变量
+  # niri 专属环境变量（Wayland 通用变量在 common/wayland-env.nix）
   environment.sessionVariables = {
     XDG_CURRENT_DESKTOP = "niri";
-    XDG_SESSION_TYPE = "wayland";
-    GDK_BACKEND = "wayland";
-    QT_QPA_PLATFORM = "wayland";
-    QT_QPA_PLATFORMTHEME = "qt6ct";
-    QT_QPA_PLATFORMTHEME_QT6 = "qt6ct";
-    ELECTRON_OZONE_PLATFORM_HINT = "auto";
-    QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
-    MOZ_ENABLE_WAYLAND = "1";
-    NIXOS_OZONE_WL = "1";
-    CLASH_VERGE_ALLOW_CLIPBOARD = "1";
-    RUST_BACKTRACE = "1";
-    GTK_THEME = "Adapta-Nokto";
-    GTK_ICON_THEME = "WhiteSur";
-    XCURSOR_THEME = "Bibata-Modern-Ice";
-    XCURSOR_SIZE = "24";
   };
 
   # RDP 远程桌面端口
