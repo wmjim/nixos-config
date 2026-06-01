@@ -3,10 +3,10 @@
 
 {
   imports = [
-      ./yazi
-      # ./tmux
-      ./zellij
-    ];
+    ./yazi
+    # ./tmux
+    ./zellij
+  ];
 
   home.packages = with pkgs; [
     fastfetch
@@ -32,7 +32,7 @@
 
   # fastfetch 配置
   home.file.".config/fastfetch/config.jsonc" = {
-    source = ./fastfetch/config.jsonc;
+    source = ./fastfetch/nixos-01.jsonc;
     force = true;
   };
 }
