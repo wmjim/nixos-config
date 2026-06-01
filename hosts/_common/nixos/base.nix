@@ -35,6 +35,8 @@
       "flakes"
     ];
     connect-timeout = 5;
+    # 自动存储优化，定期优化存储以节省空间
+    auto-optimise-store = true;
     substituters = [
       # 1. 首选清华镜像
       "https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store"

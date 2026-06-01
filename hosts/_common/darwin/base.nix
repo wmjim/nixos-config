@@ -5,6 +5,8 @@
   # Nix 配置
   nix.settings = {
     experimental-features = [ "nix-command" "flakes" ];
+    # 自动存储优化，定期优化存储以节省空间
+    auto-optimise-store = true;
     substituters = [
       "https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store"
       "https://mirrors.ustc.edu.cn/nix-channels/store"

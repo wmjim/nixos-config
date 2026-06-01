@@ -8,7 +8,6 @@
 - [NixOS 中文论坛](https://discourse.nixos.org/c/learn/chinese/55)
 - [Awesome-Nix](https://github.com/nix-community/awesome-nix)
 
-
 ## 构建
 
 ```bash
@@ -26,6 +25,9 @@ darwin-rebuild switch --flake ~/nixos-config#macbook
 
 # 删除所有旧版本的配置文件
 nix-collect-garbage --delete-old
+
+# 存储优化
+nix store optimise
 ```
 
 - 终端Shell：[Fish](https://github.com/fish-shell/fish-shell)
