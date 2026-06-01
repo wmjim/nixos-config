@@ -26,6 +26,7 @@
     obs-studio          # 录屏
     anki                # 助记卡片
     picgo               # 图床管理
+    logisim-evolution   # 数字电路设计
     # 哔哩哔哩
     (bilibili.override { electron = electron_40; })
     # 欧陆英语词典（闭源 Qt5 应用，只支持 XCB 插件，需覆盖 QT_QPA_PLATFORM）
