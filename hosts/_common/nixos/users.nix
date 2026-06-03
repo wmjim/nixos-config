@@ -4,7 +4,15 @@
 {
   users.users.mengw = {
     isNormalUser = true;
-    extraGroups = [ "wheel" "audio" "video" "input" "network" "libvirtd" "kvm" ];
+    extraGroups = [
+      "wheel"
+      "audio"
+      "video"
+      "input"
+      "network"
+      "libvirtd"
+      "kvm"
+    ];
     shell = pkgs.fish;
   };
 
