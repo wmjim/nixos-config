@@ -18,6 +18,7 @@
         disabled = false;
         style = "bg:red fg:crust";
         symbols = {
+          NixOS = "󰣇";
           Windows = "";
           Ubuntu = "󰕈";
           SUSE = "";
