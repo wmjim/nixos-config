@@ -18,7 +18,7 @@
 
   #  排除默认情况下由 COSMIC 安装的应用程序
   environment.cosmic.excludePackages = with pkgs; [
-    cosmic-term  # COSMIC 自带终端（Ghostty 替代）
+    cosmic-term # COSMIC 自带终端（Ghostty 替代）
     cosmic-icons # COSMIC 自带图标主题
     cosmic-store # COSMIC 自带应用商店
     cosmic-screenshot # COSMIC 自带截图工具
@@ -27,10 +27,10 @@
   # 排除与 COSMIC 自带应用功能重叠的公共应用
   gui-de.commonApps.exclude = with pkgs; [
     kdePackages.dolphin # COSMIC 自带文件管理器 (COSMIC Files)
-    kdePackages.ark     # COSMIC Files 已支持压缩/解压
-    sublime4            # COSMIC 自带文本编辑器 (COSMIC Edit)
-    notepad-next        # COSMIC 自带文本编辑器 (COSMIC Edit)
-    mpv                 # COSMIC 自带视频播放器 (COSMIC Video)
+    kdePackages.ark # COSMIC Files 已支持压缩/解压
+    sublime4 # COSMIC 自带文本编辑器 (COSMIC Edit)
+    notepad-next # COSMIC 自带文本编辑器 (COSMIC Edit)
+    mpv # COSMIC 自带视频播放器 (COSMIC Video)
     # qview             # 可选：取消注释以排除图片查看器（COSMIC Files 可预览图片）
   ];
 

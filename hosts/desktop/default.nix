@@ -4,7 +4,7 @@
 {
   imports = [
     ./hardware.nix
-    ../../modules/nixos/hardware               # 按需选择：可改为按子模块单独导入
+    ../../modules/nixos/hardware # 按需选择：可改为按子模块单独导入
     ../../modules/nixos/gui-de
   ];
 

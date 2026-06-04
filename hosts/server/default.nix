@@ -3,7 +3,7 @@
 
 {
   imports = [
-    ./hardware.nix               # dev + network + server
+    ./hardware.nix # dev + network + server
   ];
 
   # 主机名

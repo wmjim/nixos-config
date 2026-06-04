@@ -34,14 +34,14 @@
           };
 
           git_status.symbols = {
-            added = " ";     # 新增
+            added = " "; # 新增
             modified = "  "; # 修改
-            deleted = "󱂥 ";   # 删除
-            renamed = "󰑕 ";   # 重命名
+            deleted = "󱂥 "; # 删除
+            renamed = "󰑕 "; # 重命名
             untracked = " "; # 未跟踪
-            unstaged = " ";  # 未暂存
-            staged = "󰩍 ";    # 已暂存
-            ignored = "  ";  # 忽略
+            unstaged = " "; # 未暂存
+            staged = "󰩍 "; # 已暂存
+            ignored = "  "; # 忽略
             conflict = "  "; # 冲突
           };
         };

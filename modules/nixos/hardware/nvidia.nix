@@ -8,7 +8,7 @@
   boot.kernelParams = [ "nvidia-drm.modeset=1" "nvidia-drm.fbdev=1" ];
 
   hardware.nvidia = {
-    open = false;                   # MX150 不支持开源驱动，使用闭源驱动
+    open = false; # MX150 不支持开源驱动，使用闭源驱动
     modesetting.enable = true;
     powerManagement.enable = true;
     # 副显卡:按需渲染

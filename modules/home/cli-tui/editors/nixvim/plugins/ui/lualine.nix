@@ -1,8 +1,7 @@
-{
-  config,
-  pkgs,
-  inputs,
-  ...
+{ config
+, pkgs
+, inputs
+, ...
 }:
 
 {
@@ -15,18 +14,18 @@
           disabled_filetypes = {
             # 以下文件类型不显示底部状态栏
             statusline = [
-              "dashboard"         # 启动页
-              "alpha"             # 另一种启动页
-              "starter"           # 另一种启动页
-              "neo-tree"          # neo-tree 侧边栏
-              "mini-files"        # mini-files 悬浮文件树
-              "dap-repl"          # 调试 REPL
+              "dashboard" # 启动页
+              "alpha" # 另一种启动页
+              "starter" # 另一种启动页
+              "neo-tree" # neo-tree 侧边栏
+              "mini-files" # mini-files 悬浮文件树
+              "dap-repl" # 调试 REPL
             ];
             # 以下文件类型不显示顶部 winbar
             winbar = [
-              "aerial"            # 大纲
-              "dap-repl"          # 调试 REPL
-              "neotest-summary"   # 测试总结
+              "aerial" # 大纲
+              "dap-repl" # 调试 REPL
+              "neotest-summary" # 测试总结
             ];
           };
           # 区块之间分隔符设为空，保持简洁

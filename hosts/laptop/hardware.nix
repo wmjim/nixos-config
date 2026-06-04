@@ -5,7 +5,8 @@
 
 {
   imports =
-    [ (modulesPath + "/installer/scan/not-detected.nix")
+    [
+      (modulesPath + "/installer/scan/not-detected.nix")
     ];
 
   boot.initrd.availableKernelModules = [ "xhci_pci" "ahci" "nvme" "usb_storage" "sd_mod" ];
@@ -18,56 +19,63 @@
   boot.extraModulePackages = [ ];
 
   fileSystems."/" =
-    { device = "/dev/disk/by-uuid/e0d906dd-b7af-4537-95c2-24595906fbce";
+    {
+      device = "/dev/disk/by-uuid/e0d906dd-b7af-4537-95c2-24595906fbce";
       fsType = "btrfs";
       options = [ "subvol=@" ];
     };
 
   fileSystems."/home" =
-    { device = "/dev/disk/by-uuid/e0d906dd-b7af-4537-95c2-24595906fbce";
+    {
+      device = "/dev/disk/by-uuid/e0d906dd-b7af-4537-95c2-24595906fbce";
       fsType = "btrfs";
       options = [ "subvol=@home" ];
     };
 
   fileSystems."/nix" =
-    { device = "/dev/disk/by-uuid/e0d906dd-b7af-4537-95c2-24595906fbce";
+    {
+      device = "/dev/disk/by-uuid/e0d906dd-b7af-4537-95c2-24595906fbce";
       fsType = "btrfs";
       options = [ "subvol=@nix" ];
     };
 
   fileSystems."/var" =
-    { device = "/dev/disk/by-uuid/e0d906dd-b7af-4537-95c2-24595906fbce";
+    {
+      device = "/dev/disk/by-uuid/e0d906dd-b7af-4537-95c2-24595906fbce";
       fsType = "btrfs";
       options = [ "subvol=@var" ];
     };
 
   fileSystems."/var/log" =
-    { device = "/dev/disk/by-uuid/e0d906dd-b7af-4537-95c2-24595906fbce";
+    {
+      device = "/dev/disk/by-uuid/e0d906dd-b7af-4537-95c2-24595906fbce";
       fsType = "btrfs";
       options = [ "subvol=@log" ];
     };
 
   fileSystems."/var/lib/docker" =
-    { device = "/dev/disk/by-uuid/e0d906dd-b7af-4537-95c2-24595906fbce";
+    {
+      device = "/dev/disk/by-uuid/e0d906dd-b7af-4537-95c2-24595906fbce";
       fsType = "btrfs";
       options = [ "subvol=@docker" ];
     };
 
   fileSystems."/.snapshots" =
-    { device = "/dev/disk/by-uuid/e0d906dd-b7af-4537-95c2-24595906fbce";
+    {
+      device = "/dev/disk/by-uuid/e0d906dd-b7af-4537-95c2-24595906fbce";
       fsType = "btrfs";
       options = [ "subvol=@snapshots" ];
     };
 
   fileSystems."/boot" =
-    { device = "/dev/disk/by-uuid/1C91-1740";
+    {
+      device = "/dev/disk/by-uuid/1C91-1740";
       fsType = "vfat";
       options = [ "fmask=0022" "dmask=0022" ];
     };
 
   swapDevices =
-    [ { device = "/dev/disk/by-uuid/6af40d3c-fdfa-42fc-ad9c-7c57966be306"; }
-    ];
+    [{ device = "/dev/disk/by-uuid/6af40d3c-fdfa-42fc-ad9c-7c57966be306"; }];
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;

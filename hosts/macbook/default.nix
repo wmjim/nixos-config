@@ -3,7 +3,7 @@
 
 {
   imports = [
-    ../../modules/darwin                     # macOS GUI 管理（系统默认值 + Homebrew casks）
+    ../../modules/darwin # macOS GUI 管理（系统默认值 + Homebrew casks）
   ];
 
   # 主机名

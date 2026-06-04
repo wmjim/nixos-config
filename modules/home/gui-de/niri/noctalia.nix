@@ -27,11 +27,11 @@
       # 音频
       audio = {
         enable = true;
-        enable_overdrive = false;   # 是否允许音量滑块超过100%（最高150%）
-        enable_sounds = false;      # 禁用所有界面音效播放
-        sound_volume = 0.5;         # 全局音量（0.0 - 1.0）
-        volume_change_sound = "";   # 空，内置默认  sounds/volume-change.wav
-        notification_sound = "";    # 空，内置默认  sounds/notification.wav
+        enable_overdrive = false; # 是否允许音量滑块超过100%（最高150%）
+        enable_sounds = false; # 禁用所有界面音效播放
+        sound_volume = 0.5; # 全局音量（0.0 - 1.0）
+        volume_change_sound = ""; # 空，内置默认  sounds/volume-change.wav
+        notification_sound = ""; # 空，内置默认  sounds/notification.wav
       };
     };
   };

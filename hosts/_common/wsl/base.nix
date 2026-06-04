@@ -1,10 +1,9 @@
 # WSL 基础配置（所有 WSL 主机共享）
-{
-  config,
-  pkgs,
-  lib,
-  inputs,
-  ...
+{ config
+, pkgs
+, lib
+, inputs
+, ...
 }:
 
 {

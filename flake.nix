@@ -42,17 +42,16 @@
   };
 
   outputs =
-    {
-      self,
-      nixpkgs,
-      dms-plugin-registry,
-      noctalia,
-      nixpkgs-darwin,
-      home-manager,
-      nixos-wsl,
-      nix-darwin,
-      nixvim,
-      ...
+    { self
+    , nixpkgs
+    , dms-plugin-registry
+    , noctalia
+    , nixpkgs-darwin
+    , home-manager
+    , nixos-wsl
+    , nix-darwin
+    , nixvim
+    , ...
     }@inputs:
     let
       # 使用 nixpkgs lib，不扩展以避免兼容性问题

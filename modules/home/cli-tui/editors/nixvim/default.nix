@@ -1,10 +1,10 @@
 { pkgs, ... }:
 {
   imports = [
-    ./plugins             # 插件
-    ./theme.nix           # 主题
-    ./keymaps.nix         # 快捷键
-    ./options.nix         # 设置
+    ./plugins # 插件
+    ./theme.nix # 主题
+    ./keymaps.nix # 快捷键
+    ./options.nix # 设置
   ];
 
   programs.nixvim = {

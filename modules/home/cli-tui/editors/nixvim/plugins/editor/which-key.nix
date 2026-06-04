@@ -2,11 +2,10 @@
 # https://github.com/folke/which-key.nvim
 # https://nix-community.github.io/nixvim/plugins/which-key/index.html
 
-{
-  config,
-  pkgs,
-  inputs,
-  ...
+{ config
+, pkgs
+, inputs
+, ...
 }:
 
 {
@@ -20,7 +19,7 @@
         expand = 1;
         # 禁用 which-key 的启动通知
         notify = false;
-        preset = "modern";   # 显示风格
+        preset = "modern"; # 显示风格
         # 替换按键名称为更易读的形式
         replace = {
           desc = [
@@ -71,7 +70,7 @@
             __unkeyed-1 = "<leader>a";
             group = "AI";
             icon = "󱚣";
-            mode = ["n" "v"];
+            mode = [ "n" "v" ];
           }
 
           {
@@ -184,7 +183,7 @@
             group = "专注面板";
             icon = "";
             mode = "n";
-          }                                                              
+          }
         ];
       };
     };

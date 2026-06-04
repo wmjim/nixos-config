@@ -4,7 +4,8 @@
 
 {
   imports =
-    [ (modulesPath + "/installer/scan/not-detected.nix")
+    [
+      (modulesPath + "/installer/scan/not-detected.nix")
     ];
 
   # 占位 — 在实际机器上运行 nixos-generate-config 替换

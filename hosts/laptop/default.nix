@@ -8,7 +8,7 @@
     # 电池和风扇
     ./laptop.nix
     # 桌面设置
-    ../../modules/nixos/hardware               # NVIDIA + 蓝牙 + 音频 + 网络 + 笔记本电源
+    ../../modules/nixos/hardware # NVIDIA + 蓝牙 + 音频 + 网络 + 笔记本电源
     ../../modules/nixos/gui-de
   ];
 
@@ -20,7 +20,7 @@
   boot.kernelParams = [ "console=ttyS0" ];
 
   # 修复 libvirtd TPM2 凭证解密失败 (TPM "No locks available")
-  systemd.services.libvirtd.serviceConfig.LoadCredentialEncrypted = lib.mkForce [];
+  systemd.services.libvirtd.serviceConfig.LoadCredentialEncrypted = lib.mkForce [ ];
   systemd.services.libvirtd.serviceConfig.LoadCredential = [
     "secrets-encryption-key:/var/lib/libvirt/secrets/secrets-encryption-key"
   ];
@@ -32,7 +32,7 @@
         chmod 600 /var/lib/libvirt/secrets/secrets-encryption-key
       fi
     '';
-    deps = [];
+    deps = [ ];
   };
 
   # ==========================================

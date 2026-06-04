@@ -3,11 +3,10 @@
 # 增量解析
 # 代码折叠
 # 语义感知
-{
-  config,
-  pkgs,
-  inputs,
-  ...
+{ config
+, pkgs
+, inputs
+, ...
 }:
 
 {
@@ -39,12 +38,12 @@
 
       # 语法高亮
       highlight = {
-       enable = true;
-       
-       # 额外启用 Vim 的正则高亮，兼容某些特殊语法
-      #  additional_vim_regex_highlighting = [
-      #    "ruby"
-      #  ];
+        enable = true;
+
+        # 额外启用 Vim 的正则高亮，兼容某些特殊语法
+        #  additional_vim_regex_highlighting = [
+        #    "ruby"
+        #  ];
       };
 
       # 基于 treesitter 的智能缩进

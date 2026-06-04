@@ -11,26 +11,26 @@
   ];
 
   environment.systemPackages = with pkgs; [
-    xwayland-satellite                # XWayland 兼容层（Wayland 环境下运行 X11 应用）
+    xwayland-satellite # XWayland 兼容层（Wayland 环境下运行 X11 应用）
 
     # GTK 主题
-    gtk4                              # GTK4 运行时
-    catppuccin-gtk                    # Catppuccin GTK 主题（GTK 3/4）
-    gnome-themes-extra                # GTK 主题引擎
+    gtk4 # GTK4 运行时
+    catppuccin-gtk # Catppuccin GTK 主题（GTK 3/4）
+    gnome-themes-extra # GTK 主题引擎
 
     # Qt 主题工具
-    qt6Packages.qt6ct                 # Qt6 主题配置工具
-    libsForQt5.qt5ct                  # Qt5 主题配置工具
+    qt6Packages.qt6ct # Qt6 主题配置工具
+    libsForQt5.qt5ct # Qt5 主题配置工具
     qt6Packages.qtstyleplugin-kvantum # Kvantum 主题引擎 Qt6
-    libsForQt5.qtstyleplugin-kvantum  # Kvantum 主题引擎 Qt5
+    libsForQt5.qtstyleplugin-kvantum # Kvantum 主题引擎 Qt5
 
     # KDE/Kvantum 主题
-    catppuccin-kde                    # Catppuccin KDE 主题（Aurorae + 颜色方案 + Plasma）
-    catppuccin-kvantum                # Catppuccin Kvantum 主题
+    catppuccin-kde # Catppuccin KDE 主题（Aurorae + 颜色方案 + Plasma）
+    catppuccin-kvantum # Catppuccin Kvantum 主题
 
     # 图标和光标
-    papirus-icon-theme                # Papirus 图标主题
-    kdePackages.qtsvg                 # KDE SVG 支持（图标渲染）
-    catppuccin-cursors.frappeBlue     # Catppuccin 光标主题（Frappé Blue）
+    papirus-icon-theme # Papirus 图标主题
+    kdePackages.qtsvg # KDE SVG 支持（图标渲染）
+    catppuccin-cursors.frappeBlue # Catppuccin 光标主题（Frappé Blue）
   ];
 }

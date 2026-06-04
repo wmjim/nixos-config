@@ -9,9 +9,9 @@
 
   # 电源管理：合盖不休眠
   services.logind.settings.Login = {
-    HandleLidSwitch = "ignore";               # 普通状态合盖
-    HandleLidSwitchDocked = "ignore";         # 外接显示器时合盖
-    HandleLidSwitchExternalPower = "ignore";  # 外接电源时合盖
+    HandleLidSwitch = "ignore"; # 普通状态合盖
+    HandleLidSwitchDocked = "ignore"; # 外接显示器时合盖
+    HandleLidSwitchExternalPower = "ignore"; # 外接电源时合盖
   };
 
   # 禁用默认的 power-profiles-daemon，避免与 auto-cpufreq/tlp 冲突

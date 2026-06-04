@@ -9,29 +9,29 @@
       # --- 主题 ---
       theme = "Catppuccin Mocha";
 
-            
+
       # --- 字体 ---
-      font-family = ["Maple Mono Normal NL NF" "LXGW WenKai Mono"];
+      font-family = [ "Maple Mono Normal NL NF" "LXGW WenKai Mono" ];
       font-size = 12;
-      font-thicken = true;    # 加粗
+      font-thicken = true; # 加粗
       adjust-cell-height = 2; # 行高
 
       # --- 窗口外观 ---
-      background-opacity = 1.0;     # 背景透明度
-      background-blur-radius = 20;  # 背景模糊半径
+      background-opacity = 1.0; # 背景透明度
+      background-blur-radius = 20; # 背景模糊半径
       # 标题栏样式（透明）
       macos-titlebar-style = "transparent";
-      window-padding-x = 10;        # 左右内边距
-      window-padding-y = 8;         # 上下内边距
-      window-step-resize = false;   # 禁用窗口按步进缩放（更平滑）
+      window-padding-x = 10; # 左右内边距
+      window-padding-y = 8; # 上下内边距
+      window-step-resize = false; # 禁用窗口按步进缩放（更平滑）
       window-save-state = "always"; # 窗口状态记忆（重启不丢布局）
-      window-theme = "auto";        # 窗口主题自动切换（跟随系统）
+      window-theme = "auto"; # 窗口主题自动切换（跟随系统）
       # gtk-titlebar = false;         # 保留边框，禁用标题栏
 
       # --- 光标 ---
-      cursor-style = "block";     # 样式（block — 游标着色器在 bar/underline 下有 bug，见 ghostty#7893）
-      cursor-style-blink = true;  # 闪烁
-      cursor-opacity = 0.8;       # 光标透明度
+      cursor-style = "block"; # 样式（block — 游标着色器在 bar/underline 下有 bug，见 ghostty#7893）
+      cursor-style-blink = true; # 闪烁
+      cursor-opacity = 0.8; # 光标透明度
 
       # --- 光标着色器特效 ---
       # https://github.com/KroneCorylus/ghostty-shader-playground
@@ -50,9 +50,9 @@
       copy-on-select = "clipboard";
 
       # --- 快速终端 ---
-      quick-terminal-position = "top";  # 下拉终端位置（顶部）
-      quick-terminal-screen = "mouse";  # 在鼠标所在屏幕打开
-      quick-terminal-autohide = true;   # 自动隐藏
+      quick-terminal-position = "top"; # 下拉终端位置（顶部）
+      quick-terminal-screen = "mouse"; # 在鼠标所在屏幕打开
+      quick-terminal-autohide = true; # 自动隐藏
       quick-terminal-animation-duration = 0.15; # 动画时长（秒）
 
       # --- 安全 ---

@@ -2,7 +2,7 @@
 {
   imports = [
     ./ui
-    ./editor  # 提供文件浏览器、搜索与替换、模糊查找、Git 集成等功能
+    ./editor # 提供文件浏览器、搜索与替换、模糊查找、Git 集成等功能
     ./autopairs.nix
     ./autotag.nix
     ./blankline.nix

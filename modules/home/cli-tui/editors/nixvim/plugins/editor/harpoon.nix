@@ -114,7 +114,7 @@
         key = "<leader>m2";
         action.__raw = ''function() require("harpoon"):list():select(2) end'';
         options.desc = "跳转标记2";
-        options.silent = true;  
+        options.silent = true;
       }
 
       {

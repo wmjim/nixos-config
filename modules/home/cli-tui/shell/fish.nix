@@ -20,23 +20,23 @@
     '';
     shellAliases = {
       # 常用别名
-      ".."="cd ..";
-      "..."="cd ../..";
-      updatewsl="sudo nixos-rebuild switch --flake ~/nixos-config#wsl";
-      
+      ".." = "cd ..";
+      "..." = "cd ../..";
+      updatewsl = "sudo nixos-rebuild switch --flake ~/nixos-config#wsl";
+
       # eza 推荐别名
       # 基础替换：带图标、目录优先、文件类型颜色
-      ls="eza --icons=auto --group-directories-first --color=auto";
+      ls = "eza --icons=auto --group-directories-first --color=auto";
       # 详细列表 + Git 状态（最常用）
-      ll="eza -l --icons=auto --group-directories-first --git --header";
+      ll = "eza -l --icons=auto --group-directories-first --git --header";
       # 显示隐藏文件
-      la="eza -a --icons=auto --group-directories-first";
+      la = "eza -a --icons=auto --group-directories-first";
       # 详细版显示隐藏文件
-      lla="eza -la --icons=auto --group-directories-first --git --header";
+      lla = "eza -la --icons=auto --group-directories-first --git --header";
       # 树形显示，限制 2 层，避免刷屏
-      lt="eza --tree --level=2 --icons=auto";
+      lt = "eza --tree --level=2 --icons=auto";
       # 只看目录
-      ldir="eza -D --icons=auto";
+      ldir = "eza -D --icons=auto";
 
       gs = "git status";
       ga = "git add";
@@ -45,20 +45,20 @@
       gl = "git log --oneline --graph --decorate";
 
       # bat 推荐别名
-      bat="bat --style=plain";
-      cat="bat --style=plain --paging=never";
+      bat = "bat --style=plain";
+      cat = "bat --style=plain --paging=never";
 
       # duf 推荐别名
-      df="duf --only local";           # 替代 df，只显示本地磁盘
-      duf="duf --sort usage";          # 默认按使用率排序（最满的在前）
-      dufall="duf --all";              # 查看所有（含伪文件系统）
-      dufjson="duf --json";            # JSON 输出，用于脚本
+      df = "duf --only local"; # 替代 df，只显示本地磁盘
+      duf = "duf --sort usage"; # 默认按使用率排序（最满的在前）
+      dufall = "duf --all"; # 查看所有（含伪文件系统）
+      dufjson = "duf --json"; # JSON 输出，用于脚本
 
       # zoxide 别名
-      zquery="zoxide query -l -s";
+      zquery = "zoxide query -l -s";
 
-      
-      cc  = "claude --dangerously-skip-permissions";
+
+      cc = "claude --dangerously-skip-permissions";
 
       # 查询快捷键
       # 可用 niri、

@@ -2,8 +2,8 @@
   programs.nixvim = {
     globals = {
       # 将 <space> 设置为前导键
-      mapleader = " ";        # 全局前导键
-      maplocalleader = " ";   # 缓冲区前导键
+      mapleader = " "; # 全局前导键
+      maplocalleader = " "; # 缓冲区前导键
     };
     keymaps = [
       {

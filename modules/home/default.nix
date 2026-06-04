@@ -1,10 +1,9 @@
 # Home Manager 配置（跨平台）
-{
-  config,
-  pkgs,
-  lib,
-  inputs,
-  ...
+{ config
+, pkgs
+, lib
+, inputs
+, ...
 }:
 
 {

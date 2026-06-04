@@ -24,20 +24,20 @@
   };
 
   programs.dms-shell = {
-    enable = true;                    # 启动 dms
+    enable = true; # 启动 dms
 
     systemd = {
-      enable = true;                  # 自动启动
-      restartIfChanged = true;        # 当 dms-shell 发生变化时重启 dms.service
+      enable = true; # 自动启动
+      restartIfChanged = true; # 当 dms-shell 发生变化时重启 dms.service
     };
 
     # 核心功能
-    enableSystemMonitoring = true;    # 系统监控小部件（dgop） 
-    enableVPN = true;                 # VPN 管理小部件
-    enableDynamicTheming = true;      # 基于壁纸的主题（matugen）
-    enableAudioWavelength = true;     # 音频可视化器（cava）
-    enableCalendarEvents = true;      # 日历集成（khal）
-    enableClipboardPaste = true;      # 从剪贴板历史中粘贴（wtype）
+    enableSystemMonitoring = true; # 系统监控小部件（dgop） 
+    enableVPN = true; # VPN 管理小部件
+    enableDynamicTheming = true; # 基于壁纸的主题（matugen）
+    enableAudioWavelength = true; # 音频可视化器（cava）
+    enableCalendarEvents = true; # 日历集成（khal）
+    enableClipboardPaste = true; # 从剪贴板历史中粘贴（wtype）
 
     plugins = {
       dankBatteryAlerts.enable = true;

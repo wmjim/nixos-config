@@ -1,8 +1,7 @@
-{
-  config,
-  pkgs,
-  inputs,
-  ...
+{ config
+, pkgs
+, inputs
+, ...
 }:
 
 {
@@ -14,7 +13,7 @@
     plugins.bufferline.lazyLoad = {
       enable = true;
       settings = {
-        event = ["User LazyFile"];
+        event = [ "User LazyFile" ];
       };
     };
 
@@ -29,10 +28,10 @@
           # style = "icon";
         };
 
-        buffer_close_icons = "⨉ ";  # 单个 buffer 的关闭图标
-        close_icon = "⨉  ";       # 右侧"关闭全部"图标
-        modified_icon = "●";      # 未保存文件的修改标记
-        left_trunc_marker = "";  # 左侧截断标记（buffer 过多时显示）
+        buffer_close_icons = "⨉ "; # 单个 buffer 的关闭图标
+        close_icon = "⨉  "; # 右侧"关闭全部"图标
+        modified_icon = "●"; # 未保存文件的修改标记
+        left_trunc_marker = ""; # 左侧截断标记（buffer 过多时显示）
         right_trunc_marker = ""; # 右侧截断标记
 
         # ── 诊断 ──
@@ -57,12 +56,12 @@
         ];
 
         # ── 行为 ──
-        max_average_window_width = 100;    # 平均窗口宽度上限，防止 buffer 过多时过度挤压
-        show_buffer_close_icons = true;    # 在每个 buffer 上显示关闭图标
-        show_close_icon = true;            # 显示右侧"关闭全部"图标
-        show_tab_indicators = true;        # 显示 Tabline 上方的指示器
-        enforce_regular_tabs = true;       # 强制使用常规标签页样式
-        always_show_bufferline = true;     # 即使只有一个 buffer 也显示标签栏
+        max_average_window_width = 100; # 平均窗口宽度上限，防止 buffer 过多时过度挤压
+        show_buffer_close_icons = true; # 在每个 buffer 上显示关闭图标
+        show_close_icon = true; # 显示右侧"关闭全部"图标
+        show_tab_indicators = true; # 显示 Tabline 上方的指示器
+        enforce_regular_tabs = true; # 强制使用常规标签页样式
+        always_show_bufferline = true; # 即使只有一个 buffer 也显示标签栏
         # buffer 排序方式：
         # "insert_after_current" | "id" | "extension" | "relative_directory" | "tabs"
         sort_by = "insert_after_current";

@@ -1,10 +1,9 @@
 # NixOS 基础配置（所有 NixOS 主机共享）
-{
-  config,
-  pkgs,
-  lib,
-  inputs,
-  ...
+{ config
+, pkgs
+, lib
+, inputs
+, ...
 }:
 
 {

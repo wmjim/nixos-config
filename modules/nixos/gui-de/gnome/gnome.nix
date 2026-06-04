@@ -21,7 +21,7 @@
 
   # GNOME 电源管理 - 合盖不休眠，熄屏不休眠
   systemd.user.services."gnome-power-settings" = {
-    
+
     wantedBy = [ "graphical.target" ];
     serviceConfig = {
       Type = "oneshot";
@@ -89,7 +89,7 @@
     gnome-text-editor
     gnome-calculator
     gnome-screenshot
-    nautilus                  # 文件管理器
+    nautilus # 文件管理器
     gnome-tweaks
     gnome-shell-extensions
   ] ++ (with pkgs.gnomeExtensions; [
