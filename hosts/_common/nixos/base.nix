@@ -30,9 +30,10 @@
 
   # Nix 配置
   nix.settings = {
+    # 启用 Flakes 特性以及配套的新 nix 命令行工具
     experimental-features = [
-      "nix-command"
       "flakes"
+      "nix-command"
     ];
     connect-timeout = 5;
     # 自动存储优化，定期优化存储以节省空间
@@ -77,8 +78,6 @@
     "openssl-1.1.1w"
   ];
 
-  # NUR overlay
-  nixpkgs.overlays = [ inputs.nur.overlays.default ];
 
   # SSH
   services.openssh = {

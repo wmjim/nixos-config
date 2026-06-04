@@ -26,6 +26,7 @@
 
   # Nix 配置
   nix.settings = {
+    # 启用 Flakes 特性以及配套的新 nix 命令行工具
     experimental-features = [
       "nix-command"
       "flakes"
@@ -51,13 +52,14 @@
   programs.nix-ld.enable = true;
 
   # 系统总线
-  services.dbus.enable = true;
+  services.dbus = {
+    enable = true;
+    implementation = "broker";
+  };
 
   # 允许非自由软件
   nixpkgs.config.allowUnfree = true;
 
-  # NUR overlay
-  nixpkgs.overlays = [ inputs.nur.overlays.default ];
 
   # 系统级包
   environment.systemPackages = with pkgs; [

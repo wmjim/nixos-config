@@ -4,9 +4,9 @@
 {
   imports = [
     ./common
+    ./niri
     # ./gnome
     # ./kde
-    # ./niri
-    ./cosmic
+    # ./cosmic
   ];
 }

@@ -22,7 +22,6 @@
     duf
     glow
     hugo
-    # pkgs.nur.repos.definfo.cc-switch-cli
   ];
 
   home.sessionVariables = {

@@ -9,13 +9,8 @@
     ../common/wayland-env.nix
   ];
 
-  # 使用 niri v26.04（原生模糊效果支持）
-  nixpkgs.overlays = [ inputs.niri.overlays.default ];
-
   # 启用 niri
   programs.niri.enable = true;
-
-  # greetd 由 dms-greeter 模块管理，此处不再重复配置
 
   # 触控板
   services.libinput.enable = true;

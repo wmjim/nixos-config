@@ -1,7 +1,6 @@
 ## 资源
 
 - [查找包](https://search.nixos.org/packages)
-- [查找 NUR 包](https://nur.nix-community.org/)
 - [查找设置](https://search.nixos.org/options)
 - [更快的搜索](https://nixsearch.thekoppe.com/)
 - [NixOS 中文](https://nixos-cn.org/manual/)

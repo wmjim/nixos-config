@@ -6,7 +6,6 @@
     # nixpkgs.url = "github:nixos/nixpkgs/nixos-26.05";
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     nixpkgs-darwin.url = "github:nixos/nixpkgs/nixpkgs-26.05-darwin";
-    nur.url = "github:nix-community/NUR";
 
     home-manager = {
       url = "github:nix-community/home-manager/release-26.05";
@@ -29,12 +28,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # niri 26.04 — 原生模糊效果支持
-    niri = {
-      url = "github:YaLTeR/niri/v26.04";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     # wsl
     nixos-wsl = {
       url = "github:nix-community/NixOS-WSL";
@@ -52,10 +45,8 @@
     {
       self,
       nixpkgs,
-      nur,
       dms-plugin-registry,
       noctalia,
-      niri,
       nixpkgs-darwin,
       home-manager,
       nixos-wsl,

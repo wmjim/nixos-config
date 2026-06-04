@@ -2,7 +2,7 @@
 { pkgs, ... }:
 
 {
-  # 蓝牙管理
+  # 启用对蓝牙设备的支持
   hardware.bluetooth.enable = true;
   # 开机自启蓝牙适配器电源
   hardware.bluetooth.powerOnBoot = true;
