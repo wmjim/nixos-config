@@ -4,8 +4,9 @@
 {
   imports = [
     ./common
-    # ./gnome          # 切换到 KDE 后保留以备调试回退
+    # ./gnome
     # ./kde
-    ./niri
+    # ./niri
+    ./cosmic
   ];
 }

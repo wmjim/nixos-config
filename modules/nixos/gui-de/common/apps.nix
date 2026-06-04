@@ -39,7 +39,7 @@
     cc-switch # AI 管理
     # === 通讯工具 ===
     wechat # 微信
-    qq # qq
+    # qq # qq
     discord # Discord
     telegram-desktop # Telegram
     feishu # 飞书

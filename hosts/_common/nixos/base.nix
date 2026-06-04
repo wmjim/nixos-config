@@ -64,7 +64,10 @@
   programs.nix-ld.enable = true;
 
   # 系统总线（所有 NixOS 主机都需要）
-  services.dbus.enable = true;
+  services.dbus = {
+    enable = true;
+    implementation = "broker";
+  };
 
   # 允许非自由软件
   nixpkgs.config.allowUnfree = true;
