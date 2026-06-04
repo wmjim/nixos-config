@@ -35,8 +35,7 @@ in
       anki # 助记卡片
       picgo # 图床管理
       logisim-evolution # 数字电路设计
-      # 哔哩哔哩
-      (bilibili.override { electron = electron_40; })
+      bilibili # 哔哩哔哩
       # 欧陆英语词典（闭源 Qt5 应用，只支持 XCB 插件，需覆盖 QT_QPA_PLATFORM）
       (pkgs.writeShellScriptBin "eudic" ''
         export QT_QPA_PLATFORM=xcb
