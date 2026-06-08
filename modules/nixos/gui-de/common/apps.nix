@@ -24,11 +24,11 @@ in
         kdePackages.ark # 解压工具
         readest # 电子书阅读
         kdePackages.okular # 通用文档阅读器
-        sublime4 # 文本编辑器
+        kdePackages.kate # 轻量文本编辑
         qview # 图片查看器
         kdePackages.dolphin # 文件管理器
         mpv # 视频播放器
-        flameshot # 截图工具
+        snipaste # 截图工具
         freetube # YouTube 客户端
         microsoft-edge # 浏览器
         zed-editor # 代码编辑器-加速
@@ -36,6 +36,7 @@ in
         typora # markdownb 编辑器
         obsidian # 笔记
         siyuan # 笔记
+        xournalpp # PDF批注手写笔记
         zotero # 文献管理
         thunderbird # 邮件管理
         obs-studio # 录屏
@@ -44,15 +45,19 @@ in
         logisim-evolution # 数字电路设计
         bilibili # 哔哩哔哩
         # 欧陆英语词典（闭源 Qt5 应用，只支持 XCB 插件，需覆盖 QT_QPA_PLATFORM）
-        (pkgs.writeShellScriptBin "eudic" ''
-          export QT_QPA_PLATFORM=xcb
-          exec ${pkgs.eudic}/bin/eudic "$@"
-        '')
+        eudic
+        # (pkgs.writeShellScriptBin "eudic" ''
+        #   export QT_QPA_PLATFORM=xcb
+        #   exec ${pkgs.eudic}/bin/eudic "$@"
+        # '')
         folo # 信息聚合平台
         localsend # 跨平台文件共享
         cc-switch # AI 管理
+        cherry-studio
+        baidupcs-go # 百度网盘
         # === 通讯工具 ===
         wechat # 微信
+        wemeet # 腾讯会议
         # qq # qq
         discord # Discord
         telegram-desktop # Telegram

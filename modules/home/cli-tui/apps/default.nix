@@ -13,6 +13,7 @@
     lazydocker
     lazygit
     claude-code
+    codex
     unzip
     tree
     file
