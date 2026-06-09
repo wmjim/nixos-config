@@ -44,12 +44,11 @@ in
         picgo # 图床管理
         logisim-evolution # 数字电路设计
         bilibili # 哔哩哔哩
-        # 欧陆英语词典（闭源 Qt5 应用，只支持 XCB 插件，需覆盖 QT_QPA_PLATFORM）
-        eudic
-        # (pkgs.writeShellScriptBin "eudic" ''
-        #   export QT_QPA_PLATFORM=xcb
-        #   exec ${pkgs.eudic}/bin/eudic "$@"
-        # '')
+        # 欧路英语词典（闭源 Qt5 应用，只支持 XCB 插件，强制覆盖 QT_QPA_PLATFORM）
+        (pkgs.writeShellScriptBin "eudic" ''
+          export QT_QPA_PLATFORM=xcb
+          exec ${pkgs.eudic}/bin/eudic "$@"
+        '')
         folo # 信息聚合平台
         localsend # 跨平台文件共享
         cc-switch # AI 管理
