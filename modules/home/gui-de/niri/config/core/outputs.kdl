@@ -5,3 +5,14 @@ output "eDP-1" {
     position x=0 y=0
     focus-at-startup
 }
+
+output "DP-2" {
+    // 设置屏幕分辨率和刷新率
+    mode "3840x2160@150.000"
+    // 界面缩放为 150%
+    scale 1.50
+    // 设置屏幕位置
+    position x=0 y=0
+    // niri 启动时默认聚焦输出
+    focus-at-startup
+}

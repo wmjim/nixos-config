@@ -3,36 +3,38 @@ input {
     // 键盘
     keyboard {
         xkb {
+            layout "us"
+            // 将 Caps Lock 键重新映射为 Escape 键，按下时发送 Escape，按住时发送 Caps Lock
+            options "esc:nocaps"
         }
-        repeat-delay 250
+        // 按键重复延迟
+        repeat-delay 600
+        // 按键重复频率
         repeat-rate 35
-        numlock
     }
 
     // 触摸板
     touchpad {
-        tap
-        dwtp
-        drag true
-        drag-lock
-        natural-scroll
+        tap  // 启用轻触点击
+        tap-button-map "left-middle-right"  // 轻触按钮映射：1左键-2中键-3右键
+        click-method "clickfinger" // 手指在触摸板上的位置决定点击按键（如单指按下=左键，双指按下=右键）         
+        dwt  // 禁止在打字时触摸板输入
+        drag true  // 启用拖动锁定
+        drag-lock  // 锁住拖动状态：拖动时无需持续按住手指
+        natural-scroll // 自然滚动：滚动方向与触摸屏相同
+        accel-speed 0.2   // 指针移动速度：-1.0~1.0，默认0.0
+        accel-profile "adaptive"  // 加速度配置：自适应加速度（慢速移动更精准，快速移动更快）
+        scroll-factor 1.0  // 滚动因子：控制滚动速度
+        scroll-method "two-finger" // 滚动方法：两指滚动
+        scroll-button-lock // 滚动按钮锁定：按下滚动按钮后，保持滚动状态直到再次按下
     }
 
     // 鼠标
     mouse {
-        accel-speed -0.15
-        accel-profile "flat"
-        scroll-factor horizontal=2.0 vertical=-1.0
-    }
-
-    trackpoint {
-        // off
-        // natural-scroll
-        // accel-speed 0.2
-        // accel-profile "flat"
-        // scroll-method "on-button-down"
-        // scroll-button 273
-        // scroll-button-lock
-        // middle-emulation
+        middle-emulation  // 中键模拟：同时按下左右键时，模拟中键点击
+        accel-speed 0.2   // 指针移动速度：-1.0~1.0，默认0.0
+        accel-profile "adaptive"  // 加速度配置：自适应加速度（慢速移动更精准，快速移动更快）
+        scroll-factor 1.0  // 滚动因子：控制滚动速度
+        scroll-button-lock // 滚动按钮锁定：按下滚动按钮后，保持滚动状态直到再次按下
     }
 }

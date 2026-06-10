@@ -13,6 +13,10 @@ spawn-at-startup "xhost" "+si:localuser:root"
 spawn-at-startup "systemctl" "--user" "start" "linuxqq-clipsync"
 // polkit 认证代理
 spawn-at-startup "/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1"
+// 截图工具
+spawn-at-startup "snipaste"
+// 图床管理
+spawn-at-startup "picgo"
 
 // niri 启动时不自动展示快捷键覆盖层
 hotkey-overlay {
