@@ -51,7 +51,7 @@ window-rule {
 
 // Snipaste — 截图工具
 window-rule {
-    match app-id="snipaste"
+    match app-id="(?i)snipaste"
     open-maximized false
     open-floating true
     default-column-width { proportion 0.30; }

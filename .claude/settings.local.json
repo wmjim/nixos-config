@@ -6,7 +6,13 @@
       "Bash(xargs -I {} nix path-info {})",
       "Bash(git add:*)",
       "Bash(nmcli radio *)",
-      "Bash(nmcli device *)"
+      "Bash(nmcli device *)",
+      "Bash(busctl --user introspect :1.525 /StatusNotifierItem)",
+      "Bash(busctl --user call :1.525 /StatusNotifierItem org.freedesktop.DBus.Properties Get ss org.kde.StatusNotifierItem Id)",
+      "Bash(busctl --user call :1.525 /StatusNotifierItem org.freedesktop.DBus.Properties Get ss org.kde.StatusNotifierItem Title)",
+      "Bash(busctl --user call :1.527 /StatusNotifierItem org.freedesktop.DBus.Properties Get ss org.kde.StatusNotifierItem Id)",
+      "Bash(busctl --user call :1.527 /StatusNotifierItem org.freedesktop.DBus.Properties Get ss org.kde.StatusNotifierItem Title)",
+      "Bash(busctl --user get-property org.kde.StatusNotifierWatcher /StatusNotifierWatcher org.kde.StatusNotifierWatcher RegisteredStatusNotifierItems)"
     ]
   }
 }
