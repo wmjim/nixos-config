@@ -11,7 +11,7 @@
 window-rule {
     background-effect {
         blur true
-        xray true
+        xray false
     }
 }
 
@@ -25,17 +25,21 @@ window-rule {
     }
 }
 
-// --- Noctalia Shell 覆盖层磨砂 ---
+// 模糊概览壁纸
 layer-rule {
     match namespace="^noctalia-backdrop"
     place-within-backdrop true
 }
 
-// 在所有表面上禁用 X 光效果
+/*
+  Noctalia（夜境）
+  为所有界面图层禁用透视效果，让视觉效果更贴合真实观感。
+  当系统支持 ext-background-effects 协议时，Noctalia 会自动推送模糊区域数据。
+*/
 layer-rule {
-    match namespace="^noctalia-(bar-[^\"]+|notification|dock|panel)$"
-    background-effect {
-        blur true
-        xray false
-    }
+  match namespace="^noctalia-(bar-[^\"]+|notification|dock|panel|attached-panel|osd)$"
+  background-effect {
+    xray false
+    // blur false
+  }
 }

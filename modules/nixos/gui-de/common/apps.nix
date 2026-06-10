@@ -18,6 +18,7 @@
 
   environment.systemPackages = with pkgs; [
     # 常用应用
+    ddcutil # 显示器亮度调节
     kdePackages.ark # 解压工具
     readest # 电子书阅读
     kdePackages.okular # 通用文档阅读器

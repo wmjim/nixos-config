@@ -1,8 +1,8 @@
 // 窗口规则
 // 全局：默认所有窗口最大化打开
 window-rule {
-    geometry-corner-radius 3
-    clip-to-geometry true
+    geometry-corner-radius 3  // 圆角
+    clip-to-geometry true     // 将窗口内容剪辑到圆角边界
     draw-border-with-background false
     open-maximized true                 // 默认以最大化状态打开
 }
@@ -21,6 +21,16 @@ window-rule {
 // ═══════════════════════════════════════════════
 // 以下应用默认以浮动窗口打开，避免全屏铺满
 // ═══════════════════════════════════════════════
+
+// Noctalia 设置 - 设置窗口
+window-rule {
+  match app-id="dev.noctalia.Noctalia.Settings"
+  open-maximized false
+  open-floating true
+  default-column-width { proportion 0.55; }
+  default-window-height { proportion 0.65; }
+}
+
 
 // WeChat — 聊天应用
 window-rule {
