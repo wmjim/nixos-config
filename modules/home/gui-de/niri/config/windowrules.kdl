@@ -12,8 +12,147 @@ debug {
     honor-xdg-activation-with-invalid-serial
 }
 
-// Ghostty 默认浮动打开，不强制最大化
+// Ghostty 默认不最大化
 window-rule {
     match app-id="com.mitchellh.ghostty"
     open-maximized false
+}
+
+// ═══════════════════════════════════════════════
+// 以下应用默认以浮动窗口打开，避免全屏铺满
+// ═══════════════════════════════════════════════
+
+// WeChat — 聊天应用
+window-rule {
+    match app-id="wechat"
+    open-maximized false
+    open-floating true
+    default-column-width { proportion 0.60; }
+    default-window-height { proportion 0.75; }
+}
+
+// CC Switch — 小工具面板
+window-rule {
+    match app-id="cc-switch"
+    open-maximized false
+    open-floating true
+    default-column-width { proportion 0.35; }
+    default-window-height { proportion 0.40; }
+}
+
+// Fcitx5 配置 — 设置窗口（Qt 应用，桌面文件 org.fcitx.fcitx5-config-qt）
+window-rule {
+    match app-id="(?i)fcitx"
+    open-maximized false
+    open-floating true
+    default-column-width { proportion 0.55; }
+    default-window-height { proportion 0.65; }
+}
+
+// Snipaste — 截图工具
+window-rule {
+    match app-id="snipaste"
+    open-maximized false
+    open-floating true
+    default-column-width { proportion 0.30; }
+    default-window-height { proportion 0.30; }
+}
+
+// Clash Verge — 代理配置
+window-rule {
+    match app-id="clash-verge"
+    open-maximized false
+    open-floating true
+    default-column-width { proportion 0.55; }
+    default-window-height { proportion 0.70; }
+}
+
+// PicGo — 图床管理
+window-rule {
+    match app-id="picgo"
+    open-maximized false
+    open-floating true
+    default-column-width { proportion 0.42; }
+    default-window-height { proportion 0.55; }
+}
+
+// Discord — 聊天应用
+window-rule {
+    match app-id="discord"
+    open-maximized false
+    open-floating true
+    default-column-width { proportion 0.60; }
+    default-window-height { proportion 0.80; }
+}
+
+// Zed — 代码编辑器（原生 Wayland）
+window-rule {
+    match app-id="dev.zed.Zed"
+    open-maximized false
+    open-floating true
+    default-column-width { proportion 0.70; }
+    default-window-height { proportion 0.85; }
+}
+
+// Thunderbird — 邮件客户端（StartupWMClass=thunderbird）
+window-rule {
+    match app-id="thunderbird"
+    open-maximized false
+    open-floating true
+    default-column-width { proportion 0.70; }
+    default-window-height { proportion 0.85; }
+}
+
+// Bilibili — 视频客户端（Electron，正则覆盖 XWayland 变体）
+window-rule {
+    match app-id="(?i)bilibili"
+    open-maximized false
+    open-floating true
+    default-column-width { proportion 0.65; }
+    default-window-height { proportion 0.75; }
+}
+
+// Nautilus — 文件管理器（桌面文件 org.gnome.Nautilus）
+window-rule {
+    match app-id="(?i)nautilus"
+    open-maximized false
+    open-floating true
+    default-column-width { proportion 0.65; }
+    default-window-height { proportion 0.75; }
+}
+
+// Anki — 闪卡记忆（StartupWMClass=anki）
+window-rule {
+    match app-id="anki"
+    open-maximized false
+    open-floating true
+    default-column-width { proportion 0.55; }
+    default-window-height { proportion 0.75; }
+}
+
+// LocalSend — 文件传输
+window-rule {
+    match app-id="localsend"
+    open-maximized false
+    open-floating true
+    default-column-width { proportion 0.45; }
+    default-window-height { proportion 0.55; }
+}
+
+// 飞书 — 工作聊天（XWayland，正则匹配覆盖 WM_CLASS 变体）
+window-rule {
+    match app-id="(?i)feishu"
+    open-maximized false
+    open-floating true
+    default-column-width { proportion 0.65; }
+    default-window-height { proportion 0.80; }
+}
+
+// 腾讯会议 — 视频会议
+window-rule {
+    match app-id="wemeetapp"
+    open-maximized false
+    open-floating true
+    default-column-width { proportion 0.60; }
+    default-window-height { proportion 0.75; }
 }

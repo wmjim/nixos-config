@@ -17,4 +17,5 @@ binds {
     Mod+Return  hotkey-overlay-title="终端"         { spawn "ghostty"; }
     Mod+Shift+B hotkey-overlay-title="浏览器"       { spawn "microsoft-edge"; }
     Mod+Shift+F hotkey-overlay-title="文件管理器"   { spawn-sh "dolphin --new-window"; }
+    Mod+Shift+M hotkey-overlay-title="系统监控"     { spawn "ghostty" "-e" "btop"; }
 }

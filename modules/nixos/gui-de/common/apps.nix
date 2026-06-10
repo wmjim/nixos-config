@@ -12,15 +12,14 @@
     kdePackages.ark # 解压工具
     readest # 电子书阅读
     kdePackages.okular # 通用文档阅读器
-    kdePackages.kate # 轻量文本编辑
+    gnome-text-editor # 轻量文本编辑
     qview # 图片查看器
     nautilus # 文件管理器
     mpv # 视频播放器
     snipaste # 截图工具
     freetube # YouTube 客户端
     microsoft-edge # 浏览器
-    zed-editor # 代码编辑器-加速
-    notepad-next # 文本编辑器
+    zed-editor # 代码编辑器
     typora # markdownb 编辑器
     obsidian # 笔记
     siyuan # 笔记
