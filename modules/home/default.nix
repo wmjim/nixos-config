@@ -13,6 +13,5 @@
 
   imports = [
     ./cli-tui
-    # 需要 GUI/DE 的主机在 flake.nix 中额外导入 ./gui-de
   ];
 }
