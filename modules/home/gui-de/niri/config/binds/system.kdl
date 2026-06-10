@@ -3,6 +3,7 @@ binds {
     // 截图
     Mod+P       hotkey-overlay-title="区域截图"         { screenshot; }
     Mod+Ctrl+P  hotkey-overlay-title="全屏截图"         { screenshot-screen; }
+    Mod+Shift+P hotkey-overlay-title="窗口截图"         { screenshot-window; }
 
     // 退出
     Mod+Shift+E hotkey-overlay-title="退出 niri"        { quit; }
