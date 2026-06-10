@@ -77,6 +77,8 @@
     "openssl-1.1.1w"
   ];
 
+  # NUR overlay
+  nixpkgs.overlays = [ inputs.nur.overlays.default ];
 
   # SSH
   services.openssh = {

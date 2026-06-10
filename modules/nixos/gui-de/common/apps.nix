@@ -11,7 +11,10 @@
     ./apps/thunderbird.nix
     ./apps/wechat.nix
     ./apps/cc-switch.nix
+    ./apps/pot.nix
   ];
+
+  nixpkgs.overlays = [ inputs.nur.overlays.default ];
 
   environment.systemPackages = with pkgs; [
     # 常用应用

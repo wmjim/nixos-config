@@ -35,6 +35,7 @@
     maple-mono.NormalNL-NF-CN-unhinted
     maple-mono.NormalNL-NF-unhinted
     # 中文无衬线/屏幕阅读字体
+    pkgs.nur.repos.guanran928.harmonyos-sans
     # 中文衬线字体 (霞鹜文楷 + 霞鹜文楷等宽)
     lxgw-wenkai
     # 英文衬线字体

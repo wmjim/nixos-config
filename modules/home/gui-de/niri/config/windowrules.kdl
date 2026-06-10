@@ -67,6 +67,25 @@ window-rule {
     default-window-height { proportion 0.70; }
 }
 
+// Pot — 划词翻译等通用窗口（右侧浮动长条，满高度）
+window-rule {
+    match app-id="(?i)pot"
+    open-maximized false
+    open-floating true
+    default-column-width { proportion 0.2; }
+    default-window-height { proportion 1.0; }
+    default-floating-position x=0 y=0 relative-to="top-right"
+}
+
+// Pot — 偏好设置面板（Config 窗口，覆盖上面的通用规则）
+window-rule {
+    match app-id="(?i)pot" title="Config"
+    open-maximized false
+    open-floating true
+    default-column-width { proportion 0.55; }
+    default-window-height { proportion 0.70; }
+}
+
 // PicGo — 图床管理
 window-rule {
     match app-id="picgo"

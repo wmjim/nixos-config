@@ -18,4 +18,9 @@ binds {
     Mod+Shift+B hotkey-overlay-title="浏览器"       { spawn "microsoft-edge"; }
     Mod+Shift+F hotkey-overlay-title="文件管理器"   { spawn-sh "dolphin --new-window"; }
     Mod+Shift+M hotkey-overlay-title="系统监控"     { spawn "ghostty" "-e" "btop"; }
+
+    // Pot 划词翻译（Wayland 下只能用 curl 调用 API）
+    Alt+D       hotkey-overlay-title="划词翻译"     { spawn-sh "curl -s '127.0.0.1:60828/selection_translate'"; }
+    Alt+I       hotkey-overlay-title="输入翻译"     { spawn-sh "curl -s '127.0.0.1:60828/input_translate'"; }
+    Alt+X       hotkey-overlay-title="截屏翻译"     { spawn-sh "curl -s '127.0.0.1:60828/ocr_translate?screenshot=true'"; }
 }
