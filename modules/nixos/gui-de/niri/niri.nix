@@ -12,6 +12,16 @@
   # 启用 niri
   programs.niri.enable = true;
 
+  # 修补 niri-session 脚本，静默 systemd/dbus 弃用警告
+  # 上游 issue: https://github.com/niri-wm/niri/issues/254
+  programs.niri.package = pkgs.niri.overrideAttrs (prev: {
+    postPatch = (prev.postPatch or "") + ''
+      substituteInPlace resources/niri-session \
+        --replace-fail 'systemctl --user import-environment' 'systemctl --user import-environment >/dev/null 2>&1' \
+        --replace-fail 'dbus-update-activation-environment --all' 'dbus-update-activation-environment --all >/dev/null 2>&1'
+    '';
+  });
+
   # 触控板
   services.libinput.enable = true;
 
