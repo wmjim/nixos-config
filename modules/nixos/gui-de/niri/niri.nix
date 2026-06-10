@@ -19,6 +19,9 @@
   security.polkit.enable = true;
   services.gnome.gnome-keyring.enable = true;
 
+  # dconf 数据库（GNOME/GTK 应用读取配置必需）
+  programs.dconf.enable = true;
+
   # XDG portal（Wayland 屏幕共享、文件选择器等）
   xdg.portal = {
     enable = true;

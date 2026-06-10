@@ -8,8 +8,9 @@
 
     # Qt 应用强制使用 Wayland
     QT_QPA_PLATFORM = "wayland";
-    QT_QPA_PLATFORMTHEME = "qt6ct";
-    QT_QPA_PLATFORMTHEME_QT6 = "qt6ct";
+    # QGnomePlatform 让 Qt 应用自动跟随 GTK/Adwaita 主题
+    QT_QPA_PLATFORMTHEME = "gnome";
+    QT_QPA_PLATFORMTHEME_QT6 = "gnome";
     QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
 
     # Electron/Chromium 应用使用 Wayland

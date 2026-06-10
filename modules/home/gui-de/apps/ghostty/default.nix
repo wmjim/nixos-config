@@ -20,7 +20,7 @@
       background-opacity = 1.0; # 背景透明度
       background-blur-radius = 20; # 背景模糊半径
       # 标题栏样式（透明）
-      macos-titlebar-style = "transparent";
+      # macos-titlebar-style = "transparent";
       window-padding-x = 10; # 左右内边距
       window-padding-y = 8; # 上下内边距
       window-step-resize = false; # 禁用窗口按步进缩放（更平滑）
