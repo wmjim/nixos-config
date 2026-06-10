@@ -57,6 +57,7 @@
   # GNOME 专属环境变量（Wayland 通用变量在 common/wayland-env.nix）
   environment.sessionVariables = {
     XDG_CURRENT_DESKTOP = "GNOME";
+    QT_IM_MODULE = "fcitx";
     GTK_THEME = "WhiteSur-Dark";
     GTK_ICON_THEME = "WhiteSur";
     XCURSOR_THEME = "Bibata-Modern-Ice";

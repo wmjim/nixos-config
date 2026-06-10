@@ -5,8 +5,6 @@
   # 设置默认输入法环境变量
   home.sessionVariables = {
     XMODIFIERS = "@im=fcitx"; # XWayland 应用
-    QT_IM_MODULE = "fcitx";   # Qt 应用
-    SDL_IM_MODULE = "fcitx";  # 
   };
 
   # 用户 rime 配置
