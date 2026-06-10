@@ -19,7 +19,7 @@
 
   # 虚拟化
   virtualisation.libvirtd.enable = true;
-  boot.kernelParams = [ "console=ttyS0" ];
+  # 启动日志通过 modules/nixos/gui-de/common/boot.nix 配置
 
   # ==========================================
   # 为 nix-daemon 设置代理 (核心！)

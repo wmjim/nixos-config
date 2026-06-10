@@ -6,9 +6,9 @@
     ./apps.nix
     ./clash.nix
     ./fcitx5.nix
-    ./plymouth.nix
     ./portal.nix
     ./themes.nix
     ./wayland-env.nix
+    ./boot.nix
   ];
 }

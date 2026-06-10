@@ -19,7 +19,7 @@
 
   # 虚拟化
   virtualisation.libvirtd.enable = true;
-  boot.kernelParams = [ "console=ttyS0" ];
+  # 启动日志通过 modules/nixos/gui-de/common/boot.nix 配置
 
   # 修复 libvirtd TPM2 凭证解密失败 (TPM "No locks available")
   systemd.services.libvirtd.serviceConfig.LoadCredentialEncrypted = lib.mkForce [ ];
