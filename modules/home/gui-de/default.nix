@@ -7,5 +7,6 @@
     ./apps
     ./niri
     ./fcitx5.nix
+    ./vscode.nix
   ];
 }

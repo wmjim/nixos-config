@@ -1,9 +1,12 @@
 { pkgs, ... }:
 
 {
-
   programs.vscode = {
     enable = true;
+    # mutableExtensionsDir 默认为 true，允许从 VSCode 市场直接安装扩展
+    # Nix 管理的扩展会以符号链接形式放在 ~/.vscode/extensions/ 中
+    mutableExtensionsDir = true;
+
     extensions = with pkgs.vscode-extensions; [
       anthropic.claude-code
       vscode-icons-team.vscode-icons

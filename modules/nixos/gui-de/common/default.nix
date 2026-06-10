@@ -4,7 +4,6 @@
 {
   imports = [
     ./apps.nix
-    ./vscode.nix
     ./clash.nix
     ./fcitx5.nix
     ./plymouth.nix
