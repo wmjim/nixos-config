@@ -22,9 +22,9 @@ in {
     pkgs.nur.repos.awa2333.pot-translation
     pot-desktop
     tesseract
-    grim # wayland 截图（截屏翻译用）
-    slurp # wayland 区域选择（截屏翻译用）
-    wl-clipboard # wayland 剪贴板（OCR 文本传递用）
+    pkgs.grim # wayland 截图（截屏翻译用）
+    pkgs.slurp # wayland 区域选择（截屏翻译用）
+    pkgs.wl-clipboard # wayland 剪贴板（OCR 文本传递用）
   ];
 
   environment.sessionVariables.TESSDATA_PREFIX = "${tesseract}/share/tessdata";
