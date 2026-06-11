@@ -20,8 +20,11 @@
     # Firefox 使用 Wayland
     MOZ_ENABLE_WAYLAND = "1";
 
-    # 其他
-    CLASH_VERGE_ALLOW_CLIPBOARD = "1";
-    RUST_BACKTRACE = "1";
+    # Java AWT/Swing 应用在 Wayland（非 reparenting WM）下需要此变量，否则白屏
+    _JAVA_AWT_WM_NONREPARENTING = "1";
+
+  # 其他
+  CLASH_VERGE_ALLOW_CLIPBOARD = "1";
+  RUST_BACKTRACE = "1";
   };
 }
