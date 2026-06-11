@@ -74,6 +74,35 @@
     };
   };
 
+  # niri 的 NVIDIA VRAM 泄漏修复
+  # 参考: https://niri-wm.github.io/niri/Nvidia.html
+  environment.etc."nvidia/nvidia-application-profiles-rc.d/50-limit-free-buffer-pool-in-wayland-compositors.json" = {
+    text = ''
+      {
+          "rules": [
+              {
+                  "pattern": {
+                      "feature": "procname",
+                      "matches": "niri"
+                  },
+                  "profile": "Limit Free Buffer Pool On Wayland Compositors"
+              }
+          ],
+          "profiles": [
+              {
+                  "name": "Limit Free Buffer Pool On Wayland Compositors",
+                  "settings": [
+                      {
+                          "key": "GLVidHeapReuseRatio",
+                          "value": 0
+                      }
+                  ]
+              }
+          ]
+      }
+    '';
+  };
+
   # CUDA 的 Nix 缓存
   nix.settings = {
     substituters = ["https://cuda-maintainers.cachix.org"];
