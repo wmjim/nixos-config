@@ -31,7 +31,7 @@
   # --- Qt 主题：通过 QGnomePlatform 自动跟随 GTK/Adwaita ---
   qt = {
     enable = true;
-    platformTheme.name = "gnome";
+    platformTheme.name = "adwaita";
     style = {
       package = pkgs.adwaita-qt;
       name = "adwaita";

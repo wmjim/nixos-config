@@ -7,7 +7,7 @@
     # Nix 管理的扩展会以符号链接形式放在 ~/.vscode/extensions/ 中
     mutableExtensionsDir = true;
 
-    extensions = with pkgs.vscode-extensions; [
+    profiles.default.extensions = with pkgs.vscode-extensions; [
       anthropic.claude-code
       vscode-icons-team.vscode-icons
       alefragnani.bookmarks
