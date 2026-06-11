@@ -17,6 +17,9 @@
   # 主机名
   networking.hostName = "desktop";
 
+  # DDC/CI 显示器亮度控制
+  hardware.i2c.enable = true;
+
   # 虚拟化
   virtualisation.libvirtd.enable = true;
   # 启动日志通过 modules/nixos/gui-de/common/boot.nix 配置

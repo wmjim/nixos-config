@@ -12,6 +12,7 @@
       "network"
       "libvirtd"
       "kvm"
+      "i2c" # DDC/CI 亮度控制权限
     ];
     shell = pkgs.fish;
   };

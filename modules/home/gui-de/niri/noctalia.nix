@@ -24,6 +24,12 @@
         default.path = "/home/mengw/files/pictures/wallpaper/wallpaper.png";
       };
 
+      # 显示器亮度 (DP-2 外接显示器使用 DDC/CI)
+      brightness = {
+        enable_ddcutil = true;
+        monitor."DP-2".backend = "ddcutil";
+      };
+
       # 音频
       audio = {
         enable = true;
