@@ -1,9 +1,9 @@
 // 窗口规则
 // 全局：默认所有窗口以浮动窗口打开
 window-rule {
-    geometry-corner-radius 3      // 圆角
+    geometry-corner-radius 3      // 所有窗口启用圆角
     clip-to-geometry true         // 将窗口内容剪辑到圆角边界
-    draw-border-with-background false
+    draw-border-with-background false // 去除透明窗口绘制色调背景
     open-maximized false          // 默认不最大化
     open-floating true            // 默认浮动
     default-column-width { proportion 0.65; }
