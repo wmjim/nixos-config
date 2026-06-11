@@ -15,8 +15,6 @@ spawn-at-startup "systemctl" "--user" "start" "linuxqq-clipsync"
 spawn-at-startup "/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1"
 // 截图工具
 spawn-at-startup "snipaste"
-// 图床管理
-spawn-at-startup "picgo"
 // 划词翻译
 spawn-at-startup "pot"
 
