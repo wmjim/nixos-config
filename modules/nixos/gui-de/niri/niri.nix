@@ -51,6 +51,35 @@
     XDG_CURRENT_DESKTOP = "niri";
   };
 
+  # ==========================================
+  # xsettingsd: 为 XWayland 应用提供字体配置
+  # Java Swing/AWT 在 Wayland 下依赖 XSETTINGS 获取字体名称/大小/抗锯齿等配置，
+  # 缺少 xsettingsd 会导致 Java 应用字体大小不一致、快捷键文本异常等问题
+  # ==========================================
+  environment.systemPackages = [ pkgs.xsettingsd ];
+
+  systemd.user.services.xsettingsd = let
+    xsettingsdConf = pkgs.writeText "xsettingsd.conf" ''
+      Net/ThemeName "Adwaita"
+      Gtk/FontName "HarmonyOS Sans SC, 12"
+      Net/IconThemeName "Papirus"
+      Xft/Antialias 1
+      Xft/Hinting 1
+      Xft/HintStyle "hintslight"
+      Xft/RGBA "rgb"
+    '';
+  in {
+    description = "XSettings daemon (font config for XWayland apps like Java Swing)";
+    wantedBy = [ "graphical-session.target" ];
+    partOf = [ "graphical-session.target" ];
+    serviceConfig = {
+      Type = "simple";
+      ExecStart = "${pkgs.xsettingsd}/bin/xsettingsd -c ${xsettingsdConf}";
+      Restart = "on-failure";
+      RestartSec = 3;
+    };
+  };
+
   # RDP 远程桌面端口
   networking.firewall.allowedTCPPorts = [ 3389 ];
 }

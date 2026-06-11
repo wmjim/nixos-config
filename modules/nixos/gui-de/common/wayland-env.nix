@@ -23,6 +23,12 @@
     # Java AWT/Swing 应用在 Wayland（非 reparenting WM）下需要此变量，否则白屏
     _JAVA_AWT_WM_NONREPARENTING = "1";
 
+    # Java 字体渲染优化（Swing/AWT 应用在 Wayland 下字体不一致的修复）
+    # - awt.useSystemAAFontSettings=lcd LCD 子像素渲染，比灰度抗锯齿(on)更锐利清晰
+    # - swing.aatext=true              启用 Swing 文本抗锯齿
+    # - sun.java2d.uiScale=1.5         显式设置缩放，避免 XWayland DPI 误判
+    _JAVA_OPTIONS = "-Dawt.useSystemAAFontSettings=lcd -Dswing.aatext=true -Dsun.java2d.uiScale=1.5";
+
   # 其他
   CLASH_VERGE_ALLOW_CLIPBOARD = "1";
   RUST_BACKTRACE = "1";
