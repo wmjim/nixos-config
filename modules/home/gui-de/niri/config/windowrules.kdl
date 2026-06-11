@@ -19,11 +19,21 @@ debug {
 // 以下应用以最大化方式打开
 // ═══════════════════════════════════════════════
 
-// VS Code — 代码编辑器
+// VS Code — 主窗口（最大化）
 window-rule {
     match app-id="(?i)^code"
     open-maximized true
     open-floating false
+}
+
+// VS Code — 对话框/确认窗口（浮动，覆盖上面的最大化规则）
+// VS Code 次级窗口标题通常为纯 "Visual Studio Code"，无项目/文件上下文
+window-rule {
+    match app-id="(?i)^code" title="(?i)^Visual Studio Code$"
+    open-maximized false
+    open-floating true
+    default-column-width { proportion 0.4; }
+    default-window-height { proportion 0.4; }
 }
 
 // Logisim Evolution — 逻辑电路模拟
