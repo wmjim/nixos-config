@@ -4,7 +4,5 @@
 {
   imports = [
     ./helix
-    # ./nixvim
-    # ./neovim
   ];
 }

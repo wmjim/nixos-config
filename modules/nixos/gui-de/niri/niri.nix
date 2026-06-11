@@ -4,7 +4,6 @@
 {
   imports = [
     ./noctalia.nix
-    # ./dms.nix
     ../common/apps.nix
     ../common/wayland-env.nix
   ];

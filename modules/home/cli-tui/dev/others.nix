@@ -30,7 +30,7 @@
     ltex-ls-plus # 语言服务器，提供拼写和语法检查    
 
     # === Latex ===
-    texlive.combined.scheme-full
-    texlab # LaTeX 语言服务器         
+    # texlive.combined.scheme-full
+    # texlab # LaTeX 语言服务器         
   ];
 }

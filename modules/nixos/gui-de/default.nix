@@ -4,8 +4,6 @@
 {
   imports = [
     ./common
-    # ./gnome
     ./niri
-    # ./kde
   ];
 }
