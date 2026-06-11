@@ -11,4 +11,7 @@
     ./wayland-env.nix
     ./boot.nix
   ];
+
+  # gvfs：Nautilus 回收站、文件挂载、网络共享等功能依赖
+  services.gvfs.enable = true;
 }
