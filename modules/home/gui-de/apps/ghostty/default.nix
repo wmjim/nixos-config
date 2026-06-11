@@ -37,8 +37,8 @@
       # https://github.com/KroneCorylus/ghostty-shader-playground
       # 游标跳跃拖尾（Neovide 风格） + 模式切换涟漪
       custom-shader = [
-        "${config.home.homeDirectory}/.config/ghostty/shader/cursor_smear_rainbow.glsl"
-        "${config.home.homeDirectory}/.config/ghostty/shader/party_sparks.glsl"
+        "~/.config/ghostty/shader/cursor_smear_rainbow.glsl"
+        "~/.config/ghostty/shader/party_sparks.glsl"
       ];
       # 让着色器持续渲染（否则拖尾动画会冻结）
       custom-shader-animation = "always";

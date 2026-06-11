@@ -128,7 +128,9 @@
               home-manager.backupFileExtension = "hm-bak";
               home-manager.extraSpecialArgs = { inherit inputs; };
               # 基础 CLI 环境
-              home-manager.users.mengw = import ./modules/home;
+              home-manager.users.mengw = {
+                imports = [ ./modules/home ];
+              };
 
               # 允许 home-manager 使用非自由软件包；注入 nixvim 模块
               home-manager.sharedModules = [
@@ -195,7 +197,9 @@
               home-manager.useUserPackages = true;
               home-manager.backupFileExtension = "hm-bak";
               home-manager.extraSpecialArgs = { inherit inputs; };
-              home-manager.users.mengw = import ./modules/home;
+              home-manager.users.mengw = {
+                imports = [ ./modules/home ];
+              };
 
               # 允许 home-manager 使用非自由软件包；注入 nixvim 模块
               home-manager.sharedModules = [
@@ -226,7 +230,9 @@
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
               home-manager.extraSpecialArgs = { inherit inputs lib; };
-              home-manager.users.mengw = import ./modules/home;
+              home-manager.users.mengw = {
+                imports = [ ./modules/home ];
+              };
               home-manager.sharedModules = [
                 inputs.nixvim.homeModules.nixvim
               ];
@@ -234,6 +240,17 @@
           ];
         };
       };
+
+      # 自定义软件包
+      packages = forAllSystems (
+        system:
+        let
+          pkgs = nixpkgs.legacyPackages.${system};
+        in
+        {
+          cc-switch = pkgs.callPackage ./packages/cc-switch { };
+        }
+      );
 
       # 开发 shell
       devShells = forAllSystems (

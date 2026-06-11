@@ -1,59 +1,9 @@
-# 常用桌面应用（Niri 和 GNOME 共用）
-{ pkgs
-, config
-, lib
-, inputs
-, ...
-}:
+# 桌面应用模块入口
+# 导入所有应用子模块，设置 NUR overlay（pot / harmonyos-sans 等依赖）
+{ inputs, ... }:
 
 {
-  imports = [
-    ./apps/thunderbird.nix
-    ./apps/wechat.nix
-    ./apps/pot.nix
-    ./apps/cc-switch.nix
-  ];
+  imports = [ ./apps ];
 
   nixpkgs.overlays = [ inputs.nur.overlays.default ];
-
-  environment.systemPackages = with pkgs; [
-    # 常用应用
-    ddcutil # 显示器亮度调节
-    kdePackages.ark # 解压工具
-    readest # 电子书阅读
-    kdePackages.okular # 通用文档阅读器
-    gnome-text-editor # 轻量文本编辑
-    qview # 图片查看器
-    nautilus # 文件管理器
-    mpv # 视频播放器
-    snipaste # 截图工具
-    freetube # YouTube 客户端
-    microsoft-edge # 浏览器
-    zed-editor # 代码编辑器
-    typora # markdownb 编辑器
-    obsidian # 笔记
-    siyuan # 笔记
-    xournalpp # PDF批注手写笔记
-    zotero # 文献管理
-    obs-studio # 录屏
-    anki # 助记卡片
-    picgo # 图床管理
-    logisim-evolution # 数字电路设计
-    bilibili # 哔哩哔哩
-    # 欧路英语词典（闭源 Qt5 应用，只支持 XCB 插件，强制覆盖 QT_QPA_PLATFORM）
-    (pkgs.writeShellScriptBin "eudic" ''
-      export QT_QPA_PLATFORM=xcb
-      exec ${pkgs.eudic}/bin/eudic "$@"
-    '')
-    folo # 信息聚合平台
-    localsend # 跨平台文件共享
-    cherry-studio
-    baidupcs-go # 百度网盘
-    # === 通讯工具 ===
-    wemeet # 腾讯会议
-    # qq # qq
-    discord # Discord
-    telegram-desktop # Telegram
-    feishu # 飞书
-  ];
 }

@@ -59,6 +59,9 @@
   # 允许非自由软件
   nixpkgs.config.allowUnfree = true;
 
+  # NUR overlay（locale.nix 等模块依赖）
+  nixpkgs.overlays = [ inputs.nur.overlays.default ];
+
 
   # 系统级包
   environment.systemPackages = with pkgs; [
