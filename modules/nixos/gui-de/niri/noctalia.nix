@@ -1,12 +1,12 @@
 { config, pkgs, inputs, ... }:
 {
-  # 登录管理器：greetd 自动登录 → 直接启动 niri
+  # 登录管理器：greetd + tuigreet 密码登录 → niri（密码通过 PAM 解锁 keyring）
   services.greetd = {
     enable = true;
     settings = {
       default_session = {
-        command = "${config.programs.niri.package}/bin/niri-session";
-        user = "mengw";
+        command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --remember --cmd ${config.programs.niri.package}/bin/niri-session";
+        user = "greeter";
       };
     };
   };
