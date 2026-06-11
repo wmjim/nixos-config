@@ -10,7 +10,6 @@
   imports = [
     ./apps/thunderbird.nix
     ./apps/wechat.nix
-    ./apps/cc-switch.nix
     ./apps/pot.nix
   ];
 
@@ -49,6 +48,7 @@
     localsend # 跨平台文件共享
     cherry-studio
     baidupcs-go # 百度网盘
+    cc-switch
     # === 通讯工具 ===
     wemeet # 腾讯会议
     # qq # qq
