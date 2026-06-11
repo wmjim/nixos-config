@@ -67,6 +67,7 @@
       Xft/Hinting 1
       Xft/HintStyle "hintslight"
       Xft/RGBA "rgb"
+      Xft/DPI 147456
     '';
   in {
     description = "XSettings daemon (font config for XWayland apps like Java Swing)";
