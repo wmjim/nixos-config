@@ -11,6 +11,7 @@
     ./apps/thunderbird.nix
     ./apps/wechat.nix
     ./apps/pot.nix
+    ./apps/cc-switch.nix
   ];
 
   nixpkgs.overlays = [ inputs.nur.overlays.default ];
@@ -48,7 +49,6 @@
     localsend # 跨平台文件共享
     cherry-studio
     baidupcs-go # 百度网盘
-    cc-switch
     # === 通讯工具 ===
     wemeet # 腾讯会议
     # qq # qq
