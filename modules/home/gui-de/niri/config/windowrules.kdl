@@ -185,3 +185,75 @@ window-rule {
     default-column-width { proportion 0.60; }
     default-window-height { proportion 0.75; }
 }
+
+// Readest — EPUB 阅读器
+window-rule {
+    match app-id="(?i)readest"
+    open-maximized false
+    open-floating true
+    default-column-width { proportion 0.55; }
+    default-window-height { proportion 0.80; }
+}
+
+// Ark — KDE 压缩包管理器
+window-rule {
+    match app-id="(?i)org\\.kde\\.ark"
+    open-maximized false
+    open-floating true
+    default-column-width { proportion 0.45; }
+    default-window-height { proportion 0.50; }
+}
+
+// Okular — KDE 文档查看器
+window-rule {
+    match app-id="(?i)okular"
+    open-maximized false
+    open-floating true
+    default-column-width { proportion 0.65; }
+    default-window-height { proportion 0.80; }
+}
+
+// GNOME Text Editor — 文本编辑器
+window-rule {
+    match app-id="(?i)gnome-text-editor"
+    open-maximized false
+    open-floating true
+    default-column-width { proportion 0.60; }
+    default-window-height { proportion 0.80; }
+}
+
+// qView — 轻量图片查看器
+window-rule {
+    match app-id="(?i)qview"
+    open-maximized false
+    open-floating true
+    default-column-width { proportion 0.55; }
+    default-window-height { proportion 0.65; }
+}
+
+// mpv — 媒体播放器
+window-rule {
+    match app-id="(?i)^mpv$"
+    open-maximized false
+    open-floating true
+    default-column-width { proportion 0.65; }
+    default-window-height { proportion 0.70; }
+}
+
+// FreeTube — YouTube 客户端
+window-rule {
+    match app-id="(?i)freetube"
+    open-maximized false
+    open-floating true
+    default-column-width { proportion 0.65; }
+    default-window-height { proportion 0.75; }
+}
+
+// Cherry Studio — AI 聊天客户端
+window-rule {
+    match app-id="(?i)cherry-studio"
+    open-maximized false
+    open-floating true
+    default-column-width { proportion 0.55; }
+    default-window-height { proportion 0.80; }
+}

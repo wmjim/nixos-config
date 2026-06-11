@@ -14,6 +14,9 @@
 # NixOS 笔记本
 sudo nixos-rebuild switch --flake ~/nixos-config#laptop
 
+# NixOS 主机
+sudo nixos-rebuild switch --flake ~/nixos-config#desktop
+
 # WSL
 sudo nixos-rebuild switch --flake ~/nixos-config#wsl
 
