@@ -7,7 +7,7 @@
     telegram-desktop
     feishu # 飞书
     wechat # 微信
-    # qq
+    qq     # qq
     wemeet # 腾讯会议
   ];
 }
