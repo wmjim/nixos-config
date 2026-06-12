@@ -20,7 +20,6 @@
     LIBVA_DRIVER_NAME = "nvidia"; # 硬件视频加速
     GBM_BACKEND = "nvidia-drm"; # Wayland 的图形后端
     __GLX_VENDOR_LIBRARY_NAME = "nvidia"; # GLX 使用 Nvidia 驱动
-    NIXOS_OZONE_WL = "1"; # Edge/Chrome/Electron 的 Wayland 支持
     __GL_VRR_ALLOWED = "1"; # 启用 VRR（可变刷新率）
     NVD_BACKEND = "direct"; # 新驱动配置
     WLR_NO_HARDWARE_CURSORS = "1"; # 强制软件光标，避免 NVIDIA 光标问题

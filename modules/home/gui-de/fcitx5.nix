@@ -2,11 +2,6 @@
 { config, pkgs, ... }:
 
 {
-  # 设置默认输入法环境变量
-  home.sessionVariables = {
-    XMODIFIERS = "@im=fcitx"; # XWayland 应用
-  };
-
   # 用户 rime 配置
   home.file.".local/share/fcitx5/rime/default.custom.yaml".text = ''
     patch:
@@ -16,21 +11,21 @@
         menu/page_size: 7   #候选词个数
   '';
 
-  # # 修复 Wayland 下候选框偏移问题：关闭「在程序中显示预编辑文本」
-  # # 候选框会由 fcitx5 自行绘制并跟随光标，而非依赖应用内嵌的预编辑区域
-  # xdg.configFile."fcitx5/conf/rime.conf".text = ''
-  #   [Behavior]
-  #   PreeditInApplication=False
-  # '';
+  # classicui 候选框外观配置
+  xdg.configFile."fcitx5/conf/classicui.conf".text = ''
+    # 候选框字体
+    Font="HarmonyOS Sans SC 11"
+    # 菜单字体
+    MenuFont="HarmonyOS Sans SC 11"
+    # 垂直候选列表
+    Vertical Candidate List=False
+    # 使用鼠标滚轮翻页
+    WheelForPaging=True
+  '';
 
-  # # classicui 配置：确保候选框跟随光标
-  # xdg.configFile."fcitx5/conf/classicui.conf".text = ''
-  #   [Behavior]
-  #   FollowCursor=True
-  # '';
-  xdg.configFile."fcitx5/conf/global.conf".text = ''
-    [Behavior]
-    FollowCursor=False
-    UsePreedit=True
+  # 支持运行于 Xwayland 的 GTK 应用
+  xdg.configFile."gtk-3.0/settings.ini".text = ''
+    [Settings]
+    gtk-im-module = fcitx
   '';
 }
