@@ -5,7 +5,6 @@
   imports = [
     ./noctalia.nix
     ../common/apps.nix
-    ../common/wayland-env.nix
   ];
 
   # 启用 niri
@@ -45,9 +44,41 @@
     };
   };
 
-  # niri 专属环境变量（Wayland 通用变量在 common/wayland-env.nix）
+  # niri 环境变量
   environment.sessionVariables = {
+    # 告诉应用程序当前桌面环境是 niri，某些应用可能会根据这个变量调整行为或外观
     XDG_CURRENT_DESKTOP = "niri";
+    # 告诉应用程序当前会话类型是 Wayland，确保它们使用 Wayland 协议而不是 X11
+    XDG_SESSION_TYPE = "wayland";
+    # 强制 GTK 应用使用 Wayland 后端，避免在 Wayland 会话中回退到 X11 导致性能和兼容性问题
+    GDK_BACKEND = "wayland";
+
+    # 强制 Qt 应用使用 Wayland 后端，避免在 Wayland 会话中回退到 X11 导致性能和兼容性问题
+    QT_QPA_PLATFORM = "wayland";
+    # Qt 应用的主题引擎，保持与 GTK 应用一致的外观
+    QT_QPA_PLATFORMTHEME = "gnome";     # Qt5 应用
+    QT_QPA_PLATFORMTHEME_QT6 = "gnome"; # Qt6 应用
+    # 禁止 Qt 应用自己画窗口装饰
+    QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
+
+    # Electron/Chromium 应优先使用 Wayland
+    ELECTRON_OZONE_PLATFORM_HINT = "auto";
+
+    # 告诉 Java AWT/Swing 应用在非 reparenting WM 下运行
+    # niri 不提供 X11 风格的 reparenting。没有这个变量，Java GUI 应用会白屏
+    _JAVA_AWT_WM_NONREPARENTING = "1";
+
+    # Java 虚拟机的启动参数
+    # Java 字体渲染优化（Swing/AWT 应用在 Wayland 下字体不一致的修复）
+    # - awt.useSystemAAFontSettings=true 灰度抗锯齿
+    # - swing.aatext=true              启用 Swing 文本抗锯齿
+    # - sun.java2d.uiScale=1.5         显式设置缩放，避免 XWayland DPI 误判
+    _JAVA_OPTIONS = "-Dawt.useSystemAAFontSettings=true -Dswing.aatext=true -Dsun.java2d.uiScale=1.5";
+
+    # Clash Verge（代理客户端）的剪贴板权限
+    CLASH_VERGE_ALLOW_CLIPBOARD = "1";
+    # Rust 程序的回溯信息，方便调试 Rust 应用崩溃时的错误信息
+    RUST_BACKTRACE = "1";
   };
 
   # ==========================================

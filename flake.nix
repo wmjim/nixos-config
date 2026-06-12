@@ -241,17 +241,6 @@
         };
       };
 
-      # 自定义软件包
-      packages = forAllSystems (
-        system:
-        let
-          pkgs = nixpkgs.legacyPackages.${system};
-        in
-        {
-          cc-switch = pkgs.callPackage ./packages/cc-switch { };
-        }
-      );
-
       # 开发 shell
       devShells = forAllSystems (
         system:

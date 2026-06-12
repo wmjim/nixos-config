@@ -30,6 +30,8 @@
   services.xserver.desktopManager.runXdgAutostartIfNone = true;
 
   environment.sessionVariables = {
+    # GTK3/GTK4/Tauri/Flutter 应用输入法模块
+    GTK_IM_MODULE = "fcitx";
     # 传统 Qt 输入法变量(Qt5时代)，保持兼容
     # 优先加载 fcitx
     QT_IM_MODULE = "fcitx";

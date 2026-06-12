@@ -7,7 +7,6 @@
     ./clash.nix
     ./fcitx5.nix
     ./themes.nix
-    ./wayland-env.nix
     ./boot.nix
   ];
 
