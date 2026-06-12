@@ -6,6 +6,7 @@
     discord
     telegram-desktop
     feishu # 飞书
+    wechat # 微信
     wemeet # 腾讯会议
   ];
 }

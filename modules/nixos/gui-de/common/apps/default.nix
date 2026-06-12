@@ -5,11 +5,7 @@
 {
   imports = [
     # 应用包装器（复杂配置）
-    ./thunderbird.nix
-    ./wechat.nix
     ./pot.nix
-    ./cc-switch.nix
-    ./eudic.nix
 
     # 按功能分类的应用集合
     ./productivity.nix
