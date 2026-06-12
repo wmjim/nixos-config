@@ -24,12 +24,16 @@ window-rule {
     match app-id="(?i)^code"
     open-maximized true
     open-floating false
+    default-column-width { proportion 1.0; }
+    default-window-height { proportion 1.0; }
 }
 
 // VS Code — 对话框/确认窗口（浮动，覆盖上面的最大化规则）
-// VS Code 次级窗口标题通常为纯 "Visual Studio Code"，无项目/文件上下文
+// VS Code 对话框标题通常是简短的提示短语，不含 " - " 分隔符
+// 使用 exclude 避免误匹配启动时标题暂为 "Visual Studio Code" 的主窗口
 window-rule {
-    match app-id="(?i)^code" title="(?i)^Visual Studio Code$"
+    match app-id="(?i)^code"
+    exclude title="(?i) - | — | – "
     open-maximized false
     open-floating true
     default-column-width { proportion 0.4; }
@@ -37,10 +41,13 @@ window-rule {
 }
 
 // Logisim Evolution — 逻辑电路模拟
+// 实际 app-id 为 "com-cburch-logisim-Main"（Java XWayland）
 window-rule {
-    match app-id="logisim-evolution"
+    match app-id="com-cburch-logisim-Main"
     open-maximized true
     open-floating false
+    default-column-width { proportion 1.0; }
+    default-window-height { proportion 1.0; }
 }
 
 // Microsoft Edge — 浏览器
@@ -48,6 +55,8 @@ window-rule {
     match app-id="microsoft-edge"
     open-maximized true
     open-floating false
+    default-column-width { proportion 1.0; }
+    default-window-height { proportion 1.0; }
 }
 
 // Zotero — 文献管理
@@ -55,6 +64,8 @@ window-rule {
     match app-id="(?i)zotero"
     open-maximized true
     open-floating false
+    default-column-width { proportion 1.0; }
+    default-window-height { proportion 1.0; }
 }
 
 // Folo — RSS 阅读器
@@ -62,6 +73,8 @@ window-rule {
     match app-id="folo"
     open-maximized true
     open-floating false
+    default-column-width { proportion 1.0; }
+    default-window-height { proportion 1.0; }
 }
 
 // ═══════════════════════════════════════════════
