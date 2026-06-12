@@ -1,13 +1,11 @@
 // 窗口规则
-// 全局：默认所有窗口以浮动窗口打开
+// 全局：默认平铺，圆角修饰
 window-rule {
-    geometry-corner-radius 3      // 所有窗口启用圆角
-    clip-to-geometry true         // 将窗口内容剪辑到圆角边界
-    draw-border-with-background false // 去除透明窗口绘制色调背景
-    open-maximized false          // 默认不最大化
-    open-floating true            // 默认浮动
-    default-column-width { proportion 0.65; }
-    default-window-height { proportion 0.75; }
+    geometry-corner-radius 3
+    clip-to-geometry true
+    draw-border-with-background false
+    open-maximized false
+    open-floating false            // 默认平铺
 }
 
 // 允许 Noctalia 执行通知操作和激活窗口
@@ -16,69 +14,133 @@ debug {
 }
 
 // ═══════════════════════════════════════════════
-// 以下应用以最大化方式打开
+// 最大化窗口
 // ═══════════════════════════════════════════════
 
 // VS Code — 主窗口（最大化）
 window-rule {
     match app-id="(?i)^code"
     open-maximized true
-    open-floating false
-    default-column-width { proportion 1.0; }
-    default-window-height { proportion 1.0; }
-}
-
-// VS Code — 对话框/确认窗口（浮动，覆盖上面的最大化规则）
-// VS Code 对话框标题通常是简短的提示短语，不含 " - " 分隔符
-// 使用 exclude 避免误匹配启动时标题暂为 "Visual Studio Code" 的主窗口
-window-rule {
-    match app-id="(?i)^code"
-    exclude title="(?i) - | — | – "
-    open-maximized false
-    open-floating true
-    default-column-width { proportion 0.4; }
-    default-window-height { proportion 0.4; }
 }
 
 // Logisim Evolution — 逻辑电路模拟
-// 实际 app-id 为 "com-cburch-logisim-Main"（Java XWayland）
 window-rule {
     match app-id="com-cburch-logisim-Main"
     open-maximized true
-    open-floating false
-    default-column-width { proportion 1.0; }
-    default-window-height { proportion 1.0; }
 }
 
 // Microsoft Edge — 浏览器
 window-rule {
     match app-id="microsoft-edge"
     open-maximized true
-    open-floating false
-    default-column-width { proportion 1.0; }
-    default-window-height { proportion 1.0; }
 }
 
 // Zotero — 文献管理
 window-rule {
     match app-id="(?i)zotero"
     open-maximized true
-    open-floating false
-    default-column-width { proportion 1.0; }
-    default-window-height { proportion 1.0; }
 }
 
 // Folo — RSS 阅读器
 window-rule {
     match app-id="folo"
     open-maximized true
-    open-floating false
-    default-column-width { proportion 1.0; }
-    default-window-height { proportion 1.0; }
 }
 
 // ═══════════════════════════════════════════════
-// 特殊定位 / 尺寸覆盖
+// 浮动窗口（按应用性质设定合适比例）
+// ═══════════════════════════════════════════════
+
+// Clash Verge — 代理管理面板
+window-rule {
+    match app-id="(?i)clash"
+    open-floating true
+    default-column-width { proportion 0.5; }
+    default-window-height { proportion 0.6; }
+}
+
+// cc-switch — 小型切换工具
+window-rule {
+    match app-id="(?i)cc-switch"
+    open-floating true
+    default-column-width { proportion 0.2; }
+    default-window-height { proportion 0.25; }
+}
+
+// Fcitx5 配置 — 输入法设置
+window-rule {
+    match app-id="(?i)fcitx5"
+    open-floating true
+    default-column-width { proportion 0.5; }
+    default-window-height { proportion 0.55; }
+}
+
+// PicGo — 图床上传工具
+window-rule {
+    match app-id="(?i)picgo"
+    open-floating true
+    default-column-width { proportion 0.35; }
+    default-window-height { proportion 0.5; }
+}
+
+// btop++ — 终端系统监控
+window-rule {
+    match app-id="(?i)btop"
+    open-floating true
+    default-column-width { proportion 0.7; }
+    default-window-height { proportion 0.7; }
+}
+
+// qView — 图片查看器
+window-rule {
+    match app-id="(?i)qview"
+    open-floating true
+    default-column-width { proportion 0.6; }
+    default-window-height { proportion 0.7; }
+}
+
+// LocalSend — 局域网文件传输
+window-rule {
+    match app-id="(?i)localsend"
+    open-floating true
+    default-column-width { proportion 0.5; }
+    default-window-height { proportion 0.6; }
+}
+
+// WeChat — 微信
+window-rule {
+    match app-id="(?i)wechat"
+    open-floating true
+    default-column-width { proportion 0.4; }
+    default-window-height { proportion 0.7; }
+}
+
+// QQ
+window-rule {
+    match app-id="(?i)^qq$"
+    open-floating true
+    default-column-width { proportion 0.4; }
+    default-window-height { proportion 0.7; }
+}
+
+// Telegram
+window-rule {
+    match app-id="(?i)telegram"
+    open-floating true
+    default-column-width { proportion 0.45; }
+    default-window-height { proportion 0.7; }
+}
+
+// Discord
+window-rule {
+    match app-id="(?i)discord"
+    open-floating true
+    default-column-width { proportion 0.5; }
+    default-window-height { proportion 0.7; }
+}
+
+// ═══════════════════════════════════════════════
+// 侧边浮动
 // ═══════════════════════════════════════════════
 
 // Pot — 划词翻译（右侧浮动长条，满高度）
