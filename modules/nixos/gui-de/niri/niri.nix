@@ -1,5 +1,11 @@
 # niri 窗口管理器配置（搭配 Noctalia Shell）
-{ config, pkgs, lib, inputs, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  inputs,
+  ...
+}:
 
 {
   imports = [
@@ -30,17 +36,21 @@
   # dconf 数据库（GNOME/GTK 应用读取配置必需）
   programs.dconf.enable = true;
 
-  # XDG portal（Wayland 屏幕共享、文件选择器等）
+  # 桌面门户服务配置
+  # 提供文件选择、屏幕共享、截图等功能底层支持
   xdg.portal = {
     enable = true;
+    # 安装并启用额外的 Portal 后端
     extraPortals = with pkgs; [
+      # GTK 后端，作为轻量级兜底提供文件选择器
       xdg-desktop-portal-gtk
+      # GNOME 后端，提供符合 GNOME 风格的 UI 弹窗
       xdg-desktop-portal-gnome
-      # KDE port 后端
-      kdePackages.xdg-desktop-portal-kde
     ];
+    # 当应用发起请求时，排在最前面的 Portal 会优先尝试响应
+    # 先轻量级 gtk，后全功能 gnome
     config.niri = {
-      default = lib.mkForce "gnome;gtk;kde";
+      default = lib.mkForce "gtk;gnome";
     };
   };
 
@@ -56,7 +66,7 @@
     # 强制 Qt 应用使用 Wayland 后端，避免在 Wayland 会话中回退到 X11 导致性能和兼容性问题
     QT_QPA_PLATFORM = "wayland";
     # Qt 应用的主题引擎，保持与 GTK 应用一致的外观
-    QT_QPA_PLATFORMTHEME = "gnome";     # Qt5 应用
+    QT_QPA_PLATFORMTHEME = "gnome"; # Qt5 应用
     QT_QPA_PLATFORMTHEME_QT6 = "gnome"; # Qt6 应用
     # 禁止 Qt 应用自己画窗口装饰
     QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
@@ -88,28 +98,30 @@
   # ==========================================
   environment.systemPackages = [ pkgs.xsettingsd ];
 
-  systemd.user.services.xsettingsd = let
-    xsettingsdConf = pkgs.writeText "xsettingsd.conf" ''
-      Net/ThemeName "Adwaita"
-      Gtk/FontName "HarmonyOS Sans SC, 12"
-      Net/IconThemeName "Papirus"
-      Xft/Antialias 1
-      Xft/Hinting 1
-      Xft/HintStyle "hintslight"
-      Xft/RGBA "rgb"
-      Xft/DPI 147456
-    '';
-  in {
-    description = "XSettings daemon (font config for XWayland apps like Java Swing)";
-    wantedBy = [ "graphical-session.target" ];
-    partOf = [ "graphical-session.target" ];
-    serviceConfig = {
-      Type = "simple";
-      ExecStart = "${pkgs.xsettingsd}/bin/xsettingsd -c ${xsettingsdConf}";
-      Restart = "on-failure";
-      RestartSec = 3;
+  systemd.user.services.xsettingsd =
+    let
+      xsettingsdConf = pkgs.writeText "xsettingsd.conf" ''
+        Net/ThemeName "Adwaita"
+        Gtk/FontName "HarmonyOS Sans SC, 12"
+        Net/IconThemeName "Papirus"
+        Xft/Antialias 1
+        Xft/Hinting 1
+        Xft/HintStyle "hintslight"
+        Xft/RGBA "rgb"
+        Xft/DPI 147456
+      '';
+    in
+    {
+      description = "XSettings daemon (font config for XWayland apps like Java Swing)";
+      wantedBy = [ "graphical-session.target" ];
+      partOf = [ "graphical-session.target" ];
+      serviceConfig = {
+        Type = "simple";
+        ExecStart = "${pkgs.xsettingsd}/bin/xsettingsd -c ${xsettingsdConf}";
+        Restart = "on-failure";
+        RestartSec = 3;
+      };
     };
-  };
 
   # RDP 远程桌面端口
   networking.firewall.allowedTCPPorts = [ 3389 ];

@@ -1,4 +1,9 @@
-{ config, pkgs, inputs, ... }:
+{
+  config,
+  pkgs,
+  inputs,
+  ...
+}:
 {
   # 登录管理器：greetd + tuigreet 密码登录 → niri（密码通过 PAM 解锁 keyring）
   services.greetd = {

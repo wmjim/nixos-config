@@ -4,8 +4,8 @@
 {
   environment.systemPackages = with pkgs; [
     ddcutil # 显示器亮度调节
-    kdePackages.ark # 解压工具
-    kdePackages.okular # 通用文档阅读器
+    file-roller # 解压工具
+    papers # 文档查看器
     gnome-text-editor # 轻量文本编辑
     qview # 图片查看器
     nautilus # 文件管理器
