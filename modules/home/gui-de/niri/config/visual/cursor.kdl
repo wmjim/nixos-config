@@ -1,7 +1,7 @@
 // 光标配置
 cursor {
     // 主题，存放路径在 ~/.local/share/icons
-    xcursor-theme "Bibata-Modern-Ice";
+    xcursor-theme "Bibata-Modern-Classic";
     // 大小
     xcursor-size 24
     // 按下键盘按键时将隐藏光标
