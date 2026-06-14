@@ -29,6 +29,11 @@
       url = "github:noctalia-dev/noctalia-shell";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    noctalia-greeter = {
+      url = "github:noctalia-dev/noctalia-greeter";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -36,6 +41,7 @@
     , nixpkgs
     , nur
     , noctalia
+    , noctalia-greeter
     , nixpkgs-darwin
     , home-manager
     , nixos-wsl
