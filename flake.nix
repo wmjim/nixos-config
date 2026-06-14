@@ -13,21 +13,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    dms-plugin-registry = {
-      url = "github:AvengeMedia/dms-plugin-registry";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    noctalia = {
-      url = "github:noctalia-dev/noctalia-shell";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    nixvim = {
-      url = "github:nix-community/nixvim";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     # wsl
     nixos-wsl = {
       url = "github:nix-community/NixOS-WSL";
@@ -39,19 +24,22 @@
       url = "github:LnL7/nix-darwin";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    noctalia = {
+      url = "github:noctalia-dev/noctalia-shell";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
     { self
     , nixpkgs
     , nur
-    , dms-plugin-registry
     , noctalia
     , nixpkgs-darwin
     , home-manager
     , nixos-wsl
     , nix-darwin
-    , nixvim
     , ...
     }@inputs:
     let
@@ -98,9 +86,8 @@
                 ];
               };
 
-              # 允许 home-manager 使用非自由软件包；注入 nixvim 模块
+              # 允许 home-manager 使用非自由软件包
               home-manager.sharedModules = [
-                inputs.nixvim.homeModules.nixvim
                 { nixpkgs.config.allowUnfree = true; }
               ];
             }
@@ -132,9 +119,8 @@
                 imports = [ ./modules/home ];
               };
 
-              # 允许 home-manager 使用非自由软件包；注入 nixvim 模块
+              # 允许 home-manager 使用非自由软件包
               home-manager.sharedModules = [
-                inputs.nixvim.homeModules.nixvim
                 { nixpkgs.config.allowUnfree = true; }
               ];
             }
@@ -172,8 +158,6 @@
 
               # 允许 home-manager 使用非自由软件包；
               home-manager.sharedModules = [
-                # 注入 nixvim 模块
-                inputs.nixvim.homeModules.nixvim
                 { nixpkgs.config.allowUnfree = true; }
               ];
             }
@@ -201,9 +185,8 @@
                 imports = [ ./modules/home ];
               };
 
-              # 允许 home-manager 使用非自由软件包；注入 nixvim 模块
+              # 允许 home-manager 使用非自由软件包
               home-manager.sharedModules = [
-                inputs.nixvim.homeModules.nixvim
                 { nixpkgs.config.allowUnfree = true; }
               ];
             }
