@@ -4,15 +4,17 @@ layout {
     gaps 8     // 窗口和屏幕边缘的间距
     background-color "transparent"  // 工作区透明
     center-focused-column "never"   // 无特殊居中效果
-    // 新窗口的默认宽度
+    always-center-single-column     // 工作区只包含一列，该列居中显示
+    // 新窗口的默认列宽
     default-column-width { proportion 0.5; }
 
     // 焦点环，用于指示活动窗口
     focus-ring {
         on          // 开启焦点环
-        width 3     // 边框宽度
-        // 活动窗口周围焦点环渐变颜色
-        active-gradient from="#80c8ff" to="#bbddff" angle=45
+        width 3     // 焦点环宽度
+        inactive-color "#7fc8ff"
+        // 活动窗口焦点环渐变色
+        active-gradient from="#e5989b" to="#ffb4a2" angle=45
     }
 
     // 边框，用于指示活动窗口
@@ -22,5 +24,26 @@ layout {
         active-color "#ffc87f"
         inactive-color "#505050"
         urgent-color "#9b0000"
+    }
+
+    // 标签指示器
+    tab-indicator {
+        on
+        place-within-column // 指示器绘制列内部
+        gap 5 // 指示器与窗口边缘间距
+        width 3 // 指示器宽度
+        length total-proportion=1.0 // 指示器长度占列总高度比例
+        position "right" // 指示器在列的右侧
+        gaps-between-tabs 2 // 多个标签指示器并排时间距
+        corner-radius 8 // 指示器圆角半径
+        active-color "#7fc8ff" // 活跃标签指示器颜色
+        inactive-color "gray" // 非活跃标签指示器颜色
+        urgent-color "red" // 紧急标签指示器颜色
+    }
+
+    // 窗口插入提升
+    insert-hint {
+        on
+        color "#ffc87f80"
     }
 }

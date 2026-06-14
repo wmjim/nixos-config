@@ -1,6 +1,7 @@
 # niri 窗口管理器 — 用户级配置文件部署
 { config, pkgs, lib, ... }: let
-  # niri 配置目录路径，使用 mkOutOfStoreSymlink 加速调试
+  # niri 配置目录路径：~/.config/niri/config.kdl
+  # 使用 mkOutOfStoreSymlink 加速调试
   niriConfigPath = "${config.home.homeDirectory}/nixos-config/modules/home/gui-de/niri/config";
 in
 {

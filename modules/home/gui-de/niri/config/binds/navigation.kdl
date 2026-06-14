@@ -1,8 +1,6 @@
 // 工作区导航与窗口管理
 binds {
     // === 工作区导航 ===
-    Mod+Page_Down   hotkey-overlay-title="下个工作区"         { focus-workspace-down; }
-    Mod+Page_Up     hotkey-overlay-title="上个工作区"         { focus-workspace-up; }
     Mod+U           hotkey-overlay-title="下个工作区"         { focus-workspace-down; }
     Mod+I           hotkey-overlay-title="上个工作区"         { focus-workspace-up; }
 
@@ -42,15 +40,15 @@ binds {
 
     // === 窗口管理 ===
     Mod+Q       hotkey-overlay-title="关闭当前窗口" repeat=false        { close-window; }
-    Mod+F       hotkey-overlay-title="窗口最大化"                       { maximize-column; }
+    Mod+F       hotkey-overlay-title="最大化列"                        { maximize-column; }
+    Mod+M       hotkey-overlay-title="窗口最大化"                       { maximize-window-to-edges; }
     Mod+Ctrl+F  hotkey-overlay-title="全屏"                             { fullscreen-window; }
     Mod+T       hotkey-overlay-title="浮动/平铺"                        { toggle-window-floating; }
     Mod+Ctrl+T  hotkey-overlay-title="切换浮动/平铺焦点" repeat=false   { switch-focus-between-floating-and-tiling; }
     Mod+C       hotkey-overlay-title="居中列"                           { center-column; }
     Mod+W       hotkey-overlay-title="标签页切换"                       { toggle-column-tabbed-display; }
-    // Mod+W       hotkey-overlay-title="按预设切换列宽"                   { switch-preset-column-width; }
-    Mod+H       hotkey-overlay-title="按预设切换列高"                   { switch-preset-window-height; }
     Mod+O       hotkey-overlay-title="窗口总览"                         { toggle-overview; }
+    Mod+Ctrl+O  hotkey-overlay-title="不透明度恢复"                      { toggle-window-rule-opacity; }
     Mod+Minus   hotkey-overlay-title="窗口列宽--"                       { set-column-width "-5%"; }
     Mod+Equal   hotkey-overlay-title="窗口列宽++"                       { set-column-width "+5%"; }
     Mod+Shift+Minus     hotkey-overlay-title="窗口高度--"               { set-window-height "-5%"; }
@@ -64,8 +62,8 @@ binds {
     Mod+Left    hotkey-overlay-title="窗口焦点左移"   { focus-column-left; }
     Mod+Right   hotkey-overlay-title="窗口焦点右移"   { focus-column-right; }
 
-    // 窗口合并/踢出
-    Mod+Period  hotkey-overlay-title="踢出窗口"         { expel-window-from-column; }
-    Mod+Shift+A hotkey-overlay-title="合并窗口"         { consume-window-into-column; }
-    Mod+Shift+D hotkey-overlay-title="踢出窗口"         { expel-window-from-column; }
+    // 窗口添加/移除
+    Mod+Period  hotkey-overlay-title="移除窗口"         { expel-window-from-column; }
+    Mod+Shift+A hotkey-overlay-title="添加窗口"         { consume-window-into-column; }
+    Mod+Shift+D hotkey-overlay-title="移除窗口"         { expel-window-from-column; }
 }

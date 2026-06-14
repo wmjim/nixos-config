@@ -21,8 +21,14 @@ include "binds/apps.kdl"
 // 窗口规则
 include "windowrules.kdl"
 
-// 隐藏客户端标题栏
+// 隐藏客户端装饰
 prefer-no-csd
 
 // 截图保存位置
 screenshot-path "~/files/pictures/screenshots/niri/%Y-%m-%d_%H-%M-%S.png"
+
+// xwayland-satellite 集成
+xwayland-satellite {
+   on
+   path "xwayland-satellite"
+}

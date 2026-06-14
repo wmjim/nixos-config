@@ -1,4 +1,4 @@
-// 开机自启
+// 启动时生成进程
 // 允许 root 通过用户的 xwayland 打开窗口
 spawn-at-startup "xhost" "+si:localuser:root"
 // polkit 认证代理
@@ -12,7 +12,7 @@ spawn-at-startup "snipaste"
 // 划词翻译
 spawn-at-startup "pot"
 
-// niri 启动时不自动展示快捷键覆盖层
+// niri 启动时不自动展示快捷键叠加层
 hotkey-overlay {
     skip-at-startup
 }

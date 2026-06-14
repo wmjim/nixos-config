@@ -2,6 +2,9 @@
 sudo nixos-rebuild switch --flake ~/nixos-config#wsl     | 更新 WSL 系统
 sudo nixos-rebuild switch --flake ~/nixos-config#laptop  | 更新 laptop 系统
 
+# niri 相关
+niri validate                                            | 解析 niri 配置文件并查看错误信息
+
 # dms 相关
 dms keybinds list                                        | 列出所有可用的快捷键提供者
 dms keybinds show niri                                   | 以JSON格式显示指定提供者的快捷键

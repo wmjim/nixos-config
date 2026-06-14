@@ -2,11 +2,13 @@
 binds {
     // 截图
     Mod+P       hotkey-overlay-title="区域截图"         { screenshot; }
-    Mod+Ctrl+P  hotkey-overlay-title="全屏截图"         { screenshot-screen; }
-    Mod+Shift+P hotkey-overlay-title="窗口截图"         { screenshot-window; }
+    Mod+Ctrl+P  hotkey-overlay-title="全屏截图"         { screenshot-screen write-to-disk=false show-pointer=false; }
+    Mod+Shift+P hotkey-overlay-title="窗口截图"         { screenshot-window write-to-disk=false show-pointer=false; }
 
     // 退出
     Mod+Shift+E hotkey-overlay-title="退出 niri"        { quit; }
+    // 当某个应用请求 Niri 停止处理其键盘快捷键时，用来强制恢复或再次禁用 Niri 的快捷键处理
+    Mod+Escape  hotkey-overlay-title="强制恢复/禁用niri快捷键" { toggle-keyboard-shortcuts-inhibit; }
 
     // 快捷键查看器
     Mod+Slash   hotkey-overlay-title="快捷键"           { spawn-sh "~/.config/niri/scripts/niri-binds.sh"; }
