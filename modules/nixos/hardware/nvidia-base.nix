@@ -10,6 +10,10 @@
   boot.kernelParams = [
     "nvidia-drm.modeset=1" # Wayland 的模式设置
     "nvidia.NVreg_PreserveVideoMemoryAllocations=1" # 改善睡眠后的恢复
+    # 修复挂起唤醒后通过 DisplayPort 读取 EDID 失败，显示器显示为 "Nvidia 0x0000 Unknown" 的问题
+    # RMUseSwI2c=0x01: 使用软件 I2C 代替硬件 I2C，在挂起/恢复周期中更加可靠
+    # RMI2cSpeed=100:  将 I2C 时钟限制为 100 kHz，提升 DDC 传输稳定性
+    "nvidia.NVreg_RegistryDwords=RMUseSwI2c=0x01;RMI2cSpeed=100"
   ];
 
   # nouveau 黑名单以避免冲突
