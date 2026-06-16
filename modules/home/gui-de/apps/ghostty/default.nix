@@ -74,6 +74,11 @@
       # --- 快捷键 ---
       # ctrl-control，alt-opt，super-cmd
       keybind = [
+        # 智能复制：有选中文本时复制，无选中时发送 SIGINT
+        "performable:ctrl+c=copy_to_clipboard"
+        # 粘贴
+        "ctrl+v=paste_from_clipboard"
+
         # 新建标签页
         "cmd+t=new_tab"
         # 切换到左侧标签页
