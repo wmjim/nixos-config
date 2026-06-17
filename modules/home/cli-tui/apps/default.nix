@@ -23,6 +23,7 @@
     duf
     glow
     hugo
+    ffmpeg
   ];
 
   home.sessionVariables = {

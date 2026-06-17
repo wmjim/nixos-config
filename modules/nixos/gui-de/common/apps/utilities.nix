@@ -4,6 +4,7 @@
 {
   environment.systemPackages = with pkgs; [
     ddcutil # 显示器亮度调节
+    mission-center # 系统监控器
     file-roller # 解压工具
     papers # 文档查看器
     gnome-text-editor # 轻量文本编辑
