@@ -12,6 +12,6 @@
     typora # markdown 编辑器
     thunderbird # 邮件客户端
     wpsoffice-cn # wps
-    transmission_4 # BT 下载
+    xunlei-uos
   ];
 }
