@@ -223,7 +223,6 @@
                 imports = [ ./modules/home ];
               };
               home-manager.sharedModules = [
-                inputs.nixvim.homeModules.nixvim
               ];
             }
           ];
