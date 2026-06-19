@@ -13,7 +13,7 @@
     logisim-evolution # 数字电路设计
     folo # 信息聚合平台
     localsend # 跨平台文件共享
-    cc-switch # AI 管理工具
+    # cc-switch # AI 管理工具
     cherry-studio
     baidupcs-go # 百度网盘
   ];

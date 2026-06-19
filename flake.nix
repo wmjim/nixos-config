@@ -3,8 +3,7 @@
 
   inputs = {
     # Nixpkgs - 使用 26.05 以匹配 home-manager
-    # nixpkgs.url = "github:nixos/nixpkgs/nixos-26.05";
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-26.05";
     nixpkgs-darwin.url = "github:nixos/nixpkgs/nixpkgs-26.05-darwin";
     nur.url = "github:nix-community/NUR";
 
@@ -218,7 +217,7 @@
             {
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
-              home-manager.extraSpecialArgs = { inherit inputs lib; };
+              home-manager.extraSpecialArgs = { inherit inputs; };
               home-manager.users.mengw = {
                 imports = [ ./modules/home ];
               };
