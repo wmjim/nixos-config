@@ -7,11 +7,11 @@
     siyuan # 笔记
     zotero # 文献管理
     anki # 助记卡片
-    xournalpp # PDF 批注手写笔记
     readest # 电子书阅读
     typora # markdown 编辑器
     thunderbird # 邮件客户端
     wpsoffice-cn # wps
-    xunlei-uos
+    xunlei-uos # bt 下载
+    planify # todo 管理
   ];
 }
