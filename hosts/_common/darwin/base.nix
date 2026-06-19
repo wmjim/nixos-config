@@ -34,7 +34,7 @@
   system.keyboard.remapCapsLockToControl = false;
 
   # 安全
-  security.pam.enableSudoTouchIdAuth = true;
+  security.pam.services.sudo_local.touchIdAuth = true;
 
   system.stateVersion = 5;
 }

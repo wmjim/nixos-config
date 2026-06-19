@@ -8,5 +8,8 @@
     home = "/Users/mengw";
   };
 
+  # 新版 nix-darwin 要求显式指定 primaryUser，用于 homebrew、system.defaults 等选项
+  system.primaryUser = "mengw";
+
   programs.fish.enable = true;
 }
