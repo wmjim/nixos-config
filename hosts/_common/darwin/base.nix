@@ -26,6 +26,9 @@
   # valgrind 在 nixpkgs 26.05 中被标记为 broken，放行以允许评估
   nixpkgs.config.problems.handlers.valgrind.broken = "warn";
 
+  # 放行 Linux-only 包的评估（flakehub-push 会评估所有平台，但 darwin 不需要这些包）
+  nixpkgs.config.allowUnsupportedSystem = true;
+
   # NUR overlay（home-manager useGlobalPkgs=true 时需在系统级设置）
   nixpkgs.overlays = [ inputs.nur.overlays.default ];
 
