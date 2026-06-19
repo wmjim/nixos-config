@@ -77,6 +77,9 @@
     "openssl-1.1.1w"
   ];
 
+  # valgrind 在 nixpkgs 26.05 中被标记为 broken，放行以允许评估
+  nixpkgs.config.problems.handlers.valgrind.broken = "warn";
+
   # NUR overlay
   nixpkgs.overlays = [ inputs.nur.overlays.default ];
 

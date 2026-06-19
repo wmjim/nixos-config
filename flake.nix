@@ -219,6 +219,8 @@
               home-manager.useUserPackages = true;
               home-manager.extraSpecialArgs = { inherit inputs; };
               home-manager.users.mengw = {
+                # darwin 使用系统 nixpkgs (useGlobalPkgs=true)，overlay 已在 darwin/base.nix 中设置
+                nixpkgs.overlays = lib.mkForce [ ];
                 imports = [ ./modules/home ];
               };
               home-manager.sharedModules = [

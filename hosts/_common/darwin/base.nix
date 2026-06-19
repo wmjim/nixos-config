@@ -1,5 +1,5 @@
 # macOS 基础配置（所有 Darwin 主机共享）
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, inputs, ... }:
 
 {
   # Nix 配置
@@ -22,6 +22,12 @@
 
   # 允许非自由软件
   nixpkgs.config.allowUnfree = true;
+
+  # valgrind 在 nixpkgs 26.05 中被标记为 broken，放行以允许评估
+  nixpkgs.config.problems.handlers.valgrind.broken = "warn";
+
+  # NUR overlay（home-manager useGlobalPkgs=true 时需在系统级设置）
+  nixpkgs.overlays = [ inputs.nur.overlays.default ];
 
   # 系统级包
   environment.systemPackages = with pkgs; [
