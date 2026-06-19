@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 
 {
   # C/C++ 开发环境
@@ -19,16 +19,16 @@
     lldb # LLVM 调试器
     valgrind # 内存泄漏和性能分析工具
 
-    # 性能分析工具
-    perf-tools # Linux 性能分析工具
-    strace # 系统调用追踪
-    ltrace # 库调用追踪
-
     # 代码质量和静态分析
     cppcheck # C++ 静态分析工具
     clang-tools # 包含 clang-format, clang-tidy, clangd
 
     # 构建依赖管理
     pkg-config # 编译时依赖配置工具
-  ];
+  ] ++ lib.optionals pkgs.stdenv.isLinux (with pkgs; [
+    # Linux 专属性能分析工具
+    perf-tools # Linux 性能分析工具
+    strace # 系统调用追踪
+    ltrace # 库调用追踪
+  ]);
 }
