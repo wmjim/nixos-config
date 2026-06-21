@@ -3,6 +3,6 @@
 
 {
   environment.systemPackages = with pkgs; [
-    microsoft-edge
+    brave
   ];
 }

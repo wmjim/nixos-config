@@ -15,9 +15,9 @@ binds {
 
     // 应用快捷方式
     Mod+Return  hotkey-overlay-title="终端"         { spawn "ghostty"; }
-    Mod+Shift+B hotkey-overlay-title="浏览器"       { spawn "microsoft-edge"; }
+    Mod+Shift+B hotkey-overlay-title="浏览器"       { spawn "brave"; }
     Mod+Shift+C hotkey-overlay-title="VSCode"      { spawn "code"; }
-    Mod+Shift+F hotkey-overlay-title="文件管理器"   { spawn-sh "nautilus"; }
+    Mod+Shift+F hotkey-overlay-title="文件管理器"   { spawn "nautilus"; }
     Mod+Shift+M hotkey-overlay-title="系统监控"     { spawn "ghostty" "-e" "btop"; }
 
 

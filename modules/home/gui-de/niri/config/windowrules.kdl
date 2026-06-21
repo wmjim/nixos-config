@@ -29,9 +29,9 @@ window-rule {
     open-maximized true
 }
 
-// Microsoft Edge — 浏览器
+// brave — 浏览器
 window-rule {
-    match app-id="microsoft-edge"
+    match app-id="brave"
     open-maximized true
 }
 

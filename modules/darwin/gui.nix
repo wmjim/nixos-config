@@ -46,7 +46,7 @@
       "ghostty"
       "visual-studio-code"
       "obsidian"
-      "microsoft-edge"
+      "brave"
     ];
 
     # 字体
