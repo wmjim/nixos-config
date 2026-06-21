@@ -5,7 +5,7 @@
     enable = true;
     type = "fcitx5";
     fcitx5 = {
-      # 支持 Wayland
+      # 设为 true：通过 compositor 的 Wayland 输入法协议工作
       waylandFrontend = true;
       addons = with pkgs; [
         # fcitx5 中文插件
@@ -31,13 +31,13 @@
 
   environment.sessionVariables = {
     # GTK3/GTK4/Tauri/Flutter 应用输入法模块
-    GTK_IM_MODULE = "fcitx";
+    # GTK_IM_MODULE = "fcitx";
     # 传统 Qt 输入法变量(Qt5时代)，保持兼容
     # 优先加载 fcitx
-    QT_IM_MODULE = "fcitx";
+    # QT_IM_MODULE = "fcitx";
     # Qt 6.7+ 引入新机制
     # 先尝试 wayland，如果失败再尝试 fcitx
-    QT_IM_MODULES = "wayland;fcitx";
+    # QT_IM_MODULES = "wayland;fcitx";
     # 支持运行于 Xwayland 的其它软件
     XMODIFIERS = "@im=fcitx";
     SDL_IM_MODULE = "fcitx";
