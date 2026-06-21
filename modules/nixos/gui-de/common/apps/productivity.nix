@@ -10,7 +10,6 @@
     readest # 电子书阅读
     typora # markdown 编辑器
     thunderbird # 邮件客户端
-    wpsoffice-cn # wps
     xunlei-uos # bt 下载
     planify # todo 管理
   ];
