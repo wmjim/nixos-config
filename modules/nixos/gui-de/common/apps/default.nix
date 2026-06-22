@@ -14,5 +14,6 @@
     ./browsers.nix
     ./development.nix
     ./utilities.nix
+    ./distrobox.nix
   ];
 }

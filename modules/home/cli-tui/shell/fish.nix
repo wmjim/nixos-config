@@ -24,6 +24,9 @@
       "..." = "cd ../..";
       updatewsl = "sudo nixos-rebuild switch --flake ~/nixos-config#wsl";
 
+      # distrobox
+      arch = "distrobox enter arch";
+
       # eza 推荐别名
       # 基础替换：带图标、目录优先、文件类型颜色
       ls = "eza --icons=auto --group-directories-first --color=auto";
@@ -70,6 +73,7 @@
       # 设置 PATH（如果需要添加额外的路径）
       # fish_add_path /path/to/bin
       fish_add_path /home/mengw/.cargo/bin
+      fish_add_path /home/mengw/.local/bin
 
       # npm 全局模块路径
       # 同时显式设置 NPM_CONFIG_PREFIX，避免 npm 把 prefix 探测到只读的
