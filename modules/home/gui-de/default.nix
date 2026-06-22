@@ -8,5 +8,6 @@
     ./niri
     ./fcitx5.nix
     ./vscode.nix
+    ./hide-ghost-apps.nix
   ];
 }
