@@ -16,7 +16,7 @@
         kdePackages.fcitx5-qt # 支持 Qt5/6 应用
         fcitx5-gtk # 支持 GTK3/4 应用
         # 输入法主题
-        fcitx5-inflex-themes
+        fcitx5-mellow-themes
         # fcitx5-rime 中文输入引擎 + 万象拼音词库
         (fcitx5-rime.override {
           rimeDataPkgs = [ pkgs.rime-wanxiang ];
@@ -30,15 +30,6 @@
   services.xserver.desktopManager.runXdgAutostartIfNone = true;
 
   environment.sessionVariables = {
-    # GTK3/GTK4/Tauri/Flutter 应用输入法模块
-    # GTK_IM_MODULE = "fcitx";
-    # 传统 Qt 输入法变量(Qt5时代)，保持兼容
-    # 优先加载 fcitx
-    # QT_IM_MODULE = "fcitx";
-    # Qt 6.7+ 引入新机制
-    # 先尝试 wayland，如果失败再尝试 fcitx
-    # QT_IM_MODULES = "wayland;fcitx";
-    # 支持运行于 Xwayland 的其它软件
     XMODIFIERS = "@im=fcitx";
     SDL_IM_MODULE = "fcitx";
     # GLFW 程序没有自动探测输入法模块的机制，强制设置为 ibus 以启用输入法（fcitx5 兼容 ibus 协议）
