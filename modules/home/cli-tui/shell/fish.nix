@@ -26,6 +26,7 @@
 
       # distrobox
       arch = "distrobox enter arch";
+      ubuntu = "distrobox enter ubuntu";
 
       # eza 推荐别名
       # 基础替换：带图标、目录优先、文件类型颜色

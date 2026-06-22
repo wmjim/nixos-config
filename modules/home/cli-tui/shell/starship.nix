@@ -18,29 +18,21 @@
         disabled = false;
         style = "bg:red fg:crust";
         symbols = {
-          NixOS = "󰣇";
+          NixOS = "";
           Windows = "";
           Ubuntu = "󰕈";
           SUSE = "";
-          Raspbian = "󰐿";
           Mint = "󰣭";
           Macos = "󰀵";
           Manjaro = "";
           Linux = "󰌽";
           Gentoo = "󰣨";
           Fedora = "󰣛";
-          Alpine = "";
-          Amazon = "";
           Android = "";
-          AOSC = "";
           Arch = "󰣇";
-          Artix = "󰣇";
-          EndeavourOS = "";
-          CentOS = "";
           Debian = "󰣚";
           Pop = "";
           Redhat = "󱄛";
-          RedHatEnterprise = "󱄛";
         };
       };
 
