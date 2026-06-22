@@ -11,7 +11,6 @@
     qview # 图片查看器
     nautilus # 文件管理器
     logisim-evolution # 数字电路设计
-    folo # 信息聚合平台
     localsend # 跨平台文件共享
     # cc-switch # AI 管理工具
     cherry-studio

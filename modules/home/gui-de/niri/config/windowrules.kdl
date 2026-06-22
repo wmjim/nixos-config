@@ -41,11 +41,6 @@ window-rule {
     open-maximized true
 }
 
-// Folo — RSS 阅读器
-window-rule {
-    match app-id="folo"
-    open-maximized true
-}
 
 // ═══════════════════════════════════════════════
 // 浮动窗口（按应用性质设定合适比例）
