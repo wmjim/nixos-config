@@ -19,9 +19,7 @@ in
   environment.systemPackages = with pkgs; [
     discord
     telegram-desktop
-    feishu # 飞书
     wechat-scaled # 微信（已修复分数缩放）
     qq     # qq
-    wemeet # 腾讯会议
   ];
 }
