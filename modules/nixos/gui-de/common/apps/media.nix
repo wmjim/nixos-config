@@ -8,6 +8,7 @@
     obs-studio # 录屏
     snipaste # 截图工具
     picgo # 图床管理
+    calibre
     freetube # YouTube 客户端
     bilibili # 哔哩哔哩
   ];
