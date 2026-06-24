@@ -15,5 +15,6 @@
     # cc-switch # AI 管理工具
     cherry-studio
     baidupcs-go # 百度网盘
+    eudic # 欧陆词典
   ];
 }
