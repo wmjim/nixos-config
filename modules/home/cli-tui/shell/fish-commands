@@ -25,3 +25,11 @@ git revert <commit_id>                                   | 生成一个反向提
 
 # 系统
 sensors                                                  | 查看CPU温度/风扇转速 
+
+
+# yt-dlp 视频下载(cookies file in ~/.cookies)
+# 单个视频下载
+yt-dlp -f "bestvideo+bestaudio/best" --merge-output-format mp4 --cookies <cookies.txt> --embed-subs -o "%(title)s.%(ext)s" "<视频链接>"
+
+# 播放列表下载
+yt-dlp -f "bestvideo+bestaudio/best" --merge-output-format mp4 --cookies <cookies.txt> --embed-subs -o "%(playlist_title)s/%(playlist_index)s - %(title)s.%(ext)s" "<播放列表链接>"
