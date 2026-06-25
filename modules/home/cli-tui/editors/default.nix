@@ -3,7 +3,7 @@
 
 {
   imports = [
-    ./helix
-    ./neovim
+    ./helix.nix
+    ./neovim.nix
   ];
 }
