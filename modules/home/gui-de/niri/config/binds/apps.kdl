@@ -25,4 +25,7 @@ binds {
     Alt+D       hotkey-overlay-title="划词翻译"     { spawn-sh "curl -s '127.0.0.1:60828/selection_translate'"; }
     Alt+I       hotkey-overlay-title="输入翻译"     { spawn-sh "curl -s '127.0.0.1:60828/input_translate'"; }
     Alt+X       hotkey-overlay-title="截屏翻译"     { spawn-sh "grim -g \"$(slurp)\" /tmp/pot_ocr.png && tesseract /tmp/pot_ocr.png stdout -l eng+chi_sim 2>/dev/null | wl-copy --primary && curl -s '127.0.0.1:60828/selection_translate'"; }
+
+    // PicGo 剪贴板图片上传（Wayland 下 Electron globalShortcut 不可用，通过 Server API 实现）
+    Mod+Alt+P hotkey-overlay-title="上传剪贴板图片" { spawn-sh "picgo-clipboard-upload"; }
 }
