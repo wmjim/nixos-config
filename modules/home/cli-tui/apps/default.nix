@@ -11,6 +11,7 @@
   home.packages = with pkgs; [
     fastfetch
     lazydocker
+    yt-dlp
     lazygit
     claude-code
     codex
