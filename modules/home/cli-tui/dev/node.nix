@@ -6,7 +6,7 @@
     nodejs_24
     yarn
     pnpm
-    typescript-language-server # TypeScript/JavaScript LSP
+    typescript-language-server # typescript/js/tsx/jsx lsp
     prettier # JavaScript/TypeScript/JSON/Markdown/YAML 格式化器
   ];
 }

@@ -15,10 +15,10 @@
     cargo-audit # 安全审计工具
     cargo-outdated # 检查依赖更新
     cargo-nextest # 更快的测试运行器
-    taplo # Rust 的 TOML 语言服务器
+    taplo # toml lsp
 
     # Rust 交叉编译工具
     cargo-cross # 交叉编译工具
-    rust-analyzer # Rust LSP
+    rust-analyzer # rust lsp
   ];
 }

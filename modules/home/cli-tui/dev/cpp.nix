@@ -4,9 +4,9 @@
   # C/C++ 开发环境
   home.packages = with pkgs; [
     # 编译器工具链（只用 clang，避免与 gcc 冲突）
-    clang # Clang 编译器（包含 clang++, clang）
+    clang # c/c++ lsp
     cmake # 跨平台构建系统生成器
-    cmake-language-server # CMake 语言服务器
+    cmake-language-server # cmake lsp
     gnumake
     ninja # 快速构建工具
 

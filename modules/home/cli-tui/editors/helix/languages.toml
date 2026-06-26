@@ -61,7 +61,8 @@ formatter = { command = "black", args = ["--quiet", "-"] }
 auto-format = true
 
 [language-server.ruff]
-command = "ruff-lsp"
+command = "ruff"
+args = ["server"]
 
 
 # === html, css, scss ===
