@@ -2,7 +2,6 @@
   description = "NixOS + macOS 统一配置";
 
   inputs = {
-    # Nixpkgs - 使用 26.05 以匹配 home-manager
     nixpkgs.url = "github:nixos/nixpkgs/master";
     nixpkgs-darwin.url = "github:nixos/nixpkgs/nixpkgs-26.05-darwin";
     nur.url = "github:nix-community/NUR";
@@ -12,13 +11,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # wsl
     nixos-wsl = {
       url = "github:nix-community/NixOS-WSL";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # nix-darwin (macOS)
     nix-darwin = {
       url = "github:LnL7/nix-darwin/nix-darwin-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -28,13 +25,6 @@
       url = "github:noctalia-dev/noctalia-shell";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
-    noctalia-greeter = {
-      url = "github:noctalia-dev/noctalia-greeter";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    thyx.url = "github:rccyx/thyx";
   };
 
   outputs =
@@ -43,8 +33,6 @@
       nixpkgs,
       nur,
       noctalia,
-      noctalia-greeter,
-      thyx,
       nixpkgs-darwin,
       home-manager,
       nixos-wsl,
@@ -52,190 +40,109 @@
       ...
     }@inputs:
     let
-      # 使用 nixpkgs lib，不扩展以避免兼容性问题
       lib = nixpkgs.lib;
+      myLib = import ./lib { inherit lib; };
 
-      # 系统类型（只保留你需要的平台）
-      systems = {
-        x86_64-linux = "x86_64-linux"; # NixOS 笔记本/服务器
-        aarch64-darwin = "aarch64-darwin"; # M系列 Mac
-      };
+      # Home Manager 共享样板：减少每个主机的重复代码
+      mkHomeManager =
+        { extraModules ? [ ] }:
+        { config, ... }:
+        {
+          home-manager.useGlobalPkgs = false;
+          home-manager.useUserPackages = true;
+          home-manager.backupFileExtension = "hm-bak";
+          home-manager.extraSpecialArgs = { inherit inputs; };
+          home-manager.users.mengw.imports = [
+            ./modules/home-manager
+          ] ++ extraModules;
+          home-manager.sharedModules = [
+            { nixpkgs.config.allowUnfree = true; }
+          ];
+        };
 
-      # 为所有系统生成包
-      forAllSystems = lib.genAttrs (lib.attrValues systems);
+      # 所有 NixOS 主机共享的核心模块
+      nixosCore = [
+        ./modules/nixos/core
+        home-manager.nixosModules.home-manager
+      ];
     in
     {
+      # ==========================================
       # NixOS 配置
+      # ==========================================
       nixosConfigurations = {
-        # 笔记本（完整桌面）
-        laptop = nixpkgs.lib.nixosSystem {
-          system = systems.x86_64-linux;
-          specialArgs = { inherit inputs lib; };
-          modules = [
-            # 基础配置
-            ./hosts/_common/nixos/base.nix
-            ./hosts/_common/nixos/users.nix
-            ./hosts/_common/nixos/locale.nix
-            # 主机特定配置
-            ./hosts/laptop
-
-            # Home Manager（CLI/TUI + GUI/DE）
-            home-manager.nixosModules.home-manager
-            {
-              home-manager.useGlobalPkgs = false;
-              home-manager.useUserPackages = true;
-              home-manager.backupFileExtension = "hm-bak";
-              home-manager.extraSpecialArgs = { inherit inputs; };
-              home-manager.users.mengw = {
-                imports = [
-                  # 基础 CLI 环境
-                  ./modules/home
-                  # 扩展 GUI+DE
-                  ./modules/home/gui-de
-                ];
-              };
-
-              # 允许 home-manager 使用非自由软件包
-              home-manager.sharedModules = [
-                { nixpkgs.config.allowUnfree = true; }
-              ];
-            }
-          ];
-        };
-
-        # 服务器（无桌面）
-        server = nixpkgs.lib.nixosSystem {
-          system = systems.x86_64-linux;
-          specialArgs = { inherit inputs lib; };
-          modules = [
-            # 基础配置
-            ./hosts/_common/nixos/base.nix
-            ./hosts/_common/nixos/users.nix
-            ./hosts/_common/nixos/locale.nix
-
-            # 主机特定配置
-            ./hosts/server
-
-            # Home Manager（仅 CLI/TUI）
-            home-manager.nixosModules.home-manager
-            {
-              home-manager.useGlobalPkgs = false;
-              home-manager.useUserPackages = true;
-              home-manager.backupFileExtension = "hm-bak";
-              home-manager.extraSpecialArgs = { inherit inputs; };
-              # 基础 CLI 环境
-              home-manager.users.mengw = {
-                imports = [ ./modules/home ];
-              };
-
-              # 允许 home-manager 使用非自由软件包
-              home-manager.sharedModules = [
-                { nixpkgs.config.allowUnfree = true; }
-              ];
-            }
-          ];
-        };
-
-        # 台式机（完整桌面）
+        # 台式机（Niri 桌面）
         desktop = nixpkgs.lib.nixosSystem {
-          system = systems.x86_64-linux;
+          system = "x86_64-linux";
           specialArgs = { inherit inputs lib; };
-          modules = [
-            # 基础配置
-            ./hosts/_common/nixos/base.nix
-            ./hosts/_common/nixos/users.nix
-            ./hosts/_common/nixos/locale.nix
-
-            # 主机特定配置
+          modules = nixosCore ++ [
             ./hosts/desktop
+            (mkHomeManager { extraModules = [ ./modules/home-manager/gui ]; })
+          ];
+        };
 
-            # Home Manager（CLI/TUI + GUI/DE）
-            home-manager.nixosModules.home-manager
-            {
-              home-manager.useGlobalPkgs = false;
-              home-manager.useUserPackages = true;
-              home-manager.backupFileExtension = "hm-bak";
-              home-manager.extraSpecialArgs = { inherit inputs; };
-              home-manager.users.mengw = {
-                imports = [
-                  # 基础 CLI 环境
-                  ./modules/home
-                  # 扩展 GUI+DE
-                  ./modules/home/gui-de
-                ];
-              };
-
-              # 允许 home-manager 使用非自由软件包；
-              home-manager.sharedModules = [
-                { nixpkgs.config.allowUnfree = true; }
-              ];
-            }
+        # 笔记本（GNOME 桌面）
+        laptop = nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          specialArgs = { inherit inputs lib; };
+          modules = nixosCore ++ [
+            ./hosts/laptop
+            (mkHomeManager { extraModules = [ ./modules/home-manager/gui ]; })
           ];
         };
 
         # WSL（仅 CLI/TUI）
         wsl = nixpkgs.lib.nixosSystem {
-          system = systems.x86_64-linux;
+          system = "x86_64-linux";
           specialArgs = { inherit inputs lib; };
-          modules = [
-            # 通过 Flake 引入 WSL 模块
-            inputs.nixos-wsl.nixosModules.default
-            # 主机特定配置（WSL 有自己的 base，不走 _common/nixos）
+          modules = nixosCore ++ [
             ./hosts/wsl
+            (mkHomeManager { })
+          ];
+        };
 
-            # Home Manager（仅 CLI/TUI）
-            home-manager.nixosModules.home-manager
-            {
-              home-manager.useGlobalPkgs = false;
-              home-manager.useUserPackages = true;
-              home-manager.backupFileExtension = "hm-bak";
-              home-manager.extraSpecialArgs = { inherit inputs; };
-              home-manager.users.mengw = {
-                imports = [ ./modules/home ];
-              };
-
-              # 允许 home-manager 使用非自由软件包
-              home-manager.sharedModules = [
-                { nixpkgs.config.allowUnfree = true; }
-              ];
-            }
+        # 服务器（无桌面）
+        server = nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          specialArgs = { inherit inputs lib; };
+          modules = nixosCore ++ [
+            ./hosts/server
+            (mkHomeManager { })
           ];
         };
       };
 
+      # ==========================================
       # macOS 配置
+      # ==========================================
       darwinConfigurations = {
         macbook = nix-darwin.lib.darwinSystem {
-          system = systems.aarch64-darwin;
+          system = "aarch64-darwin";
           specialArgs = { inherit inputs lib; };
           modules = [
-            # 基础配置
             ./hosts/_common/darwin/base.nix
             ./hosts/_common/darwin/users.nix
-
-            # 主机特定配置
             ./hosts/macbook
 
-            # Home Manager
             home-manager.darwinModules.home-manager
             {
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
               home-manager.extraSpecialArgs = { inherit inputs; };
               home-manager.users.mengw = {
-                # darwin 使用系统 nixpkgs (useGlobalPkgs=true)，overlay 已在 darwin/base.nix 中设置
                 nixpkgs.overlays = lib.mkForce [ ];
-                imports = [ ./modules/home ];
+                imports = [ ./modules/home-manager ];
               };
-              home-manager.sharedModules = [
-              ];
+              home-manager.sharedModules = [ ];
             }
           ];
         };
       };
 
-      # 开发 shell
-      devShells = forAllSystems (
+      # ==========================================
+      # 开发 Shell
+      # ==========================================
+      devShells = myLib.forAllSystems (
         system:
         let
           pkgs = nixpkgs.legacyPackages.${system};
@@ -251,6 +158,6 @@
       );
 
       # 格式化配置
-      formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.nixpkgs-fmt);
+      formatter = myLib.forAllSystems (system: nixpkgs.legacyPackages.${system}.nixpkgs-fmt);
     };
 }

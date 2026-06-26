@@ -1,25 +1,15 @@
-# NixOS 笔记本配置（GNOME 桌面）
+# NixOS 笔记本（GNOME 桌面）
 { config, pkgs, lib, ... }:
-
 {
   imports = [
-    # 磁盘分区
     ./hardware.nix
-    # 电池和风扇
     ./laptop.nix
-    # 显卡
     ./nvidia.nix
-    # 桌面设置
-    ../../modules/nixos/hardware # NVIDIA + 蓝牙 + 音频 + 网络 + 笔记本电源
-    ../../modules/nixos/gui-de
-    ../../modules/nixos/virtualization
-    ../../modules/nixos/proxy
   ];
 
-  # 主机名
   networking.hostName = "laptop";
 
-  # 修复 libvirtd TPM2 凭证解密失败 (TPM "No locks available")
+  # 修复 libvirtd TPM2 凭证解密失败
   systemd.services.libvirtd.serviceConfig.LoadCredentialEncrypted = lib.mkForce [ ];
   systemd.services.libvirtd.serviceConfig.LoadCredential = [
     "secrets-encryption-key:/var/lib/libvirt/secrets/secrets-encryption-key"
@@ -35,7 +25,16 @@
     deps = [ ];
   };
 
-  # 代理（通过 modules/nixos/proxy 集中配置）
-  proxy.enable = true;
-  proxy.extraNoProxy = [ "bilibili.com" "*.bilibili.com" ];
+  mySystem = {
+    hardware.enable = true;
+    hardware.nvidia.enable = true;
+    desktop.enable = true;
+    desktop.gnome.enable = true;
+    desktop.distrobox.enable = true;
+    virtualization.enable = true;
+    proxy = {
+      enable = true;
+      extraNoProxy = [ "bilibili.com" "*.bilibili.com" ];
+    };
+  };
 }

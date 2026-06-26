@@ -1,17 +1,12 @@
 # PipeWire 音频服务
 { lib, config, ... }:
 let
-  cfg = config.mengw.hardware.audio;
-  parentCfg = config.mengw.hardware;
+  cfg = config.mySystem.hardware;
 in
 {
-  options.mengw.hardware.audio.enable = lib.mkOption {
-    type = lib.types.bool;
-    default = true;
-    description = "启用 PipeWire 音频服务";
-  };
+  options.mySystem.hardware.audio.enable = lib.mkEnableOption "PipeWire 音频服务";
 
-  config = lib.mkIf (cfg.enable && parentCfg.enable) {
+  config = lib.mkIf (cfg.enable && cfg.audio.enable) {
     services.pipewire = {
       enable = true;
       pulse.enable = true;
