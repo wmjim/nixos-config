@@ -13,6 +13,7 @@
     hardware.enable = true;
     hardware.nvidia.enable = true;
     desktop.enable = true;
+    desktop.gnome.enable = true;
     desktop.niri.enable = true;
     desktop.distrobox.enable = true;
     virtualization.enable = true;

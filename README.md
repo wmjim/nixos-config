@@ -8,7 +8,7 @@
 - [NixOS 中文论坛](https://discourse.nixos.org/c/learn/chinese/55)
 - [Awesome-Nix](https://github.com/nix-community/awesome-nix)
 
-## 构建
+## 部署新配置
 
 ```bash
 # NixOS 笔记本

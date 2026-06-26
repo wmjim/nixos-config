@@ -40,10 +40,8 @@ in
       };
     };
 
-    # Niri 环境变量
-    environment.sessionVariables = {
-      XDG_CURRENT_DESKTOP = "niri";
-    };
+    # 注意：XDG_CURRENT_DESKTOP 由 niri-session 在会话启动时自动设置，
+    # 不要在此处全局写死，否则 GNOME 等共存桌面会读取到错误的值。
 
     # xsettingsd（XWayland 字体配置）+ Noctalia Shell
 
@@ -64,6 +62,9 @@ in
         description = "XSettings daemon (font config for XWayland apps like Java Swing)";
         wantedBy = [ "graphical-session.target" ];
         partOf = [ "graphical-session.target" ];
+        unitConfig = {
+          ConditionEnvironment = "XDG_CURRENT_DESKTOP=niri";
+        };
         serviceConfig = {
           Type = "simple";
           ExecStart = "${pkgs.xsettingsd}/bin/xsettingsd -c ${xsettingsdConf}";
