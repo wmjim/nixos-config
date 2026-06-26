@@ -5,27 +5,37 @@
 , inputs
 , ...
 }:
-
+let
+  cfg = config.mengw.cli;
+in
 {
-  home.stateVersion = "26.05";
-  home.enableNixpkgsReleaseCheck = false;
+  options.mengw.cli.enable = lib.mkOption {
+    type = lib.types.bool;
+    default = true;
+    description = "启用 CLI/TUI 用户环境";
+  };
 
-  # NUR overlay (home-manager 独立 nixpkgs 实例需要单独添加)
-  nixpkgs.overlays = [
-    inputs.nur.overlays.default
+  config = {
+    home.stateVersion = "26.05";
+    home.enableNixpkgsReleaseCheck = false;
 
-    # 修复 fish 4.8.0: create_manpage_completions.py 在源码中存在但未被安装
-    # 导致 bat/cargo 等包无法生成 fish 补全。上游 issue: NixOS/nixpkgs#535122
-    # postInstall 在 cmake build/ 子目录运行，需要用 ../ 回到源码根
-    (final: prev: {
-      fish = prev.fish.overrideAttrs (old: {
-        postInstall = (old.postInstall or "") + ''
-          mkdir -p $out/share/fish/tools
-          cp ../share/tools/create_manpage_completions.py $out/share/fish/tools/
-        '';
-      });
-    })
-  ];
+    # NUR overlay (home-manager 独立 nixpkgs 实例需要单独添加)
+    nixpkgs.overlays = [
+      inputs.nur.overlays.default
+
+      # 修复 fish 4.8.0: create_manpage_completions.py 在源码中存在但未被安装
+      # 导致 bat/cargo 等包无法生成 fish 补全。上游 issue: NixOS/nixpkgs#535122
+      # postInstall 在 cmake build/ 子目录运行，需要用 ../ 回到源码根
+      (final: prev: {
+        fish = prev.fish.overrideAttrs (old: {
+          postInstall = (old.postInstall or "") + ''
+            mkdir -p $out/share/fish/tools
+            cp ../share/tools/create_manpage_completions.py $out/share/fish/tools/
+          '';
+        });
+      })
+    ];
+  };
 
   imports = [
     ./cli-tui

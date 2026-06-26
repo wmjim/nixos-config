@@ -1,6 +1,5 @@
 # CLI/TUI 用户配置
-{ pkgs, ... }:
-
+{ lib, config, ... }:
 {
   imports = [
     ./shell

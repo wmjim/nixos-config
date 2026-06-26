@@ -1,8 +1,19 @@
 # Ghostty 终端配置
-{ config, pkgs, ... }:
-
+{ lib, config, pkgs, ... }:
+let
+  cfg = config.mengw.gui.apps.ghostty;
+  appsCfg = config.mengw.gui.apps;
+  guiCfg = config.mengw.gui;
+in
 {
-  # Ghostty 通过 home-manager 配置
+  options.mengw.gui.apps.ghostty.enable = lib.mkOption {
+    type = lib.types.bool;
+    default = true;
+    description = "启用 Ghostty 终端模拟器";
+  };
+
+  config = lib.mkIf (cfg.enable && appsCfg.enable && guiCfg.enable) {
+    # Ghostty 通过 home-manager 配置
   programs.ghostty = {
     enable = true;
     settings = {
@@ -128,5 +139,6 @@
   xdg.configFile = {
     "ghostty/shader/cursor_smear_rainbow.glsl".source = ./shader/cursor_smear_rainbow.glsl;
     "ghostty/shader/party_sparks.glsl".source = ./shader/party_sparks.glsl;
+  };
   };
 }

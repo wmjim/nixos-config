@@ -1,11 +1,22 @@
 # Starship 提示符配置
-{ config, pkgs, ... }:
-
+{ lib, config, pkgs, ... }:
+let
+  cfg = config.mengw.cli.shell.starship;
+  shellCfg = config.mengw.cli.shell;
+  cliCfg = config.mengw.cli;
+in
 {
-  programs.starship = {
-    enable = true;
-    enableFishIntegration = false;
-    settings = {
+  options.mengw.cli.shell.starship.enable = lib.mkOption {
+    type = lib.types.bool;
+    default = true;
+    description = "启用 Starship 提示符配置";
+  };
+
+  config = lib.mkIf (cfg.enable && shellCfg.enable && cliCfg.enable) {
+    programs.starship = {
+      enable = true;
+      enableFishIntegration = false;
+      settings = {
       "$schema" = "https://starship.rs/config-schema.json";
 
       format = "[](red)$os$username[](bg:peach fg:red)$directory[](bg:yellow fg:peach)$git_branch$git_status[](fg:yellow bg:green)$c$rust$golang$nodejs$php$java$kotlin$haskell$python[](fg:green bg:sapphire)$conda[](fg:sapphire bg:lavender)$cmd_duration[ ](fg:lavender)$line_break$character";
@@ -279,5 +290,6 @@
         crust = "#181926";
       };
     };
+  };
   };
 }

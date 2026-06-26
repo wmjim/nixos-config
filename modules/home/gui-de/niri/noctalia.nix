@@ -1,10 +1,22 @@
-{ inputs, pkgs, ... }:
+{ lib, config, inputs, pkgs, ... }:
+let
+  cfg = config.mengw.gui.niri.noctalia;
+  niriCfg = config.mengw.gui.niri;
+  guiCfg = config.mengw.gui;
+in
 {
+  options.mengw.gui.niri.noctalia.enable = lib.mkOption {
+    type = lib.types.bool;
+    default = true;
+    description = "启用 Noctalia Shell 用户级配置";
+  };
+
   imports = [
     inputs.noctalia.homeModules.default
   ];
 
-  programs.noctalia = {
+  config = lib.mkIf (cfg.enable && niriCfg.enable && guiCfg.enable) {
+    programs.noctalia = {
     enable = true;
 
     settings = {
@@ -44,5 +56,6 @@
 
       };
     };
+  };
   };
 }

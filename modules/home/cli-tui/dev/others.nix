@@ -1,8 +1,19 @@
-{ pkgs, ... }:
-
+{ lib, config, pkgs, ... }:
+let
+  cfg = config.mengw.cli.dev.others;
+  devCfg = config.mengw.cli.dev;
+  cliCfg = config.mengw.cli;
+in
 {
-  # Go 环境
-  home.packages = with pkgs; [
+  options.mengw.cli.dev.others.enable = lib.mkOption {
+    type = lib.types.bool;
+    default = true;
+    description = "启用其他语言的开发环境（LSP、格式化工具等）";
+  };
+
+  config = lib.mkIf (cfg.enable && devCfg.enable && cliCfg.enable) {
+    # 其他语言开发工具
+    home.packages = with pkgs; [
     # === bash === 
     bash-language-server # bash lsp
     shellcheck # 诊断   
@@ -39,6 +50,7 @@
 
     # === Latex ===
     # texlive.combined.scheme-full
-    # texlab # LaTeX 语言服务器         
-  ];
+    # texlab # LaTeX 语言服务器
+    ];
+  };
 }

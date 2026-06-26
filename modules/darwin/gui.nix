@@ -1,9 +1,19 @@
 # macOS GUI 管理：系统默认值 + Homebrew GUI 应用
-{ config, pkgs, ... }:
-
+{ lib, config, pkgs, ... }:
+let
+  cfg = config.mengw.darwin.gui;
+  darwinCfg = config.mengw.darwin;
+in
 {
-  # macOS 系统设置
-  system.defaults = {
+  options.mengw.darwin.gui.enable = lib.mkOption {
+    type = lib.types.bool;
+    default = true;
+    description = "启用 macOS GUI 配置（系统默认值 + Homebrew 应用）";
+  };
+
+  config = lib.mkIf (cfg.enable && darwinCfg.enable) {
+    # macOS 系统设置
+    system.defaults = {
     # Finder
     finder.AppleShowAllExtensions = true;
     finder.FXEnableExtensionChangeWarning = false;
@@ -53,5 +63,6 @@
     caskArgs = {
       fontdir = "/Library/Fonts";
     };
+  };
   };
 }

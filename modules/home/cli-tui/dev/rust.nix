@@ -1,8 +1,19 @@
-{ pkgs, ... }:
-
+{ lib, config, pkgs, ... }:
+let
+  cfg = config.mengw.cli.dev.rust;
+  devCfg = config.mengw.cli.dev;
+  cliCfg = config.mengw.cli;
+in
 {
-  # Rust 环境
-  home.packages = with pkgs; [
+  options.mengw.cli.dev.rust.enable = lib.mkOption {
+    type = lib.types.bool;
+    default = true;
+    description = "启用 Rust 开发环境";
+  };
+
+  config = lib.mkIf (cfg.enable && devCfg.enable && cliCfg.enable) {
+    # Rust 环境
+    home.packages = with pkgs; [
     # Rust 工具链
     rustc # Rust 编译器
     cargo # Rust 包管理器和构建工具
@@ -20,5 +31,6 @@
     # Rust 交叉编译工具
     cargo-cross # 交叉编译工具
     rust-analyzer # rust lsp
-  ];
+    ];
+  };
 }

@@ -1,7 +1,11 @@
 # 媒体 / 录屏 / 截图
-{ pkgs, ... }:
-
+{ lib, config, pkgs, ... }:
 let
+  cfg = config.mengw.desktop.common.apps.media;
+  appsCfg = config.mengw.desktop.common.apps;
+  commonCfg = config.mengw.desktop.common;
+  desktopCfg = config.mengw.desktop;
+
   # PicGo 剪贴板快捷上传脚本
   # Electron globalShortcut API 在 Wayland 下不可用，
   # 因此通过 Niri 组合器快捷键 + PicGo Server API 实现上传
@@ -65,16 +69,24 @@ let
   };
 in
 {
-  environment.systemPackages = with pkgs; [
-    mpv # 视频播放器
-    splayer # 音乐播放器
-    obs-studio # 录屏
-    snipaste # 截图工具
-    picgo-wrapped # 图床管理（Wayland 优化）
-    picgo-clipboard-upload # 剪贴板快捷上传脚本
-    wl-clipboard # Wayland 剪贴板工具
-    calibre
-    freetube # YouTube 客户端
-    bilibili # 哔哩哔哩
-  ];
+  options.mengw.desktop.common.apps.media.enable = lib.mkOption {
+    type = lib.types.bool;
+    default = true;
+    description = "启用媒体和录屏应用";
+  };
+
+  config = lib.mkIf (cfg.enable && appsCfg.enable && commonCfg.enable && desktopCfg.enable) {
+    environment.systemPackages = with pkgs; [
+      mpv # 视频播放器
+      splayer # 音乐播放器
+      obs-studio # 录屏
+      snipaste # 截图工具
+      picgo-wrapped # 图床管理（Wayland 优化）
+      picgo-clipboard-upload # 剪贴板快捷上传脚本
+      wl-clipboard # Wayland 剪贴板工具
+      calibre
+      freetube # YouTube 客户端
+      bilibili # 哔哩哔哩
+    ];
+  };
 }

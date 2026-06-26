@@ -1,7 +1,12 @@
 # pot-translation 跨平台划词翻译软件
 # NUR 包没有 .desktop 文件，手动创建桌面入口
-{ pkgs, ... }:
+{ lib, config, pkgs, ... }:
 let
+  cfg = config.mengw.desktop.common.apps.pot;
+  appsCfg = config.mengw.desktop.common.apps;
+  commonCfg = config.mengw.desktop.common;
+  desktopCfg = config.mengw.desktop;
+
   pot-icon = pkgs.fetchurl {
     url = "https://raw.githubusercontent.com/pot-app/pot-desktop/master/public/icon.svg";
     hash = "sha256-Fgn8kC4GhIOkzUmGre7OCW5fED5N1AU1KrXbbCh714I=";
@@ -17,15 +22,24 @@ let
     mimeTypes = [ ];
   };
   tesseract = pkgs.tesseract.override { enableLanguages = [ "eng" "chi_sim" "chi_tra" ]; };
-in {
-  environment.systemPackages = [
-    pkgs.nur.repos.awa2333.pot-translation
-    pot-desktop
-    tesseract
-    pkgs.grim # wayland 截图（截屏翻译用）
-    pkgs.slurp # wayland 区域选择（截屏翻译用）
-    pkgs.wl-clipboard # wayland 剪贴板（OCR 文本传递用）
-  ];
+in
+{
+  options.mengw.desktop.common.apps.pot.enable = lib.mkOption {
+    type = lib.types.bool;
+    default = true;
+    description = "启用 Pot 划词翻译";
+  };
 
-  environment.sessionVariables.TESSDATA_PREFIX = "${tesseract}/share/tessdata";
+  config = lib.mkIf (cfg.enable && appsCfg.enable && commonCfg.enable && desktopCfg.enable) {
+    environment.systemPackages = [
+      pkgs.nur.repos.awa2333.pot-translation
+      pot-desktop
+      tesseract
+      pkgs.grim # wayland 截图（截屏翻译用）
+      pkgs.slurp # wayland 区域选择（截屏翻译用）
+      pkgs.wl-clipboard # wayland 剪贴板（OCR 文本传递用）
+    ];
+
+    environment.sessionVariables.TESSDATA_PREFIX = "${tesseract}/share/tessdata";
+  };
 }

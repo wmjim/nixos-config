@@ -1,7 +1,10 @@
 # Yazi — 终端文件管理器
-{ config, pkgs, ... }:
-
+{ lib, config, pkgs, ... }:
 let
+  cfg = config.mengw.cli.apps.yazi;
+  appsCfg = config.mengw.cli.apps;
+  cliCfg = config.mengw.cli;
+
   mkYaziFlavor = { pname, owner, repo, rev, sha256 }: pkgs.stdenv.mkDerivation {
     inherit pname;
     version = "unstable";
@@ -43,33 +46,41 @@ let
   };
 in
 {
-  programs.yazi = {
-    enable = true;
-    # 启用 Fish 集成
-    enableFishIntegration = true;
-    shellWrapperName = "y";
-    settings = {
-      # 文件排序方式：自然排序
-      sort_by = "natural";
-      # 排序时区分大小写
-      sort_sensitive = true;
-      preview = {
-        tab_size = 2;
-        # 图片预览最大宽/高（设大值以撑满栏宽）
-        max_width = 2000;
-        max_height = 2000;
+  options.mengw.cli.apps.yazi.enable = lib.mkOption {
+    type = lib.types.bool;
+    default = true;
+    description = "启用 Yazi 终端文件管理器";
+  };
+
+  config = lib.mkIf (cfg.enable && appsCfg.enable && cliCfg.enable) {
+    programs.yazi = {
+      enable = true;
+      # 启用 Fish 集成
+      enableFishIntegration = true;
+      shellWrapperName = "y";
+      settings = {
+        # 文件排序方式：自然排序
+        sort_by = "natural";
+        # 排序时区分大小写
+        sort_sensitive = true;
+        preview = {
+          tab_size = 2;
+          # 图片预览最大宽/高（设大值以撑满栏宽）
+          max_width = 2000;
+          max_height = 2000;
+        };
       };
-    };
-    theme = {
-      flavor = {
-        dark = "catppuccin-mocha";
-        light = "flexoki-light";
+      theme = {
+        flavor = {
+          dark = "catppuccin-mocha";
+          light = "flexoki-light";
+        };
       };
-    };
-    flavors = {
-      flexoki-light = flexoki-light-yazi;
-      everforest-medium = everforest-medium-yazi;
-      catppuccin-mocha = catppuccin-mocha-yazi;
+      flavors = {
+        flexoki-light = flexoki-light-yazi;
+        everforest-medium = everforest-medium-yazi;
+        catppuccin-mocha = catppuccin-mocha-yazi;
+      };
     };
   };
 }

@@ -1,24 +1,35 @@
 # Fish 配置
-{ config, pkgs, ... }:
-
+{ lib, config, pkgs, ... }:
+let
+  cfg = config.mengw.cli.shell.fish;
+  shellCfg = config.mengw.cli.shell;
+  cliCfg = config.mengw.cli;
+in
 {
-  programs.fish = {
-    enable = true;
-    interactiveShellInit = ''
-      # 禁用 greeting 消息
-      set fish_greeting ""
+  options.mengw.cli.shell.fish.enable = lib.mkOption {
+    type = lib.types.bool;
+    default = true;
+    description = "启用 Fish Shell 配置";
+  };
 
-      # 设置编辑器
-      set -gx EDITOR hx
+  config = lib.mkIf (cfg.enable && shellCfg.enable && cliCfg.enable) {
+    programs.fish = {
+      enable = true;
+      interactiveShellInit = ''
+        # 禁用 greeting 消息
+        set fish_greeting ""
 
-      # tmux 外启用 starship；tmux 内使用 fish 默认提示符
-      if not set -q TMUX
-        if test "$TERM" != dumb; and command -q starship
-          starship init fish | source
+        # 设置编辑器
+        set -gx EDITOR hx
+
+        # tmux 外启用 starship；tmux 内使用 fish 默认提示符
+        if not set -q TMUX
+          if test "$TERM" != dumb; and command -q starship
+            starship init fish | source
+          end
         end
-      end
-    '';
-    shellAliases = {
+      '';
+      shellAliases = {
       # 常用别名
       ".." = "cd ..";
       "..." = "cd ../..";
@@ -153,10 +164,11 @@
       end
     '';
   };
-  # zoxide 替代 cd
-  programs.zoxide.enable = true;
-  programs.zoxide.enableFishIntegration = true;
+    # zoxide 替代 cd
+    programs.zoxide.enable = true;
+    programs.zoxide.enableFishIntegration = true;
 
-  # fzf 命令收藏夹文件
-  xdg.configFile."fish/commands".source = ./fish-commands;
+    # fzf 命令收藏夹文件
+    xdg.configFile."fish/commands".source = ./fish-commands;
+  };
 }

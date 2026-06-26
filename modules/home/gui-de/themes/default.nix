@@ -1,10 +1,20 @@
 # Qt/GTK 统一主题配置（Adwaita）
 # 参考: https://wiki.archlinux.org/title/Uniform_look_for_Qt_and_GTK_applications
-{ pkgs, ... }:
-
+{ lib, config, pkgs, ... }:
+let
+  cfg = config.mengw.gui.themes;
+  guiCfg = config.mengw.gui;
+in
 {
-  # --- GTK 主题 (via home-manager, 生成 settings.ini) ---
-  gtk = {
+  options.mengw.gui.themes.enable = lib.mkOption {
+    type = lib.types.bool;
+    default = true;
+    description = "启用 Qt/GTK 统一主题配置（Adwaita）";
+  };
+
+  config = lib.mkIf (cfg.enable && guiCfg.enable) {
+    # --- GTK 主题 (via home-manager, 生成 settings.ini) ---
+    gtk = {
     enable = true;
     # 样式主题：Adwaita（GNOME 默认主题，GTK3/4 内置）
     theme = {
@@ -36,5 +46,6 @@
       package = pkgs.adwaita-qt;
       name = "adwaita";
     };
+  };
   };
 }
