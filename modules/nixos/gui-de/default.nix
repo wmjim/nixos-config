@@ -5,5 +5,6 @@
   imports = [
     ./common
     ./niri
+    ./gnome
   ];
 }

@@ -5,9 +5,11 @@
   imports = [
     ./apps.nix
     ./clash.nix
+    ./env.nix
     ./fcitx5.nix
     ./themes.nix
     ./boot.nix
+    ./gdm.nix
   ];
 
   # gvfs：Nautilus 回收站、文件挂载、网络共享等功能依赖

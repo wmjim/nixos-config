@@ -1,6 +1,7 @@
 { config, pkgs, ... }:
 
 {
+  # 安装输入法引擎
   i18n.inputMethod = {
     enable = true;
     type = "fcitx5";
@@ -31,6 +32,10 @@
 
   environment.sessionVariables = {
     XMODIFIERS = "@im=fcitx";
+    # GTK/Qt 输入法模块 — 强制使用 fcitx5 直连而不是通过 Mutter 的 text-input 协议中转
+    # NixOS fcitx5 模块在 waylandFrontend=true 时不会设置这些变量（它认为 wayland 下不需要）
+    # 但 GNOME 下如果没有这些变量，GTK 不会走 fcitx5 IM 模块，光标坐标经 Mutter 转发后会偏移
+    QT_IM_MODULE = "fcitx";
     SDL_IM_MODULE = "fcitx";
     # GLFW 程序没有自动探测输入法模块的机制，强制设置为 ibus 以启用输入法（fcitx5 兼容 ibus 协议）
     GLFW_IM_MODULE = "ibus";

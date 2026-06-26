@@ -3,7 +3,7 @@
 
   inputs = {
     # Nixpkgs - 使用 26.05 以匹配 home-manager
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-26.05";
+    nixpkgs.url = "github:nixos/nixpkgs/master";
     nixpkgs-darwin.url = "github:nixos/nixpkgs/nixpkgs-26.05-darwin";
     nur.url = "github:nix-community/NUR";
 
@@ -33,19 +33,23 @@
       url = "github:noctalia-dev/noctalia-greeter";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    thyx.url = "github:rccyx/thyx";
   };
 
   outputs =
-    { self
-    , nixpkgs
-    , nur
-    , noctalia
-    , noctalia-greeter
-    , nixpkgs-darwin
-    , home-manager
-    , nixos-wsl
-    , nix-darwin
-    , ...
+    {
+      self,
+      nixpkgs,
+      nur,
+      noctalia,
+      noctalia-greeter,
+      thyx,
+      nixpkgs-darwin,
+      home-manager,
+      nixos-wsl,
+      nix-darwin,
+      ...
     }@inputs:
     let
       # 使用 nixpkgs lib，不扩展以避免兼容性问题

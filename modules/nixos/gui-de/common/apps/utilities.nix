@@ -32,7 +32,7 @@ in
     nautilus # 文件管理器
     logisim-evolution # 数字电路设计
     localsend # 跨平台文件共享
-    # cc-switch # AI 管理工具
+    cc-switch # AI 管理工具
     cherry-studio
     baidupcs-go # 百度网盘
     eudic-fixed # 欧陆词典（修复 Wayland 兼容性）
