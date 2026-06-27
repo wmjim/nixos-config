@@ -3,6 +3,16 @@
 { lib, config, ... }:
 let
   cfg = config.mySystem.proxy;
+  proxyUrl = "http://127.0.0.1:${toString cfg.port}";
+  noProxyList = lib.concatStringsSep "," (
+    [ "localhost" "127.0.0.1" "local.domain" "192.168.0.0/16" ] ++ cfg.extraNoProxy
+  );
+  proxyEnv = {
+    http_proxy = proxyUrl;
+    https_proxy = proxyUrl;
+    ftp_proxy = proxyUrl;
+    no_proxy = noProxyList;
+  };
 in
 {
   options.mySystem.proxy = {
@@ -20,22 +30,7 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    systemd.services.nix-daemon.environment = {
-      http_proxy = "http://127.0.0.1:${toString cfg.port}";
-      https_proxy = "http://127.0.0.1:${toString cfg.port}";
-      ftp_proxy = "http://127.0.0.1:${toString cfg.port}";
-      no_proxy = lib.concatStringsSep "," (
-        [ "localhost" "127.0.0.1" "local.domain" "192.168.0.0/16" ] ++ cfg.extraNoProxy
-      );
-    };
-
-    environment.sessionVariables = {
-      http_proxy = "http://127.0.0.1:${toString cfg.port}";
-      https_proxy = "http://127.0.0.1:${toString cfg.port}";
-      ftp_proxy = "http://127.0.0.1:${toString cfg.port}";
-      no_proxy = lib.concatStringsSep "," (
-        [ "localhost" "127.0.0.1" "local.domain" "192.168.0.0/16" ] ++ cfg.extraNoProxy
-      );
-    };
+    systemd.services.nix-daemon.environment = proxyEnv;
+    environment.sessionVariables = proxyEnv;
   };
 }
