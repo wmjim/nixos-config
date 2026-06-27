@@ -28,8 +28,8 @@ in
     ];
 
     environment.systemPackages = with pkgs; [
+      # 软件：扩展管理
       gnome-tweaks
-      dconf-editor
       # 插件：添加毛玻璃模糊效果
       gnomeExtensions.blur-my-shell
       # 插件：深度定制GNOME界面
@@ -38,8 +38,6 @@ in
       gnomeExtensions.dash-in-panel
       # 插件：顶部状态栏恢复系统托盘图标
       gnomeExtensions.appindicator
-      # 插件：平铺式窗口管理器
-      gnomeExtensions.paperwm
       # 插件：适用于GNOME的输入法面板
       gnomeExtensions.kimpanel
       # 插件：用户自定义 shell 主题

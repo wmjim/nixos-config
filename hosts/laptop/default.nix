@@ -33,6 +33,7 @@
     desktop.niri.enable = true;
     desktop.distrobox.enable = true;
     virtualization.enable = true;
+    stylix.enable = true;
     proxy = {
       enable = true;
       extraNoProxy = [ "bilibili.com" "*.bilibili.com" ];

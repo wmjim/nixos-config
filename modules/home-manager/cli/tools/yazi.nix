@@ -1,4 +1,5 @@
 # Yazi — 终端文件管理器
+# 深色主题由 Stylix 统一管理（自动设置 programs.yazi.theme）
 { lib, config, pkgs, ... }:
 let
   cfg = config.mengw.cli.tools.yazi;
@@ -28,20 +29,6 @@ let
     rev = "e1ead7b5a3bfc8eb572fd269a369775842752705";
     sha256 = "sha256-2Fx7+xnSsc+aVHBZUtLtVUDEzb1y8BcPBASciKk8x7o=";
   };
-  catppuccin-mocha-yazi = pkgs.stdenv.mkDerivation {
-    pname = "catppuccin-mocha.yazi";
-    version = "unstable";
-    src = pkgs.fetchFromGitHub {
-      owner = "yazi-rs";
-      repo = "flavors";
-      rev = "36c49acfd7d3924bd751fd74e37b6ff438af691a";
-      sha256 = "sha256-IK0Ye/EPjOGC+//HpjExVTAKfXtlgOrYbFLrhy/DF6k=";
-    };
-    installPhase = ''
-      mkdir -p $out
-      cp -r catppuccin-mocha.yazi/* $out/
-    '';
-  };
 in
 {
   options.mengw.cli.tools.yazi.enable = lib.mkOption {
@@ -66,14 +53,12 @@ in
       };
       theme = {
         flavor = {
-          dark = "catppuccin-mocha";
           light = "flexoki-light";
         };
       };
       flavors = {
         flexoki-light = flexoki-light-yazi;
         everforest-medium = everforest-medium-yazi;
-        catppuccin-mocha = catppuccin-mocha-yazi;
       };
     };
   };

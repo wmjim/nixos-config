@@ -1,4 +1,5 @@
 # Zellij — 终端复用器
+# 主题由 Stylix 统一管理（自动生成 stylix 主题）
 { lib, config, ... }:
 let
   cfg = config.mengw.cli.tools.zellij;
