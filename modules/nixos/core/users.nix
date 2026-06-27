@@ -26,12 +26,14 @@
     # 默认用户 mengw
     mySystem.users.mengw = {
       enable = true;
+      # 用户组
       extraGroups = [
-        "wheel"
+        "wheel"       # 允许使用sudo以管理员权限执行命令
         "audio"
         "video"
+        "render"
         "input"
-        "network"
+        "network"     # 赋予网络配置权限
         "libvirtd"
         "kvm"
         "i2c"
@@ -45,6 +47,7 @@
     users.users = lib.mapAttrs'
       (name: cfg:
         lib.nameValuePair name (lib.mkIf cfg.enable {
+          # 标识该用户为真实用户，系统自动将 group 设置为 users
           isNormalUser = true;
           extraGroups = cfg.extraGroups;
           shell = cfg.shell;

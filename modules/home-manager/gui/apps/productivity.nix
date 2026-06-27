@@ -22,7 +22,6 @@ in
       typora
       thunderbird
       xunlei-uos
-      planify
     ];
   };
 }

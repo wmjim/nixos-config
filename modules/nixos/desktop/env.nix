@@ -6,6 +6,7 @@ in
 {
   config = lib.mkIf cfg.enable {
     environment.sessionVariables = {
+      XDG_DATA_HOME = "$HOME/.local/share";
       XDG_SESSION_TYPE = "wayland";
       GDK_BACKEND = "wayland";
       QT_QPA_PLATFORM = "wayland";

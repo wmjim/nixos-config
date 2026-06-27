@@ -20,6 +20,7 @@ in
 
   config = lib.mkIf cfg.enable {
     stylix = {
+      # 启用 Stylix
       enable = true;
 
       # 两个内置 base16 配色方案
@@ -62,24 +63,33 @@ in
         };
       }.${cfg.theme};
 
-      # 字体配置（包名来自 locale.nix fonts.packages）
+      # 如若未声明 base16Scheme，Stylix 使用遗传算法根据壁纸生成一套配色方案
+      # 算法生成倾向：dark(深色主题)
+      polarity = "dark";
+      
+      # 默认字体组合
       fonts = {
+        # 衬线字体：Source Serif Pro
         serif = {
           package = pkgs.source-serif-pro;
           name = "Source Serif Pro";
         };
+        # 无衬线字体：HarmonyOS Sans SC
         sansSerif = {
           package = pkgs.nur.repos.guanran928.harmonyos-sans;
-          name = "HarmonyOS Sans SC";
+          name = "HarmonyOS Sans SC Medium";
         };
+        # 等宽字体：Maple Mono Normal NL NF
         monospace = {
           package = pkgs.maple-mono.NormalNL-NF-CN-unhinted;
-          name = "Maple Mono Normal NL NF";
+          name = "Maple Mono Normal NL NF CN Medium";
         };
+        # emoji字体：Noto Color Emoji
         emoji = {
           package = pkgs.noto-fonts-color-emoji;
           name = "Noto Color Emoji";
         };
+        # 字体大小
         sizes = {
           desktop = 12;
           applications = 12;
@@ -103,8 +113,7 @@ in
         size = 24;
       };
 
-      # 暗色模式
-      polarity = "dark";
+      
 
       # 禁用版本检查（Stylix unstable 与 HM release-26.05 不匹配）
       enableReleaseChecks = false;

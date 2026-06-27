@@ -30,12 +30,16 @@ in
     environment.systemPackages = with pkgs; [
       # 软件：扩展管理
       gnome-tweaks
+      # 软件：GDM设置
+      gdm-settings
       # 插件：添加毛玻璃模糊效果
       gnomeExtensions.blur-my-shell
       # 插件：深度定制GNOME界面
       gnomeExtensions.just-perfection
-      # 插件：顶部面板中的程序停靠栏
-      gnomeExtensions.dash-in-panel
+      # 插件：应用程序菜单
+      gnomeExtensions.arcmenu
+      # 插件：将程序启动栏和GNOME面板整合，类似Win
+      gnomeExtensions.dash-to-panel
       # 插件：顶部状态栏恢复系统托盘图标
       gnomeExtensions.appindicator
       # 插件：适用于GNOME的输入法面板
@@ -54,6 +58,8 @@ in
       gnomeExtensions.tiling-shell
       # 插件：为所有窗口添加圆角
       gnomeExtensions.rounded-window-corners-reborn
+      # 插件：用于访问和卸载可移动设备的状态菜单
+      gnomeExtensions.removable-drive-menu
     ];
   };
 }

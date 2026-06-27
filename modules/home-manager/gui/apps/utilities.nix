@@ -33,10 +33,17 @@ in
   config = lib.mkIf (cfg.enable && appsCfg.enable && guiCfg.enable) {
     home.packages = with pkgs; [
       ddcutil
-      mission-center
       file-roller
       papers
       gnome-text-editor
+      mission-center        # 图形化任务中心
+      foliate               # eBook阅读器
+      wike                  # 桌面版Wiki阅读器
+      parabolic             # yt-dlp图形化前端
+      pipeline              # Youtube客户端
+      planify               # 任务管理器
+      gapless               # 本地音乐播放器
+      embellish             # 安装和管理Nerd Fonts字体
       qview
       nautilus
       logisim-evolution
