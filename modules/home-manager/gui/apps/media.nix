@@ -28,7 +28,7 @@ let
     PARSED=$(echo "$RESPONSE" | ${pkgs.jq}/bin/jq -r '
       (.result[0] // .data[0] // .result // .data // empty),
       (.message // .error // "Server 未响应")
-    ' 2>/dev/null || printf '\''\nServer 未响应'\'')
+    ' 2>/dev/null || echo $'\nServer 未响应')
     URL=$(printf '%s' "$PARSED" | sed -n '1p')
     ERR_MSG=$(printf '%s' "$PARSED" | sed -n '2p')
     if [ -n "$URL" ] && [ "$URL" != "null" ]; then
