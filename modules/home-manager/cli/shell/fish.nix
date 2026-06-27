@@ -69,7 +69,7 @@ in
             echo "commands file not found: $commands_file"
             return 1
           end
-          set -l selected (grep -v '^\s*#' $commands_file | grep -v '^\s*$' | env FZF_DEFAULT_OPTS="" fzf --prompt="Cmd > " --height=40% --layout=reverse --border --no-hscroll)
+          set -l selected (grep -vE '^\s*(#|$)' $commands_file | env FZF_DEFAULT_OPTS="" fzf --prompt="Cmd > " --height=40% --layout=reverse --border --no-hscroll)
           if test -n "$selected"
             set -l cmd (string trim -- (string split -m1 '|' -- $selected)[1])
             commandline --replace -- $cmd
