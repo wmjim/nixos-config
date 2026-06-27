@@ -6,7 +6,7 @@ let
 in
 {
   config = lib.mkIf (cfg.enable && desktopCfg.enable) {
-    # services.xserver.enable = true;
+    services.xserver.enable = true;
     services.desktopManager.gnome.enable = true;
 
     services.gnome.core-apps.enable = false;
