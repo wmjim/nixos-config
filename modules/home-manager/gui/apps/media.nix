@@ -24,16 +24,19 @@ let
     RESPONSE=$(${pkgs.curl}/bin/curl -s -X POST http://127.0.0.1:36677/upload \
       -H "Content-Type: application/json" \
       -d "{\"list\":[\"$TMPFILE\"]}" 2>/dev/null || echo "")
-    URL=$(echo "$RESPONSE" | ${pkgs.jq}/bin/jq -r \
-      '.result[0] // .data[0] // .result // .data // empty' 2>/dev/null || echo "")
+    # 一次 jq 调用同时提取 URL 和错误信息
+    PARSED=$(echo "$RESPONSE" | ${pkgs.jq}/bin/jq -r '
+      (.result[0] // .data[0] // .result // .data // empty),
+      (.message // .error // "Server 未响应")
+    ' 2>/dev/null || printf '\''\nServer 未响应'\'')
+    URL=$(printf '%s' "$PARSED" | sed -n '1p')
+    ERR_MSG=$(printf '%s' "$PARSED" | sed -n '2p')
     if [ -n "$URL" ] && [ "$URL" != "null" ]; then
       echo -n "$URL" | ${pkgs.wl-clipboard}/bin/wl-copy
       ${pkgs.libnotify}/bin/notify-send \
         -i picgo \
         "PicGo 上传成功" "URL 已复制到剪贴板"
     else
-      ERR_MSG=$(echo "$RESPONSE" | ${pkgs.jq}/bin/jq -r \
-        '.message // .error // "Server 未响应"' 2>/dev/null || echo "$RESPONSE")
       ${pkgs.libnotify}/bin/notify-send -u critical \
         -i dialog-error \
         "PicGo 上传失败" "请确认 PicGo 已启动且 Server 已开启（端口 36677）"
