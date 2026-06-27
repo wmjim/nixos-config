@@ -86,13 +86,16 @@ in
           end
           set -l provider $argv[1]
           if test -z "$provider"
-            set provider (for f in $dir/*.json
-              jq -r '"\(.provider): \(.title)"' $f
-            end | env FZF_DEFAULT_OPTS="" fzf \
+            # 一次 jq 调用处理所有文件（input_filename 获取文件名作 fzf key）
+            set provider (jq -r '
+              input_filename as $f |
+              "\($f | sub(".*/";"") | sub("\\.json$";"")):\(.provider): \(.title)"
+            ' $dir/*.json | env FZF_DEFAULT_OPTS="" fzf \
               --prompt="Cheatsheet > " \
               --height=40% \
               --layout=reverse \
               --border \
+              --with-nth=2.. \
               --preview "jq -r '.binds | to_entries[] | .key as \$cat | .value[] | \"  \" + .key + \"\t\" + .desc + (if .subcat then \" [\" + .subcat + \"]\" else \"\" end)' $dir/{1}.json" \
               --preview-window=right:60% \
               --delimiter=':')
