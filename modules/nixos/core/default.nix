@@ -28,7 +28,7 @@
     boot.loader.efi.canTouchEfiVariables = lib.mkIf (!config.boot.isContainer) (lib.mkDefault true);
     boot.kernelPackages = pkgs.linuxPackages_latest;
 
-    # 开机自动升级
+    # 保持NixOS系统自动更新
     system.autoUpgrade = {
       enable = true;
       allowReboot = false;
@@ -106,7 +106,6 @@
       iwd
       git
       wget
-      nix-output-monitor
     ];
 
     system.stateVersion = "26.05";
