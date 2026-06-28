@@ -20,8 +20,7 @@ in
       anki
       readest
       typora
-      thunderbird
-      xunlei-uos
+      # thunderbird
     ];
   };
 }

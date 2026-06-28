@@ -36,6 +36,7 @@ in
       file-roller
       papers
       gnome-text-editor
+      geary                 # 邮件管理器
       mission-center        # 图形化任务中心
       foliate               # eBook阅读器
       wike                  # 桌面版Wiki阅读器
