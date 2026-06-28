@@ -15,20 +15,26 @@ in
     programs.vscode = {
       enable = true;
       mutableExtensionsDir = true;
-      profiles.default.extensions = with pkgs.vscode-extensions; [
-        anthropic.claude-code
-        vscode-icons-team.vscode-icons
-        alefragnani.bookmarks
-        jeff-hykin.better-nix-syntax
-        jnoortheen.nix-ide
-        ms-python.python
-        llvm-vs-code-extensions.vscode-clangd
-        tamasfe.even-better-toml
-        donjayamanne.githistory
-        ms-azuretools.vscode-docker
-        ms-vscode-remote.remote-ssh
-        ms-vscode-remote.remote-ssh-edit
-      ];
+      profiles.default = {
+        userSettings = {
+          "files.autoSave" = "afterDelay";
+          "files.autoSaveDelay" = 1000;
+        };
+        extensions = with pkgs.vscode-extensions; [
+          anthropic.claude-code
+          vscode-icons-team.vscode-icons
+          alefragnani.bookmarks
+          jeff-hykin.better-nix-syntax
+          jnoortheen.nix-ide
+          ms-python.python
+          llvm-vs-code-extensions.vscode-clangd
+          tamasfe.even-better-toml
+          donjayamanne.githistory
+          ms-azuretools.vscode-docker
+          ms-vscode-remote.remote-ssh
+          ms-vscode-remote.remote-ssh-edit
+        ];
+      };
     };
   };
 }
