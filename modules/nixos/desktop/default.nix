@@ -52,13 +52,6 @@ in
       NIXOS_OZONE_WL = "1";
     };
 
-    # Clash Verge 代理客户端
-    programs.clash-verge = {
-      enable = true;
-      autoStart = true;
-      serviceMode = true;
-    };
-
     # GTK/Qt 主题包
     environment.systemPackages = with pkgs; [
       xwayland-satellite

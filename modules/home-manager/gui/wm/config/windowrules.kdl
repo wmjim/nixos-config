@@ -46,14 +46,6 @@ window-rule {
 // 浮动窗口（按应用性质设定合适比例）
 // ═══════════════════════════════════════════════
 
-// Clash Verge — 代理管理面板
-window-rule {
-    match app-id="(?i)clash"
-    open-floating true
-    default-column-width { proportion 0.5; }
-    default-window-height { proportion 0.6; }
-}
-
 // cc-switch — 小型切换工具
 window-rule {
     match app-id="(?i)cc-switch"

@@ -1,5 +1,10 @@
 # 媒体 / 录屏 / 截图
-{ lib, config, pkgs, ... }:
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}:
 let
   cfg = config.mengw.gui.apps.media;
   appsCfg = config.mengw.gui.apps;
@@ -75,6 +80,7 @@ in
       calibre
       freetube
       bilibili
+      flclash
     ];
   };
 }

@@ -19,7 +19,6 @@ in
       ELECTRON_OZONE_PLATFORM_HINT = "auto";
       _JAVA_AWT_WM_NONREPARENTING = "1";
       _JAVA_OPTIONS = "-Dawt.useSystemAAFontSettings=true -Dswing.aatext=true -Dsun.java2d.uiScale=1.5";
-      CLASH_VERGE_ALLOW_CLIPBOARD = "1";
       RUST_BACKTRACE = "1";
     };
   };
