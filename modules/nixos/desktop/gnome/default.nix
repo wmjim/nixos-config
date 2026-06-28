@@ -52,8 +52,6 @@ in
       gnomeExtensions.compiz-alike-magic-lamp-effect
       # 插件：Alt+Tab横向3D滚动效果
       gnomeExtensions.coverflow-alt-tab
-      # 插件：炫酷地让窗口消散
-      gnomeExtensions.burn-my-windows
       # 插件：增强窗口分配
       gnomeExtensions.tiling-shell
       # 插件：为所有窗口添加圆角
