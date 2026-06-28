@@ -24,7 +24,8 @@ in
           font_family = "HarmonyOS Sans SC";
         };
         theme = {
-          mode = "dark";
+          # 跟随 Stylix 极性：亮色主题 → light，暗色主题 → dark
+          mode = if (config.stylix.polarity or "dark") == "light" then "light" else "dark";
           source = "builtin";
           builtin = "Catppuccin";
         };

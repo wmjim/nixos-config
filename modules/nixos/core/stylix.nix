@@ -8,9 +8,9 @@ in
   options.mySystem.stylix = {
     enable = lib.mkEnableOption "Stylix 统一主题系统";
     theme = lib.mkOption {
-      type = lib.types.enum [ "catppuccin-mocha" "gruvbox-dark" "adwaita" "claude-light" ];
+      type = lib.types.enum [ "catppuccin-mocha" "gruvbox-dark" "adwaita" "claude-light" "claude-dark" ];
       default = "claude-light";
-      description = "Stylix 配色方案：claude-light (默认)、gruvbox-dark、catppuccin-mocha 或 adwaita";
+      description = "Stylix 配色方案：claude-light (默认)、claude-dark、gruvbox-dark、catppuccin-mocha 或 adwaita";
     };
   };
 
@@ -103,6 +103,27 @@ in
           base0E = "7c3aed"; # violet-600  紫：关键字
           base0F = "92400e"; # amber-800   棕：废弃
         };
+        claude-dark = {
+          # Claude 暗色主题（暖调深色板，与 claude-light 互补）
+          # 背景渐变：暖棕黑 → 暖灰
+          base00 = "1c1a17"; # 主背景：暖调深黑
+          base01 = "25221f"; # 侧边栏/状态栏背景
+          base02 = "312d29"; # 选中背景（暖棕灰）
+          base03 = "5e5850"; # 注释/弱化文字
+          base04 = "8f8780"; # 次要文字（暖灰）
+          base05 = "d2ccc5"; # 主前景文字（暖调米白）
+          base06 = "e7e1d8"; # 强调文字
+          base07 = "f6f1e8"; # 最亮文字/高亮
+          # 强调色：与 claude-light 同色系但提高亮度，保证深色背景上的对比度
+          base08 = "f87171"; # red-400    红：错误/变量
+          base09 = "fbbf24"; # amber-400  橙：Claude 品牌色/数字
+          base0A = "f59e0b"; # amber-500  深橙：类名
+          base0B = "34d399"; # emerald-400 绿：字符串
+          base0C = "2dd4bf"; # teal-400    青：内置/支持
+          base0D = "818cf8"; # indigo-400  蓝：函数
+          base0E = "a78bfa"; # violet-400  紫：关键字
+          base0F = "fbbf24"; # amber-400   棕：废弃
+        };
       }.${cfg.theme};
 
       # 如若未声明 base16Scheme，Stylix 使用遗传算法根据壁纸生成一套配色方案
@@ -171,8 +192,16 @@ in
     environment.variables.QT_STYLE_OVERRIDE = "kvantum";
 
     # HM 层：禁用版本检查警告（NixOS 层的 enableReleaseChecks 不会自动同步）
+    # 同时根据 Stylix 主题极性设置 GNOME color-scheme（亮色 → default，暗色 → prefer-dark）
     home-manager.sharedModules = lib.mkIf (config ? home-manager) [
       { stylix.enableReleaseChecks = false; }
+      ({ lib, config, ... }: {
+        dconf.settings = {
+          "org/gnome/desktop/interface" = {
+            color-scheme = if (cfg.theme == "adwaita" || cfg.theme == "claude-light") then "default" else "prefer-dark";
+          };
+        };
+      })
     ];
   };
 }
