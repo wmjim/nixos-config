@@ -1,5 +1,5 @@
 # Stylix 统一主题系统（NixOS 级）
-# 使用 unstable 分支，提供 Gruvbox 和 Catppuccin 两种配色方案
+# 使用 unstable 分支，提供 Gruvbox、Catppuccin、Adwaita 三种配色方案
 { lib, config, pkgs, inputs, ... }:
 let
   cfg = config.mySystem.stylix;
@@ -8,9 +8,9 @@ in
   options.mySystem.stylix = {
     enable = lib.mkEnableOption "Stylix 统一主题系统";
     theme = lib.mkOption {
-      type = lib.types.enum [ "catppuccin-mocha" "gruvbox-dark" ];
+      type = lib.types.enum [ "catppuccin-mocha" "gruvbox-dark" "adwaita" ];
       default = "gruvbox-dark";
-      description = "Stylix 配色方案：catppuccin-mocha (默认) 或 gruvbox-dark";
+      description = "Stylix 配色方案：gruvbox-dark (默认)、catppuccin-mocha 或 adwaita (亮色)";
     };
   };
 
@@ -23,7 +23,7 @@ in
       # 启用 Stylix
       enable = true;
 
-      # 两个内置 base16 配色方案
+      # 三个内置 base16 配色方案
       base16Scheme = {
         catppuccin-mocha = {
           base00 = "1e1e2e"; # base
@@ -61,11 +61,32 @@ in
           base0E = "d3869b"; # purple
           base0F = "d65d0e"; # brown
         };
+        adwaita = {
+          # Adwaita 亮色主题（Libadwaita 官方色板）
+          # 背景渐变：light → dark
+          base00 = "fafafb"; # window-bg
+          base01 = "ebebed"; # sidebar-bg
+          base02 = "deddda"; # light-3, 选中背景
+          base03 = "9a9996"; # light-5, 注释/弱化
+          base04 = "77767b"; # dark-1, 次要文字
+          base05 = "3d3846"; # dark-3, 主前景文字
+          base06 = "241f31"; # dark-4, 强调文字
+          base07 = "000000"; # dark-5, 最深
+          # 强调色（深色调，保证亮色背景上的对比度）
+          base08 = "e01b24"; # red-3,   红：错误/变量
+          base09 = "c64600"; # orange-5, 橙：数字
+          base0A = "e5a50a"; # yellow-5, 黄：类名
+          base0B = "26a269"; # green-5,  绿：字符串
+          base0C = "007184"; # teal,     青：支持/内置
+          base0D = "1a5fb4"; # blue-5,   蓝：函数
+          base0E = "813d9c"; # purple-4, 紫：关键字
+          base0F = "63452c"; # brown-5,  棕：废弃
+        };
       }.${cfg.theme};
 
       # 如若未声明 base16Scheme，Stylix 使用遗传算法根据壁纸生成一套配色方案
-      # 算法生成倾向：dark(深色主题)
-      polarity = "dark";
+      # 算法生成倾向：adwaita → light，其他 → dark
+      polarity = if cfg.theme == "adwaita" then "light" else "dark";
       
       # 默认字体组合
       fonts = {
