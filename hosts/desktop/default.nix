@@ -18,7 +18,7 @@
     desktop.distrobox.enable = true;
     virtualization.enable = true;
     stylix.enable = true;
-    stylix.theme = "adwaita";
+    stylix.theme = "claude-light";
     proxy = {
       enable = true;
       extraNoProxy = [ "bilibili.com" "*.bilibili.com" ];

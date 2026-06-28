@@ -1,5 +1,5 @@
 # Stylix 统一主题系统（NixOS 级）
-# 使用 unstable 分支，提供 Gruvbox、Catppuccin、Adwaita 三种配色方案
+# 使用 unstable 分支，提供 Gruvbox、Catppuccin、Adwaita 四种配色方案
 { lib, config, pkgs, inputs, ... }:
 let
   cfg = config.mySystem.stylix;
@@ -8,9 +8,9 @@ in
   options.mySystem.stylix = {
     enable = lib.mkEnableOption "Stylix 统一主题系统";
     theme = lib.mkOption {
-      type = lib.types.enum [ "catppuccin-mocha" "gruvbox-dark" "adwaita" ];
-      default = "gruvbox-dark";
-      description = "Stylix 配色方案：gruvbox-dark (默认)、catppuccin-mocha 或 adwaita (亮色)";
+      type = lib.types.enum [ "catppuccin-mocha" "gruvbox-dark" "adwaita" "claude-light" ];
+      default = "claude-light";
+      description = "Stylix 配色方案：claude-light (默认)、gruvbox-dark、catppuccin-mocha 或 adwaita";
     };
   };
 
@@ -23,7 +23,7 @@ in
       # 启用 Stylix
       enable = true;
 
-      # 三个内置 base16 配色方案
+      # 内置 base16 配色方案
       base16Scheme = {
         catppuccin-mocha = {
           base00 = "1e1e2e"; # base
@@ -82,11 +82,32 @@ in
           base0E = "813d9c"; # purple-4, 紫：关键字
           base0F = "63452c"; # brown-5,  棕：废弃
         };
+        claude-light = {
+          # Claude 官网亮色主题（暖调奶油色板）
+          # 背景渐变：暖奶油白 → 深棕
+          base00 = "faf9f5"; # 主背景：暖调奶油白
+          base01 = "f3f0ea"; # 侧边栏/状态栏背景
+          base02 = "e8e5dd"; # 选中背景（暖灰）
+          base03 = "a8a39c"; # 注释/弱化文字
+          base04 = "7a746e"; # 次要文字（暖灰）
+          base05 = "3d3832"; # 主前景文字（暖黑）
+          base06 = "211d18"; # 强调文字
+          base07 = "0f0c09"; # 最深文字
+          # 强调色：暖色调为主，Claude 品牌橙贯穿其中
+          base08 = "dc2626"; # red-600    红：错误/变量
+          base09 = "d97706"; # amber-600  橙：Claude 品牌色/数字
+          base0A = "b45309"; # amber-700  深橙：类名
+          base0B = "059669"; # emerald-600 绿：字符串
+          base0C = "0d9488"; # teal-600    青：内置/支持
+          base0D = "4f46e5"; # indigo-600  蓝：函数
+          base0E = "7c3aed"; # violet-600  紫：关键字
+          base0F = "92400e"; # amber-800   棕：废弃
+        };
       }.${cfg.theme};
 
       # 如若未声明 base16Scheme，Stylix 使用遗传算法根据壁纸生成一套配色方案
-      # 算法生成倾向：adwaita → light，其他 → dark
-      polarity = if cfg.theme == "adwaita" then "light" else "dark";
+      # 算法生成倾向：adwaita、claude-light → light，其他 → dark
+      polarity = if (cfg.theme == "adwaita" || cfg.theme == "claude-light") then "light" else "dark";
       
       # 默认字体组合
       fonts = {
