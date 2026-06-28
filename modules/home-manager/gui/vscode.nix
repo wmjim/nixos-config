@@ -12,14 +12,13 @@ in
   };
 
   config = lib.mkIf (cfg.enable && guiCfg.enable) {
+    # Stylix 不接管 VS Code 主题
+    stylix.targets.vscode.enable = lib.mkForce false;
+
     programs.vscode = {
       enable = true;
       mutableExtensionsDir = true;
       profiles.default = {
-        userSettings = {
-          "files.autoSave" = "afterDelay";
-          "files.autoSaveDelay" = 1000;
-        };
         extensions = with pkgs.vscode-extensions; [
           anthropic.claude-code
           vscode-icons-team.vscode-icons
