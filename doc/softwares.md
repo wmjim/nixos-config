@@ -3,14 +3,13 @@
 ## 桌面环境
 
 - **窗口管理器**: [niri](https://github.com/YaLTeR/niri) - Wayland 合成器，类似 i3/sway 的平铺式窗口管理器
-- **显示管理器**: greetd - 轻量级登录管理器
+- **显示管理器**: GDM - 轻量级登录管理器
 - 
 
 
 ## 终端
 
-- **终端模拟器**: [kitty](https://github.com/kovidgoyal/kitty) - GPU 加速的现代终端
-- **Shell**: zsh
+- **终端模拟器**: GHostty
 
 ## 开发工具
 
@@ -20,7 +19,7 @@
 
 ## 系统工具
 
-- **代理**: clash-verge-rev
+- **代理**: FIClash
 - **系统信息**: fastfetch
 - **下载工具**: wget
 - **文件查看**: tree
