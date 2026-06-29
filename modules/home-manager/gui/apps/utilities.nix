@@ -12,8 +12,8 @@ let
     postBuild = ''
       wrapProgram $out/bin/eudic \
         --unset WAYLAND_DISPLAY \
-        --set QT_QPA_PLATFORM "xcb" \
-        --set QT_SCALE_FACTOR 1.5 \
+        --set QT_QPA_PLATFORM "wayland;xcb" \
+        --set QT_SCALE_FACTOR 2.0 \
         --set GTK_IM_MODULE "fcitx" \
         --set QT_IM_MODULE "fcitx" \
         --set XMODIFIERS "@im=fcitx" \
