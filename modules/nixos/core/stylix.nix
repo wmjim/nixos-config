@@ -135,16 +135,8 @@ in
     environment.variables.QT_STYLE_OVERRIDE = "kvantum";
 
     # HM 层：禁用版本检查警告（NixOS 层的 enableReleaseChecks 不会自动同步）
-    # 同时根据 Stylix 主题极性设置 GNOME color-scheme（亮色 → default，暗色 → prefer-dark）
     home-manager.sharedModules = lib.mkIf (config ? home-manager) [
       { stylix.enableReleaseChecks = false; }
-      ({ lib, config, ... }: {
-        dconf.settings = {
-          "org/gnome/desktop/interface" = {
-            color-scheme = if (cfg.theme == "adwaita" || cfg.theme == "claude-light") then "default" else "prefer-dark";
-          };
-        };
-      })
     ];
   };
 }
