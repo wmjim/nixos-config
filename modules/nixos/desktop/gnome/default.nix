@@ -28,6 +28,8 @@ in
     ];
 
     environment.systemPackages = with pkgs; [
+      # GNOME Shell 依赖 ibus-daemon 二进制，即使使用 fcitx5 也需提供
+      ibus
       # 软件：扩展管理
       gnome-tweaks
       # 软件：GDM设置
