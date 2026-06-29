@@ -14,7 +14,6 @@ in
     ./env.nix
     ./niri
     ./gnome
-    ./xsettingsd.nix
     ./distrobox.nix
   ];
 

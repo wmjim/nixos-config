@@ -12,7 +12,7 @@ layout {
     focus-ring {
         on          // 开启焦点环
         width 3     // 焦点环宽度
-        inactive-color "#566171"
+        inactive-color "#76b7ff"
         // 活动窗口焦点环渐变色
         active-gradient from="#f06c82" to="#f2a86b" angle=45
     }
