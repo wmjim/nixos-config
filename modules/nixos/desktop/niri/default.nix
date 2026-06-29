@@ -43,42 +43,6 @@ in
     # 注意：XDG_CURRENT_DESKTOP 由 niri-session 在会话启动时自动设置，
     # 不要在此处全局写死，否则 GNOME 等共存桌面会读取到错误的值。
 
-    # xsettingsd（XWayland 字体配置）+ Noctalia Shell
-
-    systemd.user.services.xsettingsd =
-      let
-        xsettingsdConf = pkgs.writeText "xsettingsd.conf" ''
-          Net/ThemeName "Adwaita"
-          Gtk/FontName "HarmonyOS Sans SC, 12"
-          Net/IconThemeName "Papirus"
-          Xft/Antialias 1
-          Xft/Hinting 1
-          Xft/HintStyle "hintslight"
-          Xft/RGBA "rgb"
-          Xft/DPI 147456
-        '';
-      in
-      {
-        description = "XSettings daemon (font config for XWayland apps like Java Swing)";
-        wantedBy = [ "graphical-session.target" ];
-        partOf = [ "graphical-session.target" ];
-        unitConfig = {
-          ConditionEnvironment = "XDG_CURRENT_DESKTOP=niri";
-        };
-        serviceConfig = {
-          Type = "simple";
-          ExecStartPre = "${pkgs.coreutils}/bin/sleep 1";
-          ExecStart = "${pkgs.xsettingsd}/bin/xsettingsd -c ${xsettingsdConf}";
-          Restart = "on-failure";
-          RestartSec = 3;
-        };
-      };
-
-    environment.systemPackages = [
-      pkgs.xsettingsd
-      inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default
-    ];
-
     # RDP 远程桌面端口
     networking.firewall.allowedTCPPorts = [ 3389 ];
   };
