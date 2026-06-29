@@ -8,9 +8,9 @@ in
   options.mySystem.stylix = {
     enable = lib.mkEnableOption "Stylix 统一主题系统";
     theme = lib.mkOption {
-      type = lib.types.enum [ "catppuccin-mocha" "gruvbox-dark" "adwaita" "claude-light" "claude-dark" ];
-      default = "claude-light";
-      description = "Stylix 配色方案：claude-light (默认)、claude-dark、gruvbox-dark、catppuccin-mocha 或 adwaita";
+      type = lib.types.enum [ "aurora-dark" "claude-light" ];
+      default = "aurora-dark";
+      description = "Stylix 配色方案：aurora-dark、claude-light";
     };
   };
 
@@ -25,63 +25,27 @@ in
 
       # 内置 base16 配色方案
       base16Scheme = {
-        catppuccin-mocha = {
-          base00 = "1e1e2e"; # base
-          base01 = "181825"; # mantle
-          base02 = "313244"; # surface0
-          base03 = "45475a"; # surface1
-          base04 = "585b70"; # surface2
-          base05 = "cdd6f4"; # text
-          base06 = "f5e0dc"; # rosewater
-          base07 = "b4befe"; # lavender
-          base08 = "f38ba8"; # red
-          base09 = "fab387"; # peach
-          base0A = "f9e2af"; # yellow
-          base0B = "a6e3a1"; # green
-          base0C = "94e2d5"; # teal
-          base0D = "89b4fa"; # blue
-          base0E = "cba6f7"; # mauve
-          base0F = "f2cdcd"; # flamingo
+        aurora-dark = {
+          base00 = "11141b"; # background
+          base01 = "181c24"; # mantle
+          base02 = "252b36"; # surface0
+          base03 = "353d4a"; # surface1
+          base04 = "566171"; # surface2
+
+          base05 = "e4e9f2"; # text
+          base06 = "f3f6fb"; # light text
+          base07 = "ffffff"; # brightest
+
+          base08 = "f06c82"; # red
+          base09 = "f2a86b"; # orange
+          base0A = "e7d97d"; # yellow
+          base0B = "8fd49b"; # green
+          base0C = "7ed7d3"; # cyan
+          base0D = "76b7ff"; # blue
+          base0E = "b793ff"; # purple
+          base0F = "d98fb3"; # pink
         };
-        gruvbox-dark = {
-          base00 = "1d2021"; # dark bg
-          base01 = "3c3836"; # dark gray
-          base02 = "504945"; # medium gray
-          base03 = "665c54"; # light gray
-          base04 = "bdae93"; # dark fg
-          base05 = "d5c4a1"; # foreground
-          base06 = "ebdbb2"; # light fg
-          base07 = "fbf1c7"; # brightest
-          base08 = "fb4934"; # red
-          base09 = "fe8019"; # orange
-          base0A = "fabd2f"; # yellow
-          base0B = "b8bb26"; # green
-          base0C = "8ec07c"; # aqua
-          base0D = "83a598"; # blue
-          base0E = "d3869b"; # purple
-          base0F = "d65d0e"; # brown
-        };
-        adwaita = {
-          # Adwaita 亮色主题（Libadwaita 官方色板）
-          # 背景渐变：light → dark
-          base00 = "fafafb"; # window-bg
-          base01 = "ebebed"; # sidebar-bg
-          base02 = "deddda"; # light-3, 选中背景
-          base03 = "9a9996"; # light-5, 注释/弱化
-          base04 = "77767b"; # dark-1, 次要文字
-          base05 = "3d3846"; # dark-3, 主前景文字
-          base06 = "241f31"; # dark-4, 强调文字
-          base07 = "000000"; # dark-5, 最深
-          # 强调色（深色调，保证亮色背景上的对比度）
-          base08 = "e01b24"; # red-3,   红：错误/变量
-          base09 = "c64600"; # orange-5, 橙：数字
-          base0A = "e5a50a"; # yellow-5, 黄：类名
-          base0B = "26a269"; # green-5,  绿：字符串
-          base0C = "007184"; # teal,     青：支持/内置
-          base0D = "1a5fb4"; # blue-5,   蓝：函数
-          base0E = "813d9c"; # purple-4, 紫：关键字
-          base0F = "63452c"; # brown-5,  棕：废弃
-        };
+
         claude-light = {
           # Claude 官网亮色主题（暖调奶油色板）
           # 背景渐变：暖奶油白 → 深棕
@@ -103,32 +67,11 @@ in
           base0E = "7c3aed"; # violet-600  紫：关键字
           base0F = "92400e"; # amber-800   棕：废弃
         };
-        claude-dark = {
-          # Claude 暗色主题（暖调深色板，与 claude-light 互补）
-          # 背景渐变：暖棕黑 → 暖灰
-          base00 = "1c1a17"; # 主背景：暖调深黑
-          base01 = "25221f"; # 侧边栏/状态栏背景
-          base02 = "312d29"; # 选中背景（暖棕灰）
-          base03 = "5e5850"; # 注释/弱化文字
-          base04 = "8f8780"; # 次要文字（暖灰）
-          base05 = "d2ccc5"; # 主前景文字（暖调米白）
-          base06 = "e7e1d8"; # 强调文字
-          base07 = "f6f1e8"; # 最亮文字/高亮
-          # 强调色：与 claude-light 同色系但提高亮度，保证深色背景上的对比度
-          base08 = "f87171"; # red-400    红：错误/变量
-          base09 = "fbbf24"; # amber-400  橙：Claude 品牌色/数字
-          base0A = "f59e0b"; # amber-500  深橙：类名
-          base0B = "34d399"; # emerald-400 绿：字符串
-          base0C = "2dd4bf"; # teal-400    青：内置/支持
-          base0D = "818cf8"; # indigo-400  蓝：函数
-          base0E = "a78bfa"; # violet-400  紫：关键字
-          base0F = "fbbf24"; # amber-400   棕：废弃
-        };
       }.${cfg.theme};
 
       # 如若未声明 base16Scheme，Stylix 使用遗传算法根据壁纸生成一套配色方案
       # 算法生成倾向：adwaita、claude-light → light，其他 → dark
-      polarity = if (cfg.theme == "adwaita" || cfg.theme == "claude-light") then "light" else "dark";
+      polarity = if (cfg.theme == "aurora-dark" || cfg.theme == "claude-light") then "light" else "dark";
       
       # 默认字体组合
       fonts = {

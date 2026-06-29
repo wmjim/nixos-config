@@ -34,7 +34,7 @@
     desktop.distrobox.enable = true;
     virtualization.enable = true;
     stylix.enable = true;
-    stylix.theme = "claude-light";
+    stylix.theme = "aurora-dark";
     proxy = {
       enable = true;
       extraNoProxy = [ "bilibili.com" "*.bilibili.com" ];

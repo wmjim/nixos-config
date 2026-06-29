@@ -18,7 +18,9 @@ in
       enable = true;
       settings = {
         # 使用主题, 默认目录：~/.config/ghostty/themes
-        theme = "stylix";
+        # 跟随系统主题：stylix
+        # 自选GHostty 主题
+        theme = "Catppuccin Macchiato"; 
         # 字体设置
         font-family = [ "Maple Mono Normal NL NF" "LXGW WenKai Mono" ];
         font-size = 12;
