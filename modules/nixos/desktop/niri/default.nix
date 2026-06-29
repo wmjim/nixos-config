@@ -67,6 +67,7 @@ in
         };
         serviceConfig = {
           Type = "simple";
+          ExecStartPre = "${pkgs.coreutils}/bin/sleep 1";
           ExecStart = "${pkgs.xsettingsd}/bin/xsettingsd -c ${xsettingsdConf}";
           Restart = "on-failure";
           RestartSec = 3;
