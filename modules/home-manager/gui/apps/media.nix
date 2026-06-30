@@ -70,8 +70,7 @@ in
       wl-clipboard
       calibre
       freetube
-      bilibili
-      flclash
+      flclash                   # 代理软件
     ];
   };
 }

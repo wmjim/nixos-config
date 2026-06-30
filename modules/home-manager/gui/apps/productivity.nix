@@ -14,12 +14,11 @@ in
 
   config = lib.mkIf (cfg.enable && appsCfg.enable && guiCfg.enable) {
     home.packages = with pkgs; [
-      obsidian
-      siyuan
       zotero
       anki
-      readest
-      typora
+      siyuan      # 笔记软件
+      obsidian    # 笔记软件
+      typora      # markdown 编辑器
       thunderbird # 邮件管理
     ];
   };

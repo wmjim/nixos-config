@@ -32,8 +32,6 @@ in
       ibus
       # 软件：扩展管理
       gnome-tweaks
-      # 软件：GDM设置
-      gdm-settings
       # 插件：添加毛玻璃模糊效果
       gnomeExtensions.blur-my-shell
       # 插件：深度定制GNOME界面

@@ -13,7 +13,7 @@ let
       wrapProgram $out/bin/eudic \
         --unset WAYLAND_DISPLAY \
         --set QT_QPA_PLATFORM "wayland;xcb" \
-        --set QT_SCALE_FACTOR 1.5 \
+        --set QT_SCALE_FACTOR 1.25 \
         --set GTK_IM_MODULE "fcitx" \
         --set QT_IM_MODULE "fcitx" \
         --set XMODIFIERS "@im=fcitx" \
@@ -40,15 +40,12 @@ in
       foliate               # eBook阅读器
       wike                  # 桌面版Wiki阅读器
       parabolic             # yt-dlp图形化前端
-      pipeline              # Youtube客户端
       planify               # 任务管理器
       gapless               # 本地音乐播放器
-      embellish             # 安装和管理Nerd Fonts字体
       qview
       nautilus
       logisim-evolution
       localsend
-      cc-switch
       cherry-studio
       baidupcs-go
       eudic-fixed

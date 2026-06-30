@@ -13,7 +13,7 @@ let
       wrapProgram $out/bin/wechat \
         --unset WAYLAND_DISPLAY \
         --set QT_QPA_PLATFORM "wayland;xcb" \
-        --set QT_SCALE_FACTOR 1.5 \
+        --set QT_SCALE_FACTOR 1.25 \
         --set GTK_IM_MODULE "fcitx" \
         --set QT_IM_MODULE "fcitx" \
         --set XMODIFIERS "@im=fcitx"
