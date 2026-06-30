@@ -20,7 +20,8 @@ in
         # 使用主题, 默认目录：~/.config/ghostty/themes
         # 跟随系统主题：stylix
         # 自选GHostty 主题
-        theme = "Catppuccin Macchiato"; 
+        # theme = "Catppuccin Macchiato"; 
+        theme = "stylix";
         # 字体设置
         font-family = [ "Maple Mono Normal NL NF" "LXGW WenKai Mono" ];
         font-size = 12;

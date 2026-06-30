@@ -26,15 +26,15 @@ in
       # 内置 base16 配色方案
       base16Scheme = {
         aurora-dark = {
-          base00 = "11141b"; # background
-          base01 = "181c24"; # mantle
-          base02 = "252b36"; # surface0
-          base03 = "353d4a"; # surface1
-          base04 = "566171"; # surface2
+          base00 = "11141b"; # background-主背景，窗口/终端/编辑器默认背景
+          base01 = "181c24"; # mantle-次背景，侧边栏/状态栏/行号区域
+          base02 = "252b36"; # surface0-选中背景，文本选中高亮，搜索匹配高亮
+          base03 = "353d4a"; # surface1-注释文字，注释/行号/不可见字符
+          base04 = "566171"; # surface2-次要文字，状态栏文字/折叠标记/不活跃标签
 
-          base05 = "e4e9f2"; # text
-          base06 = "f3f6fb"; # light text
-          base07 = "ffffff"; # brightest
+          base05 = "e4e9f2"; # text-主文字，默认前景色，普通代码/正文
+          base06 = "f3f6fb"; # light text-强调文字，粗体、高调文字
+          base07 = "ffffff"; # brightest-最亮色
 
           base08 = "f06c82"; # red
           base09 = "f2a86b"; # orange
@@ -71,7 +71,7 @@ in
 
       # 如若未声明 base16Scheme，Stylix 使用遗传算法根据壁纸生成一套配色方案
       # 算法生成倾向：adwaita、claude-light → light，其他 → dark
-      polarity = if (cfg.theme == "aurora-dark" || cfg.theme == "claude-light") then "light" else "dark";
+      polarity = "dark";
       
       # 默认字体组合
       fonts = {
