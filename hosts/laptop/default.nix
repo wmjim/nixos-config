@@ -35,9 +35,6 @@
     virtualization.enable = true;
     stylix.enable = true;
     stylix.theme = "aurora-dark";
-    proxy = {
-      enable = true;
-      extraNoProxy = [ "bilibili.com" "*.bilibili.com" ];
-    };
+    proxy.enable = true;
   };
 }
