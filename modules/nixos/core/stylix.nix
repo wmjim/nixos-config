@@ -70,8 +70,8 @@ in
       }.${cfg.theme};
 
       # 如若未声明 base16Scheme，Stylix 使用遗传算法根据壁纸生成一套配色方案
-      # 算法生成倾向：adwaita、claude-light → light，其他 → dark
-      polarity = "dark";
+      # 算法生成倾向：aurora-dark → dark，claude-light → light
+      polarity = if (cfg.theme == "aurora-dark") then "dark" else "light";
       
       # 默认字体组合
       fonts = {
