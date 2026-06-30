@@ -19,7 +19,7 @@ in
     # TTY 控制台字体 — Terminus 32px 粗体，适配高分屏
     # console.packages 确保字体在 initrd 早期阶段可用
     console = {
-      font = "ter-i16b";
+      font = "ter-i32b";
       packages = [ pkgs.terminus_font ];
       earlySetup = true;
     };
