@@ -20,7 +20,7 @@ in
       anki
       readest
       typora
-      # thunderbird
+      thunderbird # 邮件管理
     ];
   };
 }

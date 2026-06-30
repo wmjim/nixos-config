@@ -46,8 +46,6 @@ in
       gnomeExtensions.appindicator
       # 插件：适用于GNOME的输入法面板
       gnomeExtensions.kimpanel
-      # 插件：用户自定义 shell 主题
-      gnomeExtensions.user-themes
       # 插件：剪贴板管理工具
       gnomeExtensions.clipboard-indicator
       # 插件：窗口关闭神灯动画
