@@ -1,7 +1,7 @@
 // 概览 — 颜色由 Stylix 统一管理
 overview {
     zoom 0.40
-    backdrop-color "#353d4a"
+    backdrop-color "#a8a39c"
 }
 
 // 带缩略图的 Super+Tab 窗口切换器
