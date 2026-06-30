@@ -75,6 +75,7 @@
     # 允许不安全的包
     nixpkgs.config.permittedInsecurePackages = [
       "openssl-1.1.1w"
+      "pnpm-10.29.2"
     ];
 
     # valgrind 放行
