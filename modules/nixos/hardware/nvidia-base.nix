@@ -12,6 +12,8 @@ in
     boot.kernelParams = [
       "nvidia-drm.modeset=1"
       "nvidia.NVreg_PreserveVideoMemoryAllocations=1"
+      "nvidia.NVreg_TemporaryFilePath=/var/tmp"
+      "nvidia.NVreg_UseKernelSuspendNotifiers=1"
     ];
     boot.blacklistedKernelModules = [ "nouveau" ];
 
