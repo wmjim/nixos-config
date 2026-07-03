@@ -14,11 +14,9 @@ in
       "nvidia.NVreg_PreserveVideoMemoryAllocations=1"
       "nvidia.NVreg_TemporaryFilePath=/var/tmp"
       "nvidia.NVreg_UseKernelSuspendNotifiers=1"
-      # DP 显示器从 DPMS 省电唤醒时，强制完整 DisplayPort 链路训练
-      # 默认的"快速恢复"优化在某些显示器上会导致黑屏无响应
-      "nvidia.NVreg_EnableDisplayPortLinkTrainingOptimization=0"
-      # 跳过链路训练后的配置验证
-      "nvidia.NVreg_EnableDisplayPortLinkTrainingConfigCheck=0"
+      # 注意: NVreg_EnableDisplayPortLinkTrainingOptimization 和
+      # NVreg_EnableDisplayPortLinkTrainingConfigCheck 在 595.x 驱动中不存在，
+      # 已通过 video= 强制输出模式和 EDID 固件替代方案处理 DP 唤醒问题
     ];
     boot.blacklistedKernelModules = [ "nouveau" ];
 

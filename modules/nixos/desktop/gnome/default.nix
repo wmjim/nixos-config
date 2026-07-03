@@ -22,6 +22,23 @@ in
       default = "gnome;gtk";
     };
 
+    # 防止 DP 显示器从 DPMS 熄屏唤醒时黑屏
+    # gsd-power 在后台运行，可能触发显示器节能——即使使用 Niri 作为 WM
+    # extraGSettingsOverrides 创建 glib override 文件，对所有用户生效
+    services.xserver.desktopManager.gnome.extraGSettingsOverrides = ''
+      # 永不因空闲而激活锁屏/熄屏（idle-delay=0 即禁用空闲检测）
+      [org.gnome.desktop.session]
+      idle-delay=uint32 0
+
+      # 禁止空闲时降低屏幕亮度
+      [org.gnome.settings-daemon.plugins.power]
+      idle-dim=false
+
+      # 禁止空闲时激活屏幕保护（可由用户手动锁定）
+      [org.gnome.desktop.screensaver]
+      idle-activation-enabled=false
+    '';
+
     environment.gnome.excludePackages = with pkgs; [
       gnome-tour
       gnome-user-docs

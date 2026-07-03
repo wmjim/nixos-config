@@ -15,6 +15,7 @@ in
   config = lib.mkIf (cfg.enable && appsCfg.enable && guiCfg.enable) {
     home.packages = with pkgs; [
       zed-editor
+      jetbrains.clion
     ];
   };
 }
