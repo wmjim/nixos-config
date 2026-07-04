@@ -18,7 +18,7 @@
     desktop.distrobox.enable = true;
     virtualization.enable = true;
     stylix.enable = true;
-    stylix.theme = "claude-light";
+    stylix.theme = "macos-light";
     proxy.enable = true;
   };
 }

@@ -8,9 +8,9 @@ in
   options.mySystem.stylix = {
     enable = lib.mkEnableOption "Stylix 统一主题系统";
     theme = lib.mkOption {
-      type = lib.types.enum [ "aurora-dark" "claude-light" ];
-      default = "aurora-dark";
-      description = "Stylix 配色方案：aurora-dark、claude-light";
+      type = lib.types.enum [ "aurora-dark" "claude-light" "macos-light" "macos-dark" ];
+      default = "macos-light";
+      description = "Stylix 配色方案：aurora-dark、claude-light、macos-light、macos-dark";
     };
   };
 
@@ -67,11 +67,53 @@ in
           base0E = "7c3aed"; # violet-600  紫：关键字
           base0F = "92400e"; # amber-800   棕：废弃
         };
+
+        macos-light = {
+          base00 = "ffffff"; # background-窗口背景
+          base01 = "f5f5f7"; # sidebar/toolbar
+          base02 = "e8e8ed"; # selection background
+          base03 = "8e8e93"; # comments, secondary labels
+          base04 = "6e6e73"; # tertiary text
+
+          base05 = "1d1d1f"; # primary text
+          base06 = "111113"; # emphasized text
+          base07 = "000000"; # strongest text
+
+          base08 = "ff3b30"; # red
+          base09 = "ff9500"; # orange
+          base0A = "ffd60a"; # yellow
+          base0B = "34c759"; # green
+          base0C = "64d2ff"; # cyan
+          base0D = "007aff"; # blue (Accent Blue)
+          base0E = "af52de"; # purple
+          base0F = "ff2d55"; # pink
+        };
+
+        macos-dark = {
+          base00 = "1e1e1e"; # background
+          base01 = "2a2a2c"; # sidebar/toolbar
+          base02 = "3a3a3c"; # selection
+          base03 = "8e8e93"; # comments
+          base04 = "aeaeb2"; # secondary text
+
+          base05 = "f2f2f7"; # primary text
+          base06 = "ffffff"; # emphasized
+          base07 = "ffffff"; # brightest
+
+          base08 = "ff453a"; # red
+          base09 = "ff9f0a"; # orange
+          base0A = "ffd60a"; # yellow
+          base0B = "30d158"; # green
+          base0C = "64d2ff"; # cyan
+          base0D = "0a84ff"; # blue
+          base0E = "bf5af2"; # purple
+          base0F = "ff375f"; # pink
+        };
       }.${cfg.theme};
 
       # 如若未声明 base16Scheme，Stylix 使用遗传算法根据壁纸生成一套配色方案
-      # 算法生成倾向：aurora-dark → dark，claude-light → light
-      polarity = if (cfg.theme == "aurora-dark") then "dark" else "light";
+      # 算法生成倾向：macos-dark → dark，claude-light → light
+      polarity = if (cfg.theme == "macos-dark") then "dark" else "light";
       
       # 默认字体组合
       fonts = {

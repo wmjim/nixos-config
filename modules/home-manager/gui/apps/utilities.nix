@@ -42,6 +42,7 @@ in
       parabolic             # yt-dlp图形化前端
       planify               # 任务管理器
       gapless               # 本地音乐播放器
+      xunlei-uos            # 迅雷
       qview
       nautilus
       logisim-evolution
