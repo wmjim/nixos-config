@@ -89,26 +89,46 @@ in
           base0F = "ff2d55"; # pink
         };
 
-        macos-dark = {
-          base00 = "1e1e1e"; # background
-          base01 = "2a2a2c"; # sidebar/toolbar
-          base02 = "3a3a3c"; # selection
-          base03 = "8e8e93"; # comments
-          base04 = "aeaeb2"; # secondary text
+        # macos-dark = {
+        #   base00 = "1e1e1e"; # background
+        #   base01 = "2a2a2c"; # sidebar/toolbar
+        #   base02 = "3a3a3c"; # selection
+        #   base03 = "8e8e93"; # comments
+        #   base04 = "aeaeb2"; # secondary text
 
-          base05 = "f2f2f7"; # primary text
-          base06 = "ffffff"; # emphasized
-          base07 = "ffffff"; # brightest
+        #   base05 = "f2f2f7"; # primary text
+        #   base06 = "ffffff"; # emphasized
+        #   base07 = "ffffff"; # brightest
 
-          base08 = "ff453a"; # red
-          base09 = "ff9f0a"; # orange
-          base0A = "ffd60a"; # yellow
-          base0B = "30d158"; # green
-          base0C = "64d2ff"; # cyan
-          base0D = "0a84ff"; # blue
-          base0E = "bf5af2"; # purple
-          base0F = "ff375f"; # pink
-        };
+        #   base08 = "ff453a"; # red
+        #   base09 = "ff9f0a"; # orange
+        #   base0A = "ffd60a"; # yellow
+        #   base0B = "30d158"; # green
+        #   base0C = "64d2ff"; # cyan
+        #   base0D = "0a84ff"; # blue
+        #   base0E = "bf5af2"; # purple
+        #   base0F = "ff375f"; # pink
+        # };
+          macos-dark = {
+            base00 = "1f1f24";
+            base01 = "28282e";
+            base02 = "36363d";
+            base03 = "7d7d86";
+            base04 = "a0a0aa";
+
+            base05 = "f2f2f7";
+            base06 = "fafafa";
+            base07 = "ffffff";
+
+            base08 = "ff6961";
+            base09 = "ff9f43";
+            base0A = "ffd866";
+            base0B = "63d471";
+            base0C = "76e3ea";
+            base0D = "4da3ff";
+            base0E = "c792ea";
+            base0F = "ff79c6";
+          };
       }.${cfg.theme};
 
       # 如若未声明 base16Scheme，Stylix 使用遗传算法根据壁纸生成一套配色方案

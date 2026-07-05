@@ -14,9 +14,12 @@ in
       "nvidia.NVreg_PreserveVideoMemoryAllocations=1"
       "nvidia.NVreg_TemporaryFilePath=/var/tmp"
       "nvidia.NVreg_UseKernelSuspendNotifiers=1"
-      # 注意: NVreg_EnableDisplayPortLinkTrainingOptimization 和
-      # NVreg_EnableDisplayPortLinkTrainingConfigCheck 在 595.x 驱动中不存在，
-      # 已通过 video= 强制输出模式和 EDID 固件替代方案处理 DP 唤醒问题
+      # 降低动态电源管理级别：桌面 GPU 用最激进模式(3)可能导致显示引擎
+      # 被部分断电，DP 链路唤醒时无法重新训练。设为 1 保留基本电源管理。
+      "nvidia.NVreg_DynamicPowerManagement=0x01"
+      # 以下两个参数在 595.x 中已不作为独立模块参数存在，
+      # 但作为 RegistryDwords 键值可能仍然有效，尝试恢复 DP 链路训练优化。
+      "nvidia.NVreg_RegistryDwords=EnableDisplayPortLinkTrainingOptimization=1"
     ];
     boot.blacklistedKernelModules = [ "nouveau" ];
 
