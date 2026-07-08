@@ -88,7 +88,9 @@
     services.openssh = {
       enable = true;
       settings = {
+        # 允许密码登录
         PasswordAuthentication = true;
+        # 禁止root登录
         PermitRootLogin = "no";
       };
     };

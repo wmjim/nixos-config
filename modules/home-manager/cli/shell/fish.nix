@@ -31,6 +31,9 @@ in
         updatewsl = "sudo nixos-rebuild switch --flake ~/nixos-config#wsl";
         arch = "distrobox enter arch";
         ubuntu = "distrobox enter ubuntu";
+        updatedp = "sudo nixos-rebuild switch --flake ~/nixos-config#desktop";
+        updatelp = "sudo nixos-rebuild switch --flake ~/nixos-config#laptop";
+        updatelplog = "sudo nixos-rebuild switch --flake ~/nixos-config#laptop --show-trace --print-build-logs --verbose";
         ls = "eza --icons=auto --group-directories-first --color=auto";
         ll = "eza -l --icons=auto --group-directories-first --git --header";
         la = "eza -a --icons=auto --group-directories-first";

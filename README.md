@@ -26,6 +26,9 @@ sudo nixos-rebuild switch --flake ~/nixos-config#wsl
 # MacOS（未测试，待补充）
 # darwin-rebuild switch --flake ~/nixos-config#macbook
 ```
+此命令会根据当前配置文件生成一个新的系统环境，并将新的系统环境设为默认环境。
+
+上一个系统环境也会保留，同时加入到 grub 启动项中。
 
 ## 常用命令
 

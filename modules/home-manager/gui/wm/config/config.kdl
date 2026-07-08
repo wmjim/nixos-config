@@ -22,8 +22,7 @@ include "binds/apps.kdl"
 include "windowrules.kdl"
 
 // 隐藏客户端装饰
-// 注释：允许客户端自绘标题栏以统一窗口装饰风格
-// prefer-no-csd
+prefer-no-csd
 
 // 截图保存位置
 screenshot-path "~/files/pictures/screenshots/niri/%Y-%m-%d_%H-%M-%S.png"
