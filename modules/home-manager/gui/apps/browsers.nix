@@ -31,5 +31,8 @@ in
       setAsDefaultBrowser = true;
     };
 
+    # Stylix 不接管 Zen Browser 主题
+    stylix.targets.zen-browser.enable = lib.mkForce false;
+
   };
 }
