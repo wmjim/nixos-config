@@ -36,8 +36,8 @@ sudo nixos-rebuild switch --flake ~/nixos-config#wsl
 # 更新 flake.lock
 nix flake update
 
-# 删除所有旧版本的配置文件
-nix-collect-garbage --delete-old
+# 删除所有当前系统未使用的包
+sudo nix-collect-garbage --delete-old
 
 # 存储优化
 nix store optimise
