@@ -1,5 +1,5 @@
 # Ghostty 终端配置
-# 颜色主题由 Stylix 统一管理（自动生成 stylix 主题）
+# 使用 Ghostty 默认主题（不使用 Stylix）
 { lib, config, pkgs, ... }:
 let
   cfg = config.mengw.gui.apps.ghostty;
@@ -17,11 +17,9 @@ in
     programs.ghostty = {
       enable = true;
       settings = {
-        # 使用主题, 默认目录：~/.config/ghostty/themes
-        # 跟随系统主题：stylix
-        # 自选GHostty 主题
-        # theme = "Catppuccin Macchiato"; 
-        theme = "stylix";
+        # 使用 Ghostty 默认主题
+        # 如需自选主题，取消下面注释：
+        # theme = "Catppuccin Macchiato";
         # 字体设置
         font-family = [ "Maple Mono Normal NL NF" "LXGW WenKai Mono" ];
         font-size = 12;

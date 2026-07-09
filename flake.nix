@@ -1,9 +1,10 @@
 {
-  description = "NixOS + macOS 统一配置";
+  description = "NixOS + Niri(+Nocatalia)/Gnome 个人开发计算机";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/master";
     nixpkgs-darwin.url = "github:nixos/nixpkgs/nixpkgs-26.05-darwin";
+
     nur.url = "github:nix-community/NUR";
 
     home-manager = {
@@ -30,6 +31,15 @@
       url = "github:danth/stylix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # zen 浏览器（not in nixpkgs）
+    # 使用二次打包（固定输出模式下载程序+Firefox封装脚本）
+    zen-browser = {
+      url = "github:0xc000022070/zen-browser-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+      # 复用 HM's 火狐浏览器模块
+      inputs.home-manager.follows = "home-manager";
+    };
   };
 
   outputs =
@@ -50,7 +60,9 @@
 
       # Home Manager 共享样板：减少每个主机的重复代码
       mkHomeManager =
-        { extraModules ? [ ] }:
+        {
+          extraModules ? [ ],
+        }:
         { config, ... }:
         {
           home-manager.useGlobalPkgs = false;
@@ -59,7 +71,8 @@
           home-manager.extraSpecialArgs = { inherit inputs; };
           home-manager.users.mengw.imports = [
             ./modules/home-manager
-          ] ++ extraModules;
+          ]
+          ++ extraModules;
           home-manager.sharedModules = [
             {
               nixpkgs.config.allowUnfree = true;
