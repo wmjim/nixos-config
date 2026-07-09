@@ -188,6 +188,10 @@ in
 
       # Qt: 强制使用 qtct（而非 GNOME 自动检测值），Stylix 通过 Kvantum 管理 Qt 主题
       targets.qt.platform = lib.mkForce "qtct";
+
+      # fish shell 的 base16-* 命令会通过 ANSI 转义码覆盖所有终端（含 VS Code
+      # 集成终端、ghostty 等）的配色，干扰各终端自有的主题设置，故禁用。
+      targets.fish.enable = lib.mkForce false;
     };
 
     # 解决 GNOME 的 QT_QPA_PLATFORMTHEME=gnome 与 Stylix 的 qt5ct 冲突
@@ -197,8 +201,13 @@ in
     environment.variables.QT_STYLE_OVERRIDE = "kvantum";
 
     # HM 层：禁用版本检查警告（NixOS 层的 enableReleaseChecks 不会自动同步）
+    # 同时禁用 fish 主题：NixOS 层的 stylix.targets.fish 不在 home-manager-integration.nix
+    # 的 copyModules 白名单中，NixOS 层设置无法传播到 HM 层，必须在此显式覆盖。
     home-manager.sharedModules = lib.mkIf (config ? home-manager) [
       { stylix.enableReleaseChecks = false; }
+      {
+        stylix.targets.fish.enable = lib.mkForce false;
+      }
     ];
   };
 }
