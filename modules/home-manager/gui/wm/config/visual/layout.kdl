@@ -12,18 +12,18 @@ layout {
     focus-ring {
         on          // 开启焦点环
         width 3     // 焦点环宽度
-        inactive-color "#76b7ff"
+        inactive-color "#4da3ff"
         // 活动窗口焦点环渐变色
-        active-gradient from="#f06c82" to="#f2a86b" angle=45
+        active-gradient from="#ff6961" to="#ff9f43" angle=45
     }
 
     // 边框，用于指示活动窗口
     border {
         off
         width 4
-        active-color "#e7d97d"
-        inactive-color "#353d4a"
-        urgent-color "#f06c82"
+        active-color "#ffd866"
+        inactive-color "#7d7d86"
+        urgent-color "#ff6961"
     }
 
     // 标签指示器
@@ -36,14 +36,14 @@ layout {
         position "right" // 指示器在列的右侧
         gaps-between-tabs 2 // 多个标签指示器并排时间距
         corner-radius 8 // 指示器圆角半径
-        active-color "#76b7ff" // 活跃标签指示器颜色
-        inactive-color "#566171" // 非活跃标签指示器颜色
-        urgent-color "#f06c82" // 紧急标签指示器颜色
+        active-color "#4da3ff" // 活跃标签指示器颜色
+        inactive-color "#a0a0aa" // 非活跃标签指示器颜色
+        urgent-color "#ff6961" // 紧急标签指示器颜色
     }
 
     // 窗口插入提升
     insert-hint {
         on
-        color "#f2a86b80"
+        color "#ff9f4380"
     }
 }
