@@ -24,6 +24,7 @@
     # Boot
     # ==========================================
     boot.loader.systemd-boot.enable = lib.mkIf (!config.boot.isContainer) (lib.mkDefault true);
+    # 保留历史版本数量：10
     boot.loader.systemd-boot.configurationLimit = lib.mkDefault 10;
     boot.loader.efi.canTouchEfiVariables = lib.mkIf (!config.boot.isContainer) (lib.mkDefault true);
     boot.kernelPackages = pkgs.linuxPackages_latest;
@@ -34,7 +35,7 @@
       allowReboot = false;
     };
 
-    # 垃圾回收
+    # 自动将超过一周的垃圾回收，降低磁盘占用
     nix.gc = {
       automatic = true;
       dates = "weekly";
@@ -45,6 +46,7 @@
     nix.settings = {
       experimental-features = [ "flakes" "nix-command" ];
       connect-timeout = 5;
+      # 自动存储优化
       auto-optimise-store = true;
       substituters = [
         "https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store"
