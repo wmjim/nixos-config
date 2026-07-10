@@ -1,29 +1,29 @@
 ---
 allowed-tools: Bash(git add:*), Bash(git status:*), Bash(git commit:*), Bash(git diff:*)
 argument-hint: [message]
-description: Create a git commit with context
+description: 创建带上下文的 Git 提交
 ---
 
-## Context
+## 上下文
 
-- Current git status: !`git status`
-- Current git diff: !`git diff HEAD`
-- Current branch: !`git branch --show-current`
-- Recent commits: !`git log --oneline -10`
+- 当前 git 状态: !`git status`
+- 当前 git diff: !`git diff HEAD`
+- 当前分支 branch: !`git branch --show-current`
+- 最近的提交: !`git log --oneline -10`
 
-## Your task
+## 你的任务
 
-Based on the above changes, create a single git commit.
+根据上面的变更创建一个单独的 Git 提交。
 
-If a message was provided via arguments, use it: $ARGUMENTS
+如果通过参数传入了 message，就直接使用它：$ARGUMENTS
 
-Otherwise, analyze the changes and create an appropriate commit message following conventional commits format:
-- `feat:` for new features
-- `fix:` for bug fixes
-- `docs:` for documentation changes
-- `refactor:` for code refactoring
-- `test:` for adding tests
-- `chore:` for maintenance tasks
+否则，分析这些变更，并按照 conventional commits 格式生成使用中文描述的合适的提交信息：
+- `feat:` 新功能
+- `fix:` 修复 bug
+- `docs:` 文档变更
+- `refactor:` 代码重构
+- `test:` 新增测试
+- `chore:` 维护任务
 
 ---
 **Last Updated**: April 9, 2026
