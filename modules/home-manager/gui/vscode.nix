@@ -41,5 +41,13 @@ in
         ];
       };
     };
+
+    # 清理 .obsolete 文件，防止 nix 管理的扩展被 VSCode 忽略。
+    # home-manager 的 onChange 钩子会删除 extensions.json 并运行
+    # code --list-extensions 来重建，但 .obsolete 文件不会被清理，
+    # 导致之前从市场安装过、后来改用 nix 管理的扩展被跳过。
+    home.activation.cleanVscodeObsolete = lib.hm.dag.entryAfter [ "vscodeProfiles" ] ''
+      rm -f ~/.vscode/extensions/.obsolete
+    '';
   };
 }
