@@ -68,6 +68,7 @@ in
       picgo-wrapped
       picgo-clipboard-upload
       wl-clipboard
+      bilibili
       calibre
       freetube
       flclash                   # 代理软件
