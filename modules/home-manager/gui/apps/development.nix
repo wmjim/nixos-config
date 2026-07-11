@@ -16,6 +16,7 @@ in
     home.packages = with pkgs; [
       zed-editor
       jetbrains.clion
+      github-desktop
     ];
   };
 }
