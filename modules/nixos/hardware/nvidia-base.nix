@@ -14,9 +14,10 @@ in
       "nvidia.NVreg_PreserveVideoMemoryAllocations=1"
       "nvidia.NVreg_TemporaryFilePath=/var/tmp"
       "nvidia.NVreg_UseKernelSuspendNotifiers=1"
-      # 降低动态电源管理级别：桌面 GPU 用最激进模式(3)可能导致显示引擎
-      # 被部分断电，DP 链路唤醒时无法重新训练。设为 1 保留基本电源管理。
-      "nvidia.NVreg_DynamicPowerManagement=0x01"
+      # 完全禁用动态电源管理。即使设为 0x01（细粒度模式），显示器断开/
+      # 休眠后 DP 链路唤醒时 GPU 仍无法正确重新训练 DP 链路，导致黑屏。
+      # 桌面插电平台功耗差异可忽略，稳定性优先。
+      "nvidia.NVreg_DynamicPowerManagement=0x00"
       # 以下两个参数在 595.x 中已不作为独立模块参数存在，
       # 但作为 RegistryDwords 键值可能仍然有效，尝试恢复 DP 链路训练优化。
       "nvidia.NVreg_RegistryDwords=EnableDisplayPortLinkTrainingOptimization=1"
