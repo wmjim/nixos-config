@@ -7,6 +7,8 @@ in
 {
   config = lib.mkIf (cfg.enable && desktopCfg.enable) {
     services.xserver.enable = true;
+    # xserver 模块默认附带 xterm 作为保底终端，已有 Ghostty 无需保留
+    services.xserver.excludePackages = [ pkgs.xterm ];
     services.desktopManager.gnome.enable = true;
 
     services.gnome.core-apps.enable = false;
