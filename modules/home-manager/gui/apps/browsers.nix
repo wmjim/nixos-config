@@ -21,10 +21,7 @@ in
   };
 
   config = lib.mkIf (cfg.enable && appsCfg.enable && guiCfg.enable) {
-    home.packages = with pkgs; [
-      brave
-    ];
-
+    
     # Zen browser — Firefox-based, from the community flake (beta channel).
     programs.zen-browser = {
       enable = true;
