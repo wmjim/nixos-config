@@ -47,8 +47,6 @@ in
       nautilus
       logisim-evolution
       localsend
-      cherry-studio
-      baidupcs-go
       eudic-fixed
     ];
   };

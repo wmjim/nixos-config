@@ -54,9 +54,6 @@ in
 
       # LSP 服务器
       python313Packages.python-lsp-server # python lsp
-
-      # 格式化工具
-      black # Python 格式化器
     ];
   };
 }
