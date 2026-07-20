@@ -133,10 +133,18 @@ ltex.disabledRules = { "en-US" = ["PROFANITY"], "en-GB" = ["PROFANITY"] }
 ltex.dictionary = { "en-US" = ["builtin"], "en-GB" = ["builtin"] }
 
 
-#  === Fish ===
+# === Fish ===
 [[language]]
 name = "fish"
+language-servers = ["fish-lsp"]
 formatter = { command = "fish_indent" }
+auto-format = true
+
+# === KDL ===
+[[language]]
+name = "kdl"
+file-types = ["kdl"]
+formatter = { command = "kdlfmt" }
 auto-format = true
 
 # === Bash ===
