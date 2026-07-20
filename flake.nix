@@ -68,7 +68,7 @@
           home-manager.useGlobalPkgs = false;
           home-manager.useUserPackages = true;
           home-manager.backupFileExtension = "hm-bak";
-          home-manager.extraSpecialArgs = { inherit inputs; };
+          home-manager.extraSpecialArgs = { inherit inputs myLib; };
           home-manager.users.mengw.imports = [
             ./modules/home-manager
           ]
@@ -151,7 +151,7 @@
             {
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
-              home-manager.extraSpecialArgs = { inherit inputs; };
+              home-manager.extraSpecialArgs = { inherit inputs myLib; };
               home-manager.users.mengw = {
                 nixpkgs.overlays = lib.mkForce [ ];
                 imports = [ ./modules/home-manager ];

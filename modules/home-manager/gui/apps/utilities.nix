@@ -1,25 +1,17 @@
 # 系统工具 / 实用程序
-{ lib, config, pkgs, ... }:
+{ lib, config, pkgs, myLib, ... }:
 let
   cfg = config.mengw.gui.apps.utilities;
   appsCfg = config.mengw.gui.apps;
   guiCfg = config.mengw.gui;
 
-  eudic-fixed = pkgs.symlinkJoin {
-    name = "eudic-fixed";
-    paths = [ pkgs.eudic ];
-    buildInputs = [ pkgs.makeWrapper ];
-    postBuild = ''
-      wrapProgram $out/bin/eudic \
-        --unset WAYLAND_DISPLAY \
-        --set QT_QPA_PLATFORM "wayland;xcb" \
-        --set QT_SCALE_FACTOR 1.25 \
-        --set GTK_IM_MODULE "fcitx" \
-        --set QT_IM_MODULE "fcitx" \
-        --set XMODIFIERS "@im=fcitx" \
-        --unset QT_STYLE_OVERRIDE \
-        --set XKB_CONFIG_ROOT "${pkgs.xkeyboard_config}/share/X11/xkb" \
-        --set GST_PLUGIN_SYSTEM_PATH_1_0 ""
+  eudic-fixed = myLib.wrapQtXWayland {
+    inherit pkgs;
+    pkg = pkgs.eudic;
+    extraWrapArgs = ''
+      --unset QT_STYLE_OVERRIDE \
+      --set XKB_CONFIG_ROOT "${pkgs.xkeyboard_config}/share/X11/xkb" \
+      --set GST_PLUGIN_SYSTEM_PATH_1_0 ""
     '';
   };
 in
