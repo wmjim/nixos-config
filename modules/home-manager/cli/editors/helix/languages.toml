@@ -20,7 +20,8 @@ auto-format = true
 # === Rust ===
 [[language]]
 name = "rust"
-formatter = { command = "bash", args = ["-c", "rustfmt | dx fmt -f -"] }
+# dx fmt 仅在 Dioxus 项目中需要，未安装时安全跳过
+formatter = { command = "bash", args = ["-c", "rustfmt | (command -v dx >/dev/null 2>&1 && dx fmt -f - || cat)"] }
 
 [language-server.rust-analyzer.config.cargo]
 features = "all"
