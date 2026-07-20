@@ -51,6 +51,9 @@
       cores = 0;
       # 自动存储优化
       auto-optimise-store = true;
+      # 保留 derivations 和 outputs 的依赖关系，避免重复构建
+      keep-outputs = true;
+      keep-derivations = true;
       substituters = [
         "https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store"
         "https://mirrors.ustc.edu.cn/nix-channels/store"
