@@ -32,6 +32,8 @@ in
     ];
   };
 
+  # 仅导入 CLI 模块；GUI 模块由各主机按需导入
+  # （WSL/server 无图形界面，desktop/laptop 通过 mkHomeManager extraModules 额外引入）
   imports = [
     ./cli
   ];
