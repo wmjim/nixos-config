@@ -9,9 +9,9 @@ include "core/outputs.kdl"
 include "visual/animations.kdl"
 include "visual/blur.kdl"
 include "visual/frosted-glass.kdl"
-include "visual/layout.kdl"
+include "../niri-stylix/layout.kdl"
 include "visual/cursor.kdl"
-include "visual/overview.kdl"
+include "../niri-stylix/overview.kdl"
 
 // 快捷键：系统、导航、应用
 include "binds/system.kdl"

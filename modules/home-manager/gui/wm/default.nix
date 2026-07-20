@@ -27,7 +27,7 @@ let
   };
 
   # 由 Stylix 调色板生成的 layout.kdl
-  layoutKdl = pkgs.writeText "layout.kdl" ''
+  layoutKdl = ''
     // niri 窗口布局配置 — 颜色由 Stylix 统一管理
     // https://niri-wm.github.io/niri/Configuration%3A-Layout.html
     layout {
@@ -80,7 +80,7 @@ let
   '';
 
   # 由 Stylix 调色板生成的 overview.kdl
-  overviewKdl = pkgs.writeText "overview.kdl" ''
+  overviewKdl = ''
     // 概览 — 颜色由 Stylix 统一管理
     overview {
         zoom 0.40
@@ -126,13 +126,9 @@ in
     # Symlink 整个 Niri 配置目录到 git 仓库（保持可编辑性）
     xdg.configFile."niri".source = config.lib.file.mkOutOfStoreSymlink niriConfigPath;
 
-    # 用 Stylix 生成的模板文件覆盖 layout.kdl 和 overview.kdl
-    # home.activation 在 linkGeneration 之后运行，可以安全覆盖 symlink 文件
-    home.activation.niriStylixColors = lib.mkAfter ''
-      if [ -d "$HOME/.config/niri/visual" ]; then
-        cp -f ${layoutKdl} "$HOME/.config/niri/visual/layout.kdl"
-        cp -f ${overviewKdl} "$HOME/.config/niri/visual/overview.kdl"
-      fi
-    '';
+    # Stylix 生成的配色文件部署到独立目录（不能放在 niri/ 下，因为
+    # ~/.config/niri 是 symlink 指向 $HOME 外的 git 仓库）。
+    xdg.configFile."niri-stylix/layout.kdl".text = layoutKdl;
+    xdg.configFile."niri-stylix/overview.kdl".text = overviewKdl;
   };
 }
