@@ -19,8 +19,13 @@ in
     nixpkgs.overlays = [
       inputs.nur.overlays.default
 
-      # 修复 fish 4.8.0: create_manpage_completions.py 在源码中存在但未被安装
-      # 导致 bat/cargo 等包无法生成 fish 补全。上游 issue: NixOS/nixpkgs#535122
+      # fish 4.8.0+ 不再安装 create_manpage_completions.py 到 $out，
+      # 导致 home-manager generateCompletions 无法生成 man page 补全。
+      # 该文件在源码中仍存在（share/tools/），此处手动拷贝到输出路径。
+      #
+      # 上游: nixpkgs#535122 (closed, 标记为 HM 域问题)
+      # 修复: home-manager#9555 (已合并 master, 改用 status get-file)
+      # TODO: 升级 home-manager 到包含 #9555 的版本后移除此 overlay
       (final: prev: {
         fish = prev.fish.overrideAttrs (old: {
           postInstall = (old.postInstall or "") + ''
