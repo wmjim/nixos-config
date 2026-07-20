@@ -4,7 +4,7 @@ return {
         -- 指定高亮字符出现位置
         hint_position = 3,
     },
-    key = {
+    keys = {
         { "<leader>hp", ":HopWord<CR>", silent = true }
     }
 }
