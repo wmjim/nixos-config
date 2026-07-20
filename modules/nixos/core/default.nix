@@ -46,6 +46,9 @@
     nix.settings = {
       experimental-features = [ "flakes" "nix-command" ];
       connect-timeout = 5;
+      # 充分利用多核 CPU 加速构建
+      max-jobs = "auto";
+      cores = 0;
       # 自动存储优化
       auto-optimise-store = true;
       substituters = [
