@@ -128,6 +128,9 @@ in
 
     # Stylix 生成的配色文件部署到独立目录（不能放在 niri/ 下，因为
     # ~/.config/niri 是 symlink 指向 $HOME 外的 git 仓库）。
+    # 注意：config.kdl 中使用 ~/.config/niri-stylix/ 绝对路径而非
+    # ../niri-stylix/ 相对路径，因为 niri 解析 include 时会跟随
+    # symlink 链，导致 .. 解析到 git 仓库父目录而非 ~/.config/。
     xdg.configFile."niri-stylix/layout.kdl".text = layoutKdl;
     xdg.configFile."niri-stylix/overview.kdl".text = overviewKdl;
   };
