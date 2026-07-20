@@ -63,10 +63,10 @@ in
         key = "dms ipc call keybinds toggle";
       };
       shellInit = ''
-        fish_add_path /home/mengw/.cargo/bin
-        fish_add_path /home/mengw/.local/bin
-        set -gx NPM_CONFIG_PREFIX /home/mengw/.npm-global
-        fish_add_path /home/mengw/.npm-global/bin
+        fish_add_path ${config.home.homeDirectory}/.cargo/bin
+        fish_add_path ${config.home.homeDirectory}/.local/bin
+        set -gx NPM_CONFIG_PREFIX ${config.home.homeDirectory}/.npm-global
+        fish_add_path ${config.home.homeDirectory}/.npm-global/bin
 
         if type -q fzf
           set -gx FZF_DEFAULT_OPTS '--height 40% --layout=reverse --border --preview "bat --color=always {}" --preview-window=right:60%'

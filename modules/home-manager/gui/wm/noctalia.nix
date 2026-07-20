@@ -31,7 +31,7 @@ in
         };
         wallpaper = {
           enabled = true;
-          default.path = "/home/mengw/files/pictures/wallpaper/wallpaper.png";
+          default.path = "${config.home.homeDirectory}/files/pictures/wallpaper/wallpaper.png";
         };
         brightness = {
           enable_ddcutil = true;
