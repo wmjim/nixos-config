@@ -1,5 +1,5 @@
 # Yazi — 终端文件管理器
-# 深色主题由 Stylix 统一管理（自动设置 programs.yazi.theme）
+# 亮/暗主题跟随终端配色（由 Stylix 统一管理）自动切换
 { lib, config, pkgs, ... }:
 let
   cfg = config.mengw.cli.tools.yazi;
@@ -54,6 +54,7 @@ in
       theme = {
         flavor = {
           light = "flexoki-light";
+          dark = "everforest-medium";
         };
       };
       flavors = {
