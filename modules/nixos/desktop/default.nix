@@ -44,11 +44,15 @@ in
     services.xserver.desktopManager.runXdgAutostartIfNone = true;
 
     # 输入法环境变量
+    # 注意：nixpkgs 的 fcitx5 模块在 waylandFrontend=true 时不设置
+    # GTK_IM_MODULE/QT_IM_MODULE（原生 Wayland 应用走 zwp_input_method_v2），
+    # 但 XWayland 应用仍依赖这些变量，因此在此处手动补齐。
     environment.sessionVariables = {
       XMODIFIERS = "@im=fcitx";
+      GTK_IM_MODULE = "fcitx";
       QT_IM_MODULE = "fcitx";
       SDL_IM_MODULE = "fcitx";
-      GLFW_IM_MODULE = "ibus";
+      GLFW_IM_MODULE = "fcitx";
       NIXOS_OZONE_WL = "1";
     };
 
