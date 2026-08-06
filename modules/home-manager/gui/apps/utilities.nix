@@ -35,7 +35,7 @@ in
       planify               # 任务管理器
       gapless               # 本地音乐播放器
       xunlei-uos            # 迅雷
-      qview
+      qview                 # 图片查看
       nautilus
       logisim-evolution
       localsend
