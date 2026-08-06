@@ -27,7 +27,7 @@
   fonts.fontDir.enable = true;
 
   fonts.packages = with pkgs; [
-    source-serif-pro                               # 衬线字体
+    source-serif-pro                                # 衬线字体
     pkgs.nur.repos.guanran928.harmonyos-sans        # 无衬线字体
     maple-mono.NormalNL-NF-CN-unhinted              # 等宽字体（CN 变体）
     maple-mono.NormalNL-NF-unhinted                 # 等宽字体（非 CN 变体，补充）
@@ -35,13 +35,6 @@
     lxgw-wenkai                                     # 霞鹜文楷，中文衬线补充字体
   ];
 
-  # 系统默认字体族映射
-  fonts.fontconfig.defaultFonts = {
-    serif = [ "Source Serif Pro" ];
-    sansSerif = [ "HarmonyOS Sans SC" ];
-    monospace = [ "Maple Mono Normal NL NF CN" ];
-    emoji = [ "Noto Color Emoji" ];
-  };
   fonts.fontconfig.subpixel.rgba = "rgb";
   fonts.fontconfig.subpixel.lcdfilter = "default";
   fonts.fontconfig.hinting.style = "slight";

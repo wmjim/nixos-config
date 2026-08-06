@@ -61,8 +61,6 @@ in
       xwayland-satellite
       gtk4
       gnome-themes-extra
-      qgnomeplatform
-      qgnomeplatform-qt6
       adwaita-qt
       papirus-icon-theme
       bibata-cursors
