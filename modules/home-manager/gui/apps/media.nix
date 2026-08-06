@@ -62,14 +62,23 @@ in
 
   config = lib.mkIf (cfg.enable && appsCfg.enable && guiCfg.enable) {
     home.packages = with pkgs; [
-      mpv
+      celluloid
       obs-studio
       snipaste
       picgo-wrapped
       picgo-clipboard-upload
       wl-clipboard
       freetube
-      flclash                   # 代理软件
+      flclash # 代理软件
+      bilibili
     ];
+
+    # bilibili 上游 bug: ~/.config/bilibili/bilibili-flags.conf 中
+    # host-resolver-rules 使用了 "http://localhost:3031" 格式，
+    # Chromium 不支持带 scheme 前缀的 replacement，导致 DNS 解析失败。
+    # 修复: 使用正确格式 "127.0.0.1:3031"
+    xdg.configFile."bilibili/bilibili-flags.conf".text = ''
+      --host-resolver-rules=MAP bilipc.bilibili.com 127.0.0.1:3031
+    '';
   };
 }

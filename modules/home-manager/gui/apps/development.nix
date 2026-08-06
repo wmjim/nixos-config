@@ -15,7 +15,11 @@ in
   config = lib.mkIf (cfg.enable && appsCfg.enable && guiCfg.enable) {
     home.packages = with pkgs; [
       zed-editor
+      jetbrains.pycharm
       jetbrains.clion
+      jetbrains.idea
+      jetbrains.rider
+      jetbrains.datagrip
       github-desktop
     ];
   };
