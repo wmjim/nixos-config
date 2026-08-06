@@ -11,6 +11,9 @@ in
     services.xserver.excludePackages = [ pkgs.xterm ];
     services.desktopManager.gnome.enable = true;
 
+    # 默认登录 GNOME 会话（而非 Niri）
+    services.displayManager.defaultSession = "gnome";
+
     services.gnome.core-apps.enable = false;
     services.gnome.core-developer-tools.enable = false;
     services.gnome.games.enable = false;
