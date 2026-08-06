@@ -13,7 +13,6 @@ in
 
   imports = [
     ./fish.nix
-    ./starship.nix
   ];
 
   config = lib.mkIf (cfg.enable && cliCfg.enable) {

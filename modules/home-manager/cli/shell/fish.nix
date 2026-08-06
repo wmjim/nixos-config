@@ -20,12 +20,6 @@ in
         # 设置终端为英文环境
         set -gx LC_ALL en_US.UTF-8
         set -gx EDITOR hx
-
-        if not set -q TMUX
-          if test "$TERM" != dumb; and command -q starship
-            starship init fish | source
-          end
-        end
       '';
       shellAliases = {
         ".." = "cd ..";
