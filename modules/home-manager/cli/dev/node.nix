@@ -14,7 +14,7 @@ in
   config = lib.mkIf (cfg.enable && devCfg.enable && cliCfg.enable) {
     # Node.js 环境
     home.packages = with pkgs; [
-      nodejs_24
+      nodejs_latest
       yarn
       pnpm
       typescript-language-server # typescript/js/tsx/jsx lsp
