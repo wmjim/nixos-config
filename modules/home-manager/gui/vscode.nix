@@ -12,8 +12,6 @@ in
   };
 
   config = lib.mkIf (cfg.enable && guiCfg.enable) {
-    # Stylix 不接管 VS Code 主题
-    stylix.targets.vscode.enable = lib.mkForce false;
 
     programs.vscode = {
       enable = true;

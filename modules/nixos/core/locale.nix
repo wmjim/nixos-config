@@ -26,15 +26,22 @@
   fonts.enableDefaultPackages = true;
   fonts.fontDir.enable = true;
 
-  # Stylix 为其 fonts.*.package 引用的字体自动调用 fonts.packages，
-  # 此处的字体包仅限 Stylix 未覆盖的补充字体。
   fonts.packages = with pkgs; [
-    maple-mono.NormalNL-NF-unhinted  # Maple Mono 非 CN 变体（Stylix 使用 CN 变体）
-    lxgw-wenkai                       # 霞鹜文楷，中文衬线补充字体
+    source-serif-pro                               # 衬线字体
+    pkgs.nur.repos.guanran928.harmonyos-sans        # 无衬线字体
+    maple-mono.NormalNL-NF-CN-unhinted              # 等宽字体（CN 变体）
+    maple-mono.NormalNL-NF-unhinted                 # 等宽字体（非 CN 变体，补充）
+    noto-fonts-color-emoji                          # Emoji 字体
+    lxgw-wenkai                                     # 霞鹜文楷，中文衬线补充字体
   ];
 
-  # fontconfig 字体族映射由 Stylix 统一管理（stylix.fonts.*），
-  # 此处仅保留渲染参数（Stylix 不覆盖这些）。
+  # 系统默认字体族映射
+  fonts.fontconfig.defaultFonts = {
+    serif = [ "Source Serif Pro" ];
+    sansSerif = [ "HarmonyOS Sans SC" ];
+    monospace = [ "Maple Mono Normal NL NF CN" ];
+    emoji = [ "Noto Color Emoji" ];
+  };
   fonts.fontconfig.subpixel.rgba = "rgb";
   fonts.fontconfig.subpixel.lcdfilter = "default";
   fonts.fontconfig.hinting.style = "slight";

@@ -1,13 +1,12 @@
 # Niri 窗口管理器 — 用户级配置文件部署
-# KDL 颜色通过 Stylix 统一管理
 { lib, config, pkgs, inputs, ... }:
 let
   cfg = config.mengw.gui.wm;
   guiCfg = config.mengw.gui;
   niriConfigPath = "${config.home.homeDirectory}/nixos-config/modules/home-manager/gui/wm/config";
 
-  # Stylix 调色板；Stylix 禁用时回退到 Gruvbox Dark（与默认主题一致）
-  colors = config.lib.stylix.colors.withHashtag or {
+  # Gruvbox Dark 调色板
+  colors = {
     base00 = "#1d2021"; # dark bg
     base01 = "#3c3836"; # dark gray
     base02 = "#504945"; # medium gray
@@ -26,9 +25,9 @@ let
     base0F = "#d65d0e"; # brown
   };
 
-  # 由 Stylix 调色板生成的 layout.kdl
+  # 生成的 layout.kdl
   layoutKdl = ''
-    // niri 窗口布局配置 — 颜色由 Stylix 统一管理
+    // niri 窗口布局配置
     // https://niri-wm.github.io/niri/Configuration%3A-Layout.html
     layout {
         gaps 8     // 窗口和屏幕边缘的间距
@@ -79,9 +78,9 @@ let
     }
   '';
 
-  # 由 Stylix 调色板生成的 overview.kdl
+  # 生成的 overview.kdl
   overviewKdl = ''
-    // 概览 — 颜色由 Stylix 统一管理
+    // 概览
     overview {
         zoom 0.40
         backdrop-color "${colors.base03}"
@@ -126,12 +125,12 @@ in
     # Symlink 整个 Niri 配置目录到 git 仓库（保持可编辑性）
     xdg.configFile."niri".source = config.lib.file.mkOutOfStoreSymlink niriConfigPath;
 
-    # Stylix 生成的配色文件部署到独立目录（不能放在 niri/ 下，因为
+    # 配色文件部署到独立目录（不能放在 niri/ 下，因为
     # ~/.config/niri 是 symlink 指向 $HOME 外的 git 仓库）。
-    # 注意：config.kdl 中使用 ~/.config/niri-stylix/ 绝对路径而非
-    # ../niri-stylix/ 相对路径，因为 niri 解析 include 时会跟随
+    # 注意：config.kdl 中使用 ~/.config/niri-colors/ 绝对路径而非
+    # ../niri-colors/ 相对路径，因为 niri 解析 include 时会跟随
     # symlink 链，导致 .. 解析到 git 仓库父目录而非 ~/.config/。
-    xdg.configFile."niri-stylix/layout.kdl".text = layoutKdl;
-    xdg.configFile."niri-stylix/overview.kdl".text = overviewKdl;
+    xdg.configFile."niri-colors/layout.kdl".text = layoutKdl;
+    xdg.configFile."niri-colors/overview.kdl".text = overviewKdl;
   };
 }

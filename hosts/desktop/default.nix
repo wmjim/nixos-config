@@ -17,8 +17,6 @@
     desktop.niri.enable = true;
     desktop.distrobox.enable = true;
     virtualization.enable = true;
-    stylix.enable = true;
-    stylix.theme = "macos-dark";
     proxy.enable = true;
   };
 }

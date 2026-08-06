@@ -24,8 +24,8 @@ in
           font_family = lib.mkForce "HarmonyOS Sans SC";
         };
         theme = {
-          # 跟随 Stylix 极性：亮色主题 → light，暗色主题 → dark
-          mode = if (config.stylix.polarity or "dark") == "light" then "light" else "dark";
+          # 默认暗色主题
+          mode = "dark";
           source = lib.mkForce "builtin";
           builtin = "Catppuccin";
         };

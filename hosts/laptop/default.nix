@@ -33,8 +33,6 @@
     desktop.niri.enable = true;
     desktop.distrobox.enable = true;
     virtualization.enable = true;
-    stylix.enable = true;
-    stylix.theme = "aurora-dark";
     proxy.enable = true;
   };
 }

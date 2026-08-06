@@ -12,7 +12,6 @@
   imports = [
     ./users.nix
     ./locale.nix
-    ./stylix.nix
     ../hardware
     ../desktop
     ../virtualization

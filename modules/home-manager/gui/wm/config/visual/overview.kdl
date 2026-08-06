@@ -1,2 +1,2 @@
-// 此文件为占位符。实际 overview 配置由 Stylix 在构建时生成，
-// 部署到 ~/.config/niri-stylix/overview.kdl，请勿手动编辑。
+// 此文件为占位符。实际 overview 配置由 Nix 在构建时生成，
+// 部署到 ~/.config/niri-colors/overview.kdl，请勿手动编辑。

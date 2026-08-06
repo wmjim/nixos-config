@@ -27,11 +27,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    stylix = {
-      url = "github:danth/stylix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     # zen 浏览器（not in nixpkgs）
     # 使用二次打包（固定输出模式下载程序+Firefox封装脚本）
     zen-browser = {
