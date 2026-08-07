@@ -39,6 +39,14 @@ in
       [org.gnome.settings-daemon.plugins.power]
       idle-dim=false
 
+      # 彻底禁用空闲自动挂起（与 Niri 行为一致）：
+      # 显示器关闭期间系统保持唤醒，避免 NVIDIA 恢复时无法重建
+      # 3840x2160@150Hz 自定义模式导致的黑屏（见 8/6 日志 gsd-power-wrap 发起挂起）
+      sleep-inactive-ac-timeout=0
+      sleep-inactive-ac-type='nothing'
+      sleep-inactive-battery-timeout=0
+      sleep-inactive-battery-type='nothing'
+
       # 禁止空闲时激活屏幕保护（可由用户手动锁定）
       [org.gnome.desktop.screensaver]
       idle-activation-enabled=false
