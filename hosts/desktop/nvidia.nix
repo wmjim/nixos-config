@@ -20,11 +20,14 @@ in
   hardware.firmware = [ edid-firmware ];
   boot.kernelParams = [
     "drm.edid_firmware=DP-2:edid/dp2-edid.bin"
-    # 声明 DP-2 首选输出模式。不使用 e 标志强制输出：
-    # e 标志会阻止正常的连接器断开/重连热插拔事件，导致显示器物理
-    # 断电再上电后 DP 链路无法重新训练 → 黑屏。EDID 固件已解决 I2C
-    # 读取失败问题，无需再通过 e 标志屏蔽热插拔。
-    "video=DP-2:3840x2160@150"
+    # 实验(2026-08-08)：移除 video= 强制模式，让原生 150Hz 直接暴露。
+    # 之前 video=DP-2:3840x2160@150 会创建 user-defined 模式，显示器唤醒时
+    # 被 NVIDIA 拒绝报 "User-defined mode not supported" → 黑屏。
+    # EDID 固件的 DisplayID 块已原生声明 3840x2160@150Hz(1329MHz)，144/120Hz
+    # 均以原生 driver 模式暴露，仅 150Hz 因 video= 变为 userdef。
+    # 移除后若 150Hz 以原生模式出现且唤醒正常，则确认问题在 user-defined 模式本身。
+    # 不使用 e 标志强制输出：e 会阻止连接器热插拔事件，导致物理断电再上电后
+    # DP 链路无法重新训练 → 黑屏。
     # 禁止内核 VT 控制台超时熄屏，防止触发不必要的 DPMS 状态切换
     "consoleblank=0"
   ];
