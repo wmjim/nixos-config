@@ -14,6 +14,31 @@ in
     # 默认登录 GNOME 会话（而非 Niri）
     services.displayManager.defaultSession = "gnome";
 
+    # GDM 登录界面换肤（MacTahoe）：
+    # gnome-shell 的 gnome-shell-theme.gresource 路径在编译期烘焙进二进制，
+    # 运行时读取的是本包 store 路径下的同名文件，只能通过覆盖 gnome-shell
+    # 包替换 gresource（一次重建，代价较高）。用户会话内 user-theme 扩展会
+    # 用主题目录里的 shell CSS 再次覆盖，与 base gresource 同为 MacTahoe，
+    # 不会冲突。
+    nixpkgs.overlays = [
+      (final: prev: {
+        mactahoe-gtk-theme = prev.callPackage ../../../../pkgs/mactahoe-gtk-theme { };
+        mactahoe-icon-theme = prev.callPackage ../../../../pkgs/mactahoe-icon-theme { };
+        gnome-shell = prev.gnome-shell.overrideAttrs (old: {
+          postFixup = (old.postFixup or "") + ''
+            cp ${final.mactahoe-gtk-theme}/share/gnome-shell/gnome-shell-theme.gresource \
+              $out/share/gnome-shell/gnome-shell-theme.gresource
+          '';
+        });
+      })
+    ];
+
+    # 主题/图标包加入 GDM 的 XDG_DATA_DIRS，登录界面可解析 MacTahoe 资源
+    services.displayManager.gdm.extraPackages = [
+      pkgs.mactahoe-gtk-theme
+      pkgs.mactahoe-icon-theme
+    ];
+
     services.gnome.core-apps.enable = false;
     services.gnome.core-developer-tools.enable = false;
     services.gnome.games.enable = false;
@@ -86,6 +111,8 @@ in
       gnomeExtensions.rounded-window-corners-reborn
       # 插件：用于访问和卸载可移动设备的状态菜单
       gnomeExtensions.removable-drive-menu
+      # 插件：加载 shell 主题（MacTahoe 换肤依赖）
+      gnomeExtensions.user-themes
     ];
   };
 }

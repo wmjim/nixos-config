@@ -31,8 +31,11 @@ in
         window-padding-x = 8;
         # 垂直窗口内边距：6
         window-padding-y = 6;
-        # 窗口主题：auto, 根据配置的终端背景确定主题
-        window-theme = "auto";
+        # 窗口主题：只保留标题栏样式（gtk-titlebar=true 客户端 GTK 标题栏），
+        # 配色全部交给 Ghostty 自身 —— window-theme="ghostty" 时标题栏
+        # 直接使用配置里的 background/foreground（即终端自身配色），与内容
+        # 一体融合，不叠加 MacTahoe 主题色，也不用 gtk-dark.css 的深色变体。
+        window-theme = "ghostty";
         # === 光标 ===
         # 光标样式：block, 块状
         cursor-style = "block";
@@ -47,8 +50,8 @@ in
         ];
         # 运行动画循环以帮助着色器实现动画效果
         custom-shader-animation = "always";
-        
-        
+
+
 
         # === 下拉终端 ===
         # 下拉终端位置：top, 屏幕顶部
