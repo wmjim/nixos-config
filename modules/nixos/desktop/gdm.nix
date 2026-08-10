@@ -5,6 +5,7 @@ let
 in
 {
   config = lib.mkIf cfg.enable {
+    # 启用 GDM 作为显示管理器
     services.displayManager.gdm.enable = true;
   };
 }
