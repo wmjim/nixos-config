@@ -4,6 +4,23 @@ let
   cfg = config.mengw.gui.apps.development;
   appsCfg = config.mengw.gui.apps;
   guiCfg = config.mengw.gui;
+
+  # skiko 渲染层依赖的运行时库。nixpkgs master 的 jetbrains 包装器把
+  # LD_LIBRARY_PATH 清空，导致 libskiko-linux-x64.so 加载不到 libGL.so.1，
+  # 所有 JB 产品 UI 渲染崩溃（UnsatisfiedLinkError: BitmapKt._nMake）。
+  skikoLibs = lib.makeLibraryPath [
+    pkgs.libglvnd
+    pkgs.xorg.libX11
+    pkgs.fontconfig
+    pkgs.stdenv.cc.cc.lib
+  ];
+
+  # 在 JetBrains 启动脚本 exec 前注入 LD_LIBRARY_PATH
+  wrapJb = binName: pkg: pkg.overrideAttrs (old: {
+    postInstall = (old.postInstall or "") + ''
+      sed -i '/^exec -a/i export LD_LIBRARY_PATH="${skikoLibs}"''${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}' "$out/bin/${binName}"
+    '';
+  });
 in
 {
   options.mengw.gui.apps.development.enable = lib.mkOption {
@@ -15,11 +32,11 @@ in
   config = lib.mkIf (cfg.enable && appsCfg.enable && guiCfg.enable) {
     home.packages = with pkgs; [
       zed-editor
-      jetbrains.pycharm
-      jetbrains.clion
-      jetbrains.idea
-      jetbrains.rider
-      jetbrains.datagrip
+      (wrapJb "pycharm" jetbrains.pycharm)
+      (wrapJb "clion" jetbrains.clion)
+      (wrapJb "idea" jetbrains.idea)
+      (wrapJb "rider" jetbrains.rider)
+      (wrapJb "datagrip" jetbrains.datagrip)
       github-desktop
     ];
   };
