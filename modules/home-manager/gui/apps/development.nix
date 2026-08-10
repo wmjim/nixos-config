@@ -10,7 +10,7 @@ let
   # 所有 JB 产品 UI 渲染崩溃（UnsatisfiedLinkError: BitmapKt._nMake）。
   skikoLibs = lib.makeLibraryPath [
     pkgs.libglvnd
-    pkgs.xorg.libX11
+    pkgs.libx11
     pkgs.fontconfig
     pkgs.stdenv.cc.cc.lib
   ];
