@@ -17,9 +17,8 @@ in
     programs.ghostty = {
       enable = true;
       settings = {
-        # 使用 Ghostty 默认主题
-        # 如需自选主题，取消下面注释：
-        # theme = "Catppuccin Macchiato";
+        # 显式指定主题：theme 未设置时 ghostty 会解析系统主题，
+        theme = "Catppuccin Frappe";
         # 字体设置
         font-family = [ "Maple Mono Normal NL NF" "LXGW WenKai Mono" ];
         font-size = 12;
@@ -31,11 +30,6 @@ in
         window-padding-x = 8;
         # 垂直窗口内边距：6
         window-padding-y = 6;
-        # 窗口主题：只保留标题栏样式（gtk-titlebar=true 客户端 GTK 标题栏），
-        # 配色全部交给 Ghostty 自身 —— window-theme="ghostty" 时标题栏
-        # 直接使用配置里的 background/foreground（即终端自身配色），与内容
-        # 一体融合，不叠加 MacTahoe 主题色，也不用 gtk-dark.css 的深色变体。
-        window-theme = "ghostty";
         # === 光标 ===
         # 光标样式：block, 块状
         cursor-style = "block";
