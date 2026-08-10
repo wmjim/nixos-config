@@ -8,6 +8,7 @@ in
 
   config = lib.mkIf (cfg.enable && cfg.network.enable) {
     networking.wireless.iwd.enable = true;
+    # 启用 NetworkManager
     networking.networkmanager.enable = true;
     networking.networkmanager.wifi.backend = "iwd";
   };
