@@ -6,13 +6,16 @@ let
 in
 {
   config = lib.mkIf (cfg.enable && desktopCfg.enable) {
-    services.xserver.enable = true;
-    # xserver 模块默认附带 xterm 作为保底终端，已有 Ghostty 无需保留
-    services.xserver.excludePackages = [ pkgs.xterm ];
+    # 在64位系统上为 Wine 32 位应用提供 OpenGL
+    hardware.graphics.enable32Bit = true;
+    # 启用 GNOME 桌面
     services.desktopManager.gnome.enable = true;
 
-    # 默认登录 GNOME 会话（而非 Niri）
+    # 默认登录 GNOME 会话
     services.displayManager.defaultSession = "gnome";
+    # 自动登录
+    services.displayManager.autoLogin.enable = true;
+    services.displayManager.autoLogin.user = "mengw";
 
     # GDM 登录界面换肤（MacTahoe）：
     # gnome-shell 的 gnome-shell-theme.gresource 路径在编译期烘焙进二进制，
@@ -39,7 +42,9 @@ in
       pkgs.mactahoe-icon-theme
     ];
 
+    # 只使用 GNOME 桌面环境而不使用其中的应用程序
     services.gnome.core-apps.enable = false;
+    # 安装 GNOME 核心开发者工具
     services.gnome.core-developer-tools.enable = false;
     services.gnome.games.enable = false;
 
@@ -77,6 +82,7 @@ in
       idle-activation-enabled=false
     '';
 
+    # 排除部分核心应用
     environment.gnome.excludePackages = with pkgs; [
       gnome-tour
       gnome-user-docs
