@@ -1,25 +1,17 @@
 # NVIDIA 驱动 — RTX 3060Ti
-{ config, pkgs, lib, ... }:
+{ config, ... }:
 
-let
-  edid-firmware = pkgs.stdenvNoCC.mkDerivation {
-    name = "dp2-edid-firmware";
-    dontUnpack = true;
-    installPhase = ''
-      mkdir -p $out/lib/firmware/edid
-      cp ${./dp2-edid.bin} $out/lib/firmware/edid/dp2-edid.bin
-    '';
-  };
-in
 {
   imports = [ ../../modules/nixos/hardware/nvidia-base.nix ];
 
-  # 提取显示器 EDID 并作为固件加载，彻底绕过 I2C 读取失败的根因
-  # 当显示器休眠唤醒后，NVIDIA 驱动不再需要通过 DP I2C 读取 EDID，
-  # 直接使用此固件文件提供正确的分辨率/刷新率模式
-  hardware.firmware = [ edid-firmware ];
+  # 实验(2026-08-10)：移除自定义 EDID 固件覆盖（drm.edid_firmware），
+  # 排查显示器物理断电再上电后黑屏问题。
+  # 机制：固件 EDID 会在显示器断电、真实 EDID 读取失败时顶上，连接器始终
+  # 显示 connected，驱动从不登记断开 → 上电后不自动重训练 DP 链路 → 黑屏。
+  # 移除后应恢复正常的断开/重连流程，实现自动恢复（无需切 TTY/重启）。
+  # 120Hz 是原生标准模式不受影响；150Hz 依赖固件 EDID 的 DisplayID 块会失去。
+  # 若显示器唤醒时 I2C EDID 读取失败问题回归，可还原此配置（dp2-edid.bin 仍在仓库）。
   boot.kernelParams = [
-    "drm.edid_firmware=DP-2:edid/dp2-edid.bin"
     # 实验(2026-08-08)：移除 video= 强制模式，让原生 150Hz 直接暴露。
     # 之前 video=DP-2:3840x2160@150 会创建 user-defined 模式，显示器唤醒时
     # 被 NVIDIA 拒绝报 "User-defined mode not supported" → 黑屏。
