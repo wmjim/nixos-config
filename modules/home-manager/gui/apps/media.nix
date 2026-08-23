@@ -62,7 +62,7 @@ in
 
   config = lib.mkIf (cfg.enable && appsCfg.enable && guiCfg.enable) {
     home.packages = with pkgs; [
-      celluloid
+      vlc
       obs-studio
       snipaste
       picgo-wrapped
