@@ -16,6 +16,7 @@ in
     home.packages = with pkgs; [
       zotero
       anki
+      xmind
       siyuan      # 笔记软件
       obsidian    # 笔记软件
       typora      # markdown 编辑器
