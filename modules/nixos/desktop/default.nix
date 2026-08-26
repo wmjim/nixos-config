@@ -15,6 +15,7 @@ in
     ./niri
     ./gnome
     ./distrobox.nix
+    ./steam.nix
   ];
 
   config = lib.mkIf cfg.enable {

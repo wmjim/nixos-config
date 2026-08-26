@@ -34,6 +34,15 @@ in
       };
     };
 
+    # XWayland 应用（Steam 等）的光标查找路径是 ~/.local/share/icons，
+    # gtk.cursorTheme 只写 gsettings、不落地主题文件到该路径，
+    # 导致 libXcursor（xwayland-satellite）加载不到 Bibata、回退默认光标。
+    # 这里将主题目录软链到搜索路径上（recursive=false 即目录软链）。
+    xdg.dataFile."icons/Bibata-Modern-Classic" = {
+      source = "${pkgs.bibata-cursors}/share/icons/Bibata-Modern-Classic";
+      recursive = false;
+    };
+
     qt = {
       enable = true;
       platformTheme.name = "adwaita";

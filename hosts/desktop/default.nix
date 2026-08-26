@@ -16,6 +16,7 @@
     desktop.gnome.enable = true;
     desktop.niri.enable = true;
     desktop.distrobox.enable = true;
+    desktop.steam.enable = true;
     virtualization.enable = true;
     proxy.enable = true;
   };

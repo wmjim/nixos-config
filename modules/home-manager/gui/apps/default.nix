@@ -17,6 +17,7 @@ in
     ./communication.nix
     ./media.nix
     ./productivity.nix
+    ./steam.nix
     ./development.nix
     ./utilities.nix
     ./pot.nix
