@@ -7,6 +7,8 @@ spawn-at-startup "/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1"
 spawn-at-startup "noctalia"
 // 输入法
 spawn-at-startup "fcitx5"
+// Snipaste 截图工具（常驻以响应 CLI 的 snip 命令，供 binds/apps.kdl 快捷键调用）
+spawn-at-startup "snipaste"
 
 // niri 启动时不自动展示快捷键叠加层
 hotkey-overlay {
