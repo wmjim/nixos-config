@@ -62,6 +62,13 @@
         "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
       ];
       trusted-users = [ "root" "mengw" ];
+      # GitHub API 访问令牌，用于提升 nix flake update 的速率限额
+      # 令牌存放于仓库外文件，避免密钥提交到 git
+      access-tokens = let
+        tokenFile = /home/mengw/.config/nix/github-token;
+      in
+        lib.mkIf (builtins.pathExists tokenFile)
+          "github.com:${lib.trim (builtins.readFile tokenFile)}";
     };
 
     # 硬件加速
