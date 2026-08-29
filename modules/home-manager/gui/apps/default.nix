@@ -12,7 +12,7 @@ in
   };
 
   imports = [
-    ./ghostty.nix
+    ./alacritty.nix
     ./browsers.nix
     ./communication.nix
     ./media.nix

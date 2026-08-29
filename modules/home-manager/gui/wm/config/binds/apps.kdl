@@ -14,11 +14,11 @@ binds {
     XF86MonBrightnessDown   allow-when-locked=true hotkey-overlay-title="亮度-"     { spawn-sh "noctalia msg brightness-down"; }
 
     // 应用快捷方式
-    Mod+T       hotkey-overlay-title="终端"         { spawn "ghostty"; }
+    Mod+T       hotkey-overlay-title="终端"         { spawn "alacritty"; }
     Mod+B       hotkey-overlay-title="浏览器"       { spawn "zen-beta"; }
     Mod+C       hotkey-overlay-title="VSCode"       { spawn "code"; }
     Mod+E       hotkey-overlay-title="文件管理器"   { spawn "nautilus"; }
-    Mod+Shift+M hotkey-overlay-title="系统监控"     { spawn "ghostty" "-e" "btop"; }
+    Mod+Shift+M hotkey-overlay-title="系统监控"     { spawn "alacritty" "-e" "btop"; }
 
 
     // Pot 划词翻译（Wayland 下只能用 curl 调用 API）

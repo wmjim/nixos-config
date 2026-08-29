@@ -53,7 +53,7 @@ in
 
     # GUI 应用
     casks = [
-      "ghostty"
+      "alacritty"
       "visual-studio-code"
       "obsidian"
       "brave"

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# niri 快捷键查看器 — 解析 KDL 配置，ghostty + fzf 交互展示
+# niri 快捷键查看器 — 解析 KDL 配置，alacritty + fzf 交互展示
 NIRI_DIR="${NIRI_CONFIG_DIR:-$HOME/.config/niri}"
 
 parse_kdl() {
@@ -66,8 +66,8 @@ fi
 # 用 column 对齐，pipe 到 fzf 搜索
 FZF_CMD='echo "$ITEMS" | column -t -s "│" -o "│" | fzf --reverse --prompt="󰌌 快捷键: " --info=hidden --border=none --exact --preview-window=hidden'
 
-if command -v ghostty >/dev/null 2>&1; then
-  ITEMS="$items" ghostty --title="快捷键" -e bash -c "$FZF_CMD"
+if command -v alacritty >/dev/null 2>&1; then
+  ITEMS="$items" alacritty --title "快捷键" -e bash -c "$FZF_CMD"
 elif command -v kitty >/dev/null 2>&1; then
   ITEMS="$items" kitty --title "快捷键" \
     -o "initial_window_width=90c" -o "initial_window_height=24c" bash -c "$FZF_CMD"

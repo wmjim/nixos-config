@@ -17,7 +17,7 @@ window-rule {
 
 // --- 终端模拟器：磨砂玻璃的黄金场景 ---
 window-rule {
-    match app-id="com.mitchellh.ghostty"
+    match app-id="Alacritty"
     opacity 0.70
     background-effect {
         blur true
