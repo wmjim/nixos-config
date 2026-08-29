@@ -77,25 +77,5 @@ in
         name = "MacTahoe-Light";
       };
     };
-
-    # libadwaita（GTK4）应用换肤：GNOME 43+ 原生应用不读取 gtk-theme-name，
-    # 只能通过用户样式表 ~/.config/gtk-4.0/gtk.css 覆盖。软链主题包内编译好的
-    # gtk-4.0 目录文件（浅色 gtk.css + 深色 gtk-dark.css 自动跟随应用配色）。
-    # 仅逐个文件软链，保留 gtk-4.0 目录中已有的 servers / settings.ini。
-    xdg.configFile = {
-      "gtk-4.0/gtk.css".source = "${pkgs.mactahoe-gtk-theme}/share/themes/MacTahoe-Light/gtk-4.0/gtk.css";
-      # 主题包内 gtk-dark.css 是软链到 MacTahoe-Dark 的深色样式，浅深两套都覆盖
-      "gtk-4.0/gtk-dark.css".source = "${pkgs.mactahoe-gtk-theme}/share/themes/MacTahoe-Dark/gtk-4.0/gtk-dark.css";
-      # gtk.css 以相对路径引用 assets/windows-assets，需与之同目录；
-      # 目录软链（recursive=false）避免每次激活复制 100+ 个资源文件
-      "gtk-4.0/assets" = {
-        source = "${pkgs.mactahoe-gtk-theme}/share/themes/MacTahoe-Light/gtk-4.0/assets";
-        recursive = false;
-      };
-      "gtk-4.0/windows-assets" = {
-        source = "${pkgs.mactahoe-gtk-theme}/share/themes/MacTahoe-Light/gtk-4.0/windows-assets";
-        recursive = false;
-      };
-    };
   };
 }
