@@ -23,7 +23,7 @@ in
       yt-dlp
       lazygit
       claude-code
-      codex
+      pi-coding-agent
       unzip
       tree
       file

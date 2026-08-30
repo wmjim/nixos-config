@@ -29,7 +29,6 @@ in
           ms-azuretools.vscode-docker
           ms-vscode-remote.remote-ssh
           ms-vscode-remote.remote-ssh-edit
-          vscodevim.vim
           # TOML 完整性特性支持
           tamasfe.even-better-toml
           # Rust 支持
