@@ -14,10 +14,38 @@ let
       pkg,
       binary ? null,
       scale ? 1.25,
+      # 可选：若应用运行窗口的 WM_CLASS 与桌面文件 ID 不一致（如欧陆词典窗口类为
+      # eudic 而桌面文件是 eusoft-eudic.desktop），GNOME Shell / Dash to Panel 会
+      # 无法把窗口与桌面文件关联，导致任务栏显示成通用图标。传入该窗口类名可为
+      # 桌面文件补充 StartupWMClass 解决。
+      startupWMClass ? null,
+      # 需补充 StartupWMClass 的桌面文件名；null 时对包内所有 desktop 文件生效。
+      desktopFile ? null,
       extraWrapArgs ? "",
     }:
     let
       bin = if binary != null then binary else pkg.pname or (builtins.baseNameOf pkg);
+
+      desktopFilePatch = lib.optionalString (startupWMClass != null) ''
+        desktopFiles=${
+          if desktopFile != null then
+            "$out/share/applications/${desktopFile}"
+          else
+            "$(find $out/share/applications -maxdepth 1 -name '*.desktop' 2>/dev/null || true)"
+        }
+        for f in $desktopFiles; do
+          if [ -L "$f" ]; then
+            # 打破符号链接，改为真实文件后再追加内容，避免写入只读的 nix store
+            target=$(readlink -f "$f")
+            rm -f "$f"
+            cp "$target" "$f"
+            chmod +w "$f"
+          fi
+          if ! grep -q '^StartupWMClass=' "$f"; then
+            echo "StartupWMClass=${startupWMClass}" >> "$f"
+          fi
+        done
+      '';
     in
     pkgs.symlinkJoin {
       name = "${bin}-wrapped";
@@ -32,6 +60,7 @@ let
           --set QT_IM_MODULE "fcitx" \
           --set XMODIFIERS "@im=fcitx" \
           ${extraWrapArgs}
+        ${desktopFilePatch}
       '';
     };
 in

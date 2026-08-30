@@ -8,6 +8,9 @@ let
   eudic-fixed = myLib.wrapQtXWayland {
     inherit pkgs;
     pkg = pkgs.eudic;
+    # 窗口 WM_CLASS 为 eudic，而桌面文件 ID 是 eusoft-eudic，需补充
+    # StartupWMClass 让 GNOME Shell / Dash to Panel 正确显示应用图标
+    startupWMClass = "eudic";
     extraWrapArgs = ''
       --unset QT_STYLE_OVERRIDE \
       --set XKB_CONFIG_ROOT "${pkgs.xkeyboard_config}/share/X11/xkb" \
