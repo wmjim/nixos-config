@@ -1,56 +1,54 @@
-# NixOS 在 Niri 桌面环境下配置 Fcitx5 中文输入
+# Fcitx5 中文输入法
 
-system 负责安装和环境变量，home manager 负责 Fcitx5 配置。
+配置分两层：**system**（`modules/nixos/desktop/default.nix`）负责安装与环境变量；**home-manager**（`modules/home-manager/gui/fcitx5.nix`）负责 Rime 用户配置。
 
 ## system 配置
 
-```nix
-{ config, pkgs, ... }:
+- 输入法框架：fcitx5（`waylandFrontend = true`）
+- 插件：
+  - `kdePackages.fcitx5-chinese-addons`：拼音、双拼、五笔等中文插件
+  - `kdePackages.fcitx5-configtool`：图形化配置工具
+  - `kdePackages.fcitx5-qt`：Qt5/6 应用输入法模块
+  - `fcitx5-gtk`：GTK3/4 应用输入法模块
+  - `fcitx5-mellow-themes`：输入法主题
+  - `fcitx5-rime`（+ 万象拼音词库 `rime-wanxiang`）：Rime 输入引擎
 
-{
-  i18n.inputMethod = {
-    enable = true;
-    type = "fcitx5";
-    fcitx5 = {
-      # 支持 Wayland 
-      waylandFrontend = true;
-      addons = with pkgs; [
-        # fcitx5 中文插件
-        kdePackages.fcitx5-chinese-addons
-        # fcitx5 配置工具
-        kdePackages.fcitx5-configtool
-        # fcitx5 输入法模块
-        kdePackages.fcitx5-qt  # 支持 Qt5/6 应用
-        fcitx5-gtk             # 支持 GTK3/4 应用
-        # 输入法主题
-        fcitx5-inflex-themes
-        # fcitx5-rime 中文输入引擎 + 万象拼音词库
-        (fcitx5-rime.override {
-          rimeDataPkgs = [ pkgs.rime-wanxiang ];
-        })
-      ];
-    };
-  };
-}
+## 环境变量
+
+XWayland 应用仍依赖传统输入法环境变量，已手动补齐：
+
+```nix
+XMODIFIERS = "@im=fcitx";
+GTK_IM_MODULE = "fcitx";
+QT_IM_MODULE = "fcitx";
+SDL_IM_MODULE = "fcitx";
+GLFW_IM_MODULE = "fcitx";
 ```
 
-- `kdePackages.fcitx5-chinese-addons` 包含与中文相关的 addon（插件），如拼音、双拼和五笔。
-- 对于 Qt5/6 程序，安装 `kdePackages.fcitx5-qt` 输入法模块
-- 对于 GTK3/4 程序，安装 `fcitx5-gtk` 输入法模块
-- 需要图形化管理 fcitx5 配置，安装`kdePackages.fcitx5-configtool`
-- 输入法主题 ，仅代表个人审美，也可自行选择 [fcitx5-themes-github](https://github.com/topics/fcitx5-theme)，
+## Rime 用户配置
 
-> [!TIP] 为什么选择 kdePackages 包集而不是 qt6Packages
-> 当前的 Nixpkgs Qt6 生态主入口正在逐步向 `kdePackages` 收敛。
+`~/.local/share/fcitx5/rime/default.custom.yaml`：
 
-> [!TIP] 万象拼音
-> 万象拼音的使用还需要手动下载一个语法模型文件 `wanxiang-lts-zh-hans.gram`，从 [RIME-LMDG releases](https://github.com/amzxyz/RIME-LMDG/releases/tag/LTS) 下载，并将其放入 Fcitx5 的 Rime 用户目录（`~/.local/share/fcitx5/rime/`）
+```yaml
+patch:
+  __include: wanxiang_suggested_default:/
+  __patch:
+    menu/page_size: 7
+```
+
+- 使用万象拼音的推荐默认配置，候选词每页 7 个。
+
+> [!TIP] 万象拼音语法模型
+> 需手动下载语法模型文件 `wanxiang-lts-zh-hans.gram`，从
+> [RIME-LMDG releases](https://github.com/amzxyz/RIME-LMDG/releases/tag/LTS) 下载，
+> 放入 `~/.local/share/fcitx5/rime/` 目录。
 
 ## 管理
 
 ```bash
-# 查看 fcitx5 诊断
+# 查看 fcitx5 诊断信息
 fcitx5-diagnose
 ```
 
-- fcitx5 配置文件位于 `~/.config/fcitx5`
+- fcitx5 配置目录：`~/.config/fcitx5`
+- Niri 下已在 `startup.kdl` 中自启 fcitx5；XWayland 应用输入法由 `GTK_IM_MODULE` 等变量接管
