@@ -73,6 +73,30 @@ in
       bilibili
     ];
 
+    # 声明式管理 clash-verge 自启：应用自带的 GUI 开关会把 Nix store 路径
+    # 写死进 ~/.config/autostart/Clash Verge.desktop，升级被 GC 后开机不自启。
+    # 改用 xdg.autostart.entries 链接自制 desktop 文件，Exec 用稳定的
+    # clash-verge 命令名（meta.mainProgram），恒指向当前版本。
+    xdg.autostart = {
+      enable = true;
+      entries = [
+        (pkgs.writeTextFile {
+          name = "clash-verge.desktop";
+          text = ''
+            [Desktop Entry]
+            Type=Application
+            Name=Clash Verge
+            Comment=Clash Verge 开机自启
+            Exec=clash-verge
+            Icon=clash-verge
+            StartupWMClass=clash-verge
+            Terminal=false
+            X-GNOME-Autostart-enabled=true
+          '';
+        })
+      ];
+    };
+
     # bilibili 上游 bug: ~/.config/bilibili/bilibili-flags.conf 中
     # host-resolver-rules 使用了 "http://localhost:3031" 格式，
     # Chromium 不支持带 scheme 前缀的 replacement，导致 DNS 解析失败。
