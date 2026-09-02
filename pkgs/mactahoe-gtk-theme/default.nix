@@ -53,12 +53,6 @@ stdenv.mkDerivation {
       --opacity normal \
       --dest $out/share/themes
 
-    # Firefox/zen 浏览器主题：与 GTK 主题共用同一份源码，一并安装到
-    # share/firefox-theme，由 home-manager 软链进浏览器 profile 的 chrome/ 目录
-    mkdir -p $out/share/firefox-theme
-    cp -r other/firefox/MacTahoe $out/share/firefox-theme/
-    cp other/firefox/userChrome.css other/firefox/userContent.css other/firefox/customChrome.css $out/share/firefox-theme/
-
     # GDM 登录界面主题：把 other/gdm/theme 编译为 gnome-shell-theme.gresource。
     # gnome-shell 的 gresource 路径在编译期烘焙进二进制，只能由 NixOS overlay
     # 覆盖 gnome-shell 包内同名文件实现 GDM 换肤（见 desktop/gnome 模块）
