@@ -25,6 +25,7 @@ in
       claude-code
       pi-coding-agent
       unzip
+      gzip
       tree
       file
       net-tools
