@@ -35,6 +35,7 @@ in
       yq
       sysstat
       tldr
+      gh
     ];
 
     # Git
