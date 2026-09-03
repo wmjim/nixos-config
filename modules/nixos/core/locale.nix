@@ -56,10 +56,18 @@
     <?xml version="1.0"?>
     <!DOCTYPE fontconfig SYSTEM "urn:fontconfig:fonts.dtd">
     <fontconfig>
-      <!-- 无衬线中文家族 → Noto Sans CJK SC -->
+      <!-- 无衬线中文家族 → Noto Sans CJK SC
+           fontconfig 单个 <test> 只允许一个 <string>（多值会告警且丢弃后续值），故逐名拆分 -->
       <match target="pattern">
         <test qual="any" name="family">
           <string>HarmonyOS Sans SC</string>
+        </test>
+        <edit name="family" mode="prepend" binding="strong">
+          <string>Noto Sans CJK SC</string>
+        </edit>
+      </match>
+      <match target="pattern">
+        <test qual="any" name="family">
           <string>PingFang SC</string>
         </test>
         <edit name="family" mode="prepend" binding="strong">
