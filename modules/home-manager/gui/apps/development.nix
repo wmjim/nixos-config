@@ -39,6 +39,7 @@ in
       (wrapJb "datagrip" jetbrains.datagrip)
       github-desktop
       qtcreator
+      cutecom # 简单的图形化串口终端模拟器
     ];
   };
 }
