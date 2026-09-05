@@ -1,4 +1,10 @@
 # VSCode 编辑器
+# 扩展策略：不再用 nix 管理扩展（programs.vscode.profiles.extensions）。
+#
+# 背景：之前 mutableExtensionsDir = true，与 VSCode 自持的
+# extensions.json/.obsolete 索引相互打架 —— flake update 重建后扩展 store path
+# 变更、索引刷新时机又受"VSCode 是否在运行"影响，导致 nix 管理的插件反复丢失。
+# 现改由 VSCode 内置 Settings Sync（登录账号云同步）管理扩展，此处仅安装 code 本体。
 { lib, config, pkgs, ... }:
 let
   cfg = config.mengw.gui.vscode;
@@ -12,41 +18,6 @@ in
   };
 
   config = lib.mkIf (cfg.enable && guiCfg.enable) {
-
-    programs.vscode = {
-      enable = true;
-      mutableExtensionsDir = true;
-      profiles.default = {
-        extensions = with pkgs.vscode-extensions; [
-          anthropic.claude-code
-          vscode-icons-team.vscode-icons
-          alefragnani.bookmarks
-          jeff-hykin.better-nix-syntax
-          jnoortheen.nix-ide
-          ms-python.python
-          llvm-vs-code-extensions.vscode-clangd
-          donjayamanne.githistory
-          ms-azuretools.vscode-docker
-          ms-vscode-remote.remote-ssh
-          ms-vscode-remote.remote-ssh-edit
-          # TOML 完整性特性支持
-          tamasfe.even-better-toml
-          # Rust 支持
-          rust-lang.rust-analyzer
-          # 管理 Rust 依赖
-          fill-labs.dependi
-          # 嵌入式图形化调试插件
-          marus25.cortex-debug
-        ];
-      };
-    };
-
-    # 清理 .obsolete 文件，防止 nix 管理的扩展被 VSCode 忽略。
-    # home-manager 的 onChange 钩子会删除 extensions.json 并运行
-    # code --list-extensions 来重建，但 .obsolete 文件不会被清理，
-    # 导致之前从市场安装过、后来改用 nix 管理的扩展被跳过。
-    home.activation.cleanVscodeObsolete = lib.hm.dag.entryAfter [ "vscodeProfiles" ] ''
-      rm -f ~/.vscode/extensions/.obsolete
-    '';
+    programs.vscode.enable = true;
   };
 }
