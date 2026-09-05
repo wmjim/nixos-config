@@ -36,6 +36,8 @@ in
       sysstat
       tldr
       gh
+      git-repo
+      direnv
     ];
 
     # Git

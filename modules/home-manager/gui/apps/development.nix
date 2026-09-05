@@ -38,6 +38,7 @@ in
       (wrapJb "rider" jetbrains.rider)
       (wrapJb "datagrip" jetbrains.datagrip)
       github-desktop
+      qtcreator
     ];
   };
 }

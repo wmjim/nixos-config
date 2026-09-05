@@ -35,6 +35,8 @@ in
           rust-lang.rust-analyzer
           # 管理 Rust 依赖
           fill-labs.dependi
+          # 嵌入式图形化调试插件
+          marus25.cortex-debug
         ];
       };
     };

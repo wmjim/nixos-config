@@ -36,7 +36,7 @@ in
 
       # 构建依赖管理
       pkg-config # 编译时依赖配置工具
-    ] ++ lib.optionals pkgs.stdenv.isLinux (with pkgs; [
+    ] ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux (with pkgs; [
       # Linux 专属性能分析工具
       perf-tools # Linux 性能分析工具
       strace # 系统调用追踪

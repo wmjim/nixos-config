@@ -9,6 +9,7 @@ in
     ./bluetooth.nix
     ./audio.nix
     ./network.nix
+    ./mcu.nix
     ./nvidia-base.nix
   ];
 
@@ -16,6 +17,7 @@ in
     mySystem.hardware.audio.enable = lib.mkDefault true;
     mySystem.hardware.bluetooth.enable = lib.mkDefault true;
     mySystem.hardware.network.enable = lib.mkDefault true;
+    mySystem.hardware.mcu.enable = lib.mkDefault true;
     # nvidia 需要主机显式开启（server/WSL 不需要）
   };
 }
