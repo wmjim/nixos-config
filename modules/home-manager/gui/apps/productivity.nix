@@ -21,6 +21,7 @@ in
       obsidian # 笔记软件
       typora # markdown 编辑器
       thunderbird # 邮件管理
+      wpsoffice-cn # 微软办公套件（中文）
     ];
 
     # 思源笔记是 Electron 应用，其 package.json 的 desktopName 为 "org.b3log.siyuan"，
