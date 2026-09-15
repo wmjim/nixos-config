@@ -3,7 +3,6 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/master";
-    nixpkgs-darwin.url = "github:nixos/nixpkgs/nixpkgs-26.05-darwin";
 
     nur.url = "github:nix-community/NUR";
 
@@ -43,7 +42,6 @@
       nixpkgs,
       nur,
       noctalia,
-      nixpkgs-darwin,
       home-manager,
       nixos-wsl,
       nix-darwin,
