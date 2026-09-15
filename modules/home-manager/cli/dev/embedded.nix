@@ -9,11 +9,10 @@ let
   # === stm32cubemx HiDPI 启动器包装 ===
   # CubeMX 的 Swing 窗口内嵌 JxBrowser(Chromium) 渲染整个配置界面。GNOME 分数缩放
   # (如桌面 4K@scale=1.5) 下 XWayland 只按整数缩放上报,AWT 因而默认落在 1x,
-  # 整窗文字远小于桌面。且 AWT 的 sun.java2d.uiScale 只接受整数,全局 _JAVA_OPTIONS
-  # 里设的 1.5 会被静默忽略(实测 defaultTransform 仍为 1x1),救不了 Chromium 内容。
-  # 故启动时读 monitors.xml 的 GNOME 逻辑缩放,向上取整为整数(1→1、>1→2)再喂给 JVM:
-  # 桌面(1.5)得到 uiScale=2,窗口逻辑分辨率与桌面一致,字号不再偏小;scale=1 的
-  # 主机(如 laptop)取 1,行为与不设无异,不影响其他机器。
+  # 整窗文字远小于桌面。系统级 _JAVA_OPTIONS 已由 mySystem.desktop.scale 向上取整
+  # 得到整数 uiScale,但该启动器同时用于无该变量的主机(如 macOS),故仍在运行时
+  # 读 monitors.xml 的 GNOME 逻辑缩放,向上取整为整数(1→1、>1→2)再喂给 JVM,
+  # 保证各平台都能拿到正确值。
   stm32cubemxLauncher = pkgs.symlinkJoin {
     name = "stm32cubemx-launcher";
     paths = [
@@ -32,7 +31,7 @@ let
           done < "$HOME/.config/monitors.xml"
         fi
 
-        # 覆盖外层环境变量（其 1.5 为无效值），补齐 AWT 字体抗锯齿选项
+        # 覆盖外层环境变量，补齐 AWT 字体抗锯齿选项
         export _JAVA_OPTIONS="-Dawt.useSystemAAFontSettings=true -Dswing.aatext=true"
         if [ -n "$uiScale" ]; then
           _JAVA_OPTIONS="$_JAVA_OPTIONS -Dsun.java2d.uiScale=$uiScale"

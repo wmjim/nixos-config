@@ -8,6 +8,15 @@ in
   options.mySystem.desktop.niri.enable = lib.mkEnableOption "Niri 窗口管理器";
   options.mySystem.desktop.gnome.enable = lib.mkEnableOption "GNOME 桌面环境";
 
+  # 显示器逻辑缩放（GNOME/Niri 的 fractional scaling 值，如 4K 屏的 1.5）。
+  # AWT 的 sun.java2d.uiScale 只接受整数，此处统一声明桌面缩放，
+  # 由 env.nix 向上取整后喂给 JVM，避免各处重复推导或硬编码无效值。
+  options.mySystem.desktop.scale = lib.mkOption {
+    type = lib.types.numbers.positive;
+    default = 1;
+    description = "显示器逻辑缩放（分数缩放值，如 1.5）；AWT 应用会向上取整为整数 uiScale";
+  };
+
   imports = [
     ./boot.nix
     ./gdm.nix

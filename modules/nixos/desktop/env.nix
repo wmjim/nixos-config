@@ -2,6 +2,10 @@
 { lib, config, ... }:
 let
   cfg = config.mySystem.desktop;
+  # AWT 的 sun.java2d.uiScale 只接受整数，分数值（如 1.5）会被静默忽略，
+  # 导致 4K 分数缩放主机上 Java 应用整体落在 1x、文字偏小。
+  # 按桌面声明的 scale 向上取整：scale=1 → 1，>1 → 2。
+  javaUiScale = if cfg.scale > 1 then 2 else 1;
 in
 {
   config = lib.mkIf cfg.enable {
@@ -16,7 +20,7 @@ in
       # QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
       ELECTRON_OZONE_PLATFORM_HINT = "auto";
       _JAVA_AWT_WM_NONREPARENTING = "1";
-      _JAVA_OPTIONS = "-Dawt.useSystemAAFontSettings=true -Dswing.aatext=true -Dsun.java2d.uiScale=1.5";
+      _JAVA_OPTIONS = "-Dawt.useSystemAAFontSettings=true -Dswing.aatext=true -Dsun.java2d.uiScale=${toString javaUiScale}";
       RUST_BACKTRACE = "1";
       # XWayland 应用（Steam 及其游戏）光标主题/大小：
       # Niri 自身从 config.kdl 读取光标配置，但 XWayland 走 XCURSOR_* 环境变量；

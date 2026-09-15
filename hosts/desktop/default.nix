@@ -13,6 +13,8 @@
     hardware.enable = true;
     hardware.nvidia.enable = true;
     desktop.enable = true;
+    # 4K@150Hz 显示器，GNOME/Niri 分数缩放 1.5
+    desktop.scale = 1.5;
     desktop.gnome.enable = true;
     desktop.niri.enable = true;
     desktop.distrobox.enable = true;
