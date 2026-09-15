@@ -1,8 +1,8 @@
 // 启动时生成进程
 // 允许 root 通过用户的 xwayland 打开窗口
 spawn-at-startup "xhost" "+si:localuser:root"
-// polkit 认证代理
-spawn-at-startup "/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1"
+// polkit 认证代理（二进制由 nixos 模块包成同名 wrapper 放入 PATH）
+spawn-at-startup "polkit-gnome-authentication-agent-1"
 // noctalia shell
 spawn-at-startup "noctalia"
 // 输入法
