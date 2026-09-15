@@ -1,0 +1,49 @@
+name: "Flake checks"
+
+on:
+  push:
+    branches:
+      - "main"
+  pull_request:
+
+permissions:
+  contents: "read"
+
+concurrency:
+  group: "${{ github.workflow }}-${{ github.ref }}"
+  cancel-in-progress: true
+
+jobs:
+  # 求值检查：确认所有 flake 输出可求值，NixOS/darwin 配置可推导出 toplevel。
+  # 注意 nix flake check 只验证 darwinConfigurations 输出存在，不强制求值
+  # config.system.build.toplevel，所以 darwin 主机还要靠下面的 dry-run 兜底。
+  evaluate:
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: "actions/checkout@v6"
+        with:
+          persist-credentials: false
+      - uses: "DeterminateSystems/determinate-nix-action@v3"
+      - name: "nix flake check"
+        run: nix flake check --no-write-lock-file
+
+  # 干跑构建：计算各主机 system.build.toplevel 的完整闭包，只求值不真正构建。
+  # 按主机拆矩阵，某台失败时能直接看出是哪台（server stub 曾因无 CI 而长期未构建）。
+  dry-build:
+    runs-on: "ubuntu-latest"
+    strategy:
+      fail-fast: false
+      matrix:
+        target:
+          - "nixosConfigurations.desktop"
+          - "nixosConfigurations.laptop"
+          - "nixosConfigurations.server"
+          - "nixosConfigurations.wsl"
+          - "darwinConfigurations.macbook"
+    steps:
+      - uses: "actions/checkout@v6"
+        with:
+          persist-credentials: false
+      - uses: "DeterminateSystems/determinate-nix-action@v3"
+      - name: "dry-run build ${{ matrix.target }}"
+        run: nix build --dry-run --no-write-lock-file ".#${{ matrix.target }}.config.system.build.toplevel"

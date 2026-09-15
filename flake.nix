@@ -16,8 +16,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # nix-darwin 分支须与 nixpkgs 分支匹配，否则 darwinSystem 的 release check
+    # assert 会拒绝求值（nix-darwin eval-config.nix）。
+    # nixpkgs 跟踪 master（unstable），故 nix-darwin 也用 master。
     nix-darwin = {
-      url = "github:LnL7/nix-darwin/nix-darwin-26.05";
+      url = "github:nix-darwin/nix-darwin/master";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
