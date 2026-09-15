@@ -24,7 +24,16 @@ let
       extraWrapArgs ? "",
     }:
     let
-      bin = if binary != null then binary else pkg.pname or (builtins.baseNameOf pkg);
+      # binary 未显式传入时，依次尝试包的 pname 与 meta.mainProgram；
+      # 两者皆无则直接报错，避免 baseNameOf 取到 store hash 名（如
+      # n8x2...-wechat-4.0.3.3）导致 wrapProgram 找不到可执行文件。
+      bin =
+        if binary != null then
+          binary
+        else
+          pkg.pname or pkg.meta.mainProgram or (
+            throw "wrapQtXWayland: 无法确定主程序名，请显式传入 binary=..."
+          );
 
       desktopFilePatch = lib.optionalString (startupWMClass != null) ''
         desktopFiles=${
