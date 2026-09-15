@@ -17,7 +17,7 @@ in
 
   config = lib.mkIf (cfg.enable && cliCfg.enable) {
     # 快捷键速查表
-    xdg.configFile."DankMaterialShell/cheatsheets/" = {
+    xdg.configFile."cheatsheets/" = {
       source = ./../cheatsheets;
       recursive = true;
       force = true;

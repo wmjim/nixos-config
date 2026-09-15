@@ -7,9 +7,6 @@ binds {
     Mod+Ctrl+U      hotkey-overlay-title="当前窗口移至下个工作区"       { move-column-to-workspace-down; }
     Mod+Ctrl+I      hotkey-overlay-title="当前窗口移至上个工作区"       { move-column-to-workspace-up; }
 
-    // 重命名工作区
-    Ctrl+Shift+R hotkey-overlay-title="命名工作区" { spawn "dms" "ipc" "call" "workspace-rename" "open"; }
-
     // === 切换工作区 ===
     Mod+1   hotkey-overlay-title="切换工作区1"      { focus-workspace 1; }
     Mod+2   hotkey-overlay-title="切换工作区2"      { focus-workspace 2; }

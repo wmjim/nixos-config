@@ -11,7 +11,7 @@ binds {
     Mod+Escape  hotkey-overlay-title="强制恢复/禁用niri快捷键" { toggle-keyboard-shortcuts-inhibit; }
 
     // 快捷键查看器
-    Mod+Slash   hotkey-overlay-title="快捷键"           { spawn-sh "~/.config/niri/scripts/niri-binds.sh"; }
+    Mod+Slash   hotkey-overlay-title="快捷键"           { spawn-sh "noctalia msg panel-toggle blackbartblues/keymap:panel"; }
 
     // 锁屏与会话
     Mod+Alt+L   hotkey-overlay-title="锁屏"             { spawn-sh "noctalia msg screen-lock"; }

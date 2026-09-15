@@ -5,10 +5,10 @@ sudo nixos-rebuild switch --flake ~/nixos-config#laptop  | 更新 laptop 系统
 # niri 相关
 niri validate                                            | 解析 niri 配置文件并查看错误信息
 
-# dms 相关
-dms keybinds list                                        | 列出所有可用的快捷键提供者
-dms keybinds show niri                                   | 以JSON格式显示指定提供者的快捷键
-dms ipc call keybinds toggle niri                        | 通过IPC在DMS中直接显示按键绑定
+# noctalia 快捷键速查（keymap 插件）
+noctalia msg panel-toggle blackbartblues/keymap:panel              | 打开 keymap 插件快捷键查看面板
+noctalia msg plugin blackbartblues/keymap:niri-service all refresh | 重新解析 niri 配置中的快捷键
+noctalia msg plugins list                                          | 列出已安装的 noctalia 插件
 
 # tmux 相关
 tmux list-keys                                           | 查看tmux所有快捷键

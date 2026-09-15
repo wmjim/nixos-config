@@ -59,7 +59,6 @@ in
         dufjson = "duf --json";
         zquery = "zoxide query -l -s";
         cc = "claude --dangerously-skip-permissions";
-        key = "dms ipc call keybinds toggle";
       };
       shellInit = ''
         fish_add_path ${config.home.homeDirectory}/.cargo/bin
@@ -88,7 +87,7 @@ in
         bind \co fish_command_picker
 
         function cheat
-          set -l dir ~/.config/DankMaterialShell/cheatsheets
+          set -l dir ~/.config/cheatsheets
           if not test -d $dir
             echo "cheatsheets directory not found: $dir"
             return 1
