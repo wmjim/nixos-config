@@ -24,6 +24,7 @@ in
       lazygit
       claude-code
       pi-coding-agent
+      codex
       unzip
       gzip
       tree
