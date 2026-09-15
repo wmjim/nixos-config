@@ -90,7 +90,7 @@
         # 台式机（Niri 桌面）
         desktop = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
-          specialArgs = { inherit inputs lib; };
+          specialArgs = { inherit inputs; };
           modules = nixosCore ++ [
             ./hosts/desktop
             (mkHomeManager { extraModules = [ ./modules/home-manager/gui ]; })
@@ -100,7 +100,7 @@
         # 笔记本（GNOME 桌面）
         laptop = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
-          specialArgs = { inherit inputs lib; };
+          specialArgs = { inherit inputs; };
           modules = nixosCore ++ [
             ./hosts/laptop
             (mkHomeManager { extraModules = [ ./modules/home-manager/gui ]; })
@@ -110,7 +110,7 @@
         # WSL（仅 CLI/TUI）
         wsl = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
-          specialArgs = { inherit inputs lib; };
+          specialArgs = { inherit inputs; };
           modules = nixosCore ++ [
             ./hosts/wsl
             (mkHomeManager { })
@@ -120,7 +120,7 @@
         # 服务器（无桌面）
         server = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
-          specialArgs = { inherit inputs lib; };
+          specialArgs = { inherit inputs; };
           modules = nixosCore ++ [
             ./hosts/server
             (mkHomeManager { })
@@ -134,7 +134,7 @@
       darwinConfigurations = {
         macbook = nix-darwin.lib.darwinSystem {
           system = "aarch64-darwin";
-          specialArgs = { inherit inputs lib; };
+          specialArgs = { inherit inputs; };
           modules = [
             ./hosts/_common/darwin/base.nix
             ./hosts/_common/darwin/users.nix
