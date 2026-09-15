@@ -29,9 +29,16 @@
     boot.kernelPackages = pkgs.linuxPackages_latest;
 
     # 保持NixOS系统自动更新
+    # 必须显式指向本机 flake：未设 flake 时 nixos-rebuild 回退 classic 路径，
+    # 而本机 NIX_PATH 无 nixos-config，daily timer 只会反复失败。
+    # 各主机 networking.hostName 与 flake 输出属性同名，据此自动选择目标主机。
     system.autoUpgrade = {
       enable = true;
       allowReboot = false;
+      flake = "/home/mengw/nixos-config#${config.networking.hostName}";
+      # 显式钉死 --refresh：nixpkgs 默认 flags 已含此项，此处重复声明仅为
+      # 防止上游变更默认值后退化为只构建 flake.lock 锁定的旧 nixpkgs
+      flags = [ "--refresh" ];
     };
 
     # 自动将超过一周的垃圾回收，降低磁盘占用
