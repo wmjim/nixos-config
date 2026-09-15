@@ -45,15 +45,6 @@ window-rule {
 // ═══════════════════════════════════════════════
 // 浮动窗口（按应用性质设定合适比例）
 // ═══════════════════════════════════════════════
-
-// cc-switch — 小型切换工具
-window-rule {
-    match app-id="(?i)cc-switch"
-    open-floating true
-    default-column-width { proportion 0.2; }
-    default-window-height { proportion 0.25; }
-}
-
 // Fcitx5 配置 — 输入法设置
 window-rule {
     match app-id="(?i)fcitx5"

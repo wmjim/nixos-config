@@ -85,6 +85,6 @@ Niri 配置文件位于 `modules/home-manager/gui/wm/config/`（symlink 到 `~/.
 ## 窗口规则（自动行为）
 
 - **最大化打开**：VSCode、Logisim、Brave、Zotero
-- **浮动打开**：Fcitx5 配置、PicGo、btop、qView、LocalSend、微信、QQ、Telegram、Discord、欧陆词典、cc-switch
+- **浮动打开**：Fcitx5 配置、PicGo、btop、qView、LocalSend、微信、QQ、Telegram、Discord、欧陆词典
 - **侧边浮动**：Pot（右侧 20% 宽长条）
 - 全局默认平铺，圆角 3px
