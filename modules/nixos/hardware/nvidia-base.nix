@@ -4,9 +4,25 @@ let
   cfg = config.mySystem.hardware;
 in
 {
-  options.mySystem.hardware.nvidia.enable = lib.mkEnableOption "NVIDIA 驱动";
+  # 依赖 mySystem.hardware.enable：NVIDIA 配置体由该开关共同门控，且音频/图形等
+  # 配套支持也由它统一启用。单独开启本开关会静默失效，见下方 assertions。
+  options.mySystem.hardware.nvidia.enable = lib.mkEnableOption "NVIDIA 驱动（须同时开启 mySystem.hardware.enable）";
 
-  config = lib.mkIf (cfg.enable && cfg.nvidia.enable) {
+  config = lib.mkMerge [
+    {
+      assertions = [
+        {
+          assertion = !(cfg.nvidia.enable && !cfg.enable);
+          message = ''
+            mySystem.hardware.nvidia.enable 已开启，但 mySystem.hardware.enable 未开启。
+            NVIDIA 驱动配置仅在二者同时开启时生效，否则 videoDrivers 不会被设为 "nvidia"，
+            主机 nvidia.nix 中的 package/prime 等设置也会静默失效（构建通过但开机无驱动）。
+          '';
+        }
+      ];
+    }
+
+    (lib.mkIf (cfg.enable && cfg.nvidia.enable) {
     services.xserver.videoDrivers = [ "nvidia" ];
 
     boot.kernelParams = [
@@ -83,5 +99,6 @@ in
       mesa-demos
       libva-utils
     ];
-  };
+    })
+  ];
 }
