@@ -31,7 +31,7 @@ nix develop
 
 ### 基于选项的主机配置 (`mySystem` 命名空间)
 
-无需为每台主机单独导入模块，`modules/nixos/core/default.nix` 定义了一个选项命名空间：
+无需为每台主机单独导入模块，所有功能模块都由 `core/default.nix` 无条件导入，再通过选项开关控制是否生效。选项**就近定义在各自功能模块中**，只有三个顶层域开关集中在 `core/default.nix`：
 
 ```nix
 options.mySystem = {
@@ -41,15 +41,35 @@ options.mySystem = {
 };
 ```
 
-`hosts/` 目录下的每台主机配置都会设置这类布尔开关。各模块通过 `lib.mkIf config.mySystem.<foo>.enable` 实现条件启用。新增功能需遵循该规范：先在 `core/default.nix` 中添加对应配置项，用该配置项控制模块加载，最后在主机配置里开启开关。
+各模块通过 `lib.mkIf config.mySystem.<foo>.enable` 实现条件启用。新增功能时，选项应定义在实现该功能的模块文件里（而非集中到 core），再在对应域的聚合模块中用 `lib.mkDefault` 给出默认开关值。
+
+### 选项 → 文件映射
+
+| 选项 | 定义位置 | 说明 |
+|------|----------|------|
+| `mySystem.hardware.enable` | `modules/nixos/core/default.nix` | 顶层域开关，开启后默认连带启用下列 hardware 子选项 |
+| `mySystem.desktop.enable` | `modules/nixos/core/default.nix` | 顶层域开关 |
+| `mySystem.virtualization.enable` | `modules/nixos/core/default.nix` | 顶层域开关（QEMU/KVM） |
+| `mySystem.users.<name>.{enable,extraGroups,shell}` | `modules/nixos/core/users.nix` | 用户声明，主机配置中覆盖 |
+| `mySystem.proxy.{enable,port,extraNoProxy}` | `modules/nixos/networking/proxy.nix` | 本机 HTTP 代理（Clash Verge） |
+| `mySystem.hardware.audio.enable` | `modules/nixos/hardware/audio.nix` | PipeWire |
+| `mySystem.hardware.bluetooth.enable` | `modules/nixos/hardware/bluetooth.nix` | |
+| `mySystem.hardware.network.enable` | `modules/nixos/hardware/network.nix` | iwd + NetworkManager |
+| `mySystem.hardware.mcu.enable` | `modules/nixos/hardware/mcu.nix` | 嵌入式开发工具链 |
+| `mySystem.hardware.nvidia.enable` | `modules/nixos/hardware/nvidia-base.nix` | 需主机显式开启（server/WSL 不需要） |
+| `mySystem.desktop.niri.enable` | `modules/nixos/desktop/default.nix` | Niri WM |
+| `mySystem.desktop.gnome.enable` | `modules/nixos/desktop/default.nix` | GNOME |
+| `mySystem.desktop.scale` | `modules/nixos/desktop/default.nix` | 分数缩放，AWT 应用会向上取整 |
+| `mySystem.desktop.distrobox.enable` | `modules/nixos/desktop/distrobox.nix` | |
+| `mySystem.desktop.steam.enable` | `modules/nixos/desktop/steam.nix` | |
 
 ### Module layering
 
 ```
 modules/
   nixos/core/       在所有NixOS主机中永久导入：用户配置、区域语言、硬件适配、桌面环境、虚拟化、网络组件
-  nixos/desktop/    由mySystem.desktop.enable开关控制加载：boot、GDM、env、Niri、GNOME、Distrobox
-  nixos/hardware/   由mySystem.hardware.enable开关控制加载：音频（PipeWire）、蓝牙、网络（iwd+NetworkManager）、NVIDIA基础驱动
+  nixos/desktop/    永久导入，由mySystem.desktop.enable控制生效：boot、GDM、env、Niri、GNOME、Distrobox、Steam
+  nixos/hardware/   永久导入，由mySystem.hardware.enable控制生效：音频（PipeWire）、蓝牙、网络（iwd+NetworkManager）、MCU工具链、NVIDIA基础驱动（后者需显式开启）
   home-manager/     多用户共用配置，同时兼容 NixOS 与 macOS 系统
     cli/            通用加载项：Shell（Fish）、编辑器（Helix / Neovim）、开发工具、TUI终端交互工具
     gui/            仅用于桌面用户加载：应用程序、备用主题、窗口管理器（Niri / Noctalia）、VSCode、Fcitx5输入法
