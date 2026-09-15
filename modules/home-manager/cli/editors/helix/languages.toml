@@ -30,7 +30,6 @@ features = "all"
 command = "clippy"
 
 [language-server.rust-analyzer.config.rustfmt]
-overrideCommand = ["rustfmt", "+nightly"]
 
 [language-server.rust-analyzer.config.procMacro]
 enabled = true
