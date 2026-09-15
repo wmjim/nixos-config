@@ -31,14 +31,10 @@ in
 
   config = lib.mkIf (cfg.enable && appsCfg.enable && guiCfg.enable) {
     home.packages = with pkgs; [
-      zed-editor
-      (wrapJb "pycharm" jetbrains.pycharm)
       (wrapJb "clion" jetbrains.clion)
-      (wrapJb "idea" jetbrains.idea)
-      (wrapJb "rider" jetbrains.rider)
-      (wrapJb "datagrip" jetbrains.datagrip)
       github-desktop
-      qtcreator
+      qtcreator # QT
+      heidisql # 数据库
       cutecom # 简单的图形化串口终端模拟器
     ];
   };
