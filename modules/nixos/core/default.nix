@@ -86,11 +86,8 @@
     # 允许非自由软件
     nixpkgs.config.allowUnfree = true;
 
-    # 允许不安全的包
-    nixpkgs.config.permittedInsecurePackages = [
-      "openssl-1.1.1w"
-      "pnpm-10.29.2"
-    ];
+    # 允许不安全的包（每条须写明被哪个包需要，并定期复核是否仍有效）
+    nixpkgs.config.permittedInsecurePackages = [ ];
 
     # valgrind 放行
     nixpkgs.config.problems.handlers.valgrind.broken = "warn";

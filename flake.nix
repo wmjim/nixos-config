@@ -69,9 +69,6 @@
           home-manager.sharedModules = [
             {
               nixpkgs.config.allowUnfree = true;
-              nixpkgs.config.permittedInsecurePackages = [
-                "pnpm-10.29.2"
-              ];
             }
           ];
         };
