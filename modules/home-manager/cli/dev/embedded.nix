@@ -47,6 +47,10 @@ let
       ln -s ${pkgs.stm32cubemx}/share/icons $out/share/icons
     '';
   };
+
+  # CubeMX 固件包（HAL/LL/Cube 库，约 500MB）的下载位置。默认是 ~/STM32Cube/Repository，
+  # 收拢到 ~/Apps（与 xwechat_files、Zotero 等应用数据同放一处）。
+  cubemxRepository = "${config.home.homeDirectory}/Apps/STM32Cube/Repository/";
 in
 {
   options.mengw.cli.dev.embedded.enable = lib.mkOption {
@@ -103,5 +107,27 @@ in
         # 需要 libc 的 AVR 工程请走 PlatformIO（已装）或在该工程的 devShell 里以
         # buildInputs 引用 pkgsCross.avr.avrlibc。
       ]);
+
+    # === 固件仓库路径锚定 ===
+    # 该路径记在 ~/.stm32cubemx/plugins/updater/updater.ini 的 [Path] 段，但同一 ini 还
+    # 混着更新时间戳/窗口尺寸等可变状态，无法整体托管，故只在每次切换时钉住这一行。
+    # 数据本身不搬运——首次迁移需手动 mv（见 CLAUDE.md「平台适配特殊处理」），之后
+    # CubeMX 下载新固件包即直接落到 cubemxRepository。macOS 上不装 stm32cubemx，脚本为空串。
+    home.activation.stm32cubemxRepository =
+      lib.hm.dag.entryAfter [ "writeBoundary" ] (lib.optionalString pkgs.stdenv.hostPlatform.isLinux ''
+        ini="${config.home.homeDirectory}/.stm32cubemx/plugins/updater/updater.ini"
+        if [ ! -f "$ini" ]; then
+          verboseEcho "CubeMX 尚未运行过（$ini 不存在），跳过固件仓库路径锚定"
+        else
+          $DRY_RUN_CMD ${pkgs.coreutils}/bin/mkdir -p "${cubemxRepository}"
+          current=$(${pkgs.gnused}/bin/sed -n 's|^RepositoryPath=||p' "$ini")
+          if [ "$current" = "${cubemxRepository}" ]; then
+            verboseEcho "CubeMX 固件仓库路径已正确：${cubemxRepository}"
+          else
+            verboseEcho "CubeMX 固件仓库路径漂移（$current → ${cubemxRepository}），已修正"
+            $DRY_RUN_CMD ${pkgs.gnused}/bin/sed -i "s|^RepositoryPath=.*|RepositoryPath=${cubemxRepository}|" "$ini"
+          fi
+        fi
+      '');
   };
 }
