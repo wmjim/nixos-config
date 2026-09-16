@@ -95,6 +95,15 @@
     # NUR overlay（系统级字体 harmonyos-sans 等依赖）
     nixpkgs.overlays = [ inputs.nur.overlays.default ];
 
+    # nixos-upgrade.service 以 root 运行且 HOME=/root，读不到用户 ~/.gitconfig，
+    # libgit2 因仓库属主非 root 而拒绝访问。必须在系统级 /etc/gitconfig 放开
+    # safe.directory，否则 autoUpgrade 每日必然失败。
+    # programs.git.enable 默认为 false：不开启则 /etc/gitconfig 根本不会生成。
+    programs.git.enable = true;
+    programs.git.config.safe.directory = [
+      "${config.users.users.mengw.home}/nixos-config"
+    ];
+
     # SSH
     services.openssh = {
       enable = true;
@@ -118,7 +127,6 @@
     # 系统级包
     environment.systemPackages = with pkgs; [
       iwd
-      git
       wget
     ];
 
