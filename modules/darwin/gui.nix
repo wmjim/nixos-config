@@ -46,11 +46,7 @@ in
         cleanup = "zap";
       };
 
-      taps = [
-        "homebrew/cask"
-        "homebrew/cask-fonts"
-      ];
-
+      # Homebrew 4.x 起 cask 已并入核心 tap，无需额外 tap homebrew/cask
       # GUI 应用
       casks = [
         "alacritty"
