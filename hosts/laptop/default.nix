@@ -10,7 +10,6 @@
   networking.hostName = "laptop";
 
   # 修复 libvirtd TPM2 凭证解密失败
-  systemd.services.libvirtd.serviceConfig.LoadCredentialEncrypted = lib.mkForce [ ];
   systemd.services.libvirtd.serviceConfig.LoadCredential = [
     "secrets-encryption-key:/var/lib/libvirt/secrets/secrets-encryption-key"
   ];
