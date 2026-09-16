@@ -5,7 +5,39 @@ let
   desktopCfg = config.mySystem.desktop;
 in
 {
+  # 扩展安装列表的单一来源：hm 侧的 dconf enabled-extensions 由各包的
+  # extensionUuid 派生（见 modules/home-manager/gui/themes/default.nix），
+  # 避免安装列表与启用列表分离维护而静默脱节
+  options.mySystem.desktop.gnome.extensions = lib.mkOption {
+    type = lib.types.listOf lib.types.package;
+    default = [ ];
+    description = "GNOME Shell 扩展包；dconf 启用列表由其 extensionUuid 自动派生";
+  };
+
   config = lib.mkIf (cfg.enable && desktopCfg.enable) {
+    mySystem.desktop.gnome.extensions = with pkgs.gnomeExtensions; [
+      blur-my-shell
+      just-perfection
+      arcmenu
+      dash-to-panel
+      appindicator
+      kimpanel
+      clipboard-indicator
+      compiz-alike-magic-lamp-effect
+      coverflow-alt-tab
+      tiling-shell
+      rounded-window-corners-reborn
+      removable-drive-menu
+      user-themes
+    ];
+
+    environment.systemPackages = with pkgs; [
+      # GNOME Shell 依赖 ibus-daemon 二进制，即使使用 fcitx5 也需提供
+      ibus
+      # 软件：扩展管理
+      gnome-tweaks
+    ] ++ cfg.extensions;
+
     # 在64位系统上为 Wine 32 位应用提供 OpenGL
     hardware.graphics.enable32Bit = true;
     # 启用 GNOME 桌面
@@ -83,39 +115,6 @@ in
     environment.gnome.excludePackages = with pkgs; [
       gnome-tour
       gnome-user-docs
-    ];
-
-    environment.systemPackages = with pkgs; [
-      # GNOME Shell 依赖 ibus-daemon 二进制，即使使用 fcitx5 也需提供
-      ibus
-      # 软件：扩展管理
-      gnome-tweaks
-      # 插件：添加毛玻璃模糊效果
-      gnomeExtensions.blur-my-shell
-      # 插件：深度定制GNOME界面
-      gnomeExtensions.just-perfection
-      # 插件：应用程序菜单
-      gnomeExtensions.arcmenu
-      # 插件：将程序启动栏和GNOME面板整合，类似Win
-      gnomeExtensions.dash-to-panel
-      # 插件：顶部状态栏恢复系统托盘图标
-      gnomeExtensions.appindicator
-      # 插件：适用于GNOME的输入法面板
-      gnomeExtensions.kimpanel
-      # 插件：剪贴板管理工具
-      gnomeExtensions.clipboard-indicator
-      # 插件：窗口关闭神灯动画
-      gnomeExtensions.compiz-alike-magic-lamp-effect
-      # 插件：Alt+Tab横向3D滚动效果
-      gnomeExtensions.coverflow-alt-tab
-      # 插件：增强窗口分配
-      gnomeExtensions.tiling-shell
-      # 插件：为所有窗口添加圆角
-      gnomeExtensions.rounded-window-corners-reborn
-      # 插件：用于访问和卸载可移动设备的状态菜单
-      gnomeExtensions.removable-drive-menu
-      # 插件：加载 shell 主题（MacTahoe 换肤依赖）
-      gnomeExtensions.user-themes
     ];
   };
 }

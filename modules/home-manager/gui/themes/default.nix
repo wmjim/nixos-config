@@ -1,5 +1,5 @@
 # Qt/GTK 主题配置
-{ lib, config, pkgs, ... }:
+{ lib, config, pkgs, osConfig, ... }:
 let
   cfg = config.mengw.gui.themes;
   guiCfg = config.mengw.gui;
@@ -53,25 +53,18 @@ in
     };
 
     # GNOME Shell 换肤：启用 user-theme 扩展并指向 MacTahoe 主题
-    # enabled-extensions 为整数组写入，故列出全部已装扩展的 UUID，
-    # 避免覆盖用户已手动启用的扩展（UUID 从各扩展包 metadata 逐包核实）
+    # enabled-extensions 为整数组写入，故须列出全部已装扩展的 UUID，
+    # 否则会覆盖用户已手动启用的扩展。
+    #
+    # UUID 不再硬编码：安装列表在 NixOS 侧 mySystem.desktop.gnome.extensions
+    # 单一维护，此处经 osConfig 取回各包的 extensionUuid 派生启用列表，
+    # 避免"装了没启用 / 启用但没装"的静默脱节。
+    # osConfig 仅在 home-manager 作为 NixOS 模块集成时可用；gui 模块只在
+    # NixOS 桌面主机导入（见 flake.nix），macOS 不加载本模块，故必然存在。
     dconf.settings = {
       "org/gnome/shell" = {
-        enabled-extensions = [
-          "blur-my-shell@aunetx"
-          "just-perfection-desktop@just-perfection"
-          "arcmenu@arcmenu.com"
-          "dash-to-panel@jderose9.github.com"
-          "appindicatorsupport@rgcjonas.gmail.com"
-          "kimpanel@kde.org"
-          "clipboard-indicator@tudmotu.com"
-          "compiz-alike-magic-lamp-effect@hermes83.github.com"
-          "CoverflowAltTab@palatis.blogspot.com"
-          "tilingshell@ferrarodomenico.com"
-          "rounded-window-corners@fxgn"
-          "drive-menu@gnome-shell-extensions.gcampax.github.com"
-          "user-theme@gnome-shell-extensions.gcampax.github.com"
-        ];
+        enabled-extensions = map (e: e.extensionUuid)
+          (osConfig.mySystem.desktop.gnome.extensions or [ ]);
       };
       "org/gnome/shell/extensions/user-theme" = {
         name = "MacTahoe-Light";

@@ -59,6 +59,7 @@ options.mySystem = {
 | `mySystem.hardware.nvidia.enable` | `modules/nixos/hardware/nvidia-base.nix` | 需主机显式开启（server/WSL 不需要） |
 | `mySystem.desktop.niri.enable` | `modules/nixos/desktop/default.nix` | Niri WM |
 | `mySystem.desktop.gnome.enable` | `modules/nixos/desktop/default.nix` | GNOME |
+| `mySystem.desktop.gnome.extensions` | `modules/nixos/desktop/gnome/default.nix` | 扩展包单一来源，hm 侧 dconf `enabled-extensions` 由各包 `extensionUuid` 派生 |
 | `mySystem.desktop.scale` | `modules/nixos/desktop/default.nix` | 分数缩放，AWT 应用会向上取整 |
 | `mySystem.desktop.distrobox.enable` | `modules/nixos/desktop/distrobox.nix` | |
 | `mySystem.desktop.steam.enable` | `modules/nixos/desktop/steam.nix` | |
