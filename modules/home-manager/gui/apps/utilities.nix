@@ -44,5 +44,21 @@ in
       localsend
       eudic-fixed
     ];
+
+    # === tmp.text 垃圾文件拦截 ===
+    # ThunderHelper.node 里残留了一行调试代码 `df -h > tmp.text`，迅雷每次启动都
+    # 会把磁盘信息写到进程工作目录（bwrap 沙箱 --chdir $HOME），导致家目录反复
+    # 出现 tmp.text。这里把该路径钉成 /dev/null 的符号链接，写入直接进黑洞。
+    home.activation.xunleiTmpTextSink =
+      lib.hm.dag.entryAfter [ "writeBoundary" ] (lib.optionalString pkgs.stdenv.hostPlatform.isLinux ''
+        sink="${config.home.homeDirectory}/tmp.text"
+        if [ -L "$sink" ] && [ "$(readlink "$sink")" = "/dev/null" ]; then
+          verboseEcho "tmp.text 已指向 /dev/null，无需处理"
+        else
+          verboseEcho "tmp.text 未锚定到 /dev/null，已重置为符号链接"
+          $DRY_RUN_CMD ${pkgs.coreutils}/bin/rm -f "$sink"
+          $DRY_RUN_CMD ${pkgs.coreutils}/bin/ln -s /dev/null "$sink"
+        fi
+      '');
   };
 }
