@@ -42,15 +42,22 @@ in
       enable = true;
       enableFishIntegration = true;
       shellWrapperName = "y";
+      # Yazi 26 移除了 yazi.toml 的顶层排序键，必须放进 [mgr] 段，
+      # 顶层的 sort_by 会被当成 opener 表的键名解析，报 "must be 1-20 characters in kebab-case"
       settings = {
-        sort_by = "natural";
-        sort_sensitive = true;
+        mgr = {
+          sort_by = "natural";
+          sort_sensitive = true;
+        };
         preview = {
           tab_size = 2;
           max_width = 2000;
           max_height = 2000;
         };
       };
+      # Alacritty 不支持任何图形协议，Niri 会话下 Yazi 选 ueberzugpp 的 Wayland 驱动
+      # （WSLg 下走 X11 驱动），但 nixpkgs 的 yazi wrapper 不带 ueberzugpp，图片预览空白
+      extraPackages = lib.optional pkgs.stdenv.hostPlatform.isLinux pkgs.ueberzugpp;
       theme = {
         flavor = {
           light = "flexoki-light";
