@@ -1,4 +1,4 @@
-# 启动日志配置 — 详细输出
+# 启动日志配置 — 安静模式
 { lib, config, pkgs, ... }:
 let
   cfg = config.mySystem.desktop;
@@ -6,10 +6,9 @@ in
 {
   config = lib.mkIf cfg.enable {
     boot = {
-      consoleLogLevel = 7;
-      initrd.verbose = true;
+      consoleLogLevel = 3;
+      initrd.verbose = false;
       kernelParams = [
-        "systemd.show_status=yes"
         "fbcon=nodefer"
         "nvidia_drm.fbdev=1"
         "console=tty1"
