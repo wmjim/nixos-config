@@ -37,8 +37,8 @@ in
     # 它们强制 Mesa / VA-API 的所有客户端走 dGPU 后端，轻则 GNOME 硬件加速异常，
     # 重则阻止 dGPU 进入 D3cold 直接吃续航。offload 模式应按程序经 nvidia-offload
     # wrapper 注入（wrapper 已自带 __GLX_VENDOR_LIBRARY_NAME=nvidia）。
-    # 余下三个与渲染设备无关：__GL_VRR_ALLOWED / NVD_BACKEND 仅在用到 NVIDIA 时被读取，
-    # WLR_NO_HARDWARE_CURSORS 仅 wlroot 合成器读取，iGPU 上均为惰性。
+    # 余下两个与渲染设备无关：__GL_VRR_ALLOWED / NVD_BACKEND 仅在用到 NVIDIA 时被读取，
+    # iGPU 上均为惰性。
     environment.variables =
       (lib.optionalAttrs (!config.hardware.nvidia.prime.offload.enable) {
         LIBVA_DRIVER_NAME = "nvidia";
@@ -47,7 +47,6 @@ in
       }) // {
         __GL_VRR_ALLOWED = "1";
         NVD_BACKEND = "direct";
-        WLR_NO_HARDWARE_CURSORS = "1";
       };
 
     nixpkgs.config.nvidia.acceptLicense = true;
