@@ -22,13 +22,15 @@
   services.tlp.enable = true;
 
   services.tlp.settings = {
+    # intel_pstate active 模式下 governor 由驱动内部算法接管，且 powersave
+    # 的语义就是“沿用 sysfs 的 EPP 值”，与下面的 CPU_ENERGY_PERF_POLICY 重复，
+    # 因此不再单独配置 CPU_SCALING_GOVERNOR_*（配了也不产生 AC/BAT 差异）。
+
     # 插电：性能均衡，风扇不会因 turbo 频繁启停
-    CPU_SCALING_GOVERNOR_ON_AC = "powersave";
     CPU_ENERGY_PERF_POLICY_ON_AC = "balance_performance";
     CPU_BOOST_ON_AC = "1";
 
     # 电池：以安静省电为主
-    CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
     CPU_ENERGY_PERF_POLICY_ON_BAT = "balance_power";
     CPU_BOOST_ON_BAT = "0";
 
