@@ -22,42 +22,43 @@
     {
       device = "/dev/disk/by-uuid/e0d906dd-b7af-4537-95c2-24595906fbce";
       fsType = "btrfs";
-      options = [ "subvol=@" ];
+      # noatime：SSD 上 atime 更新纯属写放大；ssd 选项对 NVMe 由内核自动启用，无需显式指定
+      options = [ "subvol=@" "noatime" ];
     };
 
   fileSystems."/home" =
     {
       device = "/dev/disk/by-uuid/e0d906dd-b7af-4537-95c2-24595906fbce";
       fsType = "btrfs";
-      options = [ "subvol=@home" ];
+      options = [ "subvol=@home" "noatime" ];
     };
 
   fileSystems."/nix" =
     {
       device = "/dev/disk/by-uuid/e0d906dd-b7af-4537-95c2-24595906fbce";
       fsType = "btrfs";
-      options = [ "subvol=@nix" ];
+      options = [ "subvol=@nix" "noatime" ];
     };
 
   fileSystems."/var" =
     {
       device = "/dev/disk/by-uuid/e0d906dd-b7af-4537-95c2-24595906fbce";
       fsType = "btrfs";
-      options = [ "subvol=@var" ];
+      options = [ "subvol=@var" "noatime" ];
     };
 
   fileSystems."/var/log" =
     {
       device = "/dev/disk/by-uuid/e0d906dd-b7af-4537-95c2-24595906fbce";
       fsType = "btrfs";
-      options = [ "subvol=@log" ];
+      options = [ "subvol=@log" "noatime" ];
     };
 
   fileSystems."/var/lib/docker" =
     {
       device = "/dev/disk/by-uuid/e0d906dd-b7af-4537-95c2-24595906fbce";
       fsType = "btrfs";
-      options = [ "subvol=@docker" ];
+      options = [ "subvol=@docker" "noatime" ];
     };
 
   fileSystems."/boot" =
