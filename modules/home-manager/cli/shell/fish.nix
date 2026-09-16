@@ -173,14 +173,22 @@ in
             echo "cheatsheet not found: $provider"
             return 1
           end
-          echo ""
-          jq -r '.title + " (" + .provider + ")"' $file
-          echo "────────────────────────────────────────────"
-          jq -r '
-            .binds | to_entries[] |
-            "\n" + .key + ":",
-            (.value[] | "  " + .key + "\t" + .desc + (if .subcat then " [" + .subcat + "]" else "" end))
-          ' $file
+          # 表格以 | 定界，单元格内的 | 先转成 HTML 实体，否则会撑断行
+          set -l md (jq -r '
+            "# \(.title)", "",
+            (.binds | to_entries[] |
+              "## \(.key)", "",
+              "| 按键 | 说明 |", "|---|---|",
+              (.value[] |
+                "| " + (.key | gsub("[|]"; "&#124;")) + " | " +
+                (.desc | gsub("[|]"; "&#124;")) +
+                (if .subcat then "（" + .subcat + "）" else "" end) + " |"),
+              "")
+          ' $file)
+          # glow 从 stdin 读取终端颜色查询的回复，用管道喂入可在 jq 结束后给出即时 EOF，
+          # 避开其在无应答的哑 pty 中挂起；timeout 兜底，异常时退回原始 markdown
+          printf '%s\n' $md | timeout 3 glow --style=dark -
+          or printf '%s\n' $md
         end
       '';
     };
