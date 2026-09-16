@@ -35,7 +35,7 @@
     system.autoUpgrade = {
       enable = true;
       allowReboot = false;
-      flake = "/home/mengw/nixos-config#${config.networking.hostName}";
+      flake = "${config.users.users.mengw.home}/nixos-config#${config.networking.hostName}";
       # 显式钉死 --refresh：nixpkgs 默认 flags 已含此项，此处重复声明仅为
       # 防止上游变更默认值后退化为只构建 flake.lock 锁定的旧 nixpkgs
       flags = [ "--refresh" ];
