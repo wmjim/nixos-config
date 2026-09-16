@@ -33,7 +33,7 @@ in
         ubuntu = "distrobox enter ubuntu";
         updatewsl = "sudo nixos-rebuild switch --flake ~/nixos-config#wsl";
         # 构建 desktop 主机 NixOS
-        updatedp = "sudo nixos-rebuild switch --flake ~/nixos-config#desktop"; 
+        updatedp = "sudo nixos-rebuild switch --flake ~/nixos-config#desktop";
         # 构建 desktop 主机 NixOS，并获取详细错误信息
         updatedplog = "sudo nixos-rebuild switch --flake ~/nixos-config#desktop --show-trace --print-build-logs --verbose";
         # 构建 laptop 笔记本 NixOS

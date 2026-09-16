@@ -27,12 +27,12 @@
   fonts.fontDir.enable = true;
 
   fonts.packages = with pkgs; [
-    source-serif-pro                                # 衬线字体
-    pkgs.nur.repos.guanran928.harmonyos-sans        # 无衬线字体
-    maple-mono.NormalNL-NF-CN-unhinted              # 等宽字体（CN 变体）
-    maple-mono.NormalNL-NF-unhinted                 # 等宽字体（非 CN 变体，补充）
-    noto-fonts-color-emoji                          # Emoji 字体
-    lxgw-wenkai                                     # 霞鹜文楷，中文衬线补充字体
+    source-serif-pro # 衬线字体
+    pkgs.nur.repos.guanran928.harmonyos-sans # 无衬线字体
+    maple-mono.NormalNL-NF-CN-unhinted # 等宽字体（CN 变体）
+    maple-mono.NormalNL-NF-unhinted # 等宽字体（非 CN 变体，补充）
+    noto-fonts-color-emoji # Emoji 字体
+    lxgw-wenkai # 霞鹜文楷，中文衬线补充字体
   ];
 
   fonts.fontconfig.subpixel.rgba = "rgb";

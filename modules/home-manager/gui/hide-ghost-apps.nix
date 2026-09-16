@@ -20,15 +20,17 @@ in
   };
 
   config = lib.mkIf (cfg.enable && guiCfg.enable) {
-    xdg.dataFile = builtins.listToAttrs (builtins.map (name: {
-      inherit name;
-      value = {
-        text = ''
-          [Desktop Entry]
-          Type=Application
-          NoDisplay=true
-        '';
-      };
-    }) (builtins.map (x: "applications/${x}.desktop") ghostApps));
+    xdg.dataFile = builtins.listToAttrs (builtins.map
+      (name: {
+        inherit name;
+        value = {
+          text = ''
+            [Desktop Entry]
+            Type=Application
+            NoDisplay=true
+          '';
+        };
+      })
+      (builtins.map (x: "applications/${x}.desktop") ghostApps));
   };
 }

@@ -40,15 +40,14 @@
   };
 
   outputs =
-    {
-      self,
-      nixpkgs,
-      nur,
-      noctalia,
-      home-manager,
-      nixos-wsl,
-      nix-darwin,
-      ...
+    { self
+    , nixpkgs
+    , nur
+    , noctalia
+    , home-manager
+    , nixos-wsl
+    , nix-darwin
+    , ...
     }@inputs:
     let
       lib = nixpkgs.lib;
@@ -56,8 +55,8 @@
 
       # Home Manager 共享样板：减少每个主机的重复代码
       mkHomeManager =
-        {
-          extraModules ? [ ],
+        { extraModules ? [ ]
+        ,
         }:
         { config, ... }:
         {

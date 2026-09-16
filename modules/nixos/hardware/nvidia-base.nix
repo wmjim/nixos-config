@@ -23,85 +23,85 @@ in
     }
 
     (lib.mkIf (cfg.enable && cfg.nvidia.enable) {
-    services.xserver.videoDrivers = [ "nvidia" ];
+      services.xserver.videoDrivers = [ "nvidia" ];
 
-    boot.kernelParams = [
-      "nvidia-drm.modeset=1"
-      "nvidia.NVreg_PreserveVideoMemoryAllocations=1"
-      "nvidia.NVreg_TemporaryFilePath=/var/tmp"
-      "nvidia.NVreg_UseKernelSuspendNotifiers=1"
-    ];
-    boot.blacklistedKernelModules = [ "nouveau" ];
+      boot.kernelParams = [
+        "nvidia-drm.modeset=1"
+        "nvidia.NVreg_PreserveVideoMemoryAllocations=1"
+        "nvidia.NVreg_TemporaryFilePath=/var/tmp"
+        "nvidia.NVreg_UseKernelSuspendNotifiers=1"
+      ];
+      boot.blacklistedKernelModules = [ "nouveau" ];
 
-    # PRIME offload 主机（iGPU 显示、dGPU 按需唤醒）不能全局注入下列三个变量：
-    # 它们强制 Mesa / VA-API 的所有客户端走 dGPU 后端，轻则 GNOME 硬件加速异常，
-    # 重则阻止 dGPU 进入 D3cold 直接吃续航。offload 模式应按程序经 nvidia-offload
-    # wrapper 注入（wrapper 已自带 __GLX_VENDOR_LIBRARY_NAME=nvidia）。
-    # 余下两个与渲染设备无关：__GL_VRR_ALLOWED / NVD_BACKEND 仅在用到 NVIDIA 时被读取，
-    # iGPU 上均为惰性。
-    environment.variables =
-      (lib.optionalAttrs (!config.hardware.nvidia.prime.offload.enable) {
-        LIBVA_DRIVER_NAME = "nvidia";
-        GBM_BACKEND = "nvidia-drm";
-        __GLX_VENDOR_LIBRARY_NAME = "nvidia";
-      }) // {
-        __GL_VRR_ALLOWED = "1";
-        NVD_BACKEND = "direct";
+      # PRIME offload 主机（iGPU 显示、dGPU 按需唤醒）不能全局注入下列三个变量：
+      # 它们强制 Mesa / VA-API 的所有客户端走 dGPU 后端，轻则 GNOME 硬件加速异常，
+      # 重则阻止 dGPU 进入 D3cold 直接吃续航。offload 模式应按程序经 nvidia-offload
+      # wrapper 注入（wrapper 已自带 __GLX_VENDOR_LIBRARY_NAME=nvidia）。
+      # 余下两个与渲染设备无关：__GL_VRR_ALLOWED / NVD_BACKEND 仅在用到 NVIDIA 时被读取，
+      # iGPU 上均为惰性。
+      environment.variables =
+        (lib.optionalAttrs (!config.hardware.nvidia.prime.offload.enable) {
+          LIBVA_DRIVER_NAME = "nvidia";
+          GBM_BACKEND = "nvidia-drm";
+          __GLX_VENDOR_LIBRARY_NAME = "nvidia";
+        }) // {
+          __GL_VRR_ALLOWED = "1";
+          NVD_BACKEND = "direct";
+        };
+
+      nixpkgs.config.nvidia.acceptLicense = true;
+
+      hardware = {
+        nvidia = {
+          open = false;
+          nvidiaSettings = true;
+          powerManagement.enable = true;
+          modesetting.enable = true;
+        };
+        graphics = {
+          enable = true;
+          enable32Bit = true;
+          extraPackages = with pkgs; [
+            nvidia-vaapi-driver
+            egl-wayland
+            libva
+          ];
+        };
       };
 
-    nixpkgs.config.nvidia.acceptLicense = true;
-
-    hardware = {
-      nvidia = {
-        open = false;
-        nvidiaSettings = true;
-        powerManagement.enable = true;
-        modesetting.enable = true;
+      # niri NVIDIA VRAM 泄漏修复
+      environment.etc."nvidia/nvidia-application-profiles-rc.d/50-limit-free-buffer-pool-in-wayland-compositors.json" = {
+        text = ''
+          {
+              "rules": [
+                  {
+                      "pattern": {
+                          "feature": "procname",
+                          "matches": "niri"
+                      },
+                      "profile": "Limit Free Buffer Pool On Wayland Compositors"
+                  }
+              ],
+              "profiles": [
+                  {
+                      "name": "Limit Free Buffer Pool On Wayland Compositors",
+                      "settings": [
+                          {
+                              "key": "GLVidHeapReuseRatio",
+                              "value": 0
+                          }
+                      ]
+                  }
+              ]
+          }
+        '';
       };
-      graphics = {
-        enable = true;
-        enable32Bit = true;
-        extraPackages = with pkgs; [
-          nvidia-vaapi-driver
-          egl-wayland
-          libva
-        ];
-      };
-    };
 
-    # niri NVIDIA VRAM 泄漏修复
-    environment.etc."nvidia/nvidia-application-profiles-rc.d/50-limit-free-buffer-pool-in-wayland-compositors.json" = {
-      text = ''
-        {
-            "rules": [
-                {
-                    "pattern": {
-                        "feature": "procname",
-                        "matches": "niri"
-                    },
-                    "profile": "Limit Free Buffer Pool On Wayland Compositors"
-                }
-            ],
-            "profiles": [
-                {
-                    "name": "Limit Free Buffer Pool On Wayland Compositors",
-                    "settings": [
-                        {
-                            "key": "GLVidHeapReuseRatio",
-                            "value": 0
-                        }
-                    ]
-                }
-            ]
-        }
-      '';
-    };
-
-    environment.systemPackages = with pkgs; [
-      vulkan-tools
-      mesa-demos
-      libva-utils
-    ];
+      environment.systemPackages = with pkgs; [
+        vulkan-tools
+        mesa-demos
+        libva-utils
+      ];
     })
   ];
 }

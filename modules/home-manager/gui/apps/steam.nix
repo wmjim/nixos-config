@@ -14,9 +14,9 @@ in
 
   config = lib.mkIf (cfg.enable && appsCfg.enable && guiCfg.enable) {
     home.packages = with pkgs; [
-      mangohud       # 独立性能监控（非 Steam 原生应用可用 mangohud <app>）
-      gamemode       # gamemoderun 提频调用（原生应用）
-      gamescope      # 独立合成器（gamescope -- <app>）
+      mangohud # 独立性能监控（非 Steam 原生应用可用 mangohud <app>）
+      gamemode # gamemoderun 提频调用（原生应用）
+      gamescope # 独立合成器（gamescope -- <app>）
       steamguard-cli # Steam 2FA 验证码 CLI
     ];
   };

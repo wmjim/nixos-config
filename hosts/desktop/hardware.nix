@@ -4,7 +4,8 @@
 
 {
   imports =
-    [ (modulesPath + "/installer/scan/not-detected.nix")
+    [
+      (modulesPath + "/installer/scan/not-detected.nix")
     ];
 
   boot.initrd.availableKernelModules = [ "xhci_pci" "ahci" "nvme" "usbhid" "usb_storage" "sd_mod" ];
@@ -17,51 +18,57 @@
   '';
 
   fileSystems."/" =
-    { device = "/dev/disk/by-uuid/251f2194-cfde-4826-afcb-a7b117c9d4dd";
+    {
+      device = "/dev/disk/by-uuid/251f2194-cfde-4826-afcb-a7b117c9d4dd";
       fsType = "btrfs";
       # noatime：SSD 上 atime 更新纯属写放大；ssd 选项对 NVMe 由内核自动启用，无需显式指定
       options = [ "subvol=@" "noatime" ];
     };
 
   fileSystems."/home" =
-    { device = "/dev/disk/by-uuid/251f2194-cfde-4826-afcb-a7b117c9d4dd";
+    {
+      device = "/dev/disk/by-uuid/251f2194-cfde-4826-afcb-a7b117c9d4dd";
       fsType = "btrfs";
       options = [ "subvol=@home" "noatime" ];
     };
 
   fileSystems."/nix" =
-    { device = "/dev/disk/by-uuid/251f2194-cfde-4826-afcb-a7b117c9d4dd";
+    {
+      device = "/dev/disk/by-uuid/251f2194-cfde-4826-afcb-a7b117c9d4dd";
       fsType = "btrfs";
       options = [ "subvol=@nix" "noatime" ];
     };
 
   fileSystems."/var" =
-    { device = "/dev/disk/by-uuid/251f2194-cfde-4826-afcb-a7b117c9d4dd";
+    {
+      device = "/dev/disk/by-uuid/251f2194-cfde-4826-afcb-a7b117c9d4dd";
       fsType = "btrfs";
       options = [ "subvol=@var" "noatime" ];
     };
 
   fileSystems."/var/log" =
-    { device = "/dev/disk/by-uuid/251f2194-cfde-4826-afcb-a7b117c9d4dd";
+    {
+      device = "/dev/disk/by-uuid/251f2194-cfde-4826-afcb-a7b117c9d4dd";
       fsType = "btrfs";
       options = [ "subvol=@log" "noatime" ];
     };
 
   fileSystems."/var/lib/docker" =
-    { device = "/dev/disk/by-uuid/251f2194-cfde-4826-afcb-a7b117c9d4dd";
+    {
+      device = "/dev/disk/by-uuid/251f2194-cfde-4826-afcb-a7b117c9d4dd";
       fsType = "btrfs";
       options = [ "subvol=@docker" "noatime" ];
     };
 
   fileSystems."/boot" =
-    { device = "/dev/disk/by-uuid/41E5-09F9";
+    {
+      device = "/dev/disk/by-uuid/41E5-09F9";
       fsType = "vfat";
       options = [ "fmask=0022" "dmask=0022" ];
     };
 
   swapDevices =
-    [ { device = "/dev/disk/by-uuid/3ab23e06-e327-4a55-80e3-1a85e0901274"; }
-    ];
+    [{ device = "/dev/disk/by-uuid/3ab23e06-e327-4a55-80e3-1a85e0901274"; }];
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;

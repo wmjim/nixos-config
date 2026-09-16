@@ -14,43 +14,43 @@ in
   config = lib.mkIf (cfg.enable && devCfg.enable && cliCfg.enable) {
     # 其他语言开发工具
     home.packages = with pkgs; [
-    # === bash === 
-    bash-language-server # bash lsp
-    shellcheck # 诊断   
-    shfmt # 格式化
+      # === bash === 
+      bash-language-server # bash lsp
+      shellcheck # 诊断   
+      shfmt # 格式化
 
-    fish-lsp # fish lsp
+      fish-lsp # fish lsp
 
-    # === kdl ===
-    kdlfmt # kdl fmt
-
-
-    # === html/css/json/eslint ===
-    vscode-langservers-extracted # html/json/css/scss/js/ts lsp
-    eslint
-
-    # === yaml ===
-    yaml-language-server # yaml lsp
-
-    # === docker compose ===
-    docker-compose-language-service # docker lsp
-
-    # === lua ===
-    lua-language-server # lua lsp
-    stylua # Lua 格式化工具         
-
-    # === Nix ===
-    nil # nix lsp
-    nixfmt # nix fmt
+      # === kdl ===
+      kdlfmt # kdl fmt
 
 
-    # === markdown ===
-    marksman # markdown lsp
-    ltex-ls-plus # markdown lsp，提供拼写和语法检查    
+      # === html/css/json/eslint ===
+      vscode-langservers-extracted # html/json/css/scss/js/ts lsp
+      eslint
 
-    # === Latex ===
-    # texlive.combined.scheme-full
-    # texlab # LaTeX 语言服务器
+      # === yaml ===
+      yaml-language-server # yaml lsp
+
+      # === docker compose ===
+      docker-compose-language-service # docker lsp
+
+      # === lua ===
+      lua-language-server # lua lsp
+      stylua # Lua 格式化工具         
+
+      # === Nix ===
+      nil # nix lsp
+      nixfmt # nix fmt
+
+
+      # === markdown ===
+      marksman # markdown lsp
+      ltex-ls-plus # markdown lsp，提供拼写和语法检查    
+
+      # === Latex ===
+      # texlive.combined.scheme-full
+      # texlab # LaTeX 语言服务器
     ];
   };
 }

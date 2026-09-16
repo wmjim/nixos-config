@@ -1,10 +1,9 @@
 # 浏览器
-{
-  lib,
-  config,
-  pkgs,
-  inputs,
-  ...
+{ lib
+, config
+, pkgs
+, inputs
+, ...
 }:
 let
   cfg = config.mengw.gui.apps.browsers;
@@ -12,7 +11,7 @@ let
   guiCfg = config.mengw.gui;
 in
 {
-  imports = [inputs.zen-browser.homeModules.beta];
+  imports = [ inputs.zen-browser.homeModules.beta ];
 
   options.mengw.gui.apps.browsers.enable = lib.mkOption {
     type = lib.types.bool;

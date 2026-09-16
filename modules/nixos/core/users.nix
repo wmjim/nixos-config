@@ -28,12 +28,12 @@
       enable = true;
       # 用户组
       extraGroups = [
-        "wheel"       # 允许使用sudo以管理员权限执行命令
+        "wheel" # 允许使用sudo以管理员权限执行命令
         "audio"
         "video"
         "render"
         "input"
-        "networkmanager"  # NetworkManager polkit 规则授权的组，允许修改网络设置
+        "networkmanager" # NetworkManager polkit 规则授权的组，允许修改网络设置
         "libvirtd"
         "kvm"
         "i2c"

@@ -31,14 +31,14 @@ in
       file-roller
       papers
       gnome-text-editor
-      mission-center        # 图形化任务中心
-      foliate               # eBook阅读器
-      wike                  # 桌面版Wiki阅读器
-      parabolic             # yt-dlp图形化前端
-      planify               # 任务管理器
-      gapless               # 本地音乐播放器
-      xunlei-uos            # 迅雷
-      qview                 # 图片查看
+      mission-center # 图形化任务中心
+      foliate # eBook阅读器
+      wike # 桌面版Wiki阅读器
+      parabolic # yt-dlp图形化前端
+      planify # 任务管理器
+      gapless # 本地音乐播放器
+      xunlei-uos # 迅雷
+      qview # 图片查看
       nautilus
       logisim-evolution
       localsend

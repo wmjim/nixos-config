@@ -14,55 +14,55 @@ in
   config = lib.mkIf (cfg.enable && darwinCfg.enable) {
     # macOS 系统设置
     system.defaults = {
-    # Finder
-    finder.AppleShowAllExtensions = true;
-    finder.FXEnableExtensionChangeWarning = false;
-    finder.ShowPathbar = true;
-    finder.ShowStatusBar = true;
+      # Finder
+      finder.AppleShowAllExtensions = true;
+      finder.FXEnableExtensionChangeWarning = false;
+      finder.ShowPathbar = true;
+      finder.ShowStatusBar = true;
 
-    # Dock
-    dock.autohide = true;
-    dock.mru-spaces = false;
-    dock.show-recents = false;
+      # Dock
+      dock.autohide = true;
+      dock.mru-spaces = false;
+      dock.show-recents = false;
 
-    # 键盘
-    NSGlobalDomain.AppleKeyboardUIMode = 3;
-    NSGlobalDomain.KeyRepeat = 2;
-    NSGlobalDomain.InitialKeyRepeat = 15;
+      # 键盘
+      NSGlobalDomain.AppleKeyboardUIMode = 3;
+      NSGlobalDomain.KeyRepeat = 2;
+      NSGlobalDomain.InitialKeyRepeat = 15;
 
-    # 触控板
-    trackpad.Clicking = true;
-    trackpad.TrackpadRightClick = true;
+      # 触控板
+      trackpad.Clicking = true;
+      trackpad.TrackpadRightClick = true;
 
-    # 登录
-    loginwindow.GuestEnabled = false;
-  };
-
-  # Homebrew GUI 应用
-  homebrew = {
-    enable = true;
-    onActivation = {
-      autoUpdate = true;
-      cleanup = "zap";
+      # 登录
+      loginwindow.GuestEnabled = false;
     };
 
-    taps = [
-      "homebrew/cask"
-      "homebrew/cask-fonts"
-    ];
+    # Homebrew GUI 应用
+    homebrew = {
+      enable = true;
+      onActivation = {
+        autoUpdate = true;
+        cleanup = "zap";
+      };
 
-    # GUI 应用
-    casks = [
-      "alacritty"
-      "visual-studio-code"
-      "obsidian"
-      "brave"
-    ];
+      taps = [
+        "homebrew/cask"
+        "homebrew/cask-fonts"
+      ];
 
-    # 字体
-    caskArgs = {
-      fontdir = "/Library/Fonts";
+      # GUI 应用
+      casks = [
+        "alacritty"
+        "visual-studio-code"
+        "obsidian"
+        "brave"
+      ];
+
+      # 字体
+      caskArgs = {
+        fontdir = "/Library/Fonts";
+      };
     };
-  };
   };
 }
