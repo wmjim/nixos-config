@@ -48,12 +48,6 @@
       options = [ "subvol=@docker" ];
     };
 
-  fileSystems."/.snapshots" =
-    { device = "/dev/disk/by-uuid/251f2194-cfde-4826-afcb-a7b117c9d4dd";
-      fsType = "btrfs";
-      options = [ "subvol=@snapshots" ];
-    };
-
   fileSystems."/boot" =
     { device = "/dev/disk/by-uuid/41E5-09F9";
       fsType = "vfat";
