@@ -4,6 +4,7 @@
   imports = [
     ./hardware.nix
     ./nvidia.nix
+    ./edid-reprobe.nix
   ];
 
   networking.hostName = "desktop";
