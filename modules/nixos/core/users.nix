@@ -33,7 +33,7 @@
         "video"
         "render"
         "input"
-        "network"     # 赋予网络配置权限
+        "networkmanager"  # NetworkManager polkit 规则授权的组，允许修改网络设置
         "libvirtd"
         "kvm"
         "i2c"
