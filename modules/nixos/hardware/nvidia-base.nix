@@ -30,21 +30,25 @@ in
       "nvidia.NVreg_PreserveVideoMemoryAllocations=1"
       "nvidia.NVreg_TemporaryFilePath=/var/tmp"
       "nvidia.NVreg_UseKernelSuspendNotifiers=1"
-      # 完全禁用动态电源管理。即使设为 0x01（细粒度模式），显示器断开/
-      # 休眠后 DP 链路唤醒时 GPU 仍无法正确重新训练 DP 链路，导致黑屏。
-      # 桌面插电平台功耗差异可忽略，稳定性优先。
-      "nvidia.NVreg_DynamicPowerManagement=0x00"
     ];
     boot.blacklistedKernelModules = [ "nouveau" ];
 
-    environment.variables = {
-      LIBVA_DRIVER_NAME = "nvidia";
-      GBM_BACKEND = "nvidia-drm";
-      __GLX_VENDOR_LIBRARY_NAME = "nvidia";
-      __GL_VRR_ALLOWED = "1";
-      NVD_BACKEND = "direct";
-      WLR_NO_HARDWARE_CURSORS = "1";
-    };
+    # PRIME offload 主机（iGPU 显示、dGPU 按需唤醒）不能全局注入下列三个变量：
+    # 它们强制 Mesa / VA-API 的所有客户端走 dGPU 后端，轻则 GNOME 硬件加速异常，
+    # 重则阻止 dGPU 进入 D3cold 直接吃续航。offload 模式应按程序经 nvidia-offload
+    # wrapper 注入（wrapper 已自带 __GLX_VENDOR_LIBRARY_NAME=nvidia）。
+    # 余下三个与渲染设备无关：__GL_VRR_ALLOWED / NVD_BACKEND 仅在用到 NVIDIA 时被读取，
+    # WLR_NO_HARDWARE_CURSORS 仅 wlroot 合成器读取，iGPU 上均为惰性。
+    environment.variables =
+      (lib.optionalAttrs (!config.hardware.nvidia.prime.offload.enable) {
+        LIBVA_DRIVER_NAME = "nvidia";
+        GBM_BACKEND = "nvidia-drm";
+        __GLX_VENDOR_LIBRARY_NAME = "nvidia";
+      }) // {
+        __GL_VRR_ALLOWED = "1";
+        NVD_BACKEND = "direct";
+        WLR_NO_HARDWARE_CURSORS = "1";
+      };
 
     nixpkgs.config.nvidia.acceptLicense = true;
 

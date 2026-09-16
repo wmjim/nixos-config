@@ -12,6 +12,12 @@
   # 120Hz 是原生标准模式不受影响；150Hz 依赖固件 EDID 的 DisplayID 块会失去。
   # 若显示器唤醒时 I2C EDID 读取失败问题回归，可还原此配置（dp2-edid.bin 仍在仓库）。
   boot.kernelParams = [
+    # 完全禁用动态电源管理。即使设为 0x01（细粒度模式），显示器断开/
+    # 休眠后 DP 链路唤醒时 GPU 仍无法正确重新训练 DP 链路，导致黑屏。
+    # 桌面插电平台功耗差异可忽略，稳定性优先。
+    # 放在主机级而非 nvidia-base：该参数会覆盖 finegrained 经 modprobe.d 注入的
+    # 0x02（内核 cmdline 优先级更高），对 PRIME offload 笔记本是有害的。
+    "nvidia.NVreg_DynamicPowerManagement=0x00"
     # 实验(2026-08-08)：移除 video= 强制模式，让原生 150Hz 直接暴露。
     # 之前 video=DP-2:3840x2160@150 会创建 user-defined 模式，显示器唤醒时
     # 被 NVIDIA 拒绝报 "User-defined mode not supported" → 黑屏。
