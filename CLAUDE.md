@@ -96,3 +96,4 @@ modules/
 - **Fish 4.8.0 覆盖补丁**：`modules/home-manager/default.nix` 对 Fish 打补丁，补全缺失的 `create_manpage_completions.py` 文件（对应 nixpkgs 工单 #535122）。待上游合并修复后即可移除该覆盖层。
 - **NVIDIA 显存泄漏修复**：`modules/nixos/hardware/nvidia-base.nix` 配置 Niri 应用专属参数，限制空闲缓冲区池大小，规避显存泄漏问题。
 - **自动升级固定走 flake**：`system.autoUpgrade.flake` 由 `networking.hostName` 推导出 `/home/mengw/nixos-config#<host>`。新增主机时 `networking.hostName` 必须与 flake 输出属性同名，否则 autoUpgrade 会找错目标。`allowReboot = false` 意味着内核更新后**不会自动重启**，需手动重启才能用上新内核。各主机的 flake 仓库统一位于 `/home/mengw/nixos-config`，若某主机仓库路径不同需覆盖该选项。
+- **滚动升级的可追溯性**：`--refresh` 每日重写工作区的 `flake.lock`，而 Nix 对脏 git 树令 `self.rev = null`，`system.configurationRevision`（`flake.nix` 中显式声明）会退化为 `"dirty"`，代际就无法回溯 commit。因此 `nixos-upgrade.service` 的 `postStop` 在升级成功后以本人身份提交 `flake.lock`，保持工作区干净；另外 `.github/workflows/flake-update-check.yml` 每天 03:40 先把 nixpkgs 刷到 master HEAD 求值所有主机，赶在 04:40 的 autoUpgrade 之前拦截上游回归（`flake-check.yml` 只验已锁定的 `flake.lock`，看不到滚动通道的新提交）。

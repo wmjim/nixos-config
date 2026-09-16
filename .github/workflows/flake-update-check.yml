@@ -1,0 +1,37 @@
+name: "Flake update check"
+
+# 走在每日 autoUpgrade（nixos-upgrade.timer 04:40 CST）之前：先把 nixpkgs
+# 刷到 master HEAD 再求值所有主机，拦截上游回归。autoUpgrade 用 --refresh
+# 跟踪 master，而 flake-check.yml 验的是已提交的 flake.lock，看不到未锁定的
+# 新提交，所以必须靠这个工作流补上滚动通道的前置校验。
+# GitHub 定时任务按 UTC 跑，19:40 UTC == 03:40 CST。
+on:
+  schedule:
+    - cron: "40 19 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: "read"
+
+jobs:
+  dry-build-rolling:
+    runs-on: "ubuntu-latest"
+    strategy:
+      fail-fast: false
+      matrix:
+        target:
+          - "nixosConfigurations.desktop"
+          - "nixosConfigurations.laptop"
+          - "nixosConfigurations.server"
+          - "nixosConfigurations.wsl"
+          - "darwinConfigurations.macbook"
+    steps:
+      - uses: "actions/checkout@v6"
+        with:
+          persist-credentials: false
+      - uses: "DeterminateSystems/determinate-nix-action@v3"
+      # checkout 是一次性的，这里写 flake.lock 只影响 CI 工作区，不会回灌仓库
+      - name: "refresh nixpkgs to master HEAD"
+        run: nix flake update nixpkgs
+      - name: "dry-run build ${{ matrix.target }} against rolling nixpkgs"
+        run: nix build --dry-run --no-write-lock-file ".#${{ matrix.target }}.config.system.build.toplevel"

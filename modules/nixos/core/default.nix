@@ -41,6 +41,19 @@
       flags = [ "--refresh" ];
     };
 
+    # --refresh 每次都重写工作区的 flake.lock，autoUpgrade 不会提交它，工作区
+    # 将永久处于脏状态：Nix 对脏树令 self.rev = null，configurationRevision
+    # 退化为 "dirty"，代际随之无法回溯到 commit。升级成功后以本人身份提交
+    # flake.lock 保持工作区干净。root 的 HOME=/root 无 gitconfig，故用 runuser
+    # 复用用户身份提交（与上面 safe.directory 同一根源）。
+    systemd.services.nixos-upgrade.postStop = ''
+      [ "$SERVICE_RESULT" = "success" ] || exit 0
+      repo="${config.users.users.mengw.home}/nixos-config"
+      ${pkgs.git}/bin/git -C "$repo" diff --quiet -- flake.lock && exit 0
+      ${pkgs.util-linux}/bin/runuser -u ${config.users.users.mengw.name} -- \
+        ${pkgs.git}/bin/git -C "$repo" commit -m "chore(autoUpgrade): 刷新 flake.lock" -- flake.lock
+    '';
+
     # 自动将超过一周的垃圾回收，降低磁盘占用
     nix.gc = {
       automatic = true;
