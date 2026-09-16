@@ -35,10 +35,6 @@ in
           source = lib.mkForce "builtin";
           builtin = "Catppuccin";
         };
-        wallpaper = {
-          enabled = true;
-          default.path = "${config.home.homeDirectory}/files/pictures/wallpaper/wallpaper.png";
-        };
         brightness = {
           enable_ddcutil = useDdc;
           monitor = lib.mkIf useDdc { "DP-2".backend = "ddcutil"; };
