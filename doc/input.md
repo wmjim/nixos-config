@@ -25,6 +25,30 @@ SDL_IM_MODULE = "fcitx";
 GLFW_IM_MODULE = "fcitx";
 ```
 
+## XWayland 候选窗缩放（workaround）
+
+fcitx5 的候选窗按“输入上下文所属显示”选后端渲染：原生 Wayland 客户端走 WaylandUI
+（跟随合成器分数缩放），XWayland 客户端走 XCBUI，而 XCBUI 的缩放 = `DPI / 96`，
+DPI 只取自 X11 的 `Xft.dpi` 资源（RESOURCE_MANAGER）。xwayland-satellite 0.8.2
+只把缩放发布在 XSETTINGS 的 `Xft/DPI`（fcitx5 读 XSETTINGS 时只取
+`Net/IconThemeName`），且未给 Xwayland 传 `-dpi`，于是微信/QQ 等 XWayland 应用里
+候选词停在 1.0x，比 VSCode 等 Wayland 应用小 `scale` 倍。
+
+当前由 `modules/nixos/desktop/niri/default.nix` 的 `xwayland-xft-dpi` wrapper 补写
+`Xft.dpi = 96 × scale`（desktop → 144，laptop → 120）到资源库，并在
+`startup.kdl` 中随 niri 自启；fcitx5 监听 RESOURCE_MANAGER 变化并立即重读，
+无需重启输入法。验证：
+
+```bash
+xrdb -query                     # 应显示 Xft.dpi:<TAB>144
+displays=$(fcitx5-diagnose | grep -c 'Group \[x11::0\]')   # 微信等 X11 客户端所在分组
+```
+
+> [!TODO] 上游已修复
+> xwayland-satellite PR #477（`feat: sync Xft.dpi through RESOURCE_MANAGER`，
+> 2026-09-08 合并，关闭 issue #301）在 master 中做了同样的同步。待 nixpkgs 内的
+> xwayland-satellite 版本 > 0.8.2 后，删除该 workaround（wrapper + `startup.kdl` 自启项）。
+
 ## Rime 用户配置
 
 `~/.local/share/fcitx5/rime/default.custom.yaml`：
