@@ -108,7 +108,7 @@
       },
       {
         "key": "Ctrl + R",
-        "desc": "搜索命令历史",
+        "desc": "fzf 模糊搜索命令历史",
         "action": " "
       },
       {
@@ -175,6 +175,31 @@
       {
         "key": "Ctrl + O",
         "desc": "命令收藏夹查询",
+        "action": " "
+      },
+      {
+        "key": "Ctrl + Alt + F",
+        "desc": "fzf 搜索当前目录文件/目录并插入命令行",
+        "action": " "
+      },
+      {
+        "key": "Ctrl + Alt + L",
+        "desc": "fzf 搜索 git log 提交并 checkout",
+        "action": " "
+      },
+      {
+        "key": "Ctrl + Alt + S",
+        "desc": "fzf 搜索 git status 改动文件",
+        "action": " "
+      },
+      {
+        "key": "Ctrl + Alt + P",
+        "desc": "fzf 搜索进程并发送信号",
+        "action": " "
+      },
+      {
+        "key": "Ctrl + V",
+        "desc": "fzf 搜索 fish 变量",
         "action": " "
       }
     ]
