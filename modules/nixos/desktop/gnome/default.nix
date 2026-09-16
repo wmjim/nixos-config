@@ -43,7 +43,7 @@ in
     services.desktopManager.gnome.enable = true;
 
     # 默认登录 GNOME 会话
-    services.displayManager.defaultSession = "gnome";
+    # services.displayManager.defaultSession = "gnome";
 
     # GDM 登录界面换肤（MacTahoe）：
     # gnome-shell 的 gnome-shell-theme.gresource 路径在编译期烘焙进二进制，
