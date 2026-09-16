@@ -3,7 +3,8 @@
 // 核心配置：输入设备、自启程序、显示器
 include "core/input.kdl"
 include "core/startup.kdl"
-include "core/outputs.kdl"
+// 与 niri-colors 同理：显示器配置按主机区分，无法放进被 symlink 的共享目录
+include "~/.config/niri-outputs/outputs.kdl"
 
 // 视觉效果：动画、模糊、磨砂玻璃、布局、光标、概览
 include "visual/animations.kdl"

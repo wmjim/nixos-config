@@ -1,5 +1,5 @@
 # Niri 窗口管理器 — 用户级配置文件部署
-{ lib, config, pkgs, inputs, ... }:
+{ lib, config, osConfig, pkgs, inputs, ... }:
 let
   cfg = config.mengw.gui.wm;
   guiCfg = config.mengw.gui;
@@ -109,6 +109,40 @@ let
         }
     }
   '';
+
+  # 生成的 outputs.kdl（按主机区分）
+  # niri 的 output 段按物理输出名匹配：把两台主机的定义混在一个文件里，
+  # 未连接的输出条目会静默失效；且两处 focus-at-startup 在双屏场景下
+  # 聚焦行为不确定。故按主机生成，每份配置只含一个 focus-at-startup。
+  laptopOutputs = ''
+    // 显示器设置（笔记本内屏）
+    output "eDP-1" {
+        mode "1920x1080@59.977"
+        scale 1.25
+        position x=0 y=0
+        focus-at-startup
+    }
+  '';
+
+  desktopOutputs = ''
+    // 显示器设置（台式机 4K 屏）
+    output "DP-2" {
+        // 设置屏幕分辨率和刷新率
+        mode "3840x2160@150.000"
+        // 界面缩放为 150%
+        scale 1.50
+        // 设置屏幕位置
+        position x=0 y=0
+        // niri 启动时默认聚焦输出
+        focus-at-startup
+    }
+  '';
+
+  outputsKdl =
+    let host = osConfig.networking.hostName; in
+    if host == "laptop" then laptopOutputs
+    else if host == "desktop" then desktopOutputs
+    else throw "mengw.gui.wm: 未定义主机 ${host} 的 niri 显示器配置";
 in
 {
   options.mengw.gui.wm.enable = lib.mkOption {
@@ -130,7 +164,9 @@ in
     # 注意：config.kdl 中使用 ~/.config/niri-colors/ 绝对路径而非
     # ../niri-colors/ 相对路径，因为 niri 解析 include 时会跟随
     # symlink 链，导致 .. 解析到 git 仓库父目录而非 ~/.config/。
+    # outputs.kdl 同理：按主机区分的内容也无法放进被 symlink 的共享目录。
     xdg.configFile."niri-colors/layout.kdl".text = layoutKdl;
     xdg.configFile."niri-colors/overview.kdl".text = overviewKdl;
+    xdg.configFile."niri-outputs/outputs.kdl".text = outputsKdl;
   };
 }
