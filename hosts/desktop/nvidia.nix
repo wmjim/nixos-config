@@ -4,13 +4,10 @@
 {
   imports = [ ../../modules/nixos/hardware/nvidia-base.nix ];
 
-  # 实验(2026-08-10)：移除自定义 EDID 固件覆盖（drm.edid_firmware），
-  # 排查显示器物理断电再上电后黑屏问题。
-  # 机制：固件 EDID 会在显示器断电、真实 EDID 读取失败时顶上，连接器始终
-  # 显示 connected，驱动从不登记断开 → 上电后不自动重训练 DP 链路 → 黑屏。
-  # 移除后应恢复正常的断开/重连流程，实现自动恢复（无需切 TTY/重启）。
-  # 120Hz 是原生标准模式不受影响；150Hz 依赖固件 EDID 的 DisplayID 块会失去。
-  # 若显示器唤醒时 I2C EDID 读取失败问题回归，可还原此配置（dp2-edid.bin 仍在仓库）。
+  # 不覆盖自定义 EDID 固件（drm.edid_firmware）：固件 EDID 会在显示器断电、
+  # 真实 EDID 读取失败时顶上，连接器始终显示 connected，驱动从不登记断开 →
+  # 上电后不自动重训练 DP 链路 → 黑屏。不覆盖即可恢复正常的断开/重连流程，
+  # 显示器物理断电再上电后自动恢复，150Hz 亦由显示器 EDID 原生声明正常工作。
   boot.kernelParams = [
     # 完全禁用动态电源管理。即使设为 0x01（细粒度模式），显示器断开/
     # 休眠后 DP 链路唤醒时 GPU 仍无法正确重新训练 DP 链路，导致黑屏。
@@ -18,14 +15,11 @@
     # 放在主机级而非 nvidia-base：该参数会覆盖 finegrained 经 modprobe.d 注入的
     # 0x02（内核 cmdline 优先级更高），对 PRIME offload 笔记本是有害的。
     "nvidia.NVreg_DynamicPowerManagement=0x00"
-    # 实验(2026-08-08)：移除 video= 强制模式，让原生 150Hz 直接暴露。
-    # 之前 video=DP-2:3840x2160@150 会创建 user-defined 模式，显示器唤醒时
-    # 被 NVIDIA 拒绝报 "User-defined mode not supported" → 黑屏。
-    # EDID 固件的 DisplayID 块已原生声明 3840x2160@150Hz(1329MHz)，144/120Hz
-    # 均以原生 driver 模式暴露，仅 150Hz 因 video= 变为 userdef。
-    # 移除后若 150Hz 以原生模式出现且唤醒正常，则确认问题在 user-defined 模式本身。
-    # 不使用 e 标志强制输出：e 会阻止连接器热插拔事件，导致物理断电再上电后
-    # DP 链路无法重新训练 → 黑屏。
+    # 不用 video= 强制模式：video=DP-2:3840x2160@150 会创建 user-defined 模式，
+    # 显示器唤醒时被 NVIDIA 拒绝报 "User-defined mode not supported" → 黑屏。
+    # 显示器 EDID 的 DisplayID 块已原生声明 3840x2160@150Hz(1329MHz)，
+    # 无需强制即可使用。也不使用 e 标志强制输出，否则会阻止连接器热插拔事件，
+    # 物理断电再上电后 DP 链路无法重新训练 → 黑屏。
     # 禁止内核 VT 控制台超时熄屏，防止触发不必要的 DPMS 状态切换
     "consoleblank=0"
   ];

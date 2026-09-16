@@ -84,7 +84,7 @@ modules/
 
 | Host | System | Key features |
 |------|--------|-------------|
-| desktop | x86_64-linux | Niri WM, NVIDIA RTX 3060Ti, 4K@150Hz, custom EDID firmware |
+| desktop | x86_64-linux | Niri WM, NVIDIA RTX 3060Ti, 4K@150Hz |
 | laptop | x86_64-linux | GNOME, NVIDIA MX150 (legacy driver, PRIME offload), btrfs, TLP |
 | wsl | x86_64-linux | CLI-only, WSL container |
 | server | x86_64-linux | Stub, only nixosCore |
