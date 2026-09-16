@@ -102,9 +102,6 @@
     # 允许不安全的包（每条须写明被哪个包需要，并定期复核是否仍有效）
     nixpkgs.config.permittedInsecurePackages = [ ];
 
-    # valgrind 放行
-    nixpkgs.config.problems.handlers.valgrind.broken = "warn";
-
     # NUR overlay（系统级字体 harmonyos-sans 等依赖）
     nixpkgs.overlays = [ inputs.nur.overlays.default ];
 

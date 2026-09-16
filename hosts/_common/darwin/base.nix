@@ -23,7 +23,8 @@
   # 允许非自由软件
   nixpkgs.config.allowUnfree = true;
 
-  # valgrind 在 nixpkgs 26.05 中被标记为 broken，放行以允许评估
+  # valgrind 在 darwin 上被标记为 broken（见 nixpkgs pkgs/by-name/va/valgrind），
+  # 但 cpp.nix 开发环境无条件引入它，放行以允许 darwin 求值
   nixpkgs.config.problems.handlers.valgrind.broken = "warn";
 
   # 放行 Linux-only 包的评估（flakehub-push 会评估所有平台，但 darwin 不需要这些包）
