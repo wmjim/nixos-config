@@ -16,6 +16,8 @@
   ];
   system.activationScripts.libvirtSecretsKey = {
     text = ''
+      # umask 077 保证重定向创建密钥时即为 0600，无 0644→0600 的瞬时可读窗口
+      umask 077
       if [ ! -f /var/lib/libvirt/secrets/secrets-encryption-key ]; then
         mkdir -p /var/lib/libvirt/secrets
         ${pkgs.openssl}/bin/openssl rand -base64 32 > /var/lib/libvirt/secrets/secrets-encryption-key
