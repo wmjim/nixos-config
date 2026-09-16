@@ -4,19 +4,19 @@
 
 ```bash
 # desktop 主机（Niri 桌面）
-sudo nixos-rebuild switch --flake ~/nixos-config#desktop
+sudo nixos-rebuild switch --flake ~/Projects/nixos-config#desktop
 
 # laptop 主机（GNOME 桌面）
-sudo nixos-rebuild switch --flake ~/nixos-config#laptop
+sudo nixos-rebuild switch --flake ~/Projects/nixos-config#laptop
 
 # WSL
-sudo nixos-rebuild switch --flake ~/nixos-config#wsl
+sudo nixos-rebuild switch --flake ~/Projects/nixos-config#wsl
 
 # 服务器
-sudo nixos-rebuild switch --flake ~/nixos-config#server
+sudo nixos-rebuild switch --flake ~/Projects/nixos-config#server
 
 # macOS
-darwin-rebuild switch --flake ~/nixos-config#macbook
+darwin-rebuild switch --flake ~/Projects/nixos-config#macbook
 ```
 
 部署成功后会生成新系统环境，旧环境保留并加入 systemd-boot 启动项（最多保留 10 个，见 `boot.loader.systemd-boot.configurationLimit`）。
@@ -27,7 +27,7 @@ darwin-rebuild switch --flake ~/nixos-config#macbook
 
 ```bash
 # 构建时输出详细日志
-sudo nixos-rebuild switch --flake ~/nixos-config#desktop --show-trace --print-build-logs --verbose
+sudo nixos-rebuild switch --flake ~/Projects/nixos-config#desktop --show-trace --print-build-logs --verbose
 ```
 
 ## 更新 flake 锁定文件

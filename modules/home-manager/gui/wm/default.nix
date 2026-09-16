@@ -3,7 +3,7 @@
 let
   cfg = config.mengw.gui.wm;
   guiCfg = config.mengw.gui;
-  niriConfigPath = "${config.home.homeDirectory}/nixos-config/modules/home-manager/gui/wm/config";
+  niriConfigPath = "${config.home.homeDirectory}/Projects/nixos-config/modules/home-manager/gui/wm/config";
 
   # Gruvbox Dark 调色板
   colors = {

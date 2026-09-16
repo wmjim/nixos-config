@@ -31,15 +31,15 @@ in
         "..." = "cd ../..";
         arch = "distrobox enter arch";
         ubuntu = "distrobox enter ubuntu";
-        updatewsl = "sudo nixos-rebuild switch --flake ~/nixos-config#wsl";
+        updatewsl = "sudo nixos-rebuild switch --flake ~/Projects/nixos-config#wsl";
         # 构建 desktop 主机 NixOS
-        updatedp = "sudo nixos-rebuild switch --flake ~/nixos-config#desktop";
+        updatedp = "sudo nixos-rebuild switch --flake ~/Projects/nixos-config#desktop";
         # 构建 desktop 主机 NixOS，并获取详细错误信息
-        updatedplog = "sudo nixos-rebuild switch --flake ~/nixos-config#desktop --show-trace --print-build-logs --verbose";
+        updatedplog = "sudo nixos-rebuild switch --flake ~/Projects/nixos-config#desktop --show-trace --print-build-logs --verbose";
         # 构建 laptop 笔记本 NixOS
-        updatelp = "sudo nixos-rebuild switch --flake ~/nixos-config#laptop";
+        updatelp = "sudo nixos-rebuild switch --flake ~/Projects/nixos-config#laptop";
         # 构建 laptop 笔记本 NixOS，并获取详细错误信息
-        updatelplog = "sudo nixos-rebuild switch --flake ~/nixos-config#laptop --show-trace --print-build-logs --verbose";
+        updatelplog = "sudo nixos-rebuild switch --flake ~/Projects/nixos-config#laptop --show-trace --print-build-logs --verbose";
         ls = "eza --icons=auto --group-directories-first --color=auto";
         ll = "eza -l --icons=auto --group-directories-first --git --header";
         la = "eza -a --icons=auto --group-directories-first";

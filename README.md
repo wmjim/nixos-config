@@ -12,19 +12,19 @@
 
 ```bash
 # NixOS 笔记本
-sudo nixos-rebuild switch --flake ~/nixos-config#laptop
+sudo nixos-rebuild switch --flake ~/Projects/nixos-config#laptop
 
 # NixOS 主机
-sudo nixos-rebuild switch --flake ~/nixos-config#desktop
+sudo nixos-rebuild switch --flake ~/Projects/nixos-config#desktop
 
 # WSL
-sudo nixos-rebuild switch --flake ~/nixos-config#wsl
+sudo nixos-rebuild switch --flake ~/Projects/nixos-config#wsl
 
 # NixOS 服务器（未测试，待补充）
-# sudo nixos-rebuild switch --flake ~/nixos-config#server
+# sudo nixos-rebuild switch --flake ~/Projects/nixos-config#server
 
 # MacOS（未测试，待补充）
-# darwin-rebuild switch --flake ~/nixos-config#macbook
+# darwin-rebuild switch --flake ~/Projects/nixos-config#macbook
 ```
 此命令会根据当前配置文件生成一个新的系统环境，并将新的系统环境设为默认环境。
 

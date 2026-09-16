@@ -1,6 +1,10 @@
 # NixOS 核心配置（所有 NixOS 主机共享）
 # 定义 mySystem 选项命名空间，导入所有子模块
 { config, pkgs, lib, inputs, ... }:
+let
+  # 本机 flake 仓库路径（所有 NixOS 主机统一放在用户 Projects 目录下）
+  configDir = "${config.users.users.mengw.home}/Projects/nixos-config";
+in
 {
   # mySystem 选项命名空间 — 各主机通过设置这些选项来声明启用的功能
   options.mySystem = {
@@ -36,7 +40,7 @@
     system.autoUpgrade = {
       enable = true;
       allowReboot = false;
-      flake = "${config.users.users.mengw.home}/nixos-config#${config.networking.hostName}";
+      flake = "${configDir}#${config.networking.hostName}";
       # 显式钉死 --refresh：nixpkgs 默认 flags 已含此项，此处重复声明仅为
       # 防止上游变更默认值后退化为只构建 flake.lock 锁定的旧 nixpkgs
       flags = [ "--refresh" ];
@@ -49,7 +53,7 @@
     # 复用用户身份提交（与上面 safe.directory 同一根源）。
     systemd.services.nixos-upgrade.postStop = ''
       [ "$SERVICE_RESULT" = "success" ] || exit 0
-      repo="${config.users.users.mengw.home}/nixos-config"
+      repo="${configDir}"
       ${pkgs.git}/bin/git -C "$repo" diff --quiet -- flake.lock && exit 0
       ${pkgs.util-linux}/bin/runuser -u ${config.users.users.mengw.name} -- \
         ${pkgs.git}/bin/git -C "$repo" commit -m "chore(autoUpgrade): 刷新 flake.lock" -- flake.lock
@@ -112,7 +116,7 @@
     # programs.git.enable 默认为 false：不开启则 /etc/gitconfig 根本不会生成。
     programs.git.enable = true;
     programs.git.config.safe.directory = [
-      "${config.users.users.mengw.home}/nixos-config"
+      configDir
     ];
 
     # SSH

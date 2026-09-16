@@ -1,5 +1,5 @@
 # 硬件扫描结果（源自 nixos-generate-config，已纳入版本控制）
-# 修改本文件后通过 flake 重新部署：sudo nixos-rebuild switch --flake ~/nixos-config#desktop
+# 修改本文件后通过 flake 重新部署：sudo nixos-rebuild switch --flake ~/Projects/nixos-config#desktop
 { config, lib, pkgs, modulesPath, ... }:
 
 {
