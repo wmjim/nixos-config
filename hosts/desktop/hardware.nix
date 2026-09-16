@@ -11,6 +11,10 @@
   boot.initrd.kernelModules = [ ];
   boot.kernelModules = [ "kvm-intel" "i2c-dev" ];
   boot.extraModulePackages = [ ];
+  # 禁用声卡电源休眠:ALC1220 静音 10s 后会睡到 D3,唤醒时 DAC 渐入导致开头声音偏小
+  boot.extraModprobeConfig = ''
+    options snd-hda-intel power_save=0
+  '';
 
   fileSystems."/" =
     { device = "/dev/disk/by-uuid/251f2194-cfde-4826-afcb-a7b117c9d4dd";

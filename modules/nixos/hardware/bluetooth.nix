@@ -11,10 +11,6 @@ in
     hardware.bluetooth.powerOnBoot = true;
     hardware.enableRedistributableFirmware = true;
 
-    boot.extraModprobeConfig = ''
-      options ideapad_laptop rfkill_sw_state=1
-    '';
-
     systemd.services.unblock-bluetooth = {
       description = "Unblock Bluetooth rfkill after systemd-rfkill restore";
       after = [ "systemd-rfkill.service" ];

@@ -15,6 +15,8 @@
   boot.kernelModules = [ "kvm-intel" "ec_sys" ];
   boot.extraModprobeConfig = ''
     options ec_sys write_support=1
+    # 阻止 ideapad_laptop 模块初始时屏蔽蓝牙
+    options ideapad_laptop rfkill_sw_state=1
   '';
   boot.extraModulePackages = [ ];
 
