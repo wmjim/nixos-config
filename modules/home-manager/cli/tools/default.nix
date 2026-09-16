@@ -37,10 +37,6 @@ in
       ffmpeg
     ];
 
-    home.sessionVariables = {
-      TMPDIR = "$HOME/.tmp";
-    };
-
     home.file.".config/fastfetch/config.jsonc" = {
       source = ../../../../assets/fastfetch/nixos-01.jsonc;
       force = true;
