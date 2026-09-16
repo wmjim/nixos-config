@@ -26,7 +26,8 @@
     # 保留历史版本数量：10
     boot.loader.systemd-boot.configurationLimit = lib.mkDefault 10;
     boot.loader.efi.canTouchEfiVariables = lib.mkIf (!config.boot.isContainer) (lib.mkDefault true);
-    boot.kernelPackages = pkgs.linuxPackages_latest;
+    # WSL2 内核由 Windows 宿主提供，容器内设置此项无功能影响
+    boot.kernelPackages = lib.mkIf (!config.boot.isContainer) pkgs.linuxPackages_latest;
 
     # 保持NixOS系统自动更新
     # 必须显式指向本机 flake：未设 flake 时 nixos-rebuild 回退 classic 路径，
