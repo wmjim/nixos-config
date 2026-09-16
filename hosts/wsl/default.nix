@@ -3,6 +3,7 @@
 {
   imports = [
     inputs.nixos-wsl.nixosModules.default
+    ./proxy.nix
   ];
 
   networking.hostName = "wsl";
