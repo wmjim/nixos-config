@@ -1,9 +1,15 @@
 # Noctalia Shell 用户级配置
-{ lib, config, inputs, ... }:
+{ lib, config, osConfig, inputs, ... }:
 let
   cfg = config.mengw.gui.wm.noctalia;
   wmCfg = config.mengw.gui.wm;
   guiCfg = config.mengw.gui;
+
+  # DDC/CI 亮度依赖 i2c-dev 且需外接显示器支持，仅 desktop 满足
+  # （hosts/desktop/default.nix 开了 hardware.i2c.enable，laptop 未开）。
+  # laptop 内屏是 eDP，走 sysfs backlight；在 laptop 上 enable_ddcutil 只会让
+  # noctalia 反复跑必然失败的 ddcutil detect。
+  useDdc = osConfig.networking.hostName == "desktop";
 in
 {
   options.mengw.gui.wm.noctalia.enable = lib.mkOption {
@@ -34,8 +40,8 @@ in
           default.path = "${config.home.homeDirectory}/files/pictures/wallpaper/wallpaper.png";
         };
         brightness = {
-          enable_ddcutil = true;
-          monitor."DP-2".backend = "ddcutil";
+          enable_ddcutil = useDdc;
+          monitor = lib.mkIf useDdc { "DP-2".backend = "ddcutil"; };
         };
         audio = {
           enable = true;
