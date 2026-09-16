@@ -26,7 +26,6 @@ in
       compiz-alike-magic-lamp-effect
       coverflow-alt-tab
       tiling-shell
-      rounded-window-corners-reborn
       removable-drive-menu
       user-themes
     ];
