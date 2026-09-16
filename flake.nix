@@ -80,6 +80,9 @@
       nixosCore = [
         ./modules/nixos/core
         home-manager.nixosModules.home-manager
+        # nixos-rebuild-ng 不再自动注入 revision，需 flake 显式声明，
+        # 否则 systemd-boot 菜单与 nixos-version --configuration-revision 只能显示 Unknown
+        { system.configurationRevision = self.rev or "dirty"; }
       ];
     in
     {
