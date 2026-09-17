@@ -1,1 +1,5 @@
 .claude/
+# nix build 默认在工作区根留 result 软链；它会让 git 树变脏，
+# 使 self.rev 退化为 null、system.configurationRevision 变成 "dirty"，
+# 代际无法回溯 commit（见 CLAUDE.md「滚动升级的可追溯性」）。
+result

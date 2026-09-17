@@ -6,6 +6,15 @@
 
     nur.url = "github:nix-community/NUR";
 
+    # WinApps：把 Windows 虚拟机里的应用以独立窗口接入桌面（FreeRDP RemoteApp）。
+    # 走 libvirt 后端，与 mySystem.virtualization 共用同一套 QEMU/KVM 栈。
+    # 上游 flake 只提供包（无 NixOS/HM 模块），接入层由
+    # modules/home-manager/gui/winapps.nix 自管。
+    winapps = {
+      url = "github:winapps-org/winapps";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     home-manager = {
       url = "github:nix-community/home-manager/release-26.05";
       inputs.nixpkgs.follows = "nixpkgs";

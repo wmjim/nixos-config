@@ -1,7 +1,22 @@
 # QEMU/KVM + libvirtd 虚拟化模块
-{ lib, config, pkgs, ... }:
+#
+# 消费者：virt-manager/virt-viewer 手动使用，以及 WinApps（Windows 应用独立窗口接入，
+# 见 modules/home-manager/gui/winapps.nix）。Windows 11 需要 swtpm（TPM 2.0）与
+# nixpkgs 默认携带的 OVMF（Secure Boot），二者均已在此模块就位。
+{ lib
+, config
+, pkgs
+, inputs
+, ...
+}:
 let
   cfg = config.mySystem.virtualization;
+
+  # 装机介质：上游 virtio-win ISO + WinApps oem 注册脚本（单盘搞定装驱动与 RemoteApp 注册）。
+  # winappsRev 取自 flake.lock 的 winapps 输入，升级输入后 oem 脚本哈希失配会显式报错。
+  windowsVmMedia = pkgs.callPackage ../../../pkgs/windows-vm-media {
+    winappsRev = inputs.winapps.rev;
+  };
 in
 {
   config = lib.mkIf cfg.enable {
@@ -9,6 +24,12 @@ in
 
     environment.systemPackages = with pkgs; [
       virt-viewer
+      # 主机目录共享给 Windows 客户机（virtiofs）的守护进程
+      virtiofsd
+      # 虚拟机装机介质（挂 virt-manager 的 CDROM 设备）：
+      #   /run/current-system/sw/share/windows-vm-media/windows-vm-media.iso
+      # 文件本身不变时该派生不重建；日后不再新建虚拟机可以从这里删掉省 ~840MB
+      windowsVmMedia
     ];
 
     virtualisation.libvirtd = {
@@ -16,6 +37,9 @@ in
       qemu = {
         package = pkgs.qemu_kvm;
         swtpm.enable = true;
+        # 主机目录共享给 Windows 客户机（virtiofs）需要 vhost-user 后端可执行文件；
+        # 否则 virsh/virt-manager 建 virtiofs 共享时报 "virtiofsd not found"
+        vhostUserPackages = [ pkgs.virtiofsd ];
       };
     };
 
