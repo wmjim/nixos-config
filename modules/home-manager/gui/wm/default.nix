@@ -144,6 +144,21 @@ let
     else if host == "desktop" then desktopOutputs
     else throw "mengw.gui.wm: 未定义主机 ${host} 的 niri 显示器配置";
 
+  # Ctrl+Alt+Del 关闭全部窗口
+  # niri 只有作用于焦点窗口的 close-window，没有"关闭全部"动作：这里先快照
+  # 当前所有窗口 id，再逐个 focus-window + close-window。逐个关闭而非 kill
+  # 进程，是为了让应用走自己的关闭流程（弹"未保存"确认、落盘配置等）。
+  # 只遍历一次快照：遇到卡在确认对话框关不掉的窗口就停下，不会死循环。
+  niriCloseAll = pkgs.writeShellScriptBin "niri-close-all" ''
+    set -u
+    ${pkgs.jq}/bin/jq -r '.[].id' \
+      < <(${pkgs.niri}/bin/niri msg -j windows 2>/dev/null) \
+      | while read -r id; do
+          ${pkgs.niri}/bin/niri msg action focus-window "$id" >/dev/null 2>&1 || continue
+          ${pkgs.niri}/bin/niri msg action close-window    >/dev/null 2>&1
+        done
+  '';
+
   # Super+C/X/V 统一复制/剪切/粘贴
   # niri 没有内置 copy/paste 动作：图形应用自己绑 Ctrl+C/V/X，终端绑
   # Ctrl+Shift+C/V（Ctrl+C 在终端是中断信号）。niri-clip 查询焦点窗口的
@@ -210,6 +225,7 @@ in
     home.packages = [
       pkgs.wtype
       niriClip
+      niriCloseAll
     ];
   };
 }
