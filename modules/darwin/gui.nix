@@ -48,6 +48,7 @@ in
 
       # Homebrew 4.x 起 cask 已并入核心 tap，无需额外 tap homebrew/cask
       # GUI 应用
+      # alacritty 是 macOS 侧的终端：foot 只支持 Wayland，无法在 darwin 上替代
       casks = [
         "alacritty"
         "visual-studio-code"

@@ -16,8 +16,9 @@ window-rule {
 }
 
 // --- 终端模拟器：磨砂玻璃的黄金场景 ---
+// btop 窗口由 foot 以 --app-id=btop 启动（见 binds/apps.kdl），单独列出
 window-rule {
-    match app-id="Alacritty"
+    match app-id="^(foot|btop)$"
     opacity 0.70
     background-effect {
         blur true

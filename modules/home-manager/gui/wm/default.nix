@@ -171,8 +171,10 @@ let
   niriClip = pkgs.writeShellScriptBin "niri-clip" ''
     set -u
 
-    # 视为终端的 app_id，统一小写匹配（Alacritty 实际 app_id 首字母大写）
-    TERMINALS="alacritty foot kitty org.gnome.terminal gnome-terminal-server blackbox com.gexperts.blackbox xterm org.wezfurl.wezterm"
+    # 视为终端的 app_id，统一转小写后匹配
+    # btop 是 foot 用 --app-id=btop 起的监控窗口，同样按终端按键处理
+    # （否则 Super+C 会变成 Ctrl+C，直接把 btop 退出）
+    TERMINALS="foot btop kitty org.gnome.terminal gnome-terminal-server blackbox com.gexperts.blackbox xterm org.wezfurl.wezterm"
 
     # wtype 参数序列：按下修饰键 → 敲字母键 → 松开修饰键
     case "$1" in

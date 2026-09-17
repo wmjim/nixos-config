@@ -12,7 +12,7 @@ in
   };
 
   imports = [
-    ./alacritty.nix
+    ./foot.nix
     ./browsers.nix
     ./communication.nix
     ./media.nix

@@ -55,8 +55,9 @@ in
           max_height = 2000;
         };
       };
-      # Alacritty 不支持任何图形协议，Niri 会话下 Yazi 选 ueberzugpp 的 Wayland 驱动
-      # （WSLg 下走 X11 驱动），但 nixpkgs 的 yazi wrapper 不带 ueberzugpp，图片预览空白
+      # foot 原生支持 sixel，yazi 会优先选内置的 Sixel 驱动（见 yazi-adapter
+      # 的驱动选择：Brand::Foot => [Sixel]），ueberzugpp 仅作为 GNOME 终端 /
+      # WSLg 等无图形协议终端的兜底（nixpkgs 的 yazi wrapper 不带它，图片会空白）
       extraPackages = lib.optional pkgs.stdenv.hostPlatform.isLinux pkgs.ueberzugpp;
       theme = {
         flavor = {

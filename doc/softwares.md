@@ -16,7 +16,7 @@
 
 | 组件 | 软件 |
 |------|------|
-| 终端模拟器 | Alacritty（Catppuccin Frappe 主题） |
+| 终端模拟器 | Foot（Catppuccin Frappe 主题，Wayland 原生） |
 | Shell | Fish（含大量自定义别名） |
 | 终端复用器 | Zellij |
 | 终端文件管理器 | Yazi（`y`） |

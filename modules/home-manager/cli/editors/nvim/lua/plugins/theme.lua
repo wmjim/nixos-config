@@ -7,7 +7,7 @@ return {
     name = "catppuccin",
     priority = 1000,
     opts = {
-      flavour = "frappe", -- 与 Alacritty 的 catppuccin_frappe 保持一致
+      flavour = "frappe", -- 与 Foot 的 catppuccin_frappe 配色保持一致
     },
   },
   {

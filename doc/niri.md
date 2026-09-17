@@ -2,18 +2,18 @@
 
 Niri 配置文件位于 `modules/home-manager/gui/wm/config/`（symlink 到 `~/.config/niri`），`Mod` = `Super`（Windows 键）。
 
-按 `Mod` + `/` 可随时呼出快捷键查看器（alacritty + fzf）。
+按 `Mod` + `/` 可随时呼出快捷键查看器（Noctalia 的 keymap 面板）。
 
 ## 应用启动
 
 | 快捷键 | 功能 |
 |--------|------|
 | `Mod` + `Space` | Noctalia 应用启动器 |
-| `Mod` + `T` | 终端（Alacritty） |
+| `Mod` + `Return` | 终端（Foot） |
 | `Mod` + `B` | 浏览器（Zen） |
 | `Mod` + `C` | VSCode |
 | `Mod` + `E` | 文件管理器（Nautilus） |
-| `Mod` + `Shift` + `M` | 系统监控（btop） |
+| `Mod` + `Shift` + `M` | 系统监控（btop，浮动窗口） |
 | `Alt` + `T` | Pot 划词翻译 |
 | `Alt` + `I` | Pot 输入翻译 |
 | `Alt` + `X` | Pot 截屏翻译（OCR） |
