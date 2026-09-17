@@ -143,6 +143,44 @@ let
     if host == "laptop" then laptopOutputs
     else if host == "desktop" then desktopOutputs
     else throw "mengw.gui.wm: 未定义主机 ${host} 的 niri 显示器配置";
+
+  # Super+C/X/V 统一复制/剪切/粘贴
+  # niri 没有内置 copy/paste 动作：图形应用自己绑 Ctrl+C/V/X，终端绑
+  # Ctrl+Shift+C/V（Ctrl+C 在终端是中断信号）。niri-clip 查询焦点窗口的
+  # app_id 判断是否终端，再用 wtype 虚拟键盘把按键翻译过去。
+  # 能用的前提（已实测）：niri/Smithay 的修饰键状态按键盘设备分别维护，
+  # 虚拟设备注入 Ctrl+C 时客户端只收到该设备自己的 Control，物理按住的
+  # Super 不会混进去变成 Super+Ctrl+C。Hyprland 是 seat 级聚合，所以
+  # omarchy 不能用 wtype、只能用自家的 send_key_state（见
+  # omacom/omarchy 的 default/hypr/bindings/clipboard.lua）。
+  niriClip = pkgs.writeShellScriptBin "niri-clip" ''
+    set -u
+
+    # 视为终端的 app_id，统一小写匹配（Alacritty 实际 app_id 首字母大写）
+    TERMINALS="alacritty foot kitty org.gnome.terminal gnome-terminal-server blackbox com.gexperts.blackbox xterm org.wezfurl.wezterm"
+
+    # wtype 参数序列：按下修饰键 → 敲字母键 → 松开修饰键
+    case "$1" in
+        copy)  gui="-M ctrl -k c -m ctrl"; term="-M ctrl -M shift -k c -m shift -m ctrl" ;;
+        cut)   gui="-M ctrl -k x -m ctrl"; term="-M ctrl -M shift -k x -m shift -m ctrl" ;;
+        paste) gui="-M ctrl -k v -m ctrl"; term="-M ctrl -M shift -k v -m shift -m ctrl" ;;
+        *) printf 'usage: niri-clip {copy|cut|paste}\n' >&2; exit 1 ;;
+    esac
+
+    appid=$(niri msg -j focused-window 2>/dev/null \
+        | grep -o '"app_id":"[^"]*"' | head -1 | cut -d'"' -f4 \
+        | tr '[:upper:]' '[:lower:]')
+
+    keys=$gui
+    for t in $TERMINALS; do
+        if [ "$appid" = "$t" ]; then
+            keys=$term
+            break
+        fi
+    done
+
+    exec wtype $keys
+  '';
 in
 {
   options.mengw.gui.wm.enable = lib.mkOption {
@@ -168,5 +206,10 @@ in
     xdg.configFile."niri-colors/layout.kdl".text = layoutKdl;
     xdg.configFile."niri-colors/overview.kdl".text = overviewKdl;
     xdg.configFile."niri-outputs/outputs.kdl".text = outputsKdl;
+
+    home.packages = [
+      pkgs.wtype
+      niriClip
+    ];
   };
 }

@@ -14,10 +14,11 @@ include "~/.config/niri-colors/layout.kdl"
 include "visual/cursor.kdl"
 include "~/.config/niri-colors/overview.kdl"
 
-// 快捷键：系统、导航、应用
+// 快捷键：系统、导航、应用、剪贴板
 include "binds/system.kdl"
 include "binds/navigation.kdl"
 include "binds/apps.kdl"
+include "binds/clipboard.kdl"
 
 // 窗口规则
 include "windowrules.kdl"
