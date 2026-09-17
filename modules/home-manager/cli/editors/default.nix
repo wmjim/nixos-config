@@ -12,5 +12,6 @@ in
 
   imports = [
     ./helix.nix
+    ./neovim.nix
   ];
 }

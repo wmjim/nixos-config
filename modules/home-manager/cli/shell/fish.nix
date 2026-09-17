@@ -71,6 +71,18 @@ in
           command man $argv
         '';
       };
+      # 无参数时以当前目录打开 Neovim（LazyVim 直接进文件树），有参数时原样透传。
+      functions.n = {
+        wraps = "nvim";
+        description = "Open Neovim in the current directory when no argument is given";
+        body = ''
+          if test (count $argv) -eq 0
+            command nvim .
+          else
+            command nvim $argv
+          end
+        '';
+      };
       interactiveShellInit = ''
         set fish_greeting ""
         # 设置终端为英文环境
