@@ -13,7 +13,7 @@ in
 
   imports = [
     ./yazi.nix
-    ./zellij.nix
+    ./tmux.nix
   ];
 
   config = lib.mkIf (cfg.enable && cliCfg.enable) {
