@@ -31,11 +31,24 @@ let
     // niri 窗口布局配置
     // https://niri-wm.github.io/niri/Configuration%3A-Layout.html
     layout {
-        gaps 8     // 窗口和屏幕边缘的间距
+        // 窗口之间、以及窗口与屏幕边缘的间距（逻辑像素）。
+        // 取 16 是因为窗口圆角是 12（见 windowrules.kdl 的 geometry-corner-radius）：
+        // 间距小于圆角时，相邻两窗的圆角弧比它自己的半径还靠得近，缝隙看上去是
+        // “被掐住”而不是留白（8 逻辑像素在 1.5 缩放下 = 12 物理像素，只有 24
+        // 物理像素圆角的一半）。16 能在两个圆角之间留出一段直边。
+        //
+        // 注意 gaps 同时作用于内缝隙与外留白；若以后想两者不同（外小内大），
+        // niri 的官方写法是 gaps 16 配 struts { left/right/top/bottom -8; }，
+        // 这里没有采用——本机没有用 open-maximized-to-edges，但负 struts 会把
+        // 平铺区推到屏幕外，不想引入这个边界情况。
+        gaps 16
         background-color "transparent"  // 工作区透明
         center-focused-column "never"   // 无特殊居中效果
-        always-center-single-column     // 工作区只包含一列，该列居中显示
-        // 新窗口的默认列宽
+        // 单列工作区居中：有意为之的“专注模式”——一个窗口时留在屏幕中间保持
+        // 可读宽度，而不是铺满。想铺满不需要改这项：Mod+F 是 maximize-column，
+        // Mod+Minus/Equal 以 5% 为步长手动调列宽。
+        always-center-single-column
+        // 新窗口的默认列宽（0.5 即 niri 自身的默认值，写明只是为了意图明确）
         default-column-width { proportion 0.5; }
 
         // 焦点环，用于指示活动窗口
