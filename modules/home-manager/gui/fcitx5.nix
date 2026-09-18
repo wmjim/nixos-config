@@ -31,6 +31,57 @@ in
   };
 
   config = lib.mkIf (cfg.enable && guiCfg.enable) {
+    # 经典界面（候选词窗口）主题。该文件由 fcitx5 自行生成，但内容全是用户偏好、
+    # 无易变状态，故整体托管；fcitx5 GUI 里的改动会在下次 switch 时被覆盖回此处。
+    #
+    # UseDarkTheme 的语义是"跟随系统"而非"强制深色"：fcitx5 通过 XDG Desktop
+    # Portal 监听 org.freedesktop.appearance 的 color-scheme，为 1（prefer-dark）
+    # 时才使用 DarkTheme。故本项**依赖 themes 模块的 gtk.colorScheme = "dark"**：
+    #
+    #   gtk.colorScheme=dark → dconf org.gnome.desktop.interface color-scheme
+    #                        → xdg-desktop-portal-gnome/gtk 上报 color-scheme=1
+    #                        → fcitx5 切到 DarkTheme
+    #
+    # 若只改此处而不改 gtk.colorScheme，候选词窗会停在下面的浅色 Theme。
+    # 主题名取自 fcitx5 自带主题包（default / mellow-* / kwinblur-mellow-*），
+    # 无深色变体时就只能换主题名而不能靠 UseDarkTheme 变深。
+    xdg.configFile."fcitx5/conf/classicui.conf".text = ''
+      # 垂直候选列表
+      Vertical Candidate List=False
+      # 使用鼠标滚轮翻页
+      WheelForPaging=True
+      # 字体：与 GTK 界面字体一致（12pt）
+      Font="HarmonyOS Sans SC 12"
+      # 菜单字体
+      MenuFont="HarmonyOS Sans SC Medium Medium 12"
+      # 托盘字体
+      TrayFont="HarmonyOS Sans SC Medium Medium 12"
+      # 托盘标签轮廓颜色
+      TrayOutlineColor=#000000
+      # 托盘标签文本颜色
+      TrayTextColor=#ffffff
+      # 优先使用文字图标
+      PreferTextIcon=False
+      # 在图标中显示布局名称
+      ShowLayoutNameInIcon=True
+      # 使用输入法的语言来显示文字
+      UseInputMethodLanguageToDisplayText=True
+      # 主题（浅色模式）
+      Theme=mellow-youlan
+      # 深色主题
+      DarkTheme=mellow-youlan-dark
+      # 跟随系统浅色/深色设置
+      UseDarkTheme=True
+      # 当被主题和桌面支持时使用系统的重点色
+      UseAccentColor=True
+      # 在 X11 上针对不同屏幕使用单独的 DPI
+      PerScreenDPI=False
+      # 固定 Wayland 的字体 DPI
+      ForceWaylandDPI=0
+      # 在 Wayland 下启用分数缩放
+      EnableFractionalScale=True
+    '';
+
     home.file.".local/share/fcitx5/rime/default.custom.yaml".text = ''
       patch:
         __include: wanxiang_suggested_default:/

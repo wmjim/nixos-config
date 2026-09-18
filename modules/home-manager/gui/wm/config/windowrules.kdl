@@ -1,7 +1,14 @@
 // 窗口规则
 // 全局：默认平铺，圆角修饰
 window-rule {
-    geometry-corner-radius 3
+    // MacTahoe 自绘 CSD 的圆角是 24px（见主题包 gtk-4.0/gtk.css 的 window.csd）。
+    // 不自绘圆角的应用（Electron/Chromium/X11：VSCode、Discord、QQ、Telegram、
+    // Zotero、Typora、Anki、Steam）此前只会拿到 3px，几乎等于直角，
+    // 于是屏幕上同时存在 24px 与 3px 两套圆角语言。
+    // 取 12px：与 MacTahoe 给 popover/menu/OSD 的二级圆角同阶，
+    // 且小于 24px，保证不会切掉 CSD 窗口自身的圆角；
+    // clip 只会裁到阴影外层 alpha≈0 的角，肉眼不可见。
+    geometry-corner-radius 12
     clip-to-geometry true
     draw-border-with-background false
     open-maximized false
