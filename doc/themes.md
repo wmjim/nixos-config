@@ -35,6 +35,7 @@
 - 概览缩放 0.40，背景 `#242424`
 - `recent-windows` 高亮框圆角 12px（主题阶梯里的"独立弹层"档）
 - 模糊 `passes 4 / offset 5.0 / saturation 1.10`
+- 窗口阴影由合成器提供（`shadow { on }`，参数由 MacTahoe 自己的 CSD 阴影反推，见下）
 - 窗口开/关动画 240ms / 300ms（水波纹 shader）
 
 ### 圆角为何是 24px：参考 macOS 的 concentricity
@@ -61,10 +62,29 @@ MacTahoe-Dark 在 `gtk-4.0/gtk.css` 里实现的正是这套阶梯，基准 **24
 
 **为何取主题的 24 而不是字面的 16**：内层元素是 18/19px，把窗口压到 16 会让内层比外层更圆，必须连带重写窗口 + 侧边栏 + notebook + tab 共 5 个选择器（via `gtk.gtk{3,4}.extraCss`），且主题更新后会静默失配。取 24 则**零主题覆盖**，而且 GTK 自绘（24）与不自绘圆角的应用（Electron / Chromium / X11：VSCode、Discord、QQ、Telegram、Zotero、Typora、Anki、Steam）终于一致——这才是这套圆角在修的事。macOS 的 24 属于"带工具栏窗口"那一档，与本机以工具栏密集型应用为主的实际场景相符。
 
-**已知代价（需用眼睛确认）**：niri 的 `clip-to-geometry` 会裁掉 CSD 自绘阴影，半径越大裁掉的角越多（注释里算了：12px 时每角约 123 px²，24px 时约 494 px²）。若看出"阴影角被切"，两个出路：
+**阴影：由合成器接管（之前的"代价"已消解，而且我之前的判断也算错了）**
 
-1. 打开 niri 的 `shadow { on }`，用合成器自己的阴影统一替代被裁掉的 CSD 阴影（顺带让所有窗口阴影一致，更接近 macOS）
-2. 改回字面 macOS 值 16，并按 concentricity 把上表里 ≥ 18px 的选择器一并下移
+我把 `clip-to-geometry` 的影响误判为"只裁掉角上的阴影三角（12px 时 123 px²、24px 时 494 px²）"。实际不是：niri 裁的是 `xdg_surface` 的 window geometry，而 GTK 的 CSD 阴影画在 geometry **之外**的边距里 —— 所以 CSD 自绘阴影是**整层消失**的（上下左右全没），这一点就写在 `clip-to-geometry` 的文档里（*“cut out any client-side window shadows”*）。
+
+也就是说在开启合成器阴影之前，窗口是**完全没有任何阴影**的。现在由 niri 提供：
+
+```kdl
+shadow {
+    on
+    softness 32        // = MacTahoe 三层阴影里最大的 blur（0 12px 32px）
+    spread 0           // = 三层模糊层的 spread 都是 0
+    offset x=0 y=7     // = 三层偏移 3/7/12 按各自 alpha 加权的中值
+    color "#00000059"   // ≈ 35%，三层在窗沿处叠加后的等效不透明度
+}
+```
+
+推导过程写在 `modules/home-manager/gui/wm/default.nix` 的注释里。三个要点：
+
+- **不会叠成两层**。niri 文档：设了 `prefer-no-csd` 与/或 `geometry-corner-radius` 之后，*“These will also remove client-side shadows if the window draws any.”* 而且无论 GTK 是否响应 `prefer-no-csd`（保留 CSD / 放弃 CSD），结论都一致：要么自绘阴影被裁、合成器补上，要么本来就没有
+- `draw-behind-window` 保持默认 `false`——文档说只有"niri 不知道 CSD 圆角"时才需要 `true`；我们给了 `geometry-corner-radius`，niri 自己知道圆角，也就不会在半透明窗口（foot 0.70）里透出一圈暗影
+- 阴影跟随 `geometry-corner-radius`（24px）绘制，天然与窗口同心
+
+仍可选的另一条路：改回字面 macOS 值 16，并按 concentricity 把上表里 ≥ 18px 的选择器用 `gtk.gtk{3,4}.extraCss` 一并下移。
 
 ### 窗口间距为何是 16px
 

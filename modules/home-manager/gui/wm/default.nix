@@ -96,6 +96,44 @@ let
             on
             color "${shell.accent}80"
         }
+
+        // 阴影：由合成器统一提供。
+        //
+        // 这不是“叠加”第二层阴影。niri 文档明说：设了 prefer-no-csd 与/或
+        // geometry-corner-radius 之后，"These will also remove client-side
+        // shadows if the window draws any" —— clip-to-geometry 裁的是
+        // xdg_surface 的 window geometry（不含阴影边距），所以 CSD 自绘阴影
+        // 已整层消失，这里是唯一的一层。
+        // 也因此所有窗口（GTK / Electron / X11）共用同一套阴影，与 macOS 一致；
+        // 而且窗口无论响应 prefer-no-csd 与否，结论都一样：
+        //   GTK 保留 CSD → 自绘阴影被裁，合成器补上
+        //   GTK 放弃 CSD → 本来就没有自绘阴影，合成器提供
+        //
+        // draw-behind-window 保持默认的 false：文档说因为 niri 不知道 CSD 圆角
+        // 才需要 true 来遮住方形角的伪影；而我们给了 geometry-corner-radius，
+        // niri 自己知道圆角，不需要“画到窗口后面”，也就不会在半透明窗口
+        // （foot 0.70）里透出一圈暗影。
+        //
+        // 取值由 MacTahoe 自己的 CSD 阴影反推（gtk-4.0/gtk.css 的 window.csd）：
+        //     0  3px  6px rgba(0,0,0,.15)
+        //     0  7px 24px rgba(0,0,0,.12)
+        //     0 12px 32px rgba(0,0,0,.08)
+        //     0 0 0 2px rgba(0,0,0,.03) / 0 0 0 1px rgba(0,0,0,.12)  ← 两层“环”
+        // 单层阴影无法复现三层叠加，所以：
+        //   softness 32  = 最大 blur，用以匹配最远的衰减尾
+        //   offset y=7   = 三层偏移 3/7/12 按各自 alpha 加权的中值
+        //   spread 0     = 三层模糊层的 spread 都是 0
+        //   color ≈ 35%  = 三层在窗沿处叠加后的等效不透明度
+        // 那两层 0-blur 的“环”不另设 spread：它们等价于一条硬边，
+        // 而主题的 outline（rgba(255,255,255,.15) 发丝边）已经在做这件事。
+        // 不设 inactive-color：默认按更透明的 color 画，非焦点窗口阴影自动变淡。
+        shadow {
+            on
+            softness 32
+            spread 0
+            offset x=0 y=7
+            color "#00000059"
+        }
     }
   '';
 
