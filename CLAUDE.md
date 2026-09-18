@@ -72,7 +72,7 @@ modules/
   nixos/desktop/    永久导入，由mySystem.desktop.enable控制生效：boot、GDM、env、Niri、GNOME、Distrobox、Steam
   nixos/hardware/   永久导入，由mySystem.hardware.enable控制生效：音频（PipeWire）、蓝牙、网络（iwd+NetworkManager）、MCU工具链、NVIDIA基础驱动（后者需显式开启）
   home-manager/     多用户共用配置，同时兼容 NixOS 与 macOS 系统
-    cli/            通用加载项：Shell（Fish）、编辑器（Helix / Neovim）、开发工具、TUI终端交互工具
+    cli/            通用加载项：Shell（Fish）、编辑器（Neovim）、开发工具、TUI终端交互工具
     gui/            仅用于桌面用户加载：应用程序、备用主题、窗口管理器（Niri / Noctalia）、VSCode、Fcitx5输入法
   darwin/           macOS专属配置：系统默认设置、Homebrew图形化应用包
 ```

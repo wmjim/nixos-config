@@ -47,7 +47,7 @@ in
         user.name = "meng.wang";
         user.email = "meng.w1016@outlook.com";
         init.defaultBranch = "main";
-        core.editor = "hx";
+        core.editor = "nvim";
         color.ui = "auto";
         push.autoSetupRemote = true;
       };

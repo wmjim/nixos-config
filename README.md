@@ -46,5 +46,5 @@ nix store optimise
 ## 我的配置
 
 - 终端Shell：[Fish](https://github.com/fish-shell/fish-shell)
-- 终端编辑器：[Helix](https://github.com/helix-editor/helix)
+- 终端编辑器：[Neovim](https://github.com/neovim/neovim)（Omarchy 的 LazyVim 配置）
 

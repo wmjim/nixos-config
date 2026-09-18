@@ -32,9 +32,9 @@
 
 | 类别 | 软件 |
 |------|------|
-| 编辑器 | Helix、VSCode（含 Claude Code / Nix / Python / Rust / Docker 等扩展）、Zed |
-| IDE | JetBrains：PyCharm / CLion / IntelliJ / Rider / DataGrip |
-| AI 编程 | Claude Code、pi-coding-agent |
+| 编辑器 | Neovim、VSCode（含 Claude Code / Nix / Python / Rust / Docker 等扩展）、Zed |
+| IDE | JetBrains：PyCharm / CLion / DataGrip |
+| AI 编程 | Claude Code、pi-coding-agent、CodeX |
 | Git | git、lazygit、github-desktop |
 | 容器 | Distrobox + Podman、Docker 扩展、lazydocker |
 

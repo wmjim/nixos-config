@@ -5,8 +5,8 @@
 **全局环境**：由 home-manager 管理的用户环境（`modules/home-manager/cli/dev`）。
 
 - Shell：Fish + 常用 CLI 工具（eza / zoxide / bat / fzf / ripgrep / fd / jq / yq）
-- 编辑器：Helix（`hx`）+ VSCode（GUI）+ JetBrains 全家桶 + Zed
-- AI 编程：Claude Code（`cc` 别名）、pi-coding-agent
+- 编辑器：Neovim（`nvim`）+ VSCode（GUI）+ CLion
+- AI 编程：Claude Code（`cc` 别名）、pi-coding-agent、CodeX
 
 ### 语言工具链
 

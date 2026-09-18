@@ -2,7 +2,7 @@
 
 配置位置：`modules/home-manager/cli/shell/fish.nix`。
 
-终端默认英文环境，`EDITOR=hx`，`LC_ALL=en_US.UTF-8`。
+终端默认英文环境，`EDITOR=nvim`，`LC_ALL=en_US.UTF-8`。
 
 ## 系统部署别名
 
@@ -52,4 +52,4 @@
 | `key` | 切换 dms 按键绑定显示 |
 | `zquery` | zoxide 查询历史目录 |
 | `Ctrl` + `o` | 命令选择器（fzf 模糊选择常用命令） |
-| `cheat <provider>` | 快捷键速查表（fish / helix / tmux / vim） |
+| `cheat <provider>` | 快捷键速查表（fish / tmux / vim） |
