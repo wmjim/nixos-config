@@ -16,7 +16,7 @@
 | Qt | **Kvantum + MacTahoeDark** | `QT_STYLE_OVERRIDE=kvantum`；主题来自自打包的 `pkgs/mactahoe-kvantum`（与 GTK 侧同一个上游作者），见下文 |
 | 输入法候选窗 | **catppuccin-frappe-mauve** | `classicui.conf` 托管主题，圆角 8px（上游 SVG 烘焦的"弹窗"档，小于窗口半径，符合 concentricity）；归"工作区"一侧而非壳层 |
 | GNOME Shell / GDM | MacTahoe | GDM 侧靠 overlay 覆盖 `gnome-shell-theme.gresource`（见 `modules/nixos/desktop/gnome/default.nix`） |
-| Niri 壳层配色 | MacTahoe-Dark 同源 | 由 `niri-colors/{layout,overview}.kdl` 生成；强调色 `#0088FF`、中性面 `#333333`/`#242424`、紧急 `#ED5F5D`，全部取自 MacTahoe-Dark 的 `gtk-4.0/gtk.css` |
+| Niri 壳层配色 | MacTahoe-Dark 同源 | 由 `niri-colors/{layout,overview}.kdl` 生成；强调色 `#0088FF`、中性发丝线 `#999999`（焦点环）、中性面 `#333333`/`#242424`、紧急 `#ED5F5D`，全部取自 MacTahoe-Dark 的 `gtk-4.0/gtk.css` |
 | Noctalia Shell | **自定义调色板 `mactahoe`** | `customPalettes.mactahoe`，色值与 GTK/Qt/niri 同源；界面字体 HarmonyOS Sans SC。**仅调色板归 Nix，bar 布局归 GUI**，见下文 |
 
 ## 字体
@@ -29,7 +29,7 @@
 ## Niri 视觉细节
 
 - 窗口间距 16px（见下），单列工作区自动居中（有意为之的"专注模式"，`Mod+F` 可把单列铺满）
-- 焦点环 3px，单一强调色 `#0088FF`（macOS 范式：强调色不用渐变）
+- 焦点环 2px，中性发丝线 `#999999`（**用中性色而不是强调色**，理由见下）
 - 窗口圆角 **24px**（`windowrules.kdl` 的 `geometry-corner-radius`），禁用边框。取值参考 macOS 的 concentricity 阶梯，见下
 - 标签指示器在列右侧，圆角 8px（3px 宽的条，半径大于半宽就是胶囊，同主题的"药丸"档）；**仅当列进入 tabbed 显示模式（`Mod+W`）时出现**
 - 概览缩放 0.40，背景 `#242424`
@@ -92,6 +92,37 @@ shadow {
 
 `gaps` 同时作用于内缝隙与外留白。若以后想两者不同，niri 的官方写法是 `gaps 16` 配 `struts { left/right/top/bottom -8; }`，但负 struts 会把平铺区推到屏幕外，引入额外边界情况，故未采用。
 
+### 焦点环为何是中性发丝线，而不是强调色
+
+原来这里是 3px 的 `#0088FF`（饱和强调色），视觉上显得抢眼。换成了 2px 的 `#999999`。
+
+**根本理由：Apple 从不把强调色放在窗口边界上。** macOS 用强调色标**控件**（按钮、输入框焦点、选中的列表行），窗口边界只靠中性发丝线（主题里就是 `rgba(255,255,255,.15)` 那一条，也是 Noctalia 调色板 `mOutline = #454545` 的来源）加阴影区分活动与否。所以那个 3px 饱和蓝边是整套改造里**唯一“不像 macOS”的地方** —— 它比任何别的元素都跳，正是因为它同时具备高饱和度和位置错误两个特点。
+
+**宽度取 2 而不是 3**：niri 会把逻辑像素按缩放取整到物理像素。desktop 的 1.5 缩放下：
+
+| width | 物理像素 | |
+|---|---|---|
+| 1 | 1.5 | ⚠️ 取整到 2 → 实际 1.33 逻辑 |
+| **2** | **3.0** | ✅ 精确 |
+| 3 | 4.5 | ⚠️ 落在半像素边界，只能跳成 4 或 5 → 实际 2.67~3.33 |
+| 4 | 6.0 | ✅ 精确（但太粗） |
+
+laptop 的 1.25 缩放下 2 仍不精确（2.5），**两台都精确的宽度只有 4、8**，那又太粗。所以取了 desktop 的精确值。
+
+**为何不靠降不透明度来减重**：焦点环画在 16px 缝隙上，背景就是壁纸，而降不透明度在亮壁纸下会让它消失：
+
+| 不透明度 | 压在暗壁纸 | 压在亮壁纸 |
+|---|---|---|
+| 100% | `#0088FF` | `#0088FF` |
+| 60% | `#0E61AE` | `#66B8FF` |
+| 45% | `#13528F` | `#8CC9FF` ← 亮度与壁纸几乎相同，**提示失效** |
+
+所以减重只能靠**宽度和色相**。`#999999` 在两种壁纸上都立得住（暗壁纸 5.4:1、亮壁纸 2.9:1），而纯白在亮壁纸上会消失。
+
+两个选它的依据：它在 MacTahoe-Dark 的 `gtk-4.0/gtk.css` 里（出现 3 次），而 niri 自己（`default-config.kdl`）也把它当作 recent-windows 高亮框的默认中性色。
+
+想换回强调色就把 `active-color` 改回 `#0088FF`；想恢复原粗细就把 `width` 改回 3。都在 `wm/default.nix` 的 `layoutKdl` 里。
+
 ### 两处容易搞错的 niri 语义
 
 改动这套配色时踩到过，记录避免重蹈：
@@ -111,7 +142,8 @@ shadow {
 
 2. **主题名取 `MacTahoeDark` 而不是 `MacTahoe`。** Kvantum 选浅色还是深色取决于应用的 QPalette 明暗，而非 Plasma 会话下这个值来自平台主题，并不可靠。上游目录里浅深两态并存（`MacTahoe.kvconfig` / `MacTahoeDark.kvconfig`），Kvantum 的规则是“主题 T → `T.kvconfig`；若应用偏暗且存在 `TDark.kvconfig` 则改用它”——所以把深色那一对单独命名为主题 `MacTahoeDark` 后，选中它必然命中深色档（它要去找的 `MacTahoeDarkDark.kvconfig` 并不存在）。与本仓库其余部分“只用深色”一致。
 
-3. **强调色对齐壳层。** 上游 kvconfig 用 `#a0b4f8`（浅紫蓝）作 highlight，而同一个作者的 GTK 主题用的是 `#0088FF`——同源却不同色。打包时把 highlight / inactive.highlight / link 统一到 `#0088FF`，与 niri 焦点环、GTK、Noctalia 的 `mPrimary` 一致。
+3. **强调色对齐壳层。** 上游 kvconfig 用 `#a0b4f8`（浅紫蓝）作 highlight，而同一个作者的 GTK 主题用的是 `#0088FF`——同源却不同色。打包时把 highlight / inactive.highlight / link 统一到 `#0088FF`，与 GTK、Noctalia 的 `mPrimary` 一致（
+   焦点环是例外，它故意不用强调色，见上文）。
 
 **`platformTheme` 保持 `adwaita` 不动**：Wayland 下 Qt 的窗口装饰由平台主题提供，与控件样式是两回事；换掉它会让自绘标题栏消失（`env.nix` 里就是为此才恢复 Qt 自绘）。所以现状是“控件 = Kvantum/MacTahoe，标题栏 = QAdwaitaDecorations”。
 
