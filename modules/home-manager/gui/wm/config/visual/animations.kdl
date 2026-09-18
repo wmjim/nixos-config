@@ -10,8 +10,11 @@ animations {
     }
 
     // 窗口打开动画 — 雨滴水波纹效果
+    // 240ms：500ms 时连续开多个窗口会有"等它演完"的发粘感。
+    // 另注：下面两段 shader 每像素约 12 次 sin/cos + 一次纹理采样，
+    // 是本配置里最贵的渲染路径（4K 下尤甚），时长不宜再拉长。
     window-open {
-        duration-ms 500
+        duration-ms 240
         curve "ease-out-cubic"
 
         custom-shader r"
@@ -59,8 +62,9 @@ animations {
     }
 
     // 关闭窗口动画 — 水波纹消散效果
+    // 300ms：关闭是"离去"，比打开留一点余韵，波纹在消散过程中更明显。
     window-close {
-        duration-ms 500
+        duration-ms 300
         curve "ease-out-cubic"
 
         custom-shader r"

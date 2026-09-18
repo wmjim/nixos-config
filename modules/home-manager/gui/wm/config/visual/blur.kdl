@@ -1,16 +1,22 @@
 // 磨砂玻璃桌面 — 全局模糊参数（niri v26.04+）
 //
-// GPU 性能分级参考：
+// passes / offset 随 GPU 档次调整（每帧对每个可见的模糊面做 N 轮采样）：
 //   【低档】旧款集显 (HD Graphics, 旧 Radeon iGPU)
-//          blur { passes 2; offset 3.0; noise 0.03; saturation 1.1; }
+//          blur { passes 2; offset 3.0; noise 0.03; }
 //   【中档】主流 iGPU / 入门独显 (680M/780M, Iris Xe, GTX 1650)
-//          blur { passes 3; offset 4.0; noise 0.02; saturation 1.2; }
+//          blur { passes 3; offset 4.0; noise 0.02; }
 //   【高档】高性能独显 (RTX 3060+, RX 6600+)
-//          blur { passes 4; offset 5.0; noise 0.02; saturation 1.3; }
+//          blur { passes 4; offset 5.0; noise 0.02; }
+//
+// saturation 不随 GPU 调，它由**壁纸**决定，见下方说明。
 
 blur {
     passes 4        // 模糊迭代次数：2=轻薄, 3=明显磨砂, 4=浓重毛玻璃
     offset 5.0      // 采样半径：越大模糊越扩散，磨砂质感越强
     noise 0.02      // 噪点：减少色带伪影
-    saturation 1.3  // 背景饱和度：>1.0 让背景色彩透过玻璃更鲜艳
+    // 背景饱和度。磨砂玻璃的质感来自"低彩度 + 高对比亮度"，颜色应当由强调色
+    // 提供而不是由背景提供；而 ~/Pictures/wallpaper 里多是高彩度插画，
+    // 再乘 1.3 会让终端背后的壁纸变成打翻的调色盘。
+    // 桌面观感直接吃壁纸，若嫌"太吵"，优先换壁纸而不是继续压这个值。
+    saturation 1.10
 }

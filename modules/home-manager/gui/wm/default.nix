@@ -5,24 +5,25 @@ let
   guiCfg = config.mengw.gui;
   niriConfigPath = "${config.home.homeDirectory}/Projects/nixos-config/modules/home-manager/gui/wm/config";
 
-  # Gruvbox Dark 调色板
-  colors = {
-    base00 = "#1d2021"; # dark bg
-    base01 = "#3c3836"; # dark gray
-    base02 = "#504945"; # medium gray
-    base03 = "#665c54"; # light gray
-    base04 = "#bdae93"; # dark fg
-    base05 = "#d5c4a1"; # foreground
-    base06 = "#ebdbb2"; # light fg
-    base07 = "#fbf1c7"; # brightest
-    base08 = "#fb4934"; # red
-    base09 = "#fe8019"; # orange
-    base0A = "#fabd2f"; # yellow
-    base0B = "#b8bb26"; # green
-    base0C = "#8ec07c"; # aqua
-    base0D = "#83a598"; # blue
-    base0E = "#d3869b"; # purple
-    base0F = "#d65d0e"; # brown
+  # ── 桌面壳层调色板 ──────────────────────────────────────────────────────
+  # 只服务于 niri 自身的窗口装饰（焦点环 / 标签指示器 / 概览背景 / 插入提示）。
+  # 全部取自 GTK/Qt 侧同一来源：MacTahoe-Dark 的
+  #   share/themes/MacTahoe-Dark/gtk-4.0/gtk.css
+  # 括号内是该色在上述 CSS 里的出现次数，可直接 grep 复核。
+  #
+  # 此前这里用的是 Gruvbox Dark：暖调、高饱和，而它驱动的偏偏是桌面饱和度最高的
+  # 像素（3px 焦点环），与窗口内容（Catppuccin Frappe，冷调低饱和）色相相反，
+  # 结果是装饰抢了内容的注意力。现按 macOS 范式收敛为**单一扁平强调色**，
+  # 不再用红→橙双色渐变。
+  #
+  # 终端 / 编辑器 / Noctalia 各自的配色不在此列（见各自模块）：
+  # 壳层不引入第二套品牌色。
+  shell = {
+    accent = "#0088FF"; # 主强调色 (112)
+    dim = "#afafaf"; # 次要前景，用于非焦点标签指示器 (13)
+    surface = "#333333"; # 次级表面，用于非焦点焦点环 (54)
+    backdrop = "#242424"; # 主表面，用于概览背景 (73)
+    red = "#ED5F5D"; # 错误 / 紧急 (30)
   };
 
   # 生成的 layout.kdl
@@ -41,21 +42,23 @@ let
         focus-ring {
             on          // 开启焦点环
             width 3     // 焦点环宽度
-            inactive-color "${colors.base0D}"
-            // 活动窗口焦点环渐变色
-            active-gradient from="${colors.base08}" to="${colors.base09}" angle=45
+            // 单一扁平强调色，与 GTK/Qt 侧同源（macOS 范式：强调色不用渐变）
+            active-color "${shell.accent}"
+            // 注意：焦点环只围绕每块显示器上的活动窗口，inactive-color 仅在
+            // **非焦点显示器**上可见，单显示器永远看不到（niri wiki:
+            // Configuration: Layout）。故取中性表面色，让非焦点显示器上的窗口
+            // 轮廓退到背景里，而不是像原来那样用饱和青蓝。
+            inactive-color "${shell.surface}"
+            // niri 默认是深栗色 #9b0000，在深色桌面上几乎看不见
+            urgent-color "${shell.red}"
         }
 
-        // 边框，用于指示活动窗口
+        // 边框：与焦点环作用重叠，保持关闭，窗口指示只保留焦点环一种
         border {
             off
-            width 4
-            active-color "${colors.base0A}"
-            inactive-color "${colors.base03}"
-            urgent-color "${colors.base08}"
         }
 
-        // 标签指示器
+        // 标签指示器：仅当列进入 tabbed 显示模式时出现（Mod+W）
         tab-indicator {
             on
             place-within-column // 指示器绘制列内部
@@ -65,15 +68,17 @@ let
             position "right" // 指示器在列的右侧
             gaps-between-tabs 2 // 多个标签指示器并排时间距
             corner-radius 8 // 指示器圆角半径
-            active-color "${colors.base0D}" // 活跃标签指示器颜色
-            inactive-color "${colors.base04}" // 非活跃标签指示器颜色
-            urgent-color "${colors.base08}" // 紧急标签指示器颜色
+            active-color "${shell.accent}" // 焦点列
+            // 非焦点列：指示器要说明"此列是 tabbed"，需在深色壁纸上可见，
+            // 故用次要前景色而不是表面色
+            inactive-color "${shell.dim}"
+            urgent-color "${shell.red}" // 紧急
         }
 
         // 窗口插入提升
         insert-hint {
             on
-            color "${colors.base09}80"
+            color "${shell.accent}80"
         }
     }
   '';
@@ -83,7 +88,12 @@ let
     // 概览
     overview {
         zoom 0.40
-        backdrop-color "${colors.base03}"
+        // 概览里工作区背后、以及切换工作区时露出的底色。
+        // 注意 niri 会**忽略此色的 alpha 通道**（niri wiki: Configuration:
+        // Miscellaneous），所以这里只能给不透明色，写成 #242424cc 无效。
+        // 原来是 Gruvbox 的暖灰棕 #665c54：一大片中饱和暖色与所有窗口的冷调
+        // 内容色温相反，缩略图会显得"糊在泥里"。改用中性深色。
+        backdrop-color "${shell.backdrop}"
     }
 
     // 带缩略图的 Super+Tab 窗口切换器
@@ -92,6 +102,9 @@ let
         open-delay-ms 150
 
         highlight {
+            // 焦点预览的高亮框；不设时是 niri 默认的中性灰 #999999
+            active-color "${shell.accent}"
+            urgent-color "${shell.red}"
             padding 30
             corner-radius 12
         }

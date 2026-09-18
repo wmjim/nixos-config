@@ -7,7 +7,11 @@
 // xray：让窗口背景透过下面的其它窗口层
 
 
-// 全局：所有窗口启用模糊
+// 全局：所有窗口声明启用模糊。
+// 注意这本身不产生任何视觉效果——不透明窗口没有东西可以"透"。
+// 实际生效的只有下面显式给了 opacity < 1 的窗口（foot / btop），
+// 以及 Noctalia 的 layer 面（layer-rule 对本段 window-rule 无效，需单独声明）。
+// 保留这条规则的意义：以后新增的半透明窗口不必重复声明 blur/xray。
 window-rule {
     background-effect {
         blur true
