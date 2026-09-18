@@ -80,6 +80,9 @@ let
             length total-proportion=1.0 // 指示器长度占列总高度比例
             position "right" // 指示器在列的右侧
             gaps-between-tabs 2 // 多个标签指示器并排时间距
+            // 指示器宽度只有 3px，而半径 8 > 宽度一半 ⇒ 两端自然成胶囊，
+            // 与 MacTahoe 的"药丸"（border-radius 9999px）同一语义。
+            // 阶梯见 windowrules.kdl 顶部的 concentricity 说明。
             corner-radius 8 // 指示器圆角半径
             active-color "${shell.accent}" // 焦点列
             // 非焦点列：指示器要说明"此列是 tabbed"，需在深色壁纸上可见，
@@ -119,6 +122,7 @@ let
             active-color "${shell.accent}"
             urgent-color "${shell.red}"
             padding 30
+            // 12 = MacTahoe 阶梯里的"独立弹层"档（popover / menu / osd）
             corner-radius 12
         }
 

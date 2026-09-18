@@ -1,14 +1,41 @@
 // 窗口规则
 // 全局：默认平铺，圆角修饰
 window-rule {
-    // MacTahoe 自绘 CSD 的圆角是 24px（见主题包 gtk-4.0/gtk.css 的 window.csd）。
-    // 不自绘圆角的应用（Electron/Chromium/X11：VSCode、Discord、QQ、Telegram、
-    // Zotero、Typora、Anki、Steam）此前只会拿到 3px，几乎等于直角，
-    // 于是屏幕上同时存在 24px 与 3px 两套圆角语言。
-    // 取 12px：与 MacTahoe 给 popover/menu/OSD 的二级圆角同阶，
-    // 且小于 24px，保证不会切掉 CSD 窗口自身的圆角；
-    // clip 只会裁到阴影外层 alpha≈0 的角，肉眼不可见。
-    geometry-corner-radius 12
+    // ── 圆角：对齐 macOS 的 concentricity 阶梯 ───────────────────────────────
+    //
+    // Apple 在 WWDC 2025 "Build an AppKit app with the new design" 里把新设计
+    // 概括为 concentricity：每个内层元素的曲率都落在容器圆角之内，
+    // 即 r_inner = r_outer − inset；且窗口圆角**随窗口样式变化**：
+    // "Windows with toolbars now use a larger radius … Titlebar-only windows
+    //   retain a smaller corner radius"。Tahoe 的标题栏型窗口默认为 16，
+    // 带工具栏的更大；Sequoia（macOS 15）为 10。
+    //
+    // MacTahoe-Dark 在 gtk-4.0/gtk.css 里实现的正是这套阶梯，基准 24：
+    //
+    //     window.csd                 24   ← 窗口本身
+    //     floating/bottom-sheet       24   ← 独立浮动面板
+    //     notebook.frame              19   ┐
+    //     .sidebar-pane / .content-pane 18 ├ 嵌在窗口内（24−5 / 24−6）
+    //     notebook > header           16   │
+    //     notebook … tab              14   ┘
+    //     popover / menu / osd        12   ← 独立弹层
+    //     按钮 / 输入框                 6
+    //     药丸                      9999
+    //
+    // 取 24（= 主题自己的窗口基准）而不是字面的 16：内层元素是 18/19px，
+    // 若把窗口压到 16，内层会比外层**更圆**，必须连带重写窗口 + 侧边栏 +
+    // notebook + tab 共 5 个选择器，且主题更新后会静默失配。取 24 则零主题覆盖，
+    // 而且 GTK 自绘（24）与不自绘圆角的应用（Electron / Chromium / X11：
+    // VSCode、Discord、QQ、Telegram、Zotero、Typora、Anki、Steam）终于一致——
+    // 那才是这整套圆角在修的正事。
+    //
+    // 代价（需用眼睛确认）：niri 的 clip-to-geometry 会裁掉 CSD 自绘阴影，
+    // 半径越大裁掉的角越多（12px 时每角约 123 px²，24px 时约 494 px²）。
+    // 若看出"阴影角被切"，两个出路：
+    //   a) 打开 niri 的 shadow { on }，用合成器自己的阴影统一替代被裁掉的 CSD 阴影
+    //   b) 改回字面 macOS 值 16，并按 concentricity 把上面 5 个选择器用
+    //      gtk.gtk{3,4}.extraCss 一并下移 8px
+    geometry-corner-radius 24
     clip-to-geometry true
     draw-border-with-background false
     open-maximized false

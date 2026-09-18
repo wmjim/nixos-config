@@ -14,7 +14,7 @@
 | 图标 | **MacTahoe-dark** | 自定义打包图标（`pkgs/mactahoe-icon-theme`），为深色背景设计 |
 | 光标 | **Bibata-Modern-Classic** | 24px，XWayland 亦生效（软链到 `~/.local/share/icons`） |
 | Qt | **adwaita-dark** | `QT_STYLE_OVERRIDE=adwaita-dark`，包由 HM 依 style 名自动挑选（adwaita-qt + adwaita-qt6） |
-| 输入法候选窗 | **catppuccin-frappe-mauve** | `classicui.conf` 托管主题，圆角 8px（见下）；归"工作区"一侧而非壳层 |
+| 输入法候选窗 | **catppuccin-frappe-mauve** | `classicui.conf` 托管主题，圆角 8px（上游 SVG 烘焦的"弹窗"档，小于窗口半径，符合 concentricity）；归"工作区"一侧而非壳层 |
 | GNOME Shell / GDM | MacTahoe | GDM 侧靠 overlay 覆盖 `gnome-shell-theme.gresource`（见 `modules/nixos/desktop/gnome/default.nix`） |
 | Niri 壳层配色 | MacTahoe-Dark 同源 | 由 `niri-colors/{layout,overview}.kdl` 生成；强调色 `#0088FF`、中性面 `#333333`/`#242424`、紧急 `#ED5F5D`，全部取自 MacTahoe-Dark 的 `gtk-4.0/gtk.css` |
 | Noctalia Shell | **自定义调色板 `mactahoe`** | `customPalettes.mactahoe`，色值与 GTK/Qt/niri 同源；界面字体 HarmonyOS Sans SC。**仅调色板归 Nix，bar 布局归 GUI**，见下文 |
@@ -30,17 +30,45 @@
 
 - 窗口间距 16px（见下），单列工作区自动居中（有意为之的"专注模式"，`Mod+F` 可把单列铺满）
 - 焦点环 3px，单一强调色 `#0088FF`（macOS 范式：强调色不用渐变）
-- 窗口圆角 12px（`windowrules.kdl` 的 `geometry-corner-radius`），禁用边框
-
-  **为什么是 12px**：MacTahoe 自绘 CSD 的圆角是 24px（`window.csd { border-radius: 24px }`），而不自绘圆角的应用（Electron / Chromium / X11：VSCode、Discord、QQ、Telegram、Zotero、Typora、Anki、Steam）只能由合成器裁切。取 12px 与 MacTahoe 给 popover/menu/OSD 的二级圆角同阶，且小于 24px，保证裁切区域完全落在 CSD 窗口自身圆角之内、不会切掉它。
-- 标签指示器在列右侧，圆角 8px；**仅当列进入 tabbed 显示模式（`Mod+W`）时出现**
+- 窗口圆角 **24px**（`windowrules.kdl` 的 `geometry-corner-radius`），禁用边框。取值参考 macOS 的 concentricity 阶梯，见下
+- 标签指示器在列右侧，圆角 8px（3px 宽的条，半径大于半宽就是胶囊，同主题的"药丸"档）；**仅当列进入 tabbed 显示模式（`Mod+W`）时出现**
 - 概览缩放 0.40，背景 `#242424`
+- `recent-windows` 高亮框圆角 12px（主题阶梯里的"独立弹层"档）
 - 模糊 `passes 4 / offset 5.0 / saturation 1.10`
 - 窗口开/关动画 240ms / 300ms（水波纹 shader）
 
+### 圆角为何是 24px：参考 macOS 的 concentricity
+
+Apple 在 WWDC 2025 的 *Build an AppKit app with the new design* 里把新设计概括为 **concentricity**：每个内层元素的曲率都落在容器圆角之内（`r_inner = r_outer − inset`），而且**窗口圆角随窗口样式变化**：
+
+> *“Windows with toolbars now use a larger radius … Titlebar-only windows retain a smaller corner radius.”*
+
+对应数值：Tahoe 的标题栏型窗口默认为 **16**，带工具栏的用更大的半径；Sequoia（macOS 15）为 **10**（来源：`m4rkw/macos-corner-fix` 的对照表）。
+
+MacTahoe-Dark 在 `gtk-4.0/gtk.css` 里实现的正是这套阶梯，基准 **24**：
+
+| 半径 | 选择器 | 层级 |
+|---|---|---|
+| **24px** | `window.csd` | 窗口本身 |
+| 24px | `floating-sheet` / `bottom-sheet > sheet` | 独立浮动面板 |
+| 19px | `notebook.frame` | 嵌在窗口内（24−5） |
+| 18px | `.sidebar-pane` / `.content-pane` | 嵌在窗口内（24−6） |
+| 16px | `notebook > header` | 嵌套更深 |
+| 14px | `notebook > tabs > tab` | 嵌套更深 |
+| 12px | `popover` / `menu` / `osd` | 独立弹层 |
+| 6px | 按钮 / 输入框 | 控件 |
+| 9999px | 药丸 | 胶囊 |
+
+**为何取主题的 24 而不是字面的 16**：内层元素是 18/19px，把窗口压到 16 会让内层比外层更圆，必须连带重写窗口 + 侧边栏 + notebook + tab 共 5 个选择器（via `gtk.gtk{3,4}.extraCss`），且主题更新后会静默失配。取 24 则**零主题覆盖**，而且 GTK 自绘（24）与不自绘圆角的应用（Electron / Chromium / X11：VSCode、Discord、QQ、Telegram、Zotero、Typora、Anki、Steam）终于一致——这才是这套圆角在修的事。macOS 的 24 属于"带工具栏窗口"那一档，与本机以工具栏密集型应用为主的实际场景相符。
+
+**已知代价（需用眼睛确认）**：niri 的 `clip-to-geometry` 会裁掉 CSD 自绘阴影，半径越大裁掉的角越多（注释里算了：12px 时每角约 123 px²，24px 时约 494 px²）。若看出"阴影角被切"，两个出路：
+
+1. 打开 niri 的 `shadow { on }`，用合成器自己的阴影统一替代被裁掉的 CSD 阴影（顺带让所有窗口阴影一致，更接近 macOS）
+2. 改回字面 macOS 值 16，并按 concentricity 把上表里 ≥ 18px 的选择器一并下移
+
 ### 窗口间距为何是 16px
 
-窗口圆角是 12px（`windowrules.kdl` 的 `geometry-corner-radius`）。间距若小于圆角，相邻两窗的圆角弧比它自己的半径还靠得近，缝隙看上去是"被掉住"而不是留白——原来的 8px 在 1.5 缩放下只有 12 物理像素，恰好是 24 物理像素圆角的一半。16px 能在两个圆角之间留出一段直边。
+窗口圆角是 24px（`windowrules.kdl` 的 `geometry-corner-radius`，取值理由见上节）。间距若小于圆角，相邻两窗的圆角弧比它自己的半径还靠得近，缝隙看上去是"被掉住"而不是留白。原来的 8px 在 1.5 缩放下只有 12 物理像素；现在的 16px 能在两个 24px 的圆角之间留出一段直边，同时不至于把窗口推得过远。
 
 `gaps` 同时作用于内缝隙与外留白。若以后想两者不同，niri 的官方写法是 `gaps 16` 配 `struts { left/right/top/bottom -8; }`，但负 struts 会把平铺区推到屏幕外，引入额外边界情况，故未采用。
 
