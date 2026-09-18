@@ -35,6 +35,5 @@ yt-dlp -f "bestvideo+bestaudio/best" --merge-output-format mp4 --cookies <cookie
 yt-dlp -f "bestvideo+bestaudio/best" --merge-output-format mp4 --cookies <cookies.txt> --embed-subs -o "%(playlist_title)s/%(playlist_index)s - %(title)s.%(ext)s" "<播放列表链接>"
 
 
-# ghostty 相关
-ghostty +list-keybinds --default                        | 查看 ghostty 默认按键绑定
-ghostty +list-themes                                    | 查看 ghostty 可用主题列表
+# 显示器上电后塌成 640x480：期望看到"第 N 次重读后恢复"且桌面自己跳回 4K 
+journalctl -u edid-reprobe -o short-iso | tail          | 显示器分辨率恢复
