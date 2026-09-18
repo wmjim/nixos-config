@@ -1,6 +1,6 @@
 # 主题与外观
 
-配置位置：`modules/home-manager/gui/themes/default.nix`（Qt/GTK）+ `modules/home-manager/gui/wm/default.nix`（Niri 配色）+ `modules/home-manager/gui/fcitx5.nix`（输入法候选窗）。
+配置位置：`modules/home-manager/gui/themes/default.nix`（Qt/GTK）+ `modules/home-manager/gui/wm/default.nix`（Niri 配色）+ `modules/home-manager/gui/wm/noctalia.nix`（Noctalia 调色板）+ `modules/home-manager/gui/fcitx5.nix`（输入法候选窗）。
 
 整个桌面统一为**深色**：niri / Noctalia / 终端 / 编辑器都是深色，GTK/Qt/输入法也一并为深色，避免白底窗口浮在深色桌面上。
 
@@ -17,7 +17,7 @@
 | 输入法候选窗 | **catppuccin-frappe-mauve** | `classicui.conf` 托管主题，圆角 8px（见下）；归"工作区"一侧而非壳层 |
 | GNOME Shell / GDM | MacTahoe | GDM 侧靠 overlay 覆盖 `gnome-shell-theme.gresource`（见 `modules/nixos/desktop/gnome/default.nix`） |
 | Niri 壳层配色 | MacTahoe-Dark 同源 | 由 `niri-colors/{layout,overview}.kdl` 生成；强调色 `#0088FF`、中性面 `#333333`/`#242424`、紧急 `#ED5F5D`，全部取自 MacTahoe-Dark 的 `gtk-4.0/gtk.css` |
-| Noctalia Shell | Catppuccin（暗色） | 内置主题，界面字体 HarmonyOS Sans SC |
+| Noctalia Shell | **自定义调色板 `mactahoe`** | `customPalettes.mactahoe`，色值与 GTK/Qt/niri 同源；界面字体 HarmonyOS Sans SC。**仅调色板归 Nix，bar 布局归 GUI**，见下文 |
 
 ## 字体
 
@@ -57,18 +57,77 @@
 
 | 层 | 家族 | 元 |
 |---|---|---|
-| 壳层：niri 装饰 + GTK + Qt | macOS 中性灰 + 单一强调色 `#0088FF` | MacTahoe-Dark 的 `gtk-4.0/gtk.css` |
+| 壳层：niri 装饰 + GTK + Qt + Noctalia bar | macOS 中性灰 + 单一强调色 `#0088FF` | MacTahoe-Dark 的 `gtk-4.0/gtk.css` |
 | 工作区：终端 + 编辑器 + shell + 文件管理器 + 系统监控 + 输入法候选窗 | Catppuccin Frappe（`#303446` 底） | foot、Neovim、yazi、btop、fastfetch、fcitx5 六处同源 |
 
 输入法候选窗归到工作区而非壳层，理由：它是跟随文本光标出现的**打字层**浮层，同屏的总是终端 / 编辑器 / 浏览器，而那些都是 Frappe。
 
 选这个组合的理由：一是 GTK/GDM/图标/自打包已经全部在 MacTahoe 上，二是“macOS 壳 + 低饱和冷调工作区”比单纯的全局 Catppuccin 更有辨识度。
 
-### 尚未收口的几处
+**定调：以应用层为主体。** bar 应当退到背景里，而不是与窗口争主体。这条决定了下面 Noctalia 一节的取舍。
 
-| 项 | 现状 | 说明 |
+## Noctalia：调色板归 Nix，其余归 GUI
+
+这是最容易误解的一块，先讲清机制。
+
+```
+programs.noctalia.settings  →  ~/.config/noctalia/config.toml      ← Nix 管理
+                                        ↓  被运行时覆盖
+GUI 里的任何改动            →  ~/.local/state/noctalia/settings.toml ← 真实状态，Nix 管不到
+```
+
+模块自己的文档写着（`nix/home-module.nix`）：
+
+> *“Default settings for noctalia … **Note: these settings can still be overwritten at runtime via the settings menu.**”*
+
+所以 Nix 里的 `settings` **只是出厂默认值**。实测对账：
+
+| 键 | 仓库里声明的 | 实际生效的 |
 |---|---|---|
-| Noctalia 内置 Catppuccin 的 flavor | 未指定 | Catppuccin 有 4 个 flavor，而 foot/nvim/yazi/fcitx5 钉的是 Frappe。若 bar 看起来比终端更黑更紫，说明内置取的是 Mocha，需在 Noctalia 主题面板对齐 |
+| `theme.builtin` | `Catppuccin` | —（已删，见下） |
+| `audio.enable_sounds` | `false` | **`true`**（关音效的意图被推翻） |
+| `brightness.enable_ddcutil` | laptop 上 `false` | desktop 实测 `true`（laptop 需单独核） |
+| `shell.font_family` / `audio.sound_volume` | 有声明 | 不在 settings.toml → **生效** ✅ |
+
+**职责划分（这是决定，不是妥协）**：
+
+- **调色板归 Nix**：`programs.noctalia.customPalettes.mactahoe` 写 `~/.config/noctalia/palettes/mactahoe.json`，配合 `theme.source = "custom"`。这是唯一能在版本控制里钉死“MacTahoe 中性灰 + `#0088FF`”的入口
+- **bar 布局 / 控件 / 插件归 GUI**：那些在 `settings.toml` 里，而那个文件包含明文插件 API key（`deepseek_usage.api_key`）。托管它等于把密钥写进全局可读的 store，与当初 WinApps RDP 密码做到一半的判断一个道理，所以不做
+- 因此 `theme.source` 即使写在 Nix 里，**首次也需在 GUI 选一次**，或跑：
+
+  ```bash
+  noctalia msg color-scheme-set custom mactahoe
+  noctalia msg color-scheme-get        # 应回：custom mactahoe
+  ```
+
+  若调色板文件有问题，noctalia 会在日志里报 `custom palette 'mactahoe' not found or invalid; falling back to builtin`。
+
+### 调色板取值为何不用社区方案 ADW
+
+社区调色板 ADW 的 `mSurface` 恰好也是 `#242424`，但其余色槽映射有误，故重做：
+
+| 色槽 | ADW | 问题 | 本仓库取值 |
+|---|---|---|---|
+| `mOnSurfaceVariant` | `#ffffff` | 与 `mOnSurface` 相同 → **没有文字层级** | `#afafaf`（MacTahoe 次级前景） |
+| `mSecondary` | `#1b467c` | 暗海军蓝，在 `#242424` 上几乎看不见 | `#2e7cf7`（同族第二蓝） |
+| `mTertiary` | `#ffffff` | 纯白当强调色，且与文字色重复 | `#4dacff`（同族亮蓝） |
+| `mPrimary` | `#3584e4` | GNOME 蓝，不是壳层强调色 | `#0088ff` |
+| `mHover` | `#3584e4` | 饱和强调色当悬浮底色（文档约定是柔和提亮） | `#3d3d3d`（唯一插值项） |
+| `mSurfaceVariant` | `#1e1e1e` | 比主面更暗，层叠方向反了 | `#333333` |
+| `mOnSurface` | `#ffffff` | 比 MacTahoe 的 `#dedede` 刺眼 | `#dedede` |
+| `mOutline` | `#3d3846` | 紫调灰，与中性壳层不同族 | `#454545`（= MacTahoe 的 `rgba(255,255,255,.15)` 发丝边合成值） |
+
+### bar 收敛目标（GUI 侧执行）
+
+当前 19 个控件、`background_opacity = 0.15`。以应用层为主体后应当退到背景，但不是退回隐形：
+
+| 项 | 当前 | 目标 | 理由 |
+|---|---|---|---|
+| `background_opacity` | 0.15 | **0.35 ~ 0.40** | 15% 时 bar 自己的配色基本不起作用，文字直接压在模糊壁纸上；“退到背景”应当是“低对比但可读” |
+| `end`（12 个） | launcher, deepseek_usage, activity, cat, tray, clipboard, notifications, bluetooth, brightness, volume, theme_mode, session | **留 6**：tray, clipboard, notifications, volume, brightness, session | 两个第三方信息流（DeepSeek 用量、GitHub 动态）与第三个猫占的是最右端的视觉焦点 |
+| `center`（4 个） | capsule(media+audio_visualizer), date, todo, notes | **留 date** | 音频可视化 + 两且待办/便签都属于“盯着看”的内容，与应用层争焦 |
+| `start`（3 个） | workspaces, keymap, w-engine | **留 workspaces** | 键盘布局切换很少用 |
+| `widget.cat.rave_mode` | `true` | `false` 或移除 | 动画在静止的壳层里是持续噪音 |
 
 ### 壁纸：**有意不纳管**
 
@@ -86,4 +145,11 @@ ls /run/current-system/sw/share/themes/
 
 # 光标主题目录（XWayland 应用）
 ls ~/.local/share/icons/
+
+# Noctalia 实际在用的调色板、以及调色板载入失败时的回退日志
+noctalia msg color-scheme-get
+grep -i "falling back to builtin" ~/.cache/noctalia/noctalia.log
+
+# 校验 noctalia 配置（不依赖运行实例）
+noctalia config validate ~/.config/noctalia/config.toml
 ```
