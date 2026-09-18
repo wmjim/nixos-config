@@ -15,6 +15,7 @@
 sudo nixos-rebuild switch --flake ~/Projects/nixos-config#desktop
 
 # 一次性（Windows 侧）：建 VM → 装 Win11 Pro → 运行装机盘里的 WINAPPS-SETUP.bat → 重启
+#                        → 墙内再加一步：把 Windows 系统代理指向 192.168.122.1:7897（见 §10.4）
 # 一次性（Linux 侧）：填 Windows 账户密码，然后扫描并生成应用入口
 printf '%s' '你的Windows账户密码' > ~/.config/winapps/rdp-pass && chmod 600 ~/.config/winapps/rdp-pass
 winapps-setup --user
@@ -45,6 +46,7 @@ winapps help         # 其余子命令
 │   │ TermService :3389                                │                       │
 │   │ 防火墙：装机盘 WINAPPS-SETUP.bat 按“语言无关”方式放行 ← 关键             │
 │   │ UV4.exe 等 → 在 Linux 上是独立窗口（图标/剪贴板/声音/麦克风）             │
+│   │ 上外网：系统代理 192.168.122.1:7897（socat → 宿主 Clash，见 §10.4）      │
 │   └──────────────────────────────────────────────────┘                       │
 │   ~/.config/winapps/winapps.conf   ← home-manager 托管（勿手改）              │
 │   ~/.config/winapps/rdp-pass       ← 唯一不托管的输入，0600，手动维护         │
@@ -55,6 +57,7 @@ winapps help         # 其余子命令
 | --- | --- |
 | `flake.nix` / `flake.lock` | `winapps` 输入：只提供 `winapps` / `winapps-launcher` 两个**包**（上游没有 NixOS/HM 模块） |
 | `modules/nixos/virtualization/default.nix` | libvirtd / qemu_kvm / swtpm / virtiofsd + 装机盘 `windowsVmMedia` |
+| `modules/nixos/networking/proxy-vm.nix` | 客户机上网：把宿主 Clash 转发到网桥 `virbr0`（`libvirt-proxy-forward.service`，见 §10.4） |
 | `pkgs/windows-vm-media/` | 装机盘 ISO 的构建：上游 virtio-win ISO + 上游 `oem/` + 本仓库的 `WINAPPS-SETUP.bat` / `winapps-fix-rdp.ps1` |
 | `modules/home-manager/gui/winapps.nix` | 接入层：包、`winapps.conf`、askpass 脚本、密码缺失提示、`RDP_SCALE` 派生 |
 | `~/.config/winapps/winapps.conf` | 运行时配置，由 home-manager 生成（改配置改 Nix，勿手改） |
@@ -70,7 +73,7 @@ winapps help         # 其余子命令
 | 宿主磁盘 | VM 磁盘 + 10GB 余量；本机 VM 磁盘为 qcow2，落在 `/var/lib/libvirt/images` |
 | Windows 镜像 | **Windows 11 Pro / Enterprise**（RemoteApp 需要 RDP 服务端，Home 版不行） |
 | Windows 账户 | 必须**设置了密码**（空密码账户无法 RDP 登录） |
-| 代理（可选） | 若在墙内：Clash 设 `allow-lan`，guest 里把代理指向 `192.168.122.1:7897`（见 §10.4） |
+| 代理（可选） | 若在墙内：宿主侧由 `mySystem.proxy.exposeToVms = true`（desktop/laptop 已开）把 Clash 转发到网桥，guest 里把系统代理指向 `192.168.122.1:7897`（见 §10.4） |
 
 ---
 
@@ -88,6 +91,7 @@ mySystem.virtualization.enable = true;   # hosts/<host>/default.nix 已设
 | nixpkgs 默认携带的 OVMF | UEFI + Secure Boot 固件（`/run/libvirt/nix-ovmf/`） |
 | `qemu.vhostUserPackages = [ virtiofsd ]` | 主机目录共享（virtiofs）所需 |
 | `environment.systemPackages` 里的 `windowsVmMedia` | 装机盘：`/run/current-system/sw/share/windows-vm-media/windows-vm-media.iso` |
+| `mySystem.proxy.exposeToVms` | 在网桥地址上转发宿主 Clash（`libvirt-proxy-forward.service`），客户机据此上外网（见 §10.4） |
 | HM `mengw.gui.winapps` | `winapps`、`winapps-launcher`、`LIBVIRT_DEFAULT_URI=qemu:///system`、`winapps.conf`、askpass |
 
 装机盘内容（一张盘搞定装机与配置）：
@@ -351,13 +355,59 @@ virsh detach-device RDPWindows /tmp/stlink.xml --live   # 用完还给 Linux
 
 ### 10.4 让 Windows 侧能上网（下载 Keil DFP / 许可校验）
 
-guest 里把系统代理指向宿主的 Clash（需在 Clash 里开 `allow-lan`）：
+宿主侧**不需要**任何 GUI 开关（Clash 保持默认的 `allow-lan: false` 即可）：仓库在开机时
+于网桥地址上起了 socat 转发，把客户机看到的网关口直通宿主 Clash 的回环口。
 
 ```
-地址 192.168.122.1   端口 7897    （= mySystem.proxy.port，可在配置里改）
+┌─ 客户机（Windows）─┐          ┌─ 宿主（NixOS）──────────────────────────────┐
+│ 系统代理           │  TCP     │ libvirt-proxy-forward.service               │
+│ 192.168.122.1:7897 ├────────▶ │   virbr0 192.168.122.1:7897                 │
+│ （= 客户机默认网关）│          │        │ socat 转发（仅监听 virbr0）       │
+└────────────────────┘          │        ▼                                    │
+                                │   127.0.0.1:7897（mihomo / Clash Verge）     │
+                                └─────────────────────────────────────────────┘
+```
+
+**为什么不是开 Clash 的「允许局域网连接」**：那会把 mihomo 改绑 `0.0.0.0`，代理顺带
+对整个局域网开放，而且该开关是 GUI 状态（不归 Nix 管），重建/重装后不保证还在。
+转发只在 `virbr0`（客户机网段）上监听，见
+`modules/nixos/networking/proxy-vm.nix` 的注释。
+
+**客户机侧（一次性）**：改两处，覆盖不同 API 栈 ——
+
+```powershell
+# ① WinHTTP（Windows Update / 遥测 / 部分安装器），管理员 PowerShell
+netsh winhttp set proxy 192.168.122.1:7897 "localhost;127.0.0.1;<local>"
+netsh winhttp show proxy
+```
+
+② WinINET（Edge / Chrome / Office / 大多数安装器）：设置 → 网络和 Internet → 代理 →
+手动设置代理 → 打开「使用代理服务器」，地址 `192.168.122.1`，端口 `7897`，
+「请勿对以下列条目开头的地址使用代理服务器」填 `localhost;127.0.0.1;<local>`
+（**不要写 CIDR**：WinINET 的绕过列表不认 `192.168.0.0/16` 这种写法；内网地址本来
+就由 Clash 侧规则走 DIRECT，不需要客户端绕过）。
+
+> 端口取 `mySystem.proxy.port`（默认 7897）；地址取 libvirt 默认网络的网关口
+> （`virsh -c qemu:///system net-dumpxml default` 里的 `<ip address=...>`，默认 192.168.122.1）。
+
+**验证**：
+
+```bash
+# 宿主侧：转发是否在听（应看到 192.168.122.1:7897 与 127.0.0.1:7897 两条）
+ss -tlnp | grep 7897
+systemctl status libvirt-proxy-forward --no-pager
+# 宿主侧：经转发口出去能通（客户端 IP 与直连不同即证明走了代理）
+curl --noproxy '' -x http://192.168.122.1:7897 -s https://api.ipify.org; echo
+```
+
+```powershell
+# 客户机内（PowerShell）
+Test-NetConnection 192.168.122.1 -Port 7897
+curl.exe -x http://192.168.122.1:7897 -sI https://www.google.com
 ```
 
 宿主自身的 RDP 流量会自动绕过代理（`no_proxy` 里含 `192.168.0.0/16`），不必额外配置。
+个别自带代理设置的程序（部分 Qt/Electron 应用）不读系统代理，需在其内部单独填同一地址。
 
 ---
 
@@ -394,6 +444,7 @@ DEBUG="true"
 | --- | --- |
 | `mySystem.virtualization.enable` | libvirtd + qemu_kvm + swtpm + spice USB 重定向 + `virbr0` 信任 |
 | `qemu.vhostUserPackages = [ virtiofsd ]` | 建 virtiofs 共享时需要 |
+| `mySystem.proxy.exposeToVms` | 在网桥地址上转发宿主代理给客户机（需该主机同开 `proxy.enable`；socat 转发，仅监听 virbr0） |
 | `environment.systemPackages` 含装机盘 | 不再新建 VM 后，可把这行删掉省 ~840MB |
 
 ---
@@ -453,6 +504,24 @@ winapps cleanrdp          # 清孤儿状态文件后重试
 winapps killrdp
 sed -n '1,80p' ~/.local/share/winapps/winapps.log   # DEBUG="true" 时的运行日志
 ```
+
+### 12.5 客户机里上不了网（宿主代理不可达）
+
+先分清「宿主侧没转发」与「客户机侧没配好」：
+
+```bash
+ss -tlnp | grep 7897                                   # 期望两条：192.168.122.1:7897 与 127.0.0.1:7897
+journalctl -u libvirt-proxy-forward -n 30 --no-pager   # 期望一行 [DEBUG] ... virbr0 192.168.122.1:7897 -> 127.0.0.1:7897
+```
+
+| 症状 | 原因 / 处理 |
+| --- | --- |
+| 只有 `127.0.0.1:7897` 一条监听 | 转发服务没起：确认该主机 `mySystem.proxy.exposeToVms = true;` 并重建（见 §3） |
+| 日志刷 `网桥 virbr0 无 IPv4 地址` | libvirt 默认网络未启动：`virsh -c qemu:///system net-list` 应为 `default` active + autostart；服务每 10s 重试一次，网络起来后自动接上 |
+| 转发在听，客户机仍不通 | 客户机侧没配好：按 §10.4 把 WinINET 与 WinHTTP 都指到 `192.168.122.1:<port>`；地址/端口写错是最常见原因 |
+| 客户机里 `curl` 通、某个程序仍不通 | 该程序不读系统代理（自带代理设置，如部分 Qt/Electron 应用）：在其内部单独填同一地址 |
+| 期望 Clash 的 TUN 模式覆盖客户机 | TUN 只接管宿主自身流量，客户机流量不进宿主的 TUN 栈，必须在客户机侧显式设代理 |
+| 改过 libvirt 网络定义（网桥名/网段） | 模块只假定网桥名 `virbr0`（地址在运行时发现），改名后需同步 `modules/nixos/networking/proxy-vm.nix` |
 
 ---
 

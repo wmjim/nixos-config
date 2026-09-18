@@ -22,5 +22,7 @@
     desktop.steam.enable = true;
     virtualization.enable = true;
     proxy.enable = true;
+    # Windows 客户机（WinApps）经网桥地址 192.168.122.1 使用宿主代理
+    proxy.exposeToVms = true;
   };
 }

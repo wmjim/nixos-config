@@ -35,5 +35,7 @@
     desktop.distrobox.enable = true;
     virtualization.enable = true;
     proxy.enable = true;
+    # 客户机（libvirt NAT 网段）经网桥地址 192.168.122.1 使用宿主代理
+    proxy.exposeToVms = true;
   };
 }

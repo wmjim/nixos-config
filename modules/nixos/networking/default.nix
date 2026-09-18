@@ -3,5 +3,6 @@
 {
   imports = [
     ./proxy.nix
+    ./proxy-vm.nix
   ];
 }
