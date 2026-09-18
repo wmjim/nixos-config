@@ -1,6 +1,6 @@
 # 主题与外观
 
-配置位置：`modules/home-manager/gui/themes/default.nix`（Qt/GTK）+ `modules/home-manager/gui/wm/default.nix`（Niri 配色）+ `modules/home-manager/gui/wm/noctalia.nix`（Noctalia 调色板）+ `modules/home-manager/gui/fcitx5.nix`（输入法候选窗）。
+配置位置：`modules/home-manager/gui/themes/default.nix`（Qt/GTK）+ `modules/home-manager/gui/wm/default.nix`（Niri 配色）+ `modules/home-manager/gui/wm/noctalia.nix`（Noctalia 调色板）+ `modules/home-manager/gui/fcitx5.nix`（输入法候选窗与托盘图标）。
 
 整个桌面统一为**深色**：niri / Noctalia / 终端 / 编辑器都是深色，GTK/Qt/输入法也一并为深色，避免白底窗口浮在深色桌面上。
 
@@ -231,6 +231,68 @@ GUI 里的任何改动            →  ~/.local/state/noctalia/settings.toml ←
 | `mSurfaceVariant` | `#1e1e1e` | 比主面更暗，层叠方向反了 | `#333333` |
 | `mOnSurface` | `#ffffff` | 比 MacTahoe 的 `#dedede` 刺眼 | `#dedede` |
 | `mOutline` | `#3d3846` | 紫调灰，与中性壳层不同族 | `#454545`（= MacTahoe 的 `rgba(255,255,255,.15)` 发丝边合成值） |
+
+### 输入法托盘图标：macOS 风格字形，以及覆盖层为什么不能带 index.theme
+
+fcitx5 只经 D-Bus StatusNotifierItem 报一个**图标名**（中文态 `fcitx-rime`、Rime 的
+ascii_mode `fcitx_rime_latin`、禁用态 `fcitx_rime_disable`），图片由壳层按图标主题解析。
+而 MacTahoe 图标主题**自己也带了** `status/{16,22,24,32,symbolic}/fcitx-rime.svg`
+（上游那枚浅灰方章 logo），落到 24px 的托盘槽位里有效字形只剩 13px——在深色栏上就是
+一块灰扑扑的小方块。
+
+于是「往 `~/.local/share/icons/hicolor/scalable/apps/` 放同名 SVG」这条路走不通：
+Noctalia 的搜索顺序（`src/system/icon_resolver.cpp`）是
+
+```
+当前主题（MacTahoe-dark）目录 → 继承主题（hicolor、breeze）目录 → …
+  主题内：scalable 优先，其次尺寸降序；同一主题内 .svg 整体优先于 .png
+```
+
+当前主题的 `status/24/fcitx-rime.svg` 排在 hicolor 之前被命中。故必须建一份**与当前
+GTK 图标主题同名**（`config.gtk.iconTheme.name`，即 MacTahoe-dark）的薄覆盖层——它因为
+排在 baseDirs 首位（`$XDG_DATA_HOME/icons`）而天然优先：
+
+```
+~/.local/share/icons/MacTahoe-dark/
+└── scalable/apps/            # ← 不能有 index.theme，理由见下
+    ├── fcitx-rime.svg        # 中文态：拼
+    ├── fcitx_rime_latin.svg  # ascii_mode：A
+    └── fcitx_rime_disable.svg# 禁用态：拼 + 斜杠
+```
+
+**字形对齐 macOS 菜单栏**：macOS 的输入法指示就是一个字形（拼音 拼、ABC 为 A），不是
+图标。这里取桌面 UI 字体 HarmonyOS Sans SC Medium 的字形轮廓（U+62FC / U+0041），用
+fontTools 转成 path **静态内联**在模块里（轮廓是固定几何，无需构建期再跑一次转换），
+四边留白 11%——壳层会把 SVG 按比例撑满图标槽位，**留白是唯一能控制字形视觉大小的旋钮**，
+11% 大致对应 macOS 菜单栏里那个字符相对菜单栏高度的占比。
+
+**⚠ 覆盖层里绝对不能有 `index.theme`**（踩过一次：结果文件管理器里的文件/文件夹图标
+全变成了 Adwaita 默认值）。GTK/Qt 解析主题时，一旦在本层号里找到 `index.theme`，就把
+这层号当成**整个主题的根**；而覆盖层里只有三个图标文件，主题自带的 `places/*`、`mimes/*`
+（文件夹/文件类型图标）与 `apps/16..32`（应用图标）随之全部落空，全体回退默认主题。
+没有 `index.theme` 时两者行为分道扬镳：
+
+| 消费者 | 没有 index.theme 时的行为 |
+| --- | --- |
+| GTK / Qt（Nautilus、VSCode…） | **直接忽略本层号**（它们只认 index.theme），主题自带图标照旧 |
+| Noctalia | 改用内置的回退目录表搜（同一函数里的 `FALLBACK`：`/scalable/apps/`、`/512x512/apps/`、…、`/48x48/apps/`、`/`）→ 命中我们的三个字形 |
+
+所以覆盖层**只对壳层生效、对其他应用零影响**（实测：加与不加，nautilus 窗口渲染
+逐像素相同，PSNR `inf`）。也正因为走的是那张回退表，文件必须放在 **Qt 风格**
+`scalable/apps/` 下（GTK 风格的 `apps/scalable/` 不在表里）。
+
+hicolor 里另放同样一份字形作**兜底**：换成不带 `fcitx-rime` 的图标主题时，覆盖层不再被
+搜索，图标会回落到 fcitx5-rime 包自带的 SVG，那时 hicolor 版本生效。
+
+```bash
+# 看当前实际命中的文件（baseDirs 首位 + 同名主题 = 覆盖层）
+ls ~/.local/share/icons/$(gsettings get org.gnome.desktop.interface icon-theme | tr -d "'")/scalable/apps/
+```
+
+三种状态（拼 / A / 禁用）都已实测在栏内生效：**图标名变化**会清掉 Noctalia 的按项缓存，
+所以按 Ctrl+Space 切中/英会立即看到新字形；若只换了文件而图标名不变，重启一次 `noctalia`
+即可。
+
 
 ### bar 收敛目标（GUI 侧执行）
 
