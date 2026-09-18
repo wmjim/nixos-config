@@ -22,6 +22,26 @@ let
     (pathKey pkgs.rime-wanxiang)
     (pathKey pkgs.fcitx5-rime)
   ];
+
+  # 候选词窗主题，取自上游 catppuccin-fcitx5 的 Frappe + mauve 变体。
+  # 归到"工作区"一侧而不是壳层：候选词窗是跟随文本光标出现的打字层浮层，
+  # 与它同屏的总是终端/编辑器/浏览器，而那些都是 Catppuccin Frappe；
+  # mauve 又是 Catppuccin 的默认强调色。
+  #
+  # 上游为每个变体都带了一对圆角 SVG（39x39，rx=8，填充色随变体烘焦），
+  # 但 theme.conf 里把 `Image=` 两行注释掉了（默认为直角）。而桌面其余部分的
+  # 圆角阶梓是 12px（窗口）/ 8px（popover、菜单、标签指示器），候选词窗又是
+  # 全屏出现频率最高的浮层，留直角会显得突兀，故用 runCommand 就地打开这两行。
+  # 不 fork 主题内容：只改这两行，Frappe 调色板仍随 nixpkgs 更新。
+  theme = pkgs.runCommand "fcitx5-theme-catppuccin-frappe-mauve" { } ''
+    themeDir=$out/share/fcitx5/themes/catppuccin-frappe-mauve
+    mkdir -p "$themeDir"
+    cp -r ${pkgs.catppuccin-fcitx5}/share/fcitx5/themes/catppuccin-frappe-mauve/. "$themeDir/"
+    chmod -R u+w "$themeDir"
+    substituteInPlace "$themeDir/theme.conf" \
+      --replace-fail '# Image=panel.svg' 'Image=panel.svg' \
+      --replace-fail '# Image=highlight.svg' 'Image=highlight.svg'
+  '';
 in
 {
   options.mengw.gui.fcitx5.enable = lib.mkOption {
@@ -31,26 +51,29 @@ in
   };
 
   config = lib.mkIf (cfg.enable && guiCfg.enable) {
+    home.packages = [ theme ];
+
     # 经典界面（候选词窗口）主题。该文件由 fcitx5 自行生成，但内容全是用户偏好、
     # 无易变状态，故整体托管；fcitx5 GUI 里的改动会在下次 switch 时被覆盖回此处。
     #
-    # UseDarkTheme 的语义是"跟随系统"而非"强制深色"：fcitx5 通过 XDG Desktop
-    # Portal 监听 org.freedesktop.appearance 的 color-scheme，为 1（prefer-dark）
-    # 时才使用 DarkTheme。故本项**依赖 themes 模块的 gtk.colorScheme = "dark"**：
+    # Theme 与 DarkTheme 指向同一个变体：桌面已是纯深色，不需要浅色分支，
+    # 这样候选词窗的观感就与"系统明暗检测"无关了。上一版依赖的是
+    # gtk.colorScheme → dconf → xdg-desktop-portal → fcitx5 跟随系统 这条链，
+    # 现在不再需要（UseDarkTheme 的语义确实是"跟随系统"而非"强制深色"）。
     #
-    #   gtk.colorScheme=dark → dconf org.gnome.desktop.interface color-scheme
-    #                        → xdg-desktop-portal-gnome/gtk 上报 color-scheme=1
-    #                        → fcitx5 切到 DarkTheme
-    #
-    # 若只改此处而不改 gtk.colorScheme，候选词窗会停在下面的浅色 Theme。
-    # 主题名取自 fcitx5 自带主题包（default / mellow-* / kwinblur-mellow-*），
-    # 无深色变体时就只能换主题名而不能靠 UseDarkTheme 变深。
+    # UseAccentColor 取的是 portal 上报的系统重点色。这里置 False，
+    # 否则它会用 #3584e4 盖掉主题自带的 mauve #ca9ee6；而本机 GNOME 的
+    # accent-color 只接受命名值（blue/teal/…），根本钉不到壳层的 #0088FF，
+    # 与其留一个近似蓝，不如用主题自带色。
     xdg.configFile."fcitx5/conf/classicui.conf".text = ''
       # 垂直候选列表
       Vertical Candidate List=False
       # 使用鼠标滚轮翻页
       WheelForPaging=True
-      # 字体：与 GTK 界面字体一致（12pt）
+      # 字体：与 GTK 界面字体一致（12pt）。
+      # 主题里的 [InputPanel] Font 不会被 fcitx5 消费（上游
+      # src/ui/classic/inputwindow.cpp 用的是 classicui.conf 的 Font，
+      # theme.cpp 里唯一的字体用途是 trayFont），所以这里设的就是最终值。
       Font="HarmonyOS Sans SC 12"
       # 菜单字体
       MenuFont="HarmonyOS Sans SC Medium Medium 12"
@@ -66,14 +89,14 @@ in
       ShowLayoutNameInIcon=True
       # 使用输入法的语言来显示文字
       UseInputMethodLanguageToDisplayText=True
-      # 主题（浅色模式）
-      Theme=mellow-youlan
+      # 主题（浅色模式）：与深色同值，见上方说明
+      Theme=catppuccin-frappe-mauve
       # 深色主题
-      DarkTheme=mellow-youlan-dark
+      DarkTheme=catppuccin-frappe-mauve
       # 跟随系统浅色/深色设置
       UseDarkTheme=True
-      # 当被主题和桌面支持时使用系统的重点色
-      UseAccentColor=True
+      # 使用系统重点色：关闭，否则会盖掉主题自带的 mauve
+      UseAccentColor=False
       # 在 X11 上针对不同屏幕使用单独的 DPI
       PerScreenDPI=False
       # 固定 Wayland 的字体 DPI

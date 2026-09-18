@@ -10,7 +10,6 @@
   - `kdePackages.fcitx5-configtool`：图形化配置工具
   - `kdePackages.fcitx5-qt`：Qt5/6 应用输入法模块
   - `fcitx5-gtk`：GTK3/4 应用输入法模块
-  - `fcitx5-mellow-themes`：输入法主题
   - `fcitx5-rime`（+ 万象拼音词库 `rime-wanxiang`）：Rime 输入引擎
 
 ## 环境变量
@@ -24,6 +23,19 @@ QT_IM_MODULE = "fcitx";
 SDL_IM_MODULE = "fcitx";
 GLFW_IM_MODULE = "fcitx";
 ```
+
+## 候选词窗外观
+
+在 home-manager 侧（`modules/home-manager/gui/fcitx5.nix`）：
+
+- 主题：上游 `catppuccin-fcitx5` 的 `catppuccin-frappe-mauve`，与终端 / 编辑器
+  同家族（而不是壳层的 MacTahoe 中性灰）。主题包由该模块用 runCommand 重新打包，
+  仅为了打开上游自带的 8px 圆角 SVG（`theme.conf` 里两行 `Image=` 默认被注释）
+- `Font` / `MenuFont` / `TrayFont` 与 GTK 界面字体一致（HarmonyOS Sans SC 12）。
+  主题里的 `[InputPanel] Font` **不会被 fcitx5 消费**（上游
+  `inputwindow.cpp` 用的是 `classicui.conf` 的 `Font`），所以这里的值是最终值
+- `UseAccentColor=False`：不拿 portal 上报的系统重点色（本机只能是命名值
+  `blue/teal/...`，会盖掉主题自带的 mauve，且钉不到壳层的 `#0088FF`）
 
 ## XWayland 候选窗缩放（workaround）
 

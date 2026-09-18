@@ -14,7 +14,7 @@
 | 图标 | **MacTahoe-dark** | 自定义打包图标（`pkgs/mactahoe-icon-theme`），为深色背景设计 |
 | 光标 | **Bibata-Modern-Classic** | 24px，XWayland 亦生效（软链到 `~/.local/share/icons`） |
 | Qt | **adwaita-dark** | `QT_STYLE_OVERRIDE=adwaita-dark`，包由 HM 依 style 名自动挑选（adwaita-qt + adwaita-qt6） |
-| 输入法候选窗 | **mellow-youlan-dark** | fcitx5 `classicui.conf`，`UseDarkTheme=True`，字体与界面一致（12pt） |
+| 输入法候选窗 | **catppuccin-frappe-mauve** | `classicui.conf` 托管主题，圆角 8px（见下）；归"工作区"一侧而非壳层 |
 | GNOME Shell / GDM | MacTahoe | GDM 侧靠 overlay 覆盖 `gnome-shell-theme.gresource`（见 `modules/nixos/desktop/gnome/default.nix`） |
 | Niri 壳层配色 | MacTahoe-Dark 同源 | 由 `niri-colors/{layout,overview}.kdl` 生成；强调色 `#0088FF`、中性面 `#333333`/`#242424`、紧急 `#ED5F5D`，全部取自 MacTahoe-Dark 的 `gtk-4.0/gtk.css` |
 | Noctalia Shell | Catppuccin（暗色） | 内置主题，界面字体 HarmonyOS Sans SC |
@@ -57,8 +57,10 @@
 
 | 层 | 家族 | 元 |
 |---|---|---|
-| 壳层：niri 装饰 + GTK + Qt + 输入法 | macOS 中性灰 + 单一强调色 `#0088FF` | MacTahoe-Dark 的 `gtk-4.0/gtk.css` |
-| 工作区：终端 + 编辑器 + shell + 文件管理器 + 系统监控 | Catppuccin Frappe（`#303446` 底） | foot、Neovim、yazi、btop、fastfetch 五处同源 |
+| 壳层：niri 装饰 + GTK + Qt | macOS 中性灰 + 单一强调色 `#0088FF` | MacTahoe-Dark 的 `gtk-4.0/gtk.css` |
+| 工作区：终端 + 编辑器 + shell + 文件管理器 + 系统监控 + 输入法候选窗 | Catppuccin Frappe（`#303446` 底） | foot、Neovim、yazi、btop、fastfetch、fcitx5 六处同源 |
+
+输入法候选窗归到工作区而非壳层，理由：它是跟随文本光标出现的**打字层**浮层，同屏的总是终端 / 编辑器 / 浏览器，而那些都是 Frappe。
 
 选这个组合的理由：一是 GTK/GDM/图标/自打包已经全部在 MacTahoe 上，二是“macOS 壳 + 低饱和冷调工作区”比单纯的全局 Catppuccin 更有辨识度。
 
@@ -66,8 +68,7 @@
 
 | 项 | 现状 | 说明 |
 |---|---|---|
-| Noctalia 内置 Catppuccin 的 flavor | 未指定 | Catppuccin 有 4 个 flavor，而 foot/nvim/yazi 钉的是 Frappe。若 bar 看起来比终端更黑更紫，说明内置取的是 Mocha，需在 Noctalia 主题面板对齐 |
-| fcitx5 候选窗重点色 | portal accent `#3584e4` | `UseAccentColor=True` 取的是 portal 上报色；而 `org.gnome.desktop.interface accent-color` 在本机 GNOME 版本只接受命名值（blue/teal/...），钉不到 `#0088FF`，故有细微色差 |
+| Noctalia 内置 Catppuccin 的 flavor | 未指定 | Catppuccin 有 4 个 flavor，而 foot/nvim/yazi/fcitx5 钉的是 Frappe。若 bar 看起来比终端更黑更紫，说明内置取的是 Mocha，需在 Noctalia 主题面板对齐 |
 
 ### 壁纸：**有意不纳管**
 

@@ -42,7 +42,9 @@ in
           kdePackages.fcitx5-configtool
           kdePackages.fcitx5-qt
           fcitx5-gtk
-          fcitx5-mellow-themes
+          # fcitx5-mellow-themes 已移除：候选词窗主题改用 catppuccin-fcitx5
+          # 的 Frappe + mauve 变体（与终端/编辑器同家族），主题包及选择
+          # 集中在 modules/home-manager/gui/fcitx5.nix，不再留无人选用的主题包。
           (fcitx5-rime.override {
             rimeDataPkgs = [ pkgs.rime-wanxiang ];
           })
