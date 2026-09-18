@@ -34,7 +34,7 @@
 - 标签指示器在列右侧，圆角 8px（3px 宽的条，半径大于半宽就是胶囊，同主题的"药丸"档）；**仅当列进入 tabbed 显示模式（`Mod+W`）时出现**
 - 概览缩放 0.40，背景 `#242424`
 - `recent-windows` 高亮框圆角 12px（主题阶梯里的"独立弹层"档）
-- 模糊 `passes 4 / offset 5.0 / saturation 1.10`
+- 模糊 `passes 4 / offset 5.0 / saturation 1.10`；终端（foot / btop）`opacity 0.85`，取值按亮壁纸下的文字对比定，见 `frosted-glass.kdl`
 - 窗口阴影由合成器提供（`shadow { on }`，参数由 MacTahoe 自己的 CSD 阴影反推，见下）
 - 窗口开/关动画 240ms / 300ms（水波纹 shader）
 
@@ -81,7 +81,7 @@ shadow {
 推导过程写在 `modules/home-manager/gui/wm/default.nix` 的注释里。三个要点：
 
 - **不会叠成两层**。niri 文档：设了 `prefer-no-csd` 与/或 `geometry-corner-radius` 之后，*“These will also remove client-side shadows if the window draws any.”* 而且无论 GTK 是否响应 `prefer-no-csd`（保留 CSD / 放弃 CSD），结论都一致：要么自绘阴影被裁、合成器补上，要么本来就没有
-- `draw-behind-window` 保持默认 `false`——文档说只有"niri 不知道 CSD 圆角"时才需要 `true`；我们给了 `geometry-corner-radius`，niri 自己知道圆角，也就不会在半透明窗口（foot 0.70）里透出一圈暗影
+- `draw-behind-window` 保持默认 `false`——文档说只有"niri 不知道 CSD 圆角"时才需要 `true`；我们给了 `geometry-corner-radius`，niri 自己知道圆角，也就不会在半透明窗口（foot 0.85）里透出一圈暗影
 - 阴影跟随 `geometry-corner-radius`（24px）绘制，天然与窗口同心
 
 仍可选的另一条路：改回字面 macOS 值 16，并按 concentricity 把上表里 ≥ 18px 的选择器用 `gtk.gtk{3,4}.extraCss` 一并下移。
@@ -167,13 +167,28 @@ GUI 里的任何改动            →  ~/.local/state/noctalia/settings.toml ←
 
 ### bar 收敛目标（GUI 侧执行）
 
-当前 19 个控件、`background_opacity = 0.15`。以应用层为主体后应当退到背景，但不是退回隐形：
+当前 19 个控件、`background_opacity = 0.15`。以应用层为主体后应当退到背景，但不是退回隐形。
+
+**透明度是可算的，不该拍脑袋。** 合成永远是“`opacity` × 底色 + (1−`opacity`) × 模糊后的壁纸”，而壁纸是经常更换的自由变量，所以按**最坏情况（模糊后接近纯白）** 定值：
+
+```
+bar（文字 #DEDEDE，底色 #242424）
+  0.15  →  可见底色 #DEDEDE  对比 1.00:1  ❌ 文字完全消失
+  0.35  →  可见底色 #B2B2B2  对比 1.58:1  ❌ 仍不可读
+  0.50  →  可见底色 #929292  对比 2.31:1  ❌
+  0.80  →  可见底色 #505050  对比 5.99:1  ✅ AA
+
+终端（文字 #C6D0F5，底色 #303446）—— 参数在 frosted-glass.kdl
+  0.70  →  对比 3.18:1  ⚠️        0.85  →  对比 5.06:1  ✅ AA
+```
+
+0.15 那行值得看一眼：`#242424` 的 15% 压在纯白上正好等于 `#DEDEDE`，与文字色**完全相同**，所以亮壁纸下 bar 的字是真的看不见。（早先我建议的 0.35 也是错的，同样不可读。）
 
 | 项 | 当前 | 目标 | 理由 |
 |---|---|---|---|
-| `background_opacity` | 0.15 | **0.35 ~ 0.40** | 15% 时 bar 自己的配色基本不起作用，文字直接压在模糊壁纸上；“退到背景”应当是“低对比但可读” |
+| `background_opacity` | 0.15 | **0.80** | 低于 0.80 时亮壁纸下文字对比低于 AA 4.5:1；“退到背景”应当是“低对比但可读”，不是“隐形” |
 | `end`（12 个） | launcher, deepseek_usage, activity, cat, tray, clipboard, notifications, bluetooth, brightness, volume, theme_mode, session | **留 6**：tray, clipboard, notifications, volume, brightness, session | 两个第三方信息流（DeepSeek 用量、GitHub 动态）与第三个猫占的是最右端的视觉焦点 |
-| `center`（4 个） | capsule(media+audio_visualizer), date, todo, notes | **留 date** | 音频可视化 + 两且待办/便签都属于“盯着看”的内容，与应用层争焦 |
+| `center`（4 个） | capsule(media+audio_visualizer), date, todo, notes | **留 date** | 音频可视化 + 待办/便签都属于“盯着看”的内容，与应用层争焦 |
 | `start`（3 个） | workspaces, keymap, w-engine | **留 workspaces** | 键盘布局切换很少用 |
 | `widget.cat.rave_mode` | `true` | `false` 或移除 | 动画在静止的壳层里是持续噪音 |
 

@@ -21,9 +21,25 @@ window-rule {
 
 // --- 终端模拟器：磨砂玻璃的黄金场景 ---
 // btop 窗口由 foot 以 --app-id=btop 启动（见 binds/apps.kdl），单独列出
+//
+// opacity 取 0.85 而不是 0.70：这是「玻璃好看」与「文字可读」的取舍，而它是可
+// 量化的。opacity 作用在**整个窗口**上（niri 文档：“applied to every surface of
+// the window”），所以窗口背后永远是“0.7×底色 + 0.3×模糊后的壁纸”。
+// foot / btop 的底色是 Frappe base #303446，主文字是 Frappe text #C6D0F5：
+//
+//     opacity   亮壁纸下的可见底色   对比度      判定
+//       0.70    #6E717E             3.18:1   ⚠️ 低于 AA(4.5)
+//       0.80    #595D6B             4.29:1   ⚠️ 仍差一点
+//       0.85    #4F5262             5.06:1   ✅ AA
+//       0.90    #454858             5.92:1   ✅
+//
+// “亮壁纸”取最坏情况纯白（模糊 + saturation 1.10 只会更亮）。桌面壁纸是经常
+// 更换的自由变量（见 doc/themes.md 的壁纸一节），所以这里按最坏情况定值：
+// 0.85 在纯白壁纸下仍达 AA，而暗壁纸下为 8.3:1，玻璃质感也还看得出来。
+// 若想更透，代价是“壁纸必须是暗调”——那是个合理的设计立场，但得是有意选的。
 window-rule {
     match app-id="^(foot|btop)$"
-    opacity 0.70
+    opacity 0.85
     background-effect {
         blur true
         xray true
