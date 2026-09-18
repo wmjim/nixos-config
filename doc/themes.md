@@ -52,7 +52,7 @@
 | 层 | 家族 | 元 |
 |---|---|---|
 | 壳层：niri 装饰 + GTK + Qt + 输入法 | macOS 中性灰 + 单一强调色 `#0088FF` | MacTahoe-Dark 的 `gtk-4.0/gtk.css` |
-| 工作区：终端 + 编辑器 + shell | Catppuccin Frappe（`#303446` 底） | 冷调、低饱和 |
+| 工作区：终端 + 编辑器 + shell + 文件管理器 + 系统监控 | Catppuccin Frappe（`#303446` 底） | foot、Neovim、yazi、btop、fastfetch 五处同源 |
 
 选这个组合的理由：一是 GTK/GDM/图标/自打包已经全部在 MacTahoe 上，二是“macOS 壳 + 低饱和冷调工作区”比单纯的全局 Catppuccin 更有辨识度。
 
@@ -60,12 +60,16 @@
 
 | 项 | 现状 | 说明 |
 |---|---|---|
-| Noctalia 内置 Catppuccin 的 flavor | 未指定 | Catppuccin 有 4 个 flavor，而 foot/nvim 钉的是 Frappe。若 bar 看起来比终端更黑更紫，说明内置取的是 Mocha，需在 Noctalia 主题面板对齐 |
-| yazi | `everforest-medium` | 与终端 Frappe 属不同家族，可换成 `catppuccin-frappe` |
-| btop | 自带默认主题 | 未配置；它在 foot 里半透明显示，是整块可见颜色 |
-| fastfetch | 硬编码靖蓝渐变 | `assets/fastfetch/nixos-01.jsonc` 里写死 `#5277C3 → #7DAEDD` |
+| Noctalia 内置 Catppuccin 的 flavor | 未指定 | Catppuccin 有 4 个 flavor，而 foot/nvim/yazi 钉的是 Frappe。若 bar 看起来比终端更黑更紫，说明内置取的是 Mocha，需在 Noctalia 主题面板对齐 |
 | fcitx5 候选窗重点色 | portal accent `#3584e4` | `UseAccentColor=True` 取的是 portal 上报色；而 `org.gnome.desktop.interface accent-color` 在本机 GNOME 版本只接受命名值（blue/teal/...），钉不到 `#0088FF`，故有细微色差 |
-| 壁纸 | 未纳管 | `assets/wallpapers/` 是空目录，实际壁纸在未跟踪的 `~/Pictures/wallpaper/`；而模糊与半透明的观感直接吃壁纸 |
+
+### 壁纸：**有意不纳管**
+
+壁纸不写进 Nix，保持手动更换（Noctalia 面板或 `Mod+Alt+W`）。这是明确的决定，不是遗漏：
+
+- 模糊与半透明的观感直接吃壁纸，而壁纸是要经常换的，纳管反而碍事
+- 因此壁纸**不入 git**，`assets/` 下不再有 `wallpapers/` 目录
+- 选壁纸的准则（配合 `saturation 1.10`）：大面积暗部、低彩度、少高频细节。`~/Pictures/wallpaper/` 里那些高彩度插画会被模糊 + 饱和度放大成“打翻的调色盘”
 
 ## 相关命令
 

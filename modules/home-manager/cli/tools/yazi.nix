@@ -1,20 +1,36 @@
 # Yazi — 终端文件管理器
-# 亮/暗主题跟随终端配色自动切换
+# 暗色 flavor 用 Catppuccin Frappe，与 foot / Neovim 同家族（此前是 Everforest）
 { lib, config, pkgs, ... }:
 let
   cfg = config.mengw.cli.tools.yazi;
   toolsCfg = config.mengw.cli.tools;
   cliCfg = config.mengw.cli;
 
-  mkYaziFlavor = { pname, owner, repo, rev, sha256 }: pkgs.stdenv.mkDerivation {
-    inherit pname;
-    version = "unstable";
-    src = pkgs.fetchFromGitHub { inherit owner repo rev sha256; };
-    installPhase = ''
-      mkdir -p $out
-      cp -r * $out/
-    '';
-  };
+  # yazi flavor：把上游仓库里的 flavor 目录复制成 store 目录。
+  # subdir 是为了应付上游两种组织方式：独立仓库（flexoki-light.yazi）的 flavor
+  # 就在仓库根目录；而官方合集（yazi-rs/flavors）把每个 flavor 放在同名子目录下，
+  # 根目录还有 README / scripts / package.json 等与 flavor 无关的内容。
+  mkYaziFlavor =
+    {
+      pname,
+      owner,
+      repo,
+      rev,
+      sha256,
+      subdir ? null,
+    }:
+    let
+      flavorGlob = if subdir == null then "*" else "${subdir}/*";
+    in
+    pkgs.stdenv.mkDerivation {
+      inherit pname;
+      version = "unstable";
+      src = pkgs.fetchFromGitHub { inherit owner repo rev sha256; };
+      installPhase = ''
+        mkdir -p $out
+        cp -r ${flavorGlob} $out/
+      '';
+    };
   flexoki-light-yazi = mkYaziFlavor {
     pname = "flexoki-light.yazi";
     owner = "gosxrgxx";
@@ -22,12 +38,14 @@ let
     rev = "1b1e67795a3eeec51aec0be74b3d76316be9aaa1";
     sha256 = "sha256-yIYkgGeYHl3/iRrKzsPnh2nw0PwPD/LYm1BQMy/yvBw=";
   };
-  everforest-medium-yazi = mkYaziFlavor {
-    pname = "everforest-medium.yazi";
-    owner = "Chromium-3-Oxide";
-    repo = "everforest-medium.yazi";
-    rev = "e1ead7b5a3bfc8eb572fd269a369775842752705";
-    sha256 = "sha256-2Fx7+xnSsc+aVHBZUtLtVUDEzb1y8BcPBASciKk8x7o=";
+  # 官方 flavor 合集里的 Catppuccin Frappe（含 flavor.toml 与 tmtheme.xml）
+  catppuccin-frappe-yazi = mkYaziFlavor {
+    pname = "catppuccin-frappe.yazi";
+    owner = "yazi-rs";
+    repo = "flavors";
+    rev = "20b47bfd78880c2674899597fd26bc01b21ff48c";
+    sha256 = "sha256-NGnfrQdsnQITKCZ0oh6DCxeCR2ozJoPAZetsi3ghHAI=";
+    subdir = "catppuccin-frappe.yazi";
   };
 in
 {
@@ -62,12 +80,12 @@ in
       theme = {
         flavor = {
           light = "flexoki-light";
-          dark = "everforest-medium";
+          dark = "catppuccin-frappe";
         };
       };
       flavors = {
         flexoki-light = flexoki-light-yazi;
-        everforest-medium = everforest-medium-yazi;
+        catppuccin-frappe = catppuccin-frappe-yazi;
       };
     };
   };
