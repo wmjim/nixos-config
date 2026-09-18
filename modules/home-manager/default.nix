@@ -38,10 +38,11 @@ in
         });
       })
 
-      # 自打包主题（nixpkgs 未收录）：MacTahoe GTK / 图标主题
+      # 自打包主题（nixpkgs 未收录）：MacTahoe GTK / 图标主题 / Kvantum(Qt) 主题
       (final: prev: {
         mactahoe-gtk-theme = prev.callPackage ../../pkgs/mactahoe-gtk-theme { };
         mactahoe-icon-theme = prev.callPackage ../../pkgs/mactahoe-icon-theme { };
+        mactahoe-kvantum = prev.callPackage ../../pkgs/mactahoe-kvantum { };
       })
     ];
   };

@@ -73,7 +73,10 @@ in
       xwayland-satellite
       gtk4
       gnome-themes-extra
-      adwaita-qt
+      # adwaita-qt 已移除：它只提供一个 Qt5 样式插件（plugins/styles/adwaita.so），
+      # 而 Qt 侧已改用 Kvantum + MacTahoe（见 modules/home-manager/gui/themes）。
+      # Wayland 的窗口装饰来自 qadwaitadecorations（由 HM 的 qt.platformTheme 提供），
+      # 与这个包无关，不受影响。
       papirus-icon-theme
       bibata-cursors
     ];

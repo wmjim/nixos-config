@@ -64,13 +64,28 @@ in
 
     qt = {
       enable = true;
+      # 保持不变：Wayland 下 Qt 的窗口装饰由平台主题提供，与控件样式是两回事。
+      # 换掉它会让自绘标题栏消失（本仓库 env.nix 里就是为此才恢复 Qt 自绘）。
       platformTheme.name = "adwaita";
       style = {
-        # HM 依 style.name 自动挑选 adwaita-qt + adwaita-qt6 并设
-        # QT_STYLE_OVERRIDE=adwaita-dark，无需手写 package。
-        name = "adwaita-dark";
+        # 由 adwaita-dark 改为 kvantum：Adwaita 是另一套设计语言（Fedora 的
+        # GNOME 移植），控件形状与 GTK 侧的 macOS 观感无关。kvantum 是
+        # SVG 驱动的 Qt 样式引擎，配同一个作者的 MacTahoe 主题才能与 GTK 对齐。
+        # HM 依 style.name 自动挑选 qtstyleplugin-kvantum（Qt5 + Qt6 各一份）。
+        name = "kvantum";
+      };
+      kvantum = {
+        enable = true;
+        # 主题包不用 qt.kvantum.themes 安装：那个选项会把 ~/.config/Kvantum
+        # 整个做成指向 store 的软链，而 kvantum.kvconfig 又要写在同一目录下，
+        # 两者会打架。改为进 home.packages（落到 XDG_DATA_DIRS，Kvantum 同样会
+        # 在那里搜主题，上游自己的 install.sh 就是装到 share/Kvantum）。
+        settings.General.theme = "MacTahoeDark";
       };
     };
+
+    # Kvantum 主题包（MacTahoeDark：只含深色那一对，见 pkgs/mactahoe-kvantum）
+    home.packages = [ pkgs.mactahoe-kvantum ];
 
     # GNOME Shell 换肤：启用 user-theme 扩展并指向 MacTahoe 主题
     # enabled-extensions 为整数组写入，故须列出全部已装扩展的 UUID，

@@ -13,7 +13,7 @@
 | color-scheme | **dark** | `gtk.colorScheme`；写 dconf `color-scheme=prefer-dark` 与 GTK4 的 `gtk-interface-color-scheme=2`，libadwaita 依此判定深色 |
 | 图标 | **MacTahoe-dark** | 自定义打包图标（`pkgs/mactahoe-icon-theme`），为深色背景设计 |
 | 光标 | **Bibata-Modern-Classic** | 24px，XWayland 亦生效（软链到 `~/.local/share/icons`） |
-| Qt | **adwaita-dark** | `QT_STYLE_OVERRIDE=adwaita-dark`，包由 HM 依 style 名自动挑选（adwaita-qt + adwaita-qt6） |
+| Qt | **Kvantum + MacTahoeDark** | `QT_STYLE_OVERRIDE=kvantum`；主题来自自打包的 `pkgs/mactahoe-kvantum`（与 GTK 侧同一个上游作者），见下文 |
 | 输入法候选窗 | **catppuccin-frappe-mauve** | `classicui.conf` 托管主题，圆角 8px（上游 SVG 烘焦的"弹窗"档，小于窗口半径，符合 concentricity）；归"工作区"一侧而非壳层 |
 | GNOME Shell / GDM | MacTahoe | GDM 侧靠 overlay 覆盖 `gnome-shell-theme.gresource`（见 `modules/nixos/desktop/gnome/default.nix`） |
 | Niri 壳层配色 | MacTahoe-Dark 同源 | 由 `niri-colors/{layout,overview}.kdl` 生成；强调色 `#0088FF`、中性面 `#333333`/`#242424`、紧急 `#ED5F5D`，全部取自 MacTahoe-Dark 的 `gtk-4.0/gtk.css` |
@@ -98,6 +98,24 @@ shadow {
 
 - **`focus-ring.inactive-color` 在单显示器上永不可见**。焦点环只围绕每块显示器上的活动窗口，所以 inactive-color 只会在非焦点显示器上出现（niri wiki, Configuration: Layout）。它不是什么“非焦点窗口的描边”。
 - **`overview.backdrop-color` 的 alpha 通道会被忽略**（niri wiki, Configuration: Miscellaneous），写成 `#242424cc` 与 `#242424` 等价。
+
+## Qt：从 Adwaita 换成 Kvantum
+
+**问题**：Qt 侧原先用 `adwaita-dark`（Fedora 的 Adwaita Qt 移植）。Adwaita 是另一套设计语言——控件形状、按钮、输入框都与 MacTahoe 无关，而本机有 VLC（UI 面积最大）、Telegram、qView、fcitx5 配置工具四个 Qt 应用，它们的菜单 / 对话框 / 工具条会明显“不像这个桌面”。
+
+**方案**：Kvantum（SVG 驱动的 Qt 样式引擎）+ `vinceliuice/MacTahoe-kde` 的 Kvantum 组件——**与 GTK 侧的 MacTahoe 是同一个上游作者**，本来就是配套的。
+
+自打包为 `pkgs/mactahoe-kvantum`，只取上游的 Kvantum 部分（plasma / aurorae / look-and-feel 面向 Plasma 桌面，与本机无关，装进来只增大闭包）。三处工程细节：
+
+1. **主题包进 `home.packages`，不用 `qt.kvantum.themes`。** 后者会把 `~/.config/Kvantum` 整个做成指向 store 的软链，而 `kvantum.kvconfig` 又要写在同一目录下，两者会打架。装进 profile 后落在 `XDG_DATA_DIRS`，Kvantum 同样会在那里搜主题（上游自己的 `install.sh` 就是装到 `share/Kvantum`）。
+
+2. **主题名取 `MacTahoeDark` 而不是 `MacTahoe`。** Kvantum 选浅色还是深色取决于应用的 QPalette 明暗，而非 Plasma 会话下这个值来自平台主题，并不可靠。上游目录里浅深两态并存（`MacTahoe.kvconfig` / `MacTahoeDark.kvconfig`），Kvantum 的规则是“主题 T → `T.kvconfig`；若应用偏暗且存在 `TDark.kvconfig` 则改用它”——所以把深色那一对单独命名为主题 `MacTahoeDark` 后，选中它必然命中深色档（它要去找的 `MacTahoeDarkDark.kvconfig` 并不存在）。与本仓库其余部分“只用深色”一致。
+
+3. **强调色对齐壳层。** 上游 kvconfig 用 `#a0b4f8`（浅紫蓝）作 highlight，而同一个作者的 GTK 主题用的是 `#0088FF`——同源却不同色。打包时把 highlight / inactive.highlight / link 统一到 `#0088FF`，与 niri 焦点环、GTK、Noctalia 的 `mPrimary` 一致。
+
+**`platformTheme` 保持 `adwaita` 不动**：Wayland 下 Qt 的窗口装饰由平台主题提供，与控件样式是两回事；换掉它会让自绘标题栏消失（`env.nix` 里就是为此才恢复 Qt 自绘）。所以现状是“控件 = Kvantum/MacTahoe，标题栏 = QAdwaitaDecorations”。
+
+**未验证的一点**：MacTahoeDark 的底色 / 文字本来就与 MacTahoe-Dark 的 GTK 值一致（`window.color=#242424`、`text.color=#dedede`、`tooltip.base.color=#333333`，可直接 grep 自打包产物复核），但 Kvantum 的实际渲染要打开 VLC 或 Telegram 看一眼才算数。
 
 ## 双层配色模型
 
