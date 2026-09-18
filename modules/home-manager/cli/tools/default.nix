@@ -63,5 +63,11 @@ in
       source = ../../../../assets/fastfetch/nixos-01.jsonc;
       force = true;
     };
+
+    # fastfetch 的 logo：文本形式的 NixOS 美术图，逐行内嵌了 Frappe 蓝 (#8CAAEE) 的
+    # ANSI 码。之所以是文件而不是内置 logo，见 assets/fastfetch/nixos-01.jsonc 里的说明
+    # —— 内置的 NixOS logo 不可着色。
+    home.file.".config/fastfetch/logo/nixos_logo_1.txt".source =
+      ../../../../assets/fastfetch/logo/nixos_logo_1.txt;
   };
 }

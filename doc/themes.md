@@ -164,6 +164,23 @@ laptop 的 1.25 缩放下 2 仍不精确（2.5），**两台都精确的宽度�
 
 **定调：以应用层为主体。** bar 应当退到背景里，而不是与窗口争主体。这条决定了下面 Noctalia 一节的取舍。
 
+### fastfetch：logo 与 10 阶渐变
+
+细节全在 `assets/fastfetch/nixos-01.jsonc` 的注释里，两个结论：
+
+- **logo 必须是文件（文本），不能靠内置 logo。** fastfetch 内置的 NixOS ASCII logo
+  是纯文本、不可着色 —— 实测 `--logo-color-1..9` 对它完全无效（输出逐字节相同）。
+  而文本文件可以逐行内嵌 ANSI 码，于是 logo 能跟着 Frappe 走。
+  文件在 `assets/fastfetch/logo/nixos_logo_1.txt`（单色 Frappe blue `#8CAAEE`），
+  由 `cli/tools/default.nix` 部署。原配置指向的 `nixos_logo_1.webp` 本来就不存在，
+  一直在静默回退到内置 ASCII。
+- **那 10 个常量是冷色明度渐变，不是彩虹。** 它们会被用在约 30 个键名标签上
+  （`├ Board` / `├ CPU` …），10 个色相铺满一列文字就是噪声。
+  而原设计的端点是 NixOS 品牌蓝 `#5277C3`，压在终端底色 `#303446` 上只有 **2.81:1**
+  （低于 AA），最上面几行的键名本身就偏暗 —— 所以这里既修可读性，也修配色家族：
+  改为经过 4 个 Frappe 真实色的关键帧插值（`overlay2` → `blue` → `sapphire` → `sky`），
+  10 阶全部 ≥ 4.53:1。
+
 ## Noctalia：调色板归 Nix，其余归 GUI
 
 这是最容易误解的一块，先讲清机制。
