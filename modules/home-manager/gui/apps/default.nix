@@ -19,6 +19,7 @@ in
     ./productivity.nix
     ./steam.nix
     ./development.nix
+    ./embedded.nix
     ./utilities.nix
     ./pot.nix
   ];

@@ -1,18 +1,19 @@
 # 嵌入式单片机开发环境（STM32 / ESP32 / AVR / RP2040）
 # 覆盖：交叉编译工具链 + 烧录/调试工具 + PlatformIO 统一构建框架
+# 归属 GUI 层：CubeMX 是图形化配置器，探针/串口也都在桌面场景下用，无图形环境的主机
+# （server/wsl）不需要，故由 gui/apps 聚合而非 cli/dev。
 { lib, config, pkgs, ... }:
 let
-  cfg = config.mengw.cli.dev.embedded;
-  devCfg = config.mengw.cli.dev;
-  cliCfg = config.mengw.cli;
+  cfg = config.mengw.gui.apps.embedded;
+  appsCfg = config.mengw.gui.apps;
+  guiCfg = config.mengw.gui;
 
   # === stm32cubemx HiDPI 启动器包装 ===
   # CubeMX 的 Swing 窗口内嵌 JxBrowser(Chromium) 渲染整个配置界面。GNOME 分数缩放
   # (如桌面 4K@scale=1.5) 下 XWayland 只按整数缩放上报,AWT 因而默认落在 1x,
-  # 整窗文字远小于桌面。系统级 _JAVA_OPTIONS 已由 mySystem.desktop.scale 向上取整
-  # 得到整数 uiScale,但该启动器同时用于无该变量的主机(如 macOS),故仍在运行时
-  # 读 monitors.xml 的 GNOME 逻辑缩放,向上取整为整数(1→1、>1→2)再喂给 JVM,
-  # 保证各平台都能拿到正确值。
+  # 整窗文字远小于桌面。系统级 _JAVA_OPTIONS 由 mySystem.desktop.scale 向上取整
+  # 得到整数 uiScale,但那是全局变量、无法只对本进程生效,故启动器在运行时读
+  # monitors.xml 的 GNOME 逻辑缩放,向上取整为整数(1→1、>1→2)再喂给 JVM。
   stm32cubemxLauncher = pkgs.symlinkJoin {
     name = "stm32cubemx-launcher";
     paths = [
@@ -53,13 +54,13 @@ let
   cubemxRepository = "${config.home.homeDirectory}/Apps/STM32Cube/Repository/";
 in
 {
-  options.mengw.cli.dev.embedded.enable = lib.mkOption {
+  options.mengw.gui.apps.embedded.enable = lib.mkOption {
     type = lib.types.bool;
     default = true;
     description = "启用嵌入式单片机开发环境（ARM/AVR 交叉工具链、烧录调试、PlatformIO）";
   };
 
-  config = lib.mkIf (cfg.enable && devCfg.enable && cliCfg.enable) {
+  config = lib.mkIf (cfg.enable && appsCfg.enable && guiCfg.enable) {
     home.packages =
       # === 通用（跨平台可用的烧录/调试协议与格式工具）===
       (with pkgs; [
@@ -90,13 +91,17 @@ in
       ++ (with pkgs; [
         picotool # Pico 固件工具（BOOTSEL 模式 flash / info / 固件校验）
       ])
-      # === Linux 专属（darwin 无缓存/不支持，见下注释）===
+      # === Linux 原生（nixpkgs 仅构建 Linux 版或不可用于其它平台，见下注释）===
       ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux (with pkgs; [
         stlink # ST-Link 命令行烧录（st-flash / st-util），nixpkgs 仅构建 Linux 版
+        # lsusb：查 USB 设备的 VID:PID。之所以要专门装，是因为直通探针/串口到
+        # Windows 虚拟机时要填 vid:pid（见 winapps-usb 与 docs/winapps.md §10），
+        # 而 NixOS 默认不带 usbutils。（usbutils 的 meta.platforms 仅 linux，
+        # 故放这个 Linux 专属块而非上面的通用块。）
+        usbutils
         stm32cubemxLauncher # STM32 引脚/外设图形化配置（unfree，仅 x86_64-linux；HiDPI 启动器包装见文件顶部）
         android-tools
-        # 原生 AVR 交叉编译工具链（avr-gcc 走 pkgsCross 从源码构建，仅 Linux 加载；
-        # macOS 上用上面的 PlatformIO 管理 AVR 工具链即可）
+        # 原生 AVR 交叉编译工具链（avr-gcc 走 pkgsCross 从源码构建，仅 Linux 可用）
         pkgsCross.avr.buildPackages.gcc # avr-gcc 交叉编译器
         pkgsCross.avr.buildPackages.binutils # avr-objcopy/objdump/ld 等
         # 注意 1：不装 avr-gdb——它与 gcc-arm-embedded 自带同一批 GNU info 手册
@@ -112,7 +117,7 @@ in
     # 该路径记在 ~/.stm32cubemx/plugins/updater/updater.ini 的 [Path] 段，但同一 ini 还
     # 混着更新时间戳/窗口尺寸等可变状态，无法整体托管，故只在每次切换时钉住这一行。
     # 数据本身不搬运——首次迁移需手动 mv（见 CLAUDE.md「平台适配特殊处理」），之后
-    # CubeMX 下载新固件包即直接落到 cubemxRepository。macOS 上不装 stm32cubemx，脚本为空串。
+    # CubeMX 下载新固件包即直接落到 cubemxRepository。
     home.activation.stm32cubemxRepository =
       lib.hm.dag.entryAfter [ "writeBoundary" ] (lib.optionalString pkgs.stdenv.hostPlatform.isLinux ''
         ini="${config.home.homeDirectory}/.stm32cubemx/plugins/updater/updater.ini"

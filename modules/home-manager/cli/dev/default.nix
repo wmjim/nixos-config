@@ -16,7 +16,6 @@ in
     ./rust.nix
     ./go.nix
     ./cpp.nix
-    ./embedded.nix
     ./others.nix
   ];
 }
