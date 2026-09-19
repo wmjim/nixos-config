@@ -3,6 +3,11 @@ let
   cfg = config.mengw.cli.dev.cpp;
   devCfg = config.mengw.cli.dev;
   cliCfg = config.mengw.cli;
+
+  # mcpp：C++23 模块优先的构建工具（上游 mcpp-community/mcpp），仓库自打包在
+  # pkgs/mcpp-m（预编译 bundle + MCPP_HOME wrapper，理由见该文件顶部）。
+  # 名字不能省成 `pkgs.mcpp`：nixpkgs 的 mcpp 是 Matsui 的 C 预处理器，同名不同物。
+  mcpp = pkgs.callPackage ../../../../pkgs/mcpp-m { };
 in
 {
   options.mengw.cli.dev.cpp.enable = lib.mkOption {
@@ -24,6 +29,7 @@ in
       # C++ 包管理器和依赖管理
       vcpkg # C++ 包管理器
       xmake # 跨平台构建工具和包管理器
+      mcpp # C++23 模块优先的构建/包/工具链管理器（首次运行会联网初始化 ~/.mcpp）
       ccache # 编译缓存，加速重复编译
 
       # 调试和分析工具
