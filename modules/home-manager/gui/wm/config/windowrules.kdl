@@ -51,6 +51,24 @@ debug {
 // 最大化窗口
 // ═══════════════════════════════════════════════
 
+// WinApps — Windows 虚拟机整机会话（FreeRDP RemoteApp）
+//
+// app-id 不是 freerdp / sdl-freerdp3，而是由 WinApps 启动整机会话时传给 FreeRDP 的
+// /wm-class:"Microsoft Windows"（见上游 src/bin/winapps：整机会话用固定值
+// "Microsoft Windows"，单应用 RemoteApp 用该应用全名）—— SDL3 客户端把 wm-class
+// 直接当作 Wayland 的 app_id，故实测 app-id 就是 "Microsoft Windows"。
+//
+// 整机会话是一整套自带任务栏的远程桌面，按普通窗口半屏打开没有意义；该会话带
+// +dynamic-resolution，最大化后远端会跟着改分辨率。
+//
+// 只匹配整机会话：单应用 RemoteApp 窗口的 wm-class 是各自应用全名（如
+// "Microsoft Word"），不落在本规则内、仍按普通窗口平铺；若想让某个应用也
+// 打开即最大化，按它的全名另加一条同款规则即可。
+window-rule {
+    match app-id="^Microsoft Windows$"
+    open-maximized true
+}
+
 // VS Code — 主窗口（最大化）
 window-rule {
     match app-id="(?i)^code"
