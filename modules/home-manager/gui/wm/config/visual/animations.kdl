@@ -1,71 +1,102 @@
 // 动画
 // https://niri-wm.github.io/niri/Configuration%3A-Animations.html
+//
+// ── 时长语言（动效规范）──────────────
+//   小元件（toast / 对话框）  ~130–170ms  落定快、几乎无回弹
+//   窗口级（打开 / 关闭）      180–220ms   进入比离开略慢
+//   空间级（工作区 / 概览）    ~170–230ms  大位移需要滑行让眼睛跟上
+//   直接操控（拖拽 / 缩放）    跟手 1:1，松手后用弹簧吸收速度，不振荡
+//
+// 弹簧时长按 t ≈ 4/(ζ·√k) 估算（单位质量、近临界阻尼下的 98% 建立时间），
+// 仅供相对比较；epsilon 也参与终止判定，绝对值以实际观感为准。
+// 调参时在 animations 块里临时加 slowdown 0.4 放慢看轨迹。
+
 animations {
     // 关闭所有动画
     // off
 
     // 切换工作区动画
+    //
+    // 默认 k=1000 的建立时间 ≈126ms，4K 屏整列内容位移快得像"剪切"；
+    // 降到 560 ≈169ms，给眼睛一点跟随的滑行，但仍配得上键盘触发的快操作。
+    // ζ 保持 1.0：整列窗口是大表面，不回弹（Apple / HarmonyOS 同此）。
     workspace-switch {
-        spring damping-ratio=1.0 stiffness=1000 epsilon=0.0001
+        spring damping-ratio=1.0 stiffness=560 epsilon=0.0001
     }
 
-    // 窗口打开动画 — 雨滴水波纹效果
-    // 240ms：500ms 时连续开多个窗口会有"等它演完"的发粘感。
-    // 另注：下面两段 shader 每像素约 12 次 sin/cos + 一次纹理采样，
-    // 是本配置里最贵的渲染路径（4K 下尤甚），时长不宜再拉长。
+    // 窗口打开动画 — 水面轻涟 + 凝聚成形
+    //
+    // 曲线换成 cubic-bezier(0.16,1,0.3,1)（Apple 的 ease-out-quart）：
+    // 起步极快、收尾干净，没有 ease-out-cubic 的拖尾。注意 curve 直接作用在
+    // niri_clamped_progress 上，所以波纹的相位也跟着被前置——正是想要的。
+    //
+    // 相比原版的三处克制：
+    //   1. 振幅减半（0.16→0.09、位移 0.07→0.035），波纹只在边缘氛围里
+    //   2. 叠 0.97→1.0 的轻缩放，读作"凝聚成形"而不是"被泼进来"
+    //   3. 淡入用 smoothstep 在 55% 时长内完成，减少文字半透明的时间
+    // 三角函数从每组 6 次降到 4 次（4K 下这是最贵的渲染路径）。
     window-open {
-        duration-ms 240
-        curve "ease-out-cubic"
+        duration-ms 220
+        curve "cubic-bezier" 0.16 1.0 0.3 1.0
 
         custom-shader r"
             vec4 open_color(vec3 coords_geo, vec3 size_geo) {
                 float p = niri_clamped_progress;
+
                 float envelope = p * (1.0 - p) * 4.0;
-                float phase = p * 42.0;
-
-                // Water surface ripples using overlapping directional waves
-                // Creates a rain-on-water texture without converging to center
-                float rx = 0.0;
-                rx += sin(coords_geo.x * 45.0 + coords_geo.y * 20.0 - phase);
-                rx += sin(coords_geo.x * 30.0 - coords_geo.y * 50.0 - phase * 1.15);
-                rx += cos(coords_geo.x * 55.0 + coords_geo.y * 40.0 - phase * 0.85);
-                rx += cos(coords_geo.x * 20.0 - coords_geo.y * 60.0 - phase * 1.3);
-                rx += sin(coords_geo.x * 65.0 - coords_geo.y * 25.0 - phase * 1.05);
-                rx += sin(coords_geo.x * 12.0 + coords_geo.y * 70.0 - phase * 0.75);
-                rx *= 0.16;
-
-                float ry = 0.0;
-                ry += cos(coords_geo.x * 40.0 + coords_geo.y * 35.0 - phase * 1.05);
-                ry += sin(coords_geo.x * 25.0 - coords_geo.y * 55.0 - phase * 0.9);
-                ry += sin(coords_geo.x * 50.0 + coords_geo.y * 45.0 - phase * 1.15);
-                ry += cos(coords_geo.x * 35.0 - coords_geo.y * 30.0 - phase * 1.2);
-                ry += sin(coords_geo.x * 60.0 + coords_geo.y * 15.0 - phase * 0.95);
-                ry += cos(coords_geo.x * 15.0 - coords_geo.y * 65.0 - phase * 1.25);
-                ry *= 0.16;
-
-                // Fade ripple near borders to keep edges undistorted
                 float edge_fade = coords_geo.x * (1.0 - coords_geo.x)
                                 * coords_geo.y * (1.0 - coords_geo.y) * 16.0;
-                vec2 displaced = coords_geo.xy + vec2(rx, ry) * envelope * edge_fade * 0.07;
+
+                // 4 组方向波足够给出水面质感，三角函数调用减半
+                float rx = 0.0;
+                rx += sin(coords_geo.x * 45.0 + coords_geo.y * 20.0 - p * 42.0);
+                rx += sin(coords_geo.x * 30.0 - coords_geo.y * 50.0 - p * 48.0);
+                rx += cos(coords_geo.x * 55.0 + coords_geo.y * 40.0 - p * 36.0);
+                rx += cos(coords_geo.x * 20.0 - coords_geo.y * 60.0 - p * 55.0);
+                rx *= 0.09;
+
+                float ry = 0.0;
+                ry += cos(coords_geo.x * 40.0 + coords_geo.y * 35.0 - p * 44.0);
+                ry += sin(coords_geo.x * 25.0 - coords_geo.y * 55.0 - p * 38.0);
+                ry += sin(coords_geo.x * 50.0 + coords_geo.y * 45.0 - p * 48.0);
+                ry += cos(coords_geo.x * 35.0 - coords_geo.y * 30.0 - p * 51.0);
+                ry *= 0.09;
+
+                float zoom = mix(0.97, 1.0, p);
+                vec2 base = (coords_geo.xy - 0.5) / zoom + 0.5;
+                vec2 displaced = base + vec2(rx, ry) * envelope * edge_fade * 0.035;
 
                 vec3 coords_tex = niri_geo_to_tex * vec3(displaced, 1.0);
                 vec4 color = texture2D(niri_tex, coords_tex.st);
 
-                if (coords_geo.x < 0.0 || coords_geo.x > 1.0
-                    || coords_geo.y < 0.0 || coords_geo.y > 1.0) {
+                // 越界判据改用 displaced 而非 coords_geo：缩放过程中外圈
+                // 1.5% 会采样到纹理之外，判 coords_geo 会让那一圈拉伸边缘
+                // 像素（GL_CLAMP_TO_EDGE），判 displaced 则正确地透明掉。
+                if (displaced.x < 0.0 || displaced.x > 1.0
+                    || displaced.y < 0.0 || displaced.y > 1.0) {
                     return vec4(0.0);
                 }
 
-                return color * p;
+                return color * smoothstep(0.0, 0.55, p);
             }
         "
     }
 
-    // 关闭窗口动画 — 水波纹消散效果
-    // 300ms：关闭是"离去"，比打开留一点余韵，波纹在消散过程中更明显。
+    // 关闭窗口动画 — 涟漪轻散 + 微微下沉
+    //
+    // 两处 conventions 修正：
+    //   时长  离开要比进入快（Apple/HarmonyOS 退场 ≈ 入场的 70–80%），
+    //         原来的 300ms 比打开还慢，属于跨档逆序。
+    //   缓动  离开用 ease-in（加速消失）。niri 无内置 ease-in 曲线，
+    //         cubic-bezier(0.5,0,0.9,0.4) ≈ ease-in-quint。
+    //         副作用是可接受的：p 前半段走得慢，窗口保持完整、涟漪缓缓散开，
+    //         末段才迅速塌陷淡出——读作"消散后收走"。
+    //
+    // drain 从 0.28 降到 0.12：原来整窗内容向中心塌 28% 幅度太大，
+    // 像被吸进下水道；退场的表现力应当交给淡出，位移只做余韵。
     window-close {
-        duration-ms 300
-        curve "ease-out-cubic"
+        duration-ms 180
+        curve "cubic-bezier" 0.5 0.0 0.9 0.4
 
         custom-shader r"
             vec4 close_color(vec3 coords_geo, vec3 size_geo) {
@@ -76,20 +107,16 @@ animations {
                 float dist = length(delta);
                 vec2 dir = dist > 0.001 ? delta / dist : vec2(0.0, 0.0);
 
-                // Multi-frequency water ripples radiating from center
                 float w1 = sin(dist * 14.0 - p * 24.0) * exp(-dist * 3.0);
                 float w2 = cos(dist * 26.0 - p * 42.0) * exp(-dist * 5.0) * 0.45;
-                float ripple = w1 + w2;
+                float ripple = (w1 + w2) * 0.55;
 
-                // Distortion grows as window closes
                 float envelope = p * exp(-dist * 2.5);
-                float displacement = ripple * envelope * 0.09;
+                float displacement = ripple * envelope * 0.05;
 
-                // Drain toward center (like sinking into water)
-                float drain = p * p * p * 0.28;
+                float drain = p * p * p * 0.12;
 
-                // Slight tangential wobble
-                float tangent = sin(dist * 20.0 - p * 34.0) * envelope * 0.018;
+                float tangent = sin(dist * 20.0 - p * 34.0) * envelope * 0.012;
                 vec2 perp = vec2(-dir.y, dir.x);
 
                 vec2 displaced = coords_geo.xy
@@ -100,12 +127,11 @@ animations {
                 vec3 coords_tex = niri_geo_to_tex * vec3(displaced, 1.0);
                 vec4 color = texture2D(niri_tex, coords_tex.st);
 
-                if (coords_geo.x < 0.0 || coords_geo.x > 1.0
-                    || coords_geo.y < 0.0 || coords_geo.y > 1.0) {
+                if (displaced.x < 0.0 || displaced.x > 1.0
+                    || displaced.y < 0.0 || displaced.y > 1.0) {
                     return vec4(0.0);
                 }
 
-                // Fade out with slight delay so ripple is visible
                 float fade = 1.0 - p * p;
                 return color * fade;
             }
@@ -117,13 +143,21 @@ animations {
     }
 
     // 窗口移动动画
+    //
+    // 直接操控：跟手 1:1，松手后弹簧吸收惯性。ζ=1.0 不回弹是对的
+    // （大表面回弹看起来像掉帧）。想拖拽更"紧"可把 stiffness 提到 1000。
     window-movement {
         spring damping-ratio=1.0 stiffness=800 epsilon=0.0001
     }
 
     // 窗口大小调整动画
+    //
+    // 原来 ζ=0.7 是欠阻尼，缩放窗口时内容会弹两下。缩放是直接操控，
+    // macOS / HarmonyOS 都是实时的、内容跟随重排、零回弹。
+    // ζ 提到 1.0、stiffness 提到 1000 让几何紧紧咬住指针。
+    // shader 是纯采样下一帧纹理、零畸变，本来就正确，保留。
     window-resize {
-        spring damping-ratio=0.7 stiffness=800 epsilon=0.0001
+        spring damping-ratio=1.0 stiffness=1000 epsilon=0.0001
 
         custom-shader r"
             vec4 resize_color(vec3 coords_curr_geo, vec3 size_curr_geo) {
@@ -135,24 +169,39 @@ animations {
     }
 
     // 通知的打开/关闭动画
+    //
+    // 原来 ζ=0.6 振荡明显。音量/亮度这类小元件，iOS 是滑入+淡入、
+    // 一次温柔的落定，不回弹。ζ=0.9 k=1100 → ≈134ms。
     config-notification-open-close {
-        spring damping-ratio=0.6 stiffness=1000 epsilon=0.001
+        spring damping-ratio=0.9 stiffness=1100 epsilon=0.001
     }
 
     // 对话框的打开/关闭动画
+    //
+    // 原来 ζ=0.6 k=500 ≈300ms 且带 1~2 次可见振荡——一个"确认退出"
+    // 的严肃对话框在弹跳，气质不对。macOS 的 modal 是 ~220ms ease-out、
+    // scale 0.96→1.0。ζ=0.9 k=700 → ≈168ms，落定快、几乎无回弹。
     exit-confirmation-open-close {
-        spring damping-ratio=0.6 stiffness=500 epsilon=0.01
+        spring damping-ratio=0.9 stiffness=700 epsilon=0.01
     }
 
     // 截图界面的打开（淡入）动画
     screenshot-ui-open {
         duration-ms 200
-        curve "ease-out-quad"
+        curve "ease-out-expo"
     }
 
     // 概览的打开/关闭缩放动画
+    //
+    // 原来 k=800 建立时间 ≈141ms，配合 zoom 0.40 的大缩放，
+    // 概览"啪"地一下到位，像切换而非展开。iOS 应用库 / HarmonyOS
+    // 多任务的同类展开是 350–420ms ease-in-out。
+    // 临界阻尼弹簧天然是"两端慢中间快"，等价 ease-in-out，
+    // 所以只降刚度即可：k=300 → ≈230ms。
+    // zoom 一并从 0.40 提到 0.50（见 modules/home-manager/gui/wm/default.nix
+    // 生成的 overview.kdl）：缩略图文字恢复可读，信息量不再损失。
     overview-open-close {
-        spring damping-ratio=1.0 stiffness=800 epsilon=0.0001
+        spring damping-ratio=1.0 stiffness=300 epsilon=0.0001
     }
 
     // 最近窗口切换器的关闭淡出动画

@@ -166,7 +166,8 @@ let
   overviewKdl = ''
     // 概览
     overview {
-        zoom 0.40
+        // 0.50：文字可读，保留一定信息量，兼顾全局视野
+        zoom 0.50
         // 概览里工作区背后、以及切换工作区时露出的底色。
         // 注意 niri 会**忽略此色的 alpha 通道**（niri wiki: Configuration:
         // Miscellaneous），所以这里只能给不透明色，写成 #242424cc 无效。
