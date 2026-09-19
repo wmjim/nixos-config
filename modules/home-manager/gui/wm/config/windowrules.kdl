@@ -172,16 +172,26 @@ window-rule {
 // ═══════════════════════════════════════════════
 
 // Pot — 划词翻译（右侧浮动长条，满高度）
+//
+// 曾漏写 open-floating：全局规则已声明 open-floating false，而本规则只给了
+// 尺寸和 default-floating-position —— 后者**只对浮动窗口生效**，于是查词窗
+// 一直按平铺打开，把旁边的窗口挤走。查词/翻译是「临时看一眼」的旁路操作，
+// 必须浮动覆盖在内容之上，不参与布局重排。
 window-rule {
     match app-id="(?i)pot"
+    open-floating true
     default-column-width { proportion 0.2; }
     default-window-height { proportion 1.0; }
     default-floating-position x=0 y=0 relative-to="top-right"
 }
 
 // Pot — 偏好设置面板（覆盖上面的通用规则）
+//
+// open-floating 同样显式写出：设置面板必须浮动，不依赖上一条规则的继承
+// （两条规则都命中同一窗口时，后者的 open-floating 会覆盖前者）。
 window-rule {
     match app-id="(?i)pot" title="Config"
+    open-floating true
     default-column-width { proportion 0.55; }
     default-window-height { proportion 0.70; }
 }
