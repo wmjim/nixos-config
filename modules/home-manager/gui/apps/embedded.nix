@@ -116,7 +116,7 @@ in
     # === 固件仓库路径锚定 ===
     # 该路径记在 ~/.stm32cubemx/plugins/updater/updater.ini 的 [Path] 段，但同一 ini 还
     # 混着更新时间戳/窗口尺寸等可变状态，无法整体托管，故只在每次切换时钉住这一行。
-    # 数据本身不搬运——首次迁移需手动 mv（见 CLAUDE.md「平台适配特殊处理」），之后
+    # 数据本身不搬运——首次迁移需手动 mv（见 AGENTS.md「平台适配特殊处理」），之后
     # CubeMX 下载新固件包即直接落到 cubemxRepository。
     home.activation.stm32cubemxRepository =
       lib.hm.dag.entryAfter [ "writeBoundary" ] (lib.optionalString pkgs.stdenv.hostPlatform.isLinux ''
