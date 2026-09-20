@@ -3,7 +3,7 @@
 在 Niri/GNOME 桌面上把 Windows 虚拟机里的程序当**原生窗口**使用（FreeRDP RemoteApp），
 典型用途：Keil MDK、仅 Windows 可用的串口/烧录工具、Office。
 
-- 方案与取舍的来龙去脉见 [`CLAUDE.md`](../CLAUDE.md) 的「WinApps」条目。
+- 方案与取舍的来龙去脉见 [`AGENTS.md`](../AGENTS.md) 的「WinApps」条目。
 - 本文是**操作手册**：从零建 VM 到日常使用、加应用、接单片机探针、排错。
 
 ---
@@ -317,35 +317,63 @@ winapps-setup --user --add-apps     # 增量：只扫描并把新应用加进来
 
 ### 10.1 探针直通（ST-Link / J-Link / CMSIS-DAP）
 
-**USB 设备不进 RDP，而是用 libvirt `<hostdev>` 直通给客户机**（原生 USB 语义，bulk 传输稳定）：
+**USB 设备不进 RDP**（RDP 只重定向剪贴板/音频/磁盘），必须用 libvirt 的 `<hostdev>`
+直通给客户机（原生 USB 语义，bulk 传输稳定）。日常用仓库自带的封装：
 
 ```bash
-export LIBVIRT_DEFAULT_URI=qemu:///system
-cat > /tmp/stlink.xml <<'EOF'
-<hostdev mode='subsystem' type='usb' managed='yes'>
-  <source>
-    <vendor id='0x0483'/>   <!-- ST-Link；J-Link 用 0x1366，CMSIS-DAP 用 0x0d28 -->
-    <product id='0x374e'/>  <!-- 按 lsusb 实际值改 -->
-  </source>
-</hostdev>
-EOF
-virsh attach-device RDPWindows /tmp/stlink.xml --live   # 临时（本次运行）
-virsh detach-device RDPWindows /tmp/stlink.xml --live   # 用完还给 Linux
+winapps-usb                    # 列出「已直通」与「宿主可见且未直通」两组设备 + vid:pid
+winapps-usb attach 0483:3748   # ST-Link V2（实测值）；临时直通，本次运行有效
+winapps-usb detach 0483:3748   # 用完还给 Linux
 ```
 
-- 也可在 virt-manager → Add Hardware → **USB Host Device** 里常驻。
-- 设备 ID：`lsusb`；宿主的 udev 规则（`mySystem.hardware.mcu.enable`）已把探针节点授权给
-  `users` 组，Linux 侧工具（`st-flash`/`openocd`/`probe-rs`）不受影响。
-- **同一根探针不可能同时给 Linux 和 Windows**。频繁来回切最省心的做法：再买一根便宜探针
-  专供 VM。
+**实测过的设备 ID**（本机 4K 主机）：ST-Link V2 `0483:3748`（`Product: STM32 STLink`）、
+CH340 USB-UART `1a86:7523`。J-Link 是 `1366:xxxx`，CMSIS-DAP 是 `0d28:xxxx`。
+查 ID 用 `winapps-usb`（顺带标出归属）；`lsusb` 也可用（usbutils 由
+`mengw.gui.apps.embedded` 提供）。
+
+#### 独占语义（常被误解）
+
+直通期间 QEMU 用 libusb 抢占接口，内核驱动被解绑、接口改挂 `usbfs` 伪驱动：
+
+| 视角 | 直通期间的表现 |
+|------|----------------|
+| `/dev/ttyUSB0` / `st-flash` / `openocd` / `tio` | ❌ 节点消失、工具报设备打不开 |
+| `lsusb` / `/sys/bus/usb/devices/` | ⚠️ **设备仍在列表里**（只是没人能用它），别被这点误导 |
+| `winapps-usb` 的「已直通」一节 | ✅ 从域 XML 反查，是唯一准确的归属依据 |
+
+**同一根探针不可能同时给 Linux 和 Windows**。频繁来回切最省心的做法：再买一根便宜探针
+专供 VM。
+
+#### 其它两种做法
+
+- **持久直通**（开机即出现，不需每次 attach）：virt-manager → Add Hardware →
+  **USB Host Device**；或 `virsh attach-device --config`。代价是设备总被 VM 占着，
+  Linux 侧默认拿不到（只在 VM 关机后才回宿主）。
+- **GUI 动态重定向**：VM 已配两个 `spicevmc` `<redirdev>`，连上 SPICE 控制台
+  （virt-manager 的虚拟机窗口）→ 菜单 `Virtual Machine` → `Redirect USB device`
+  即可勾选/取消，效果等同本脚本，但只能走 GUI。
+
+#### 排错
+
+- ST-Link 直通后先显示为「其他设备/未知设备」是正常的：Windows 侧还要装 ST 的驱动
+  （STSW-LINK009），或用 Zadig 装 WinUSB（给 openocd/Keil 之外的独立工具链用）。
 - `No more available PCI slots` 报错 = virt-manager 建的 `pcie-root-port` 用光了，删几个空的
   root port 再加设备。
+- attach 报 `Did not find matching USB device` = 设备此刻不在宿主总线上（没插稳，或已被
+  直通却没 detach）。`winapps-usb` 会先本地校验并给出明确原因，不会走到这一步。
 
 ### 10.2 串口（UART 监视）
 
 μVision 没有实用的 COM 口终端，**建议把 USB-UART（CH340/CP2102…）留在 Linux**
 （`tio` / `picocom` / `espflash monitor`），只把 SWD 探针给 Windows。
-若用带 VCP 的 ST-Link V2-1/V3（Nucleo/Discovery 板载），直通该设备可一次拿到 SWD + COM。
+若确实要在 Windows 里用串口（例如跑 Windows 版烧录/调试工具），同样一句：
+
+```bash
+winapps-usb attach 1a86:7523   # CH340，用完 detach 交还，否则 Linux 侧没有 /dev/ttyUSB0
+```
+
+若用带 VCP 的 ST-Link V2-1/V3（Nucleo/Discovery 板载），直通该设备可一次拿到 SWD + COM
+（只占一个 hostdev 条目）。
 
 ### 10.3 RemoteApp 下的操作习惯
 

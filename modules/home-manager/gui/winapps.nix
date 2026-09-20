@@ -12,8 +12,9 @@
 #      .desktop 与启动脚本。仅此一步是命令式的，其余均由本模块托管。
 #
 # 硬件探针（ST-Link/J-Link/CMSIS-DAP）不进 RDP，而是以 libvirt <hostdev> 直通给
-# 客户机：virt-manager → Add Hardware → USB Host Device，或用
-# `virsh attach-device <VM> <xml> --live` 临时挂载（同一探针无法同时给 Linux 与 Windows）。
+# 客户机：日常用本模块提供的 `winapps-usb attach <vid:pid>`（热插拔，用完 detach 交还
+# Linux）；想要开机即直通就用 virt-manager → Add Hardware → USB Host Device
+# （代价：设备总被 VM 占着）。同一探针无法同时给 Linux 与 Windows，详见 docs/winapps.md §10。
 { lib, config, pkgs, osConfig, inputs, ... }:
 let
   cfg = config.mengw.gui.winapps;
@@ -37,6 +38,139 @@ let
   rdpScale = if cfg.rdpScale != null then cfg.rdpScale else derivedScale;
 
   extraDriveFlags = lib.concatMapStrings (d: " /drive:${d.name},${d.path}") cfg.extraDrives;
+
+  # USB 直通热插拔封装。
+  #
+  # 为什么需要它：WinApps 的 RDP 通道只重定向剪贴板/音频/磁盘，**不传 USB**。
+  # 单片机探针与 USB-UART 只能走 libvirt 的 USB hostdev 直通（原生 USB 语义）。
+  # 而 hostdev 是**独占**的：QEMU 用 libusb 抢占接口（内核驱动被解绑、接口改挂到
+  # usbfs 伪驱动），于是 /dev/ttyUSB0 消失，st-flash / openocd / tio 全部打不开。
+  # 注意设备**仍会出现在 lsusb 里**（只是没人能用它），别被这点误导。
+  # 所以这里提供热插拔（virsh --live）而非把设备永久钉进域 XML：默认「谁用谁拿」，
+  # 用完 detach 还给 Linux。
+  winappsUsb = pkgs.writeShellScriptBin "winapps-usb" ''
+    set -u
+
+    readonly VM="${cfg.vmName}"
+    export LIBVIRT_DEFAULT_URI="qemu:///system"
+
+    # virsh 取系统 PATH 里的那份（与 libvirtd 同源）；不写死 store 路径，
+    # 以免 HM 里的 libvirt 与系统守护进程版本不一致。
+    command -v virsh >/dev/null 2>&1 || {
+      printf '[DEBUG] winapps-usb: PATH 里找不到 virsh（libvirt 客户端未安装？）\n' >&2
+      exit 1
+    }
+
+    # 设备直通期间宿主机看不到它，两份清单来源不同，必须分开呈现
+    readonly XML="''${XDG_RUNTIME_DIR:-/tmp}/winapps-usb-hostdev.xml"
+    trap 'rm -f -- "$XML"' EXIT
+
+    die() { printf '[DEBUG] winapps-usb: %s\n' "$*" >&2; exit 1; }
+
+    usage() {
+      cat >&2 <<'USAGE'
+    用法：
+      winapps-usb                   列出「已直通给 VM」与「宿主机可见」的 USB 设备
+      winapps-usb attach <vid:pid>  热插设备给 VM（仅本次运行；Linux 侧就此失去该设备）
+      winapps-usb detach <vid:pid>  把设备交还 Linux
+    设备 ID 见 winapps-usb 输出，形如 0483:3748。
+    USAGE
+    }
+
+    # 宿主可见设备：读 sysfs，不依赖未安装的 usbutils；跳过根控制器与 hub
+    host_devices() {
+      local d idv idp name cls
+      for d in /sys/bus/usb/devices/*/; do
+        [ -r "$d/idVendor" ] || continue
+        idv=$(cat "$d/idVendor"); idp=$(cat "$d/idProduct")
+        [ "$idv" = "1d6b" ] && continue
+        cls=$(cat "$d/bDeviceClass" 2>/dev/null)
+        [ "$cls" = "09" ] && continue
+        name=$(cat "$d/product" 2>/dev/null || echo "?")
+        printf '%s:%s\t%s\n' "$idv" "$idp" "$name"
+      done | sort -u
+    }
+
+    # 已直通设备：此刻宿主机完全看不到，只能从域 XML 反查
+    vm_devices() {
+      virsh dumpxml "$VM" 2>/dev/null \
+        | tr -d ' \n' | tr 'A-Z' 'a-z' \
+        | grep -o "<vendorid='0x[0-9a-f]*'/><productid='0x[0-9a-f]*'/>" \
+        | sed -E "s|<vendorid='0x([0-9a-f]*)'/><productid='0x([0-9a-f]*)'/>|\1:\2|"
+    }
+
+    # 解析并校验 vid:pid，结果放 VID/PID（小写）
+    VID=""; PID=""
+    parse_id() {
+      local id="''${1:-}"
+      case "$id" in
+        *:*) VID="''${id%%:*}"; PID="''${id##*:}" ;;
+        *)   die "设备 ID 要写成 vid:pid（如 0483:3748），当前是 '$id'" ;;
+      esac
+      [[ "$VID" =~ ^[0-9a-fA-F]{4}$ ]] || die "vendor ID 必须是 4 位十六进制，当前 '$VID'"
+      [[ "$PID" =~ ^[0-9a-fA-F]{4}$ ]] || die "product ID 必须是 4 位十六进制，当前 '$PID'"
+      VID="''${VID,,}"; PID="''${PID,,}"
+    }
+
+    # virsh 只接受文件路径，故落一份 XML；同 vid:pid 不论主机地址都匹配
+    write_xml() {
+      cat > "$XML" <<XML_EOF
+    <hostdev mode='subsystem' type='usb' managed='yes'>
+      <source>
+        <vendor id='0x$VID'/>
+        <product id='0x$PID'/>
+      </source>
+    </hostdev>
+    XML_EOF
+    }
+
+    case "''${1:-list}" in
+      list)
+        vm=$(vm_devices)
+        printf '== 已直通给 %s ==\n' "$VM"
+        printf '   （内核驱动已解绑、接口改挂 usbfs：/dev 节点消失，st-flash/tio 打不开；lsusb 仍能列出）\n'
+        if [ -n "$vm" ]; then printf '%s\n' "$vm" | sed 's/^/  /'; else printf '  （无）\n'; fi
+
+        printf '\n== 宿主机可见且未直通 ==\n'
+        shown=0
+        while IFS=$'\t' read -r id name; do
+          [ -n "$id" ] || continue
+          # 已直通的归上一节，否则同一设备会在两节里各出现一次（sysfs 并未移除它）
+          if [ -n "$vm" ] && printf '%s\n' "$vm" | grep -qx "$id"; then continue; fi
+          printf '  %s\t%s\n' "$id" "$name"; shown=1
+        done < <(host_devices)
+        [ "$shown" = 1 ] || printf '  （无）\n'
+        ;;
+      attach)
+        parse_id "''${2:-}"
+        vm_devices | grep -qx "$VID:$PID" \
+          && die "$VID:$PID 已经在 $VM 里了，无需重复 attach"
+        host_devices | cut -f1 | grep -qx "$VID:$PID" \
+          || die "宿主机看不到 $VID:$PID：要么没插稳，要么已被 $VM 直通（先跑一次 winapps-usb 看现状）"
+        write_xml
+        virsh attach-device "$VM" "$XML" --live \
+          || die "attach $VID:$PID 失败，原因见上方 virsh 输出"
+        printf '[DEBUG] winapps-usb: %s:%s 已热插给 %s；宿主侧驱动被解绑（/dev 节点消失，lsusb 仍在）\n' "$VID" "$PID" "$VM" >&2
+        printf 'Windows 设备管理器应出现新设备；ST-Link 还需装 Windows 侧驱动（STSW-LINK009），\n否则会先显示为“其他设备”。用完执 winapps-usb detach %s:%s 交还 Linux。\n' "$VID" "$PID"
+        ;;
+      detach)
+        parse_id "''${2:-}"
+        vm_devices | grep -qx "$VID:$PID" \
+          || die "$VID:$PID 不在 $VM 里，无需 detach（winapps-usb 看现状）"
+        write_xml
+        virsh detach-device "$VM" "$XML" --live \
+          || die "detach $VID:$PID 失败，原因见上方 virsh 输出"
+        printf '[DEBUG] winapps-usb: %s:%s 已交还 Linux\n' "$VID" "$PID" >&2
+        ;;
+      help|-h|--help)
+        usage
+        ;;
+      *)
+        usage
+        die "未知子命令 '$1'"
+        ;;
+    esac
+  '';
 in
 {
   options.mengw.gui.winapps = {
@@ -88,7 +222,7 @@ in
     # 供手动全屏 RDP 会话（xfreerdp / wlfreerdp）与排错用（xfreerdp +auth-only 验凭据、
     # 单跑一次 RemoteApp 会话）。不会改变 winapps 的自动探测结果：包装器把同一份 freerdp
     # 前置到 PATH，仍取 sdl-freerdp。
-    home.packages = [ winapps.winapps winapps.winapps-launcher pkgs.freerdp ];
+    home.packages = [ winapps.winapps winapps.winapps-launcher pkgs.freerdp winappsUsb ];
 
     # 与 virt-manager/virsh 统一 URI，避免默认落到 qemu:///session 找不到域
     home.sessionVariables.LIBVIRT_DEFAULT_URI = "qemu:///system";
