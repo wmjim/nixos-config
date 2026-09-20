@@ -38,6 +38,23 @@ in
         });
       })
 
+      # nixpkgs master 于 2026-05-09 弃用 stdenv.isLinux / isDarwin 等属性
+      # （pkgs/stdenv/generic/default.nix 里挂 lib.warn，改为 stdenv.hostPlatform.is*），
+      # 而 HM release-26.05 仍在两处读旧属性：
+      #   - modules/systemd.nix  systemd.user.enable 默认值 → 每次求值警告 isLinux
+      #   - modules/lib/darwin.nix  assertInterval → 每次求值警告 isDarwin
+      # 每个主机因此打印 2 条 evaluation warning（nix flake check 共 4 组）。
+      # 上游 master 已改用 hostPlatform.is*，但同样未回移 release-26.05。
+      # 这里把这两个属性按原值重新绑定，去掉 lib.warn 包装（值不变，不影响任何构建结果）。
+      # 复核记录: 2026-09-20 确认 master 已修、release-26.05 未回移；
+      # 待 HM 锁定切换到 master（或含修复的分支）后删除本 overlay。
+      (final: prev: {
+        stdenv = prev.stdenv // {
+          isLinux = prev.stdenv.hostPlatform.isLinux;
+          isDarwin = prev.stdenv.hostPlatform.isDarwin;
+        };
+      })
+
       # 自打包主题（nixpkgs 未收录）：MacTahoe GTK / 图标主题 / Kvantum(Qt) 主题
       (final: prev: {
         mactahoe-gtk-theme = prev.callPackage ../../pkgs/mactahoe-gtk-theme { };
