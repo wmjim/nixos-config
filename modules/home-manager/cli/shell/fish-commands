@@ -16,6 +16,13 @@ tmux new -s <name>                                       | 新建命名会话
 tmux ls                                                  | 列出所有会话
 tmux attach -t <name>                                    | 附加到指定会话
 tmux kill-session -t <name>                              | 关闭指定会话
+tmux new -A -s main                                      | 接入/新建固定主页会话（重启后能落到同一个会话）
+tmux-persist-save                                        | 立即存一次会话快照（无 server 时安全跳过）
+tmux-persist-start                                       | 手动跑一次"登录恢复"（排错用）
+ls -t ~/.local/state/tmux/resurrect | head                 | 看最近的会话快照（tmux_resurrect_*.txt）
+systemctl --user status tmux-persist                     | 看登录恢复/注销保存的日志
+systemctl --user list-timers tmux-persist-save           | 看定时保存的下一次触发时间
+bash ~/Projects/nixos-config/tests/tmux-persistence.sh   | 跑持久化冒烟测试（隔离 socket，不动真实会话）
 
 # Git
 git config --list                                        | 列出git当前所有配置
