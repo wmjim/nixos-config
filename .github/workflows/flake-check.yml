@@ -1,10 +1,22 @@
 name: "Flake checks"
 
+# 两种触发共用同一套检查，区别只在 flake.lock 的新鲜度：
+#   push / PR  → 验已提交的 flake.lock
+#   schedule（03:40 CST，早于 04:40 的 autoUpgrade）/ workflow_dispatch
+#              → 先把 nixpkgs 刷到 master HEAD 再验，拦截滚动通道上的上游回归；
+#                autoUpgrade 用 --refresh 跟踪 master，只验 lock 看不到那些新提交。
+#
+# 主机清单不在这里硬编码（原 flake-check / flake-update-check 各有一份矩阵，
+# 新增主机要改三处才不漏）：dry-build 从 flake 输出枚举，新增主机只改 flake.nix。
 on:
   push:
     branches:
       - "main"
   pull_request:
+  schedule:
+    # GitHub 定时任务按 UTC 跑，19:40 UTC == 03:40 CST
+    - cron: "40 19 * * *"
+  workflow_dispatch:
 
 permissions:
   contents: "read"
@@ -16,7 +28,8 @@ concurrency:
 jobs:
   # 求值检查：确认所有 flake 输出可求值，NixOS/darwin 配置可推导出 toplevel。
   # 注意 nix flake check 只验证 darwinConfigurations 输出存在，不强制求值
-  # config.system.build.toplevel，所以 darwin 主机还要靠下面的 dry-run 兜底。
+  # config.system.build.toplevel（跑在 Linux 上还会跳过 aarch64-darwin），
+  # 所以 darwin 主机还要靠下面的 dry-run 兜底。
   evaluate:
     runs-on: "ubuntu-latest"
     steps:
@@ -24,26 +37,48 @@ jobs:
         with:
           persist-credentials: false
       - uses: "DeterminateSystems/determinate-nix-action@v3"
+      # checkout 是一次性的，这里写 flake.lock 只影响 CI 工作区，不会回灌仓库
+      - name: "刷新 nixpkgs 到 master HEAD（仅滚动通道）"
+        if: github.event_name != 'push' && github.event_name != 'pull_request'
+        run: nix flake update nixpkgs
       - name: "nix flake check"
         run: nix flake check --no-write-lock-file
 
   # 干跑构建：计算各主机 system.build.toplevel 的完整闭包，只求值不真正构建。
-  # 按主机拆矩阵，某台失败时能直接看出是哪台（server stub 曾因无 CI 而长期未构建）。
+  # 逐台继续而非 fail-fast，某台失败时能直接看出是哪台（server stub 曾因无人构建而长期坏着）。
   dry-build:
     runs-on: "ubuntu-latest"
-    strategy:
-      fail-fast: false
-      matrix:
-        target:
-          - "nixosConfigurations.desktop"
-          - "nixosConfigurations.laptop"
-          - "nixosConfigurations.server"
-          - "nixosConfigurations.wsl"
-          - "darwinConfigurations.macbook"
     steps:
       - uses: "actions/checkout@v6"
         with:
           persist-credentials: false
       - uses: "DeterminateSystems/determinate-nix-action@v3"
-      - name: "dry-run build ${{ matrix.target }}"
-        run: nix build --dry-run --no-write-lock-file ".#${{ matrix.target }}.config.system.build.toplevel"
+      - name: "刷新 nixpkgs 到 master HEAD（仅滚动通道）"
+        if: github.event_name != 'push' && github.event_name != 'pull_request'
+        run: nix flake update nixpkgs
+      - name: "dry-run build 每台主机"
+        run: |
+          set -euo pipefail
+          # 向 flake 要主机清单：只存在于 flake.nix 一处，新增主机不会漏验
+          # 每句都要 || exit 1：命令替换的退出码只取最后一句，否则第一句枚举失败
+          # 会被第二句的成功掩盖，那几台主机会被静默跳过（假绿）
+          targets=$(
+            nix eval --raw --no-write-lock-file .#nixosConfigurations \
+              --apply 'x: builtins.concatStringsSep " " (builtins.map (n: "nixosConfigurations.${n}") (builtins.attrNames x))' || exit 1
+            echo
+            nix eval --raw --no-write-lock-file .#darwinConfigurations \
+              --apply 'x: builtins.concatStringsSep " " (builtins.map (n: "darwinConfigurations.${n}") (builtins.attrNames x))' || exit 1
+          )
+          echo "本次验证：$targets"
+          fail=0
+          for target in $targets; do
+            echo "::group::dry-run $target"
+            if nix build --dry-run --no-write-lock-file ".#$target.config.system.build.toplevel"; then
+              echo "OK: $target"
+            else
+              echo "::error::$target 求值失败"
+              fail=1
+            fi
+            echo "::endgroup::"
+          done
+          exit "$fail"
