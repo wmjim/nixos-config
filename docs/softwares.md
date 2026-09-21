@@ -18,7 +18,7 @@
 |------|------|
 | 终端模拟器 | Foot（Catppuccin Frappe 主题，Wayland 原生） |
 | Shell | Fish（含大量自定义别名） |
-| 终端复用器 | tmux（Omarchy 按键布局，见 `doc/tmux.md`） |
+| 终端复用器 | tmux（Omarchy 按键布局，见 `docs/tmux.md`） |
 | 终端文件管理器 | Yazi（`y`） |
 
 ## 浏览器与通讯

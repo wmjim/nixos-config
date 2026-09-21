@@ -31,7 +31,7 @@ in
       # 模块文档原话："these settings can still be overwritten at runtime via the
       # settings menu"。故 bar 的布局（控件列表、胶囊、透明度）与插件配置不在此
       # 维护，那部分归 GUI；本模块只负责需要在版本控制里钉死的东西：调色板。
-      # 实测被运行时覆盖的键见 doc/themes.md 的"Noctalia"一节。
+      # 实测被运行时覆盖的键见 docs/themes.md 的"Noctalia"一节。
       settings = {
         shell = {
           font_family = lib.mkForce "HarmonyOS Sans SC";

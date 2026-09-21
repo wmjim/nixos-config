@@ -178,7 +178,7 @@ in
           `匹配->恢复命令` 约定：`~` 表示「进程名里含该串」即匹配，`->` 右边是实际
           执行的命令，`*` 是原命令参数占位符。本仓库在 NixOS + fish 下必须用
           `~程序->程序 *` 这种形式（fish 传给 execve 的 argv[0] 是解析后的绝对
-          路径，默认的按词匹配永远匹配不上），详见 doc/tmux.md。
+          路径，默认的按词匹配永远匹配不上），详见 docs/tmux.md。
         '';
       };
 
@@ -237,7 +237,7 @@ in
           plugin = resurrect;
           extraConfig =
             ''
-              # 快照目录 + 需要重新拉起的程序（写法说明见模块内注释与 doc/tmux.md）
+              # 快照目录 + 需要重新拉起的程序（写法说明见模块内注释与 docs/tmux.md）
               set -g @resurrect-dir '${persist.directory}'
               set -g @resurrect-processes '${processList}'
             ''

@@ -1,4 +1,9 @@
 .claude/
+
+# Agent 工具（Codex 等）在会话开始时于工作区根自建的目录，内容不属于仓库
+.agents/
+.codex/
+
 # nix build 默认在工作区根留 result 软链；它会让 git 树变脏，
 # 使 self.rev 退化为 null、system.configurationRevision 变成 "dirty"，
 # 代际无法回溯 commit（见 AGENTS.md「滚动升级的可追溯性」）。

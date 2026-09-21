@@ -5,27 +5,43 @@
 ## 命令
 
 ```bash
-# 部署主机配置
+# Agent 可以自行执行（只读，或只写仓库内文件）
+nix fmt                                  # 格式化所有 Nix 文件（nixpkgs-fmt）
+nix develop                              # 开发环境 (git + nixpkgs-fmt)
+# 求值与 dry-run 构建见下节「验证」
+```
+
+```bash
+# 只由用户本人执行，Agent 不要运行
 sudo nixos-rebuild switch --flake ~/Projects/nixos-config#desktop
 sudo nixos-rebuild switch --flake ~/Projects/nixos-config#laptop
 sudo nixos-rebuild switch --flake ~/Projects/nixos-config#wsl
-
 # 详细构建日志 (用于排错调试)
 sudo nixos-rebuild switch --flake ~/Projects/nixos-config#desktop --show-trace --print-build-logs --verbose
-
-# 格式化所有 Nix 文件
-nix fmt                    # uses nixpkgs-fmt
-
-# 更新 flake 锁定文件
-nix flake update
-nix flake update <input>   # update a single input
-
-# 垃圾回收，清理旧版本系统
-sudo nix-collect-garbage --delete-old
-
-# 进入开发环境 (git + nixpkgs-fmt)
-nix develop
+nix flake update [<input>]               # 改写 flake.lock
+sudo nix-collect-garbage --delete-old    # 删旧代际
 ```
+
+Agent 不执行 `nixos-rebuild switch` / `darwin-rebuild switch` / `nix-collect-garbage`，也不执行任何 `sudo`：前者切换系统代际（会踢掉正在跑的会话），后者删旧代际，都不可逆。`nix flake update` 只在用户明确要求时跑。Agent 的职责边界是**改完保证能求值**，切换与清理交给用户本人。
+
+## 验证
+
+改完配置的默认验收标准：`nix fmt` + 对**受影响的主机**跑 dry-run 求值（与 CI 同款检查，本机约 10 秒）。
+
+```bash
+# 单点查值（约 0.5 秒）：确认某选项的最终值、是否被 mkIf/mkForce 影响，比翻文件快
+nix eval --raw '.#nixosConfigurations.desktop.config.<选项路径>'
+
+# 全量求值（约 10 秒）：算出整机 toplevel 闭包，只求值、不构建
+nix build --dry-run --no-write-lock-file '.#nixosConfigurations.desktop.config.system.build.toplevel'
+
+# CI 第一个 job 的同款检查
+nix flake check --no-write-lock-file
+```
+
+- 跑哪些主机由**改动的影响范围**决定：改 `hosts/<host>/` 或单个功能模块 → 只跑该 host；改 `modules/nixos/core/`、`flake.nix`、`lib/`、`overlays/` → 「各主机配置」表里 5 个目标全跑（含 `darwinConfigurations.macbook`）。
+- 改了 tmux 模块 → 提示用户在 `switch` 后跑 `./tests/tmux-persistence.sh`（它读的是已生成的配置，自建沙箱、不碰运行中的 tmux server）。
+- GUI 渲染、硬件行为、Windows 客户机这类本机无法验证的部分，必须写明「未验证」，不要声称已验证。
 
 ## 架构
 
@@ -93,14 +109,35 @@ modules/
 
 ### 平台适配特殊处理
 
+每条只写「是什么 + 根因 + 移除条件 + 详见何处」，不超过 3 行；细节放对应源码注释或 `docs/` 里。
+
 - **国内清华镜像源**：二进制替换源与 nixpkgs 源码均使用 `mirrors.tuna.tsinghua.edu.cn`。若身处境外，下载速度会偏慢，可自行更换镜像。
 - **Fish 4.8.0 覆盖补丁**：`modules/home-manager/default.nix` 对 Fish 打补丁，补全缺失的 `create_manpage_completions.py` 文件（对应 nixpkgs 工单 #535122）。待上游合并修复后即可移除该覆盖层。
 - **XWayland 下的 Xft.dpi 补写**：fcitx5 在 XWayland 客户端上只读 X11 资源库的 `Xft.dpi` 决定候选窗缩放，而 xwayland-satellite 0.8.2 只把缩放写进 XSETTINGS（且未给 Xwayland 传 `-dpi`），导致微信等 X11 应用候选词停在 1.0x、比 VSCode 等 Wayland 应用小 `scale` 倍。`modules/nixos/desktop/niri/default.nix` 的 `xwayland-xft-dpi` wrapper 补写 `96 × scale` 并在 `startup.kdl` 自启。**TODO**：待 nixpkgs 的 xwayland-satellite 包含 PR #477（sync Xft.dpi through RESOURCE_MANAGER）后删除该 workaround。
 - **NVIDIA 显存泄漏修复**：`modules/nixos/hardware/nvidia-base.nix` 配置 Niri 应用专属参数，限制空闲缓冲区池大小，规避显存泄漏问题。
-- **显示器冷启动 EDID 自愈**：4K 屏长时间断电再上电时，NVIDIA 驱动第一次读 EDID 拿到的是一份合成 stub（niri 日志里连接器身份变成 `Nvidia 0x0000 Unknown`），只剩 640x480 兜底模式，叠加不变的 scale 1.5 后逻辑尺寸塌到约 427×320，桌面内容全变大。stub 的校验和有效、连接器仍是 connected，内核认为"状态没变"不会补发 hotplug，驱动也不重试，所以必须重启会话/整机才恢复。`hosts/desktop/edid-reprobe.nix` 的 udev 规则**监听 `card1`**（关键：DRM 的 hotplug uevent 全部发在显卡节点上——`drm_sysfs_hotplug_event()` 与 `drm_sysfs_connector_hotplug_event()` 都是 `kobject_uevent_env(&dev->primary->kdev->kobj, ...)`，连接器子设备 `card1-DP-2` 收不到 change 事件，早期版本匹配 `card1-DP-2` 导致自愈从未触发），发现"connected 但 modes 里没有 3840x2160"时循环 `echo detect > status` 强制重读 EDID（nvidia-drm 的 detect 每次都 free 缓存 EDID 再向 RM/DDC 取一次，是真实重读），恢复后再对 `card1` 发合成 change 事件让 niri 重跑 `on_output_config_changed()` 按配置选回 `3840x2160@150.000`。`drm.edid_firmware` 与 `video=` 强制模式两条路都试过，会因阻止 DP 链路重训练/被 NVIDIA 拒绝而黑屏（理由见 `hosts/desktop/nvidia.nix` 注释）。
-- **STM32Cube 固件仓库路径**：CubeMX 默认把约 500MB 的固件包（HAL/LL/Cube 库）下到 `~/STM32Cube/Repository`，路径记在 `~/.stm32cubemx/plugins/updater/updater.ini` 的 `[Path] RepositoryPath`。已收拢到 `~/Apps/STM32Cube/Repository`（与 `xwechat_files`、`Zotero` 等应用数据同放），由 `modules/home-manager/gui/apps/embedded.nix` 的 `home.activation.stm32cubemxRepository` 每次切换时钉住该行——该 ini 还混着时间戳/窗口尺寸等可变状态，无法整体托管，故只锚定这一行，数据迁移需手动 `mv` 一次。
-- **WinApps（Windows 应用接入桌面）**：走 libvirt 后端，与 `mySystem.virtualization` 共用同一套 QEMU/KVM 栈：`flake.nix` 引入 `winapps` 输入（上游只提供包，无 NixOS/HM 模块），接入层在 `modules/home-manager/gui/winapps.nix`（包、`winapps.conf`、RDP 密码取值、`RDP_SCALE` 由 `mySystem.desktop.scale` 派生）。**密码不进 nix store**（store 全局可读）：改为 `RDP_ASKPASS` 读非托管的 `~/.config/winapps/rdp-pass`（0600），缺失时 `home.activation.winappsRdpPasswordCheck` 打印提示。虚拟机本身无法用 Nix 表达，需人工建一次：virt-manager 建名为 `RDPWindows` 的 VM（q35 + UEFI(OVMF secboot) + TPM2.0 + virtio 磁盘/网卡，装 Windows 11 **Pro**——RemoteApp 不支持 Home），挂 `pkgs/windows-vm-media` 产出的单张装机盘（`/run/current-system/sw/share/windows-vm-media/windows-vm-media.iso` = 上游 virtio-win ISO + WinApps oem 脚本，装驱动与 `WINAPPS-SETUP.bat` 一碟搞定），最后跑一次 `winapps-setup --user` 生成各应用的 `.desktop`。该 ISO 用 xorriso 往上游 ISO 追加文件，而非对解包目录重打包（后者因 `-R`/`-J` 双份目录记录膨胀到 1.5GB，合并产物为 837MB）；oem 脚本按 `inputs.winapps.rev` 固定抓取——上游 flake 的 nix-filter 未收录 `oem/`，store 里没有这些文件。硬件探针走 libvirt `<hostdev>` 直通而不经 RDP（RDP 只重定向剪贴板/音频/磁盘，不传 USB）；同一探针无法同时供 Linux 与 Windows 使用。模块因此提供 `winapps-usb` 热插拔封装（`attach/detach <vid:pid>`），默认「谁用谁拿」：设备插上先归 Linux，需要 Windows 时 attach、用完 detach 交还，故不写进域 XML 做持久直通（那会让 Linux 侧长期拿不到）。注意直通期间宿主侧只是**内核驱动被解绑、接口改挂 usbfs**（`/dev/ttyUSB0` 消失、`st-flash`/`openocd`/`tio` 打不开），设备**仍会出现在 `lsusb` 里**，别拿它判断归属。**本地化 Windows 的 RDP 放行 bug 已修（已实测）**：上游 `oem/install.bat` 用 `Enable-NetFirewallRule -DisplayGroup 'Remote Desktop'` 放行端口，而该组名在中文（及一切本地化）Windows 上被翻译成「远程桌面」，英文名匹配不到，`netsh` 兜底同样认本地化组名 → 内置规则始终禁用，3389 被防火墙 DROP（症状：`netstat` 有 `0.0.0.0:3389 LISTENING` 但外部连接超时）。装机盘因此额外提供单一入口 `WINAPPS-SETUP.bat`（仓库里按 LF 存、构盘时转 CRLF）= 上游 `oem\install.bat` + `winapps-fix-rdp.ps1`：后者优先按组资源 ID `@FirewallAPI.dll,-28752`（语言无关）启用内置规则，其次按 `LocalPort -eq 3389` 反查启用，两者都无命中才新建 `-Profile Any` 显式规则；同时幂等重放 RDP 注册表项与 RemoteApp 允许名单，并打印 `TermService` 状态与监听端口自检（仅在必要且无监听时才重启 TermService，避免踢掉活动会话）。脚本 4 个分支已用 mock 桩回归验证。完整操作手册（建 VM → 装机盘 → `winapps-setup` 菜单怎么选 → 日常使用/加应用 → Keil 探针直通 → 排错速查）见 `docs/winapps.md`。
-- **客户机使用宿主代理**：mihomo（Clash Verge）默认只监听 `127.0.0.1`（`allow-lan: false`），而 libvirt 默认 NAT 网络的网关恰是宿主机（`192.168.122.1`）——客户机把系统代理指过去只会拿到 `Connection refused`。`modules/nixos/networking/proxy-vm.nix` 的 `libvirt-proxy-forward.service`（`mySystem.proxy.exposeToVms`，desktop/laptop 已开）在网桥地址上起 `socat` 转发到 `127.0.0.1:<mySystem.proxy.port>`：监听范围仅限 `virbr0`（不把代理暴露到局域网），也不必走 Docker 那套 `net.ipv4.conf.all.route_localnet` + nftables DNAT 到回环的写法（那会把回环地址变成可路由地址，且对所有接口生效）；网桥地址在运行时从 `virbr0` 解析（不写死网段），网桥未就绪时每 10s 重试且在日志里写明原因。客户机侧仍需一次性把系统代理指向 `192.168.122.1:<port>`——WinINET（设置→网络→代理）与 `netsh winhttp set proxy` 两处都要改，见 `docs/winapps.md` §10.4 / §12.5。
-- **输入法托盘图标**：fcitx5 只经 D-Bus 报一个图标名（`fcitx-rime` / `fcitx_rime_latin` / `fcitx_rime_disable`），图片由 Noctalia 按图标主题解析；而 MacTahoe 图标主题**自带** `status/{16,22,24,32,symbolic}/fcitx-rime.svg`（上游那枚浅灰方章 logo，落到 24px 托盘槽位里有效字形只剩 13px），且 Noctalia `src/system/icon_resolver.cpp` 的顺序是「当前主题目录（scalable 优先、尺寸降序）→ 继承主题 hicolor/breeze → …」，故只往 `hicolor` 放同名 SVG 无效。`modules/home-manager/gui/fcitx5.nix` 因此在**与 `config.gtk.iconTheme.name` 同名**的目录下建薄覆盖层（`~/.local/share/icons/<主题>/scalable/apps/*.svg`）：字形对齐 macOS 菜单栏的拼音指示（中文态「拼」、ascii_mode「A」、禁用态「拼+斜杠」），取桌面 UI 字体 HarmonyOS Sans SC Medium 的轮廓（U+62FC/U+0041）用 fontTools 转 path 后静态内联，四边留白 11% 控制视觉大小。**覆盖层绝对不能有 `index.theme`**（踩过的坑：GTK/Qt 会把它当整个主题的根，而覆盖层里只有三个图标，于是文件夹/文件类型/应用图标全回退成 Adwaita）；无 `index.theme` 时 GTK/Qt 忽略本层号、Noctalia 改用内置回退目录表（`/scalable/apps/` …）→ 只对壳层生效（实测 nautilus 渲染逐像素相同），也因此文件必须在 Qt 风格的 `scalable/apps/` 下。`hicolor` 里另放一份作换主题时的兜底。三种状态已实测生效（图标名变化会清 Noctalia 的按项缓存，否则重启一次 noctalia）。详见 `doc/themes.md` 的「输入法托盘图标」一节。
+- **显示器冷启动 EDID 自愈**：4K 屏断电再上电时 NVIDIA 读到合成 stub EDID（只剩 640x480，叠加 scale 1.5 后内容巨大），stub 校验和有效、连接器仍 connected，内核认为状态没变而不补发 hotplug。`hosts/desktop/edid-reprobe.nix` 的 udev 规则**监听显卡节点 `card1`**（DRM 的 hotplug uevent 全发在显卡节点，匹配连接器子设备 `card1-DP-2` 永远收不到）、发现目标模式缺失即 `echo detect > status` 强制真实重读 EDID。`drm.edid_firmware` 与 `video=` 两路已排除（会黑屏）。完整根因、重试次数与升级手段见该文件头部注释。
+- **STM32Cube 固件仓库路径**：CubeMX 默认把约 500MB 固件包下到 `~/STM32Cube/Repository`，路径记在非托管的 `~/.stm32cubemx/plugins/updater/updater.ini`。已收拢到 `~/Apps/STM32Cube/Repository`，由 `modules/home-manager/gui/apps/embedded.nix` 每次切换钉住该行（ini 混着时间戳/窗口尺寸等可变状态，无法整体托管）。数据迁移需手动 `mv` 一次。
+- **WinApps（Windows 应用接入桌面）**：libvirt 后端，接入层 `modules/home-manager/gui/winapps.nix`，装机盘 `pkgs/windows-vm-media`（xorriso 往上游 ISO 追加，不重打包）。**密码不进 nix store**：`RDP_ASKPASS` 读本机 `~/.config/winapps/rdp-pass`（0600）。探针走 libvirt `<hostdev>` 直通而非 RDP，模块提供 `winapps-usb attach/detach <vid:pid>`「谁用谁拿」。**完整手册见 `docs/winapps.md`**。
+  - 两个已知坑：本地化 Windows 上 RDP 放行必须走 `WINAPPS-SETUP.bat`（上游按英文组名放行在中文系统必然失败）；直通期间设备**仍出现在 `lsusb` 里**，别拿它判断归属，看 `/dev/ttyUSB*` 或 `winapps-usb`。
+- **客户机使用宿主代理**：mihomo 只监听 `127.0.0.1`，客户机直接指向 `192.168.122.1:<port>` 会 `Connection refused`。`modules/nixos/networking/proxy-vm.nix` 的 `libvirt-proxy-forward.service`（`mySystem.proxy.exposeToVms`，desktop/laptop 已开）在 `virbr0` 地址上 socat 转发到回环端口——只暴露给客户机网段，且不必用 route_localnet + nftables DNAT 那套（会把回环地址变成可路由地址）。客户机侧仍需一次性把 WinINET 与 `netsh winhttp` 都指向 `192.168.122.1:<port>`，见 `docs/winapps.md` §10.4 / §12.5。
+- **输入法托盘图标**：fcitx5 只经 D-Bus 报图标名，图片由 Noctalia 按主题解析；MacTahoe 主题**自带** `status/24/fcitx-rime.svg` 且排在本层号之前，故只往 `hicolor` 放同名 SVG 无效。`modules/home-manager/gui/fcitx5.nix` 因此在与 `config.gtk.iconTheme.name` **同名**的目录下建薄覆盖层（`~/.local/share/icons/<主题>/scalable/apps/`，**绝对不能有 `index.theme`**——一旦有，GTK/Qt 会把它当整个主题的根，文件夹/文件类型/应用图标全回退 Adwaita）。字形取 HarmonyOS Sans SC 轮廓静态内联，靠 11% 留白控制视觉大小。详见 `docs/themes.md`「输入法托盘图标」。
 - **自动升级固定走 flake**：`system.autoUpgrade.flake` 由 `networking.hostName` 推导出 `/home/mengw/Projects/nixos-config#<host>`。新增主机时 `networking.hostName` 必须与 flake 输出属性同名，否则 autoUpgrade 会找错目标。`allowReboot = false` 意味着内核更新后**不会自动重启**，需手动重启才能用上新内核。各主机的 flake 仓库统一位于 `/home/mengw/Projects/nixos-config`，若某主机仓库路径不同需覆盖该选项。
-- **滚动升级的可追溯性**：`--refresh` 每日重写工作区的 `flake.lock`，而 Nix 对脏 git 树令 `self.rev = null`，`system.configurationRevision`（`flake.nix` 中显式声明）会退化为 `"dirty"`，代际就无法回溯 commit。因此 `nixos-upgrade.service` 的 `postStop` 在升级成功后以本人身份提交 `flake.lock`，保持工作区干净；另外 `.github/workflows/flake-update-check.yml` 每天 03:40 先把 nixpkgs 刷到 master HEAD 求值所有主机，赶在 04:40 的 autoUpgrade 之前拦截上游回归（`flake-check.yml` 只验已锁定的 `flake.lock`，看不到滚动通道的新提交）。
+- **滚动升级的可追溯性**：`--refresh` 每日重写工作区的 `flake.lock`，而 Nix 对脏 git 树令 `self.rev = null`，`system.configurationRevision`（`flake.nix` 中显式声明）会退化为 `"dirty"`，代际就无法回溯 commit。因此 `nixos-upgrade.service` 的 `postStop` 在升级成功后以本人身份提交 `flake.lock`，保持工作区干净；另外 `.github/workflows/flake-check.yml` 的 `schedule` 触发每天 03:40 先把 nixpkgs 刷到 master HEAD 再求值所有主机，赶在 04:40 的 autoUpgrade 之前拦截上游回归（push/PR 触发只验已锁定的 `flake.lock`，看不到滚动通道的新提交）。
+
+## 文档索引
+
+`docs/` 放各子系统的深度说明（本文件只留结论、坑与轮廓）；动某个子系统前先读对应那篇，能省一轮反推。
+
+| 改动主题 | 文档 | 对应代码 |
+|------|------|------|
+| Fish、环境变量、PATH | `docs/fish.md` | `modules/home-manager/cli/shell/fish.nix` |
+| Foot 终端 | `docs/foot.md` | `modules/home-manager/gui/apps/foot.nix` |
+| 输入法（Rime、候选窗、托盘图标） | `docs/input.md` + `docs/themes.md` | `modules/home-manager/gui/fcitx5.nix`、`modules/nixos/desktop/default.nix` |
+| 桌面主题 / GTK / Qt / 图标 / 壁纸 | `docs/themes.md` | `modules/home-manager/gui/themes/default.nix`、`modules/home-manager/gui/wm/noctalia.nix` |
+| Niri 快捷键、窗口与布局规则 | `docs/niri.md` | `modules/home-manager/gui/wm/config/` |
+| GNOME（laptop 的默认会话） | `docs/gnome.md` | `modules/nixos/desktop/gnome/default.nix` |
+| 装了哪些应用 | `docs/softwares.md` | `modules/home-manager/gui/apps/`（含嵌入式工具链） |
+| 开发工具链、Distrobox | `docs/environment.md` | `modules/home-manager/cli/dev` |
+| tmux（含会话持久化） | `docs/tmux.md` | `modules/home-manager/cli/tools/tmux.nix` + `tests/tmux-persistence.sh` |
+| WinApps / Windows 虚拟机 / 探针直通 | `docs/winapps.md` | `modules/home-manager/gui/winapps.nix`、`pkgs/windows-vm-media`、`modules/nixos/virtualization` |
+| 部署、升级、垃圾回收 | `docs/manager.md` | 命令速查，与本文件「命令」节互为补充 |
