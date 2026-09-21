@@ -49,7 +49,6 @@
 |------|--------|
 | `cc` | Claude Code（跳过权限确认） |
 | `arch` / `ubuntu` | distrobox 进入对应发行版容器 |
-| `key` | 切换 dms 按键绑定显示 |
 | `zquery` | zoxide 查询历史目录 |
 | `Ctrl` + `o` | 命令选择器（fzf 模糊选择常用命令） |
 | `cheat <provider>` | 快捷键速查表（fish / tmux / vim） |

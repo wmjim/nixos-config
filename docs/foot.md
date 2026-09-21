@@ -20,7 +20,7 @@
 | 光标 | 块状 + 闪烁 |
 | 选中即复制 | 开启（`selection-target=both`，同时写入 primary 与 clipboard） |
 | 输入时隐藏鼠标 | 开启 |
-| 终端类型 | xterm-256color |
+| 终端类型 | foot（远端主机没装 foot terminfo 才会报 unknown terminal type，故不随上游默认） |
 | 不透明度 | 1.0（半透明由 niri 窗口规则控制，见 `wm/config/visual/frosted-glass.kdl`） |
 
 ## 快捷键

@@ -3,7 +3,7 @@
 GNOME 相关配置：`modules/nixos/desktop/gnome/default.nix`（系统级）+ `modules/home-manager/gui/themes/default.nix`（扩展与主题）。
 
 - **desktop**：GNOME 与 Niri 共存，默认登录 Niri 会话
-- **laptop**：GNOME 为默认登录会话（`defaultSession = "gnome"`）
+- **laptop**：与 desktop 相同，默认登录 **Niri**——nixpkgs 的 niri 模块设了 `displayManager.defaultSession = lib.mkDefault "niri"`，而本仓库 `gnome/default.nix` 里那行 `defaultSession = "gnome"` 至今是注释状态。要进 GNOME 需在 GDM 登录界面手动选
 
 GNOME 已禁用 core-apps / games，仅保留核心组件，应用由 Home Manager 单独管理。
 
@@ -15,8 +15,7 @@ GNOME 已禁用 core-apps / games，仅保留核心组件，应用由 Home Manag
 - **Just Perfection**：高度自定义 Shell 外观与行为
 - **ArcMenu**：顶栏应用菜单（类开始菜单）
 - **Dash to Panel**：Dash 与顶栏整合成类 Windows 任务栏
-- **Rounded Window Corners**：为窗口添加圆角
-- **User Themes**：加载自定义 Shell 主题（当前为 MacTahoe-Light）
+- **User Themes**：加载自定义 Shell 主题（当前为 MacTahoe-Dark）
 
 ### 窗口与工作区
 
@@ -35,7 +34,7 @@ GNOME 已禁用 core-apps / games，仅保留核心组件，应用由 Home Manag
 
 | 项目 | 主题 |
 |------|------|
-| GNOME Shell / GTK | MacTahoe-Light |
+| GNOME Shell / GTK | MacTahoe-Dark |
 | 图标 | MacTahoe-dark |
 | 光标 | Bibata-Modern-Classic |
 

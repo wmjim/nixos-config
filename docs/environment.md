@@ -2,7 +2,7 @@
 
 ## 全局环境
 
-**全局环境**：由 home-manager 管理的用户环境（`modules/home-manager/cli/dev`）。
+**全局环境**：由 home-manager 管理的用户环境（`modules/home-manager/cli/`：`dev/` 放语言工具链、`tools/` 放命令行与 AI 工具、`editors/` 放编辑器）。
 
 - Shell：Fish + 常用 CLI 工具（eza / zoxide / bat / fzf / ripgrep / fd / jq / yq）
 - 编辑器：Neovim（`nvim`）+ VSCode（GUI）+ CLion
@@ -15,7 +15,7 @@
 | Go | `go` | gopls |
 | Node.js | `nodejs_latest`、`yarn`、`pnpm` | typescript-language-server、prettier、eslint |
 | Rust | `rustc`、`cargo` | rust-analyzer、rustfmt、clippy、cargo-watch/audit/outdated/nextest、taplo、cargo-cross |
-| Python | `python315`、`uv` | python-lsp-server、ruff、black、isort、mypy、pytest、pylint、bandit、mkdocs |
+| Python | `python3`（**跟随 nixpkgs 默认，不钉版本**，升级 flake 时整体平移）、`uv` | python-lsp-server、ruff、black、isort、mypy、pytest、pylint、bandit、mkdocs |
 | C/C++ | `clang`、`cmake`、`ninja`、`vcpkg`、`xmake` | clangd（clang-tools）、cppcheck、lldb、valgrind、perf-tools、strace |
 | 其他 | bash / lua / nix / markdown / yaml / kdl | bash-language-server、lua-language-server、nil、marksman、ltex-ls-plus、yaml-language-server、kdlfmt |
 

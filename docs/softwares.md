@@ -32,11 +32,12 @@
 
 | 类别 | 软件 |
 |------|------|
-| 编辑器 | Neovim、VSCode（含 Claude Code / Nix / Python / Rust / Docker 等扩展）、Zed |
-| IDE | JetBrains：PyCharm / CLion / DataGrip |
-| AI 编程 | Claude Code、pi-coding-agent、CodeX |
+| 编辑器 | Neovim、VSCode（**只装本体**，扩展由 VSCode 自带的 Settings Sync 管理，不再由 Nix 声明） |
+| IDE | JetBrains CLion（打包时补 skiko 渲染库）、Qt Creator |
+| AI 编程 | Claude Code、pi-coding-agent、CodeX、cc-switch（切换 API 供应商） |
 | Git | git、lazygit、github-desktop |
 | 容器 | Distrobox + Podman、Docker 扩展、lazydocker |
+| 数据库 / 串口 | HeidiSQL、CuteCom |
 
 ## 生产力与笔记
 
@@ -87,5 +88,6 @@ eza、zoxide、bat、fzf、ripgrep、fd、jq、yq、tldr、duf、btop、glow、h
 | Maple Mono NF（CN） | 等宽 / 代码 |
 | HarmonyOS Sans SC | 界面无衬线 |
 | LXGW WenKai（霞鹜文楷） | 中文衬线阅读 |
-| Noto Sans/Serif CJK SC | 中文回退兜底 |
+| Noto Sans/Serif CJK SC | 中文回退兜底（由 `fonts.enableDefaultPackages` 带入） |
+| Source Serif Pro | 英文衬线 |
 | Noto Color Emoji | Emoji |

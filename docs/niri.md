@@ -10,8 +10,7 @@ Niri 配置文件位于 `modules/home-manager/gui/wm/config/`（symlink 到 `~/.
 |--------|------|
 | `Mod` + `Space` | Noctalia 应用启动器 |
 | `Mod` + `Return` | 终端（Foot） |
-| `Mod` + `B` | 浏览器（Zen） |
-| `Mod` + `C` | VSCode |
+| `Mod` + `Shift` + `Return` | 浏览器（Brave） |
 | `Mod` + `E` | 文件管理器（Nautilus） |
 | `Mod` + `Shift` + `M` | 系统监控（btop，浮动窗口） |
 | `Alt` + `T` | Pot 划词翻译 |
@@ -26,7 +25,6 @@ Niri 配置文件位于 `modules/home-manager/gui/wm/config/`（symlink 到 `~/.
 |--------|------|
 | `Mod` + `U` / `I` | 下一个 / 上一个工作区 |
 | `Mod` + `Ctrl` + `U` / `I` | 当前窗口移至下 / 上一个工作区 |
-| `Ctrl` + `Shift` + `R` | 重命名工作区 |
 | `Mod` + `1`~`9` | 切换到工作区 1-9 |
 | `Mod` + `Ctrl` + `1`~`9` | 当前窗口移至工作区 1-9 |
 | `Mod` + `Shift` + `U` / `I`（或 `Page_Up/Down`） | 工作区整体上 / 下移 |
@@ -87,4 +85,4 @@ Niri 配置文件位于 `modules/home-manager/gui/wm/config/`（symlink 到 `~/.
 - **最大化打开**：VSCode、Logisim、Brave、Zotero
 - **浮动打开**：Fcitx5 配置、PicGo、btop、qView、LocalSend、微信、QQ、Telegram、Discord、欧陆词典
 - **侧边浮动**：Pot（右侧 20% 宽长条）
-- 全局默认平铺，圆角 12px（`geometry-corner-radius`，取值理由见 `docs/themes.md`）
+- 全局默认平铺，圆角 24px（`geometry-corner-radius`，取值理由见 `docs/themes.md`）

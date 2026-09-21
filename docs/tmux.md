@@ -1,6 +1,6 @@
 # Tmux 终端复用器
 
-配置位置：`modules/home-manager/cli/tools/tmux.nix` + `tmux/tmux.conf`（取自 Omarchy，无插件）。
+配置位置：`modules/home-manager/cli/tools/tmux.nix` + `tmux/tmux.conf`（按键布局取自 Omarchy；快照插件 tmux-resurrect / tmux-continuum 由 `tmux.nix` 的 `programs.tmux.plugins` 加载，不在 tmux.conf 里）。
 
 前缀键：`Ctrl` + `b`。无前缀的 `Alt` / `Ctrl`+`Alt` 组合可直接操作窗口与面板，无需先按前缀。
 
@@ -79,16 +79,13 @@ mengw.cli.tools.tmux.persistence = {
 
 ```
 覆盖              ①登录(tmux-persist.service)  ②定时(tmux-persist-save.timer)
-                 ③注销/关机(ExecStop)        ④手动 Prefix C-s
+                 ③注销/关机(ExecStop)
 存  ──►  <快照目录>/last（纯文本）+ 可选 pane_contents.tar.gz
 恢复 ◄──  ①登录时【显式】调用 resurrect 恢复   ②手工启动 server 时 continuum 尽力恢复
-          ③手动 Prefix C-r
 ```
 
 | 按键 / 命令 | 作用 |
 | --- | --- |
-| `Prefix` + `C-s` | 手动保存快照 |
-| `Prefix` + `C-r` | 手动恢复快照 |
 | `tmux-persist-save` | 命令行手动保存（没有 server 时安全跳过） |
 | `tmux-persist-start` | 手动跑一次"登录恢复"（排错用） |
 | `systemctl --user status tmux-persist.service` | 看登录恢复/注销保存的日志 |

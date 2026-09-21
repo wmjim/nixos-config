@@ -46,10 +46,16 @@ DPI 只取自 X11 的 `Xft.dpi` 资源（RESOURCE_MANAGER）。xwayland-satellit
 `Net/IconThemeName`），且未给 Xwayland 传 `-dpi`，于是微信/QQ 等 XWayland 应用里
 候选词停在 1.0x，比 VSCode 等 Wayland 应用小 `scale` 倍。
 
-当前由 `modules/nixos/desktop/niri/default.nix` 的 `xwayland-xft-dpi` wrapper 补写
-`Xft.dpi = 96 × scale`（desktop → 144，laptop → 120）到资源库，并在
-`startup.kdl` 中随 niri 自启；fcitx5 监听 RESOURCE_MANAGER 变化并立即重读，
-无需重启输入法。验证：
+当前由 `modules/nixos/desktop/niri/default.nix` 的 `xwayland-xft-dpi` wrapper 把
+`Xft.dpi = 96 × scale` 写进 X11 资源库，并在 `startup.kdl` 中随 niri 自启；fcitx5
+监听 RESOURCE_MANAGER 变化后立即重读，无需重启输入法。各主机的实际值：
+
+| 主机 | `mySystem.desktop.scale` | 写入的 `Xft.dpi` |
+| --- | --- | --- |
+| desktop | 1.5 | 144 |
+| laptop | 未设（默认 1） | 96 —— 与 Xwayland 默认值相同，即 wrapper 在此为空转 |
+
+验证：
 
 ```bash
 xrdb -query                     # 应显示 Xft.dpi:<TAB>144
