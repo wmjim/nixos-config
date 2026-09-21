@@ -42,6 +42,7 @@ nix flake check --no-write-lock-file
 - 跑哪些主机由**改动的影响范围**决定：改 `hosts/<host>/` 或单个功能模块 → 只跑该 host；改 `modules/nixos/core/`、`flake.nix`、`lib/`、`overlays/` → 「各主机配置」表里 5 个目标全跑（含 `darwinConfigurations.macbook`）。
 - 改了 tmux 模块 → 提示用户在 `switch` 后跑 `./tests/tmux-persistence.sh`（它读的是已生成的配置，自建沙箱、不碰运行中的 tmux server）。
 - GUI 渲染、硬件行为、Windows 客户机这类本机无法验证的部分，必须写明「未验证」，不要声称已验证。
+- 核对桌面（niri）配置要连**生成的文件**一起看：有效配置 = `modules/home-manager/gui/wm/config/`（symlink 到 `~/.config/niri`）+ `wm/default.nix` 生成的 `~/.config/niri-colors/{layout,overview}.kdl` 与 `~/.config/niri-outputs/outputs.kdl`。`Mod+Tab` 系列绑定就生成在 `overviewKdl` 里，只 grep `config/` 会得出错误结论。
 
 ## 架构
 
@@ -134,7 +135,7 @@ modules/
 | Foot 终端 | `docs/foot.md` | `modules/home-manager/gui/apps/foot.nix` |
 | 输入法（Rime、候选窗、托盘图标） | `docs/input.md` + `docs/themes.md` | `modules/home-manager/gui/fcitx5.nix`、`modules/nixos/desktop/default.nix` |
 | 桌面主题 / GTK / Qt / 图标 / 壁纸 | `docs/themes.md` | `modules/home-manager/gui/themes/default.nix`、`modules/home-manager/gui/wm/noctalia.nix` |
-| Niri 快捷键、窗口与布局规则 | `docs/niri.md` | `modules/home-manager/gui/wm/config/` |
+| Niri 快捷键、窗口与布局规则 | `docs/niri.md` | `modules/home-manager/gui/wm/config/` + 生成 KDL 的 `gui/wm/default.nix` |
 | GNOME（laptop 的默认会话） | `docs/gnome.md` | `modules/nixos/desktop/gnome/default.nix` |
 | 装了哪些应用 | `docs/softwares.md` | `modules/home-manager/gui/apps/`（含嵌入式工具链） |
 | 开发工具链、Distrobox | `docs/environment.md` | `modules/home-manager/cli/dev` |

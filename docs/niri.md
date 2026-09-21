@@ -1,6 +1,9 @@
 # Niri 快捷键
 
-Niri 配置文件位于 `modules/home-manager/gui/wm/config/`（symlink 到 `~/.config/niri`），`Mod` = `Super`（Windows 键）。
+Niri 配置分两半，`Mod` = `Super`（Windows 键）：
+
+- `modules/home-manager/gui/wm/config/`（symlink 到 `~/.config/niri`）：多数快捷键、窗口规则、输入与视觉参数
+- `modules/home-manager/gui/wm/default.nix` 中以 KDL 字符串生成、部署到 `~/.config/niri-colors/{layout,overview}.kdl` 与 `~/.config/niri-outputs/outputs.kdl`：壳层配色、概览背景、显示器配置，以及 **`Mod` + `Tab` 系列窗口切换绑定**（在 `overview.kdl` 的 `recent-windows.binds` 里，**不在 `config/binds/`**）
 
 按 `Mod` + `/` 可随时呼出快捷键查看器（Noctalia 的 keymap 面板）。
 
@@ -58,6 +61,8 @@ Niri 配置文件位于 `modules/home-manager/gui/wm/config/`（symlink 到 `~/.
 | `Mod` + `Shift` + `Tab` | 上一个窗口 |
 | `Mod` + `` ` `` | 下一个窗口（按应用过滤） |
 | `Mod` + `Shift` + `` ` `` | 上一个窗口（按应用过滤） |
+
+> 这四条属于 niri 的 `recent-windows` 切换器，定义在 `~/.config/niri-colors/overview.kdl`（由 `wm/default.nix` 生成），所以在 `config/binds/` 下 grep 是找不到的。
 
 ## 截图
 
