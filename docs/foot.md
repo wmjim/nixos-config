@@ -37,6 +37,6 @@
 | `Ctrl` + `0` | 重置字号 |
 | `F11` | 全屏切换（本配置补充，foot 默认无此绑定） |
 
-在 Niri 下，`Super` + `C` / `X` / `V` 由 `niri-clip` 翻译为上述 `Ctrl` + `Shift` 键位后送达 foot（见 `modules/home-manager/gui/wm/default.nix`），与 GUI 应用保持一致；上表的 `Ctrl` + `Shift` 键位是翻译后的接收端键位，已显式写入 `foot.ini`。
+在 Niri 下，`Super` + `C` / `X` / `V` 由 keyd 重映射为 `Ctrl` + `C` / `X` / `V`，唯独焦点在终端时换成上述 `Ctrl` + `Shift` 键位（见 `modules/home-manager/gui/wm/default.nix` 的 `keyd-app-niri`），与 GUI 应用保持一致；上表的 `Ctrl` + `Shift` 键位是终端接收端键位，已显式写入 `foot.ini`。
 
 鼠标选中即复制；`Shift` + 拖拽可绕过应用自身的鼠标捕获进行选择。foot 没有 Alacritty 的 Vi 模式，历史检索用 `Ctrl` + `Shift` + `R`。

@@ -4,8 +4,6 @@ input {
     keyboard {
         xkb {
             layout "us"
-            // 将 Caps Lock 键重新映射为 Escape 键，按下时发送 Escape，按住时发送 Caps Lock
-            options "caps:escape"
         }
         // 按键重复延迟
         repeat-delay 600

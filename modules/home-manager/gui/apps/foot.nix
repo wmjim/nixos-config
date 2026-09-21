@@ -44,10 +44,11 @@ in
         mouse.hide-when-typing = "yes";
 
         key-bindings = {
-          # 与 niri 的 Super+C/X/V 统一：niri-clip 会把终端窗口的 Super+C/X/V
-          # 翻译成 Ctrl+Shift+C/X/V（见 wm/default.nix），这里显式钉住接收端键位，
-          # 避免 foot 上游默认值变动后失联。foot 自身不设 Mod4 系绑定——Super 组合
-          # 已被合成器截获，且 GNOME 下 Super+V 被 Shell 占用，无法保证一致。
+          # 与 Super+C/X/V 的三键统一：keyd 把它们重映射成 Ctrl+C/X/V，唯独焦点
+          # 在终端时由 keyd-app-niri 换成 Ctrl+Shift+C/X/V（见 wm/default.nix）。
+          # 这里显式钉住接收端键位，避免 foot 上游默认值变动后失联。foot 自身不设
+          # Mod4 系绑定——Super 组合已被合成器截获，且 GNOME 下 Super+V 被 Shell
+          # 占用，无法保证一致。
           clipboard-copy = "Control+Shift+c";
           clipboard-paste = "Control+Shift+v";
 

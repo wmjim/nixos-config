@@ -9,6 +9,17 @@ let
   xftDpi = builtins.floor (desktopCfg.scale * 96);
 in
 {
+  options.mySystem.desktop.niri.keydClipboard.enable = lib.mkOption {
+    type = lib.types.bool;
+    default = true;
+    description = ''
+      用 keyd 在 evdev 层实现全局 Super+C/X/V（复制/剪切/粘贴）。
+      要求本机把 niri 作为实际会话：终端是唯一例外，靠用户级 keyd-app-niri
+      按焦点覆写回 Ctrl+Shift+C/X/V；没有 niri 就没有 watcher，终端里 Super+C
+      会退化成 Ctrl+C（SIGINT），故把默认会话换成别家（如 GNOME）的主机应关掉。
+    '';
+  };
+
   config = lib.mkIf (cfg.enable && desktopCfg.enable) {
     # 启用 niri
     programs.niri.enable = true;
@@ -24,6 +35,62 @@ in
 
     # 触控板
     services.libinput.enable = true;
+
+    # ── Super+C/X/V 全局复制 / 剪切 / 粘贴（开关见上方 keydClipboard） ────
+    # 会话不是 niri 的主机可关掉这个开关：没有 niri 就没有 watcher，多出来的
+    # 只是"终端里 Super+C 变成 SIGINT"。两台主机的默认会话都是 niri。
+    #
+    # niri 没有内置 copy/paste。此前由 niri-clip 用 wtype 向焦点客户端注入
+    # 虚拟键盘事件，那只在"客户端愿意接收注入"时有效；改为 keyd 在 evdev 层
+    # （合成器之下）重映射，所有客户端一视同仁：XWayland 应用（微信/QQ/
+    # Snipaste）、Proton 游戏、Windows 虚拟机客户端都吃得到。
+    #
+    # 关键是往 [meta] 这一节里追加：修饰键默认就绑在同名层上
+    # （meta = layer(meta)，keyd 内部把它定义成 meta:M），同名层再写一次只是
+    # 追加 binding，不改变它"仍然送出 Super"的性质；而层自带的修饰键不作用于
+    # 层内
+    # **有显式映射**的键，所以 Super+C 发出的是干净的 Ctrl+C（不带 Super），
+    # 其余 Mod+* 组合照旧透传给 niri 自己的快捷键。
+    #
+    # 终端是唯一例外（要 Ctrl+Shift+C/X/V，且 Ctrl+C = SIGINT）：由用户级
+    # keyd-app-niri 按焦点窗口覆写这三个键，见
+    # modules/home-manager/gui/wm/default.nix。
+    services.keyd = lib.mkIf cfg.keydClipboard.enable {
+      enable = true;
+      keyboards.default = {
+        ids = [ "*" ];
+        settings = {
+          # Caps → Esc 在合成器之下再钉一次：core/default.nix 的
+          # services.xserver.xkb.options 只覆盖 X11/合成器会话（GNOME Wayland
+          # 未必读 /etc/X11/xorg.conf.d），keyd 这一层连登录界面、TTY、游戏、
+          # Windows 虚拟机客户端一起覆盖。两边都是纯重映射（Shift+Caps 同样是
+          # Esc），重复不会叠加副作用；下面那份保留给 keyd 未运行时的兜底。
+          main.capslock = "esc";
+          meta = {
+            c = "C-c";
+            x = "C-x";
+            v = "C-v";
+          };
+        };
+      };
+    };
+
+    # keyd 把 /var/run/keyd.socket 的属组设为 keyd（缺组时只 warn 并保持
+    # root-only），watcher 以普通用户身份调 `keyd bind` 需要这个组。
+    users.groups.keyd = lib.mkIf cfg.keydClipboard.enable { };
+    mySystem.users.mengw.extraGroups = lib.mkIf cfg.keydClipboard.enable [ "keyd" ];
+
+    # keyd 建 socket 前会 setgid("keyd")（src/ipc.c 的 chgid()），失败就 exit(-1)；
+    # 而 nixpkgs 模块的 CapabilityBoundingSet 只留 CAP_SYS_NICE/CAP_IPC_LOCK，
+    # 缺 CAP_SETGID → setgid 吃 EPERM → 服务反复重启（journal: "setgid: Operation
+    # not permitted"）。补上这个能力即可（seccomp 侧无碍：setgid 不在 @privileged
+    # 里，实测在同样的 SystemCallFilter 下能调用）。
+    # 赋值要写成"整个 systemd.services 走 mkIf"：直接点 systemd.services.keyd.
+    # serviceConfig 会在没开 keydClipboard 的主机上凭空造出一个只有空壳的
+    # keyd.service（无 ExecStart 的坏 unit），而整块丢弃时单元压根不存在。
+    systemd.services = lib.mkIf cfg.keydClipboard.enable {
+      keyd.serviceConfig.CapabilityBoundingSet = [ "CAP_SETGID" ];
+    };
 
     # Polkit + 密钥环
     security.polkit.enable = true;

@@ -1,8 +1,0 @@
-// 剪贴板：Super+C/X/V 统一复制/剪切/粘贴
-// niri 无内置 copy/paste 动作，由 niri-clip 用 wtype 虚拟键盘翻译成
-// 应用能识别的按键：图形窗口收 Ctrl+C/V/X，终端窗口自动改发 Ctrl+Shift+C/V。
-binds {
-    Mod+C hotkey-overlay-title="复制" { spawn "niri-clip" "copy"; }
-    Mod+X hotkey-overlay-title="剪切" { spawn "niri-clip" "cut"; }
-    Mod+V hotkey-overlay-title="粘贴" { spawn "niri-clip" "paste"; }
-}

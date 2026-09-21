@@ -103,7 +103,7 @@ modules/
 | Host | System | Key features |
 |------|--------|-------------|
 | desktop | x86_64-linux | Niri WM, NVIDIA RTX 3060Ti, 4K@150Hz |
-| laptop | x86_64-linux | GNOME, NVIDIA MX150 (legacy driver, PRIME offload), btrfs, TLP |
+| laptop | x86_64-linux | Niri WM（默认会话；GNOME 也装）, NVIDIA MX150 (legacy driver, PRIME offload), btrfs, TLP |
 | wsl | x86_64-linux | CLI-only, WSL container |
 | server | x86_64-linux | Stub, only nixosCore |
 | macbook | aarch64-darwin | nix-darwin, Homebrew casks |
@@ -113,6 +113,7 @@ modules/
 每条只写「是什么 + 根因 + 移除条件 + 详见何处」，不超过 3 行；细节放对应源码注释或 `docs/` 里。
 
 - **国内清华镜像源**：二进制替换源与 nixpkgs 源码均使用 `mirrors.tuna.tsinghua.edu.cn`。若身处境外，下载速度会偏慢，可自行更换镜像。
+- **Super+C/X/V 全局剪贴板**：niri 无内置 copy/paste，旧方案用 `wtype` 向焦点客户端注入虚拟键盘事件，对不爱收注入的客户端（X11/XWayland 等）无效；现改由 keyd 在 evdev 层把 `[meta]` 层（按住 Super 那层）的 C/X/V 重映射成 `Ctrl+C/X/V`——keyd 里层自带的修饰键不作用于层内有显式映射的键，故送出的是干净 `Ctrl+C`，其余 `Mod+*` 照旧透传给 niri。终端要 `Ctrl+Shift+C/X/V`（Ctrl+C 是 SIGINT），由用户级 `keyd-app-niri` 按焦点覆写；`services.keyd` 与 `users.groups.keyd` 只在把 niri 当实际会话的主机开（两台主机的 `displayManager.defaultSession` 都是 nixpkgs niri 模块给的 `niri`；换成别家会话的主机需用 `desktop.niri.keydClipboard.enable = false` 关掉）。详见 `docs/niri.md`。
 - **Fish 4.8.0 覆盖补丁**：`modules/home-manager/default.nix` 对 Fish 打补丁，补全缺失的 `create_manpage_completions.py` 文件（对应 nixpkgs 工单 #535122）。待上游合并修复后即可移除该覆盖层。
 - **XWayland 下的 Xft.dpi 补写**：fcitx5 在 XWayland 客户端上只读 X11 资源库的 `Xft.dpi` 决定候选窗缩放，而 xwayland-satellite 0.8.2 只把缩放写进 XSETTINGS（且未给 Xwayland 传 `-dpi`），导致微信等 X11 应用候选词停在 1.0x、比 VSCode 等 Wayland 应用小 `scale` 倍。`modules/nixos/desktop/niri/default.nix` 的 `xwayland-xft-dpi` wrapper 补写 `96 × scale` 并在 `startup.kdl` 自启。**TODO**：待 nixpkgs 的 xwayland-satellite 包含 PR #477（sync Xft.dpi through RESOURCE_MANAGER）后删除该 workaround。
 - **NVIDIA 显存泄漏修复**：`modules/nixos/hardware/nvidia-base.nix` 配置 Niri 应用专属参数，限制空闲缓冲区池大小，规避显存泄漏问题。
@@ -136,7 +137,7 @@ modules/
 | 输入法（Rime、候选窗、托盘图标） | `docs/input.md` + `docs/themes.md` | `modules/home-manager/gui/fcitx5.nix`、`modules/nixos/desktop/default.nix` |
 | 桌面主题 / GTK / Qt / 图标 / 壁纸 | `docs/themes.md` | `modules/home-manager/gui/themes/default.nix`、`modules/home-manager/gui/wm/noctalia.nix` |
 | Niri 快捷键、窗口与布局规则 | `docs/niri.md` | `modules/home-manager/gui/wm/config/` + 生成 KDL 的 `gui/wm/default.nix` |
-| GNOME（laptop 的默认会话） | `docs/gnome.md` | `modules/nixos/desktop/gnome/default.nix` |
+| GNOME（laptop 也装了，但默认会话是 Niri） | `docs/gnome.md` | `modules/nixos/desktop/gnome/default.nix` |
 | 装了哪些应用 | `docs/softwares.md` | `modules/home-manager/gui/apps/`（含嵌入式工具链） |
 | 开发工具链、Distrobox | `docs/environment.md` | `modules/home-manager/cli/dev` |
 | tmux（含会话持久化） | `docs/tmux.md` | `modules/home-manager/cli/tools/tmux.nix` + `tests/tmux-persistence.sh` |

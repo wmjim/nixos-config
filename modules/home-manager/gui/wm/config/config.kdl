@@ -14,11 +14,12 @@ include "~/.config/niri-colors/layout.kdl"
 include "visual/cursor.kdl"
 include "~/.config/niri-colors/overview.kdl"
 
-// 快捷键：系统、导航、应用、剪贴板
+// 快捷键：系统、导航、应用
+// （剪贴板三键 Super+C/X/V 不在这里：由 keyd 在 evdev 层处理，见
+//   modules/nixos/desktop/niri/default.nix）
 include "binds/system.kdl"
 include "binds/navigation.kdl"
 include "binds/apps.kdl"
-include "binds/clipboard.kdl"
 
 // 窗口规则
 include "windowrules.kdl"

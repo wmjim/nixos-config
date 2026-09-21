@@ -64,6 +64,30 @@ Niri 配置分两半，`Mod` = `Super`（Windows 键）：
 
 > 这四条属于 niri 的 `recent-windows` 切换器，定义在 `~/.config/niri-colors/overview.kdl`（由 `wm/default.nix` 生成），所以在 `config/binds/` 下 grep 是找不到的。
 
+## 剪贴板
+
+| 快捷键 | 功能 |
+|--------|------|
+| `Mod` + `C` / `X` / `V` | 复制 / 剪切 / 粘贴 |
+
+这三个键**不在 niri 里配**（`config/binds/` 下已无对应文件），而是由 keyd 在
+evdev 层把 `[meta]` 层（按住 Super 的那一层）里的 C/X/V 重映射成 `Ctrl+C/X/V`。
+keyd 位于合成器之下，所以 XWayland 应用（微信/QQ/Snipaste）、游戏、Windows 虚拟机
+客户端一律生效，不依赖客户端是否接受注入的虚拟键盘事件。
+
+终端是唯一例外（要 `Ctrl+Shift+C/X/V`，而 Ctrl+C 是 SIGINT）：用户级服务
+`keyd-app-niri` 监听 niri 的焦点变化，用 `keyd bind` 覆写这三个键。终端名单与
+键位定义分别见 `modules/home-manager/gui/wm/default.nix`（`TERMINALS`）和
+`modules/nixos/desktop/niri/default.nix`（`services.keyd`）。
+
+**启用后必须重新登录一次**：`keyd` 组是登录时才赋予会话的，旧会话里 watcher 连不上
+`/var/run/keyd.socket`，此时终端里 Super+C 会退化成 `Ctrl+C`（SIGINT），先别在终端按。
+同理，`niri` 的配置是 git 仓库的实时 symlink：删掉 `binds/clipboard.kdl` 后 niri 会立刻
+热重载丢掉旧绑定，而 keyd 要等 `switch` 才装上——两者之间的窗口期里 Super+C/X/V 无响应。
+
+排查：`systemctl status keyd`、`systemctl --user status keyd-app-niri`、
+`keyd listen`（看层状态）；`keyd bind reset` 可手动清掉动态覆写。
+
 ## 截图
 
 | 快捷键 | 功能 |

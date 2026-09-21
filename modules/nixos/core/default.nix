@@ -133,7 +133,6 @@ in
     # 键盘布局
     services.xserver.xkb = {
       layout = "us";
-      options = "caps:escape";
     };
 
     # 防火墙
