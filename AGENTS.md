@@ -1,145 +1,253 @@
 # AGENTS.md
 
-该文件用于为 Agent 提供指引，方便其处理本代码仓库内的代码。
+## 项目概述
 
-## 命令
+此仓库包含我的 NixOS 系统配置。
 
-```bash
-# Agent 可以自行执行（只读，或只写仓库内文件）
-nix fmt                                  # 格式化所有 Nix 文件（nixpkgs-fmt）
-nix develop                              # 开发环境 (git + nixpkgs-fmt)
-# 求值与 dry-run 构建见下节「验证」
+配置是声明式的，并使用 Nix Flakes 进行管理。
+
+主要目标是保持系统配置：
+
+- 声明式
+- 可复现
+- 模块化
+- 易于理解
+- 易于回滚
+
+不要把这个仓库当作一堆 shell 脚本。更倾向于通过 NixOS/Home Manager 配置来表达系统状态。
+
+## 深入文档在哪
+
+本文件只放总规则（命令边界、验证、风格、提交）。仓库结构、选项映射、主机清单与平台适配坑位都不在这里：
+
+- `docs/architecture.md` — 仓库结构、`mySystem` 选项 → 文件映射、module 分层、`mkHomeManager`、各主机清单
+- `docs/quirks.md` — 平台适配的坑与 workaround（改对应模块前必读）
+- `docs/README.md` — 全部文档索引；改某个子系统前先读对应那篇
+
+## 通用规则
+
+### 优先使用现有配置
+
+在添加新选项或模块之前：
+- 在仓库中搜索现有的实现；
+- 尽可能复用现有模块；
+- 避免重复配置；
+- 遵循现有的组织结构和命名约定。
+
+除非能带来明显好处，否则不要引入新的抽象。
+
+### 保持配置声明式
+
+优先使用 NixOS/Home Manager 选项，而不是命令式命令。
+
+例如，更倾向于：
+
+```nix
+services.openssh.enable = true;
 ```
 
-```bash
-# 只由用户本人执行，Agent 不要运行
-sudo nixos-rebuild switch --flake ~/Projects/nixos-config#desktop
-sudo nixos-rebuild switch --flake ~/Projects/nixos-config#laptop
-sudo nixos-rebuild switch --flake ~/Projects/nixos-config#wsl
-# 详细构建日志 (用于排错调试)
-sudo nixos-rebuild switch --flake ~/Projects/nixos-config#desktop --show-trace --print-build-logs --verbose
-nix flake update [<input>]               # 改写 flake.lock
-sudo nix-collect-garbage --delete-old    # 删旧代际
+超过：
+
+```nix
+systemd.services.foo.script = '' 
+  systemctl ... 
+'';
 ```
 
-Agent 不执行 `nixos-rebuild switch` / `darwin-rebuild switch` / `nix-collect-garbage`，也不执行任何 `sudo`：前者切换系统代际（会踢掉正在跑的会话），后者删旧代际，都不可逆。`nix flake update` 只在用户明确要求时跑。Agent 的职责边界是**改完保证能求值**，切换与清理交给用户本人。
+除非有特定原因，否则不要使用命令式命令来绕过配置问题。
+
+### 尽量减少更改
+
+进行满足请求所需的最小改动。
+
+不做：
+- 重新格式化无关文件；
+- 不必要地重组仓库；
+- 未经要求就升级依赖；
+- 修改无关服务；
+- 在不解释原因的情况下改变现有行为。
+
+## Nix Flakes
+
+除非明确要求或必须更改依赖项，否则不得修改 `flake.lock`。
+
+不要仅仅为了验证而运行更新 flake 输入的命令。
+
+例如，避免：
+
+```bash
+nix flake update
+```
+
+除非用户明确请求输入更新。
+
+## 格式化
+
+使用仓库配置的格式化工具对更改的 Nix 文件进行格式化。
+
+偏好：
+
+```bash
+nix fmt
+```
+
+如果 flake 提供了格式化程序。
+
+不要手动重新格式化无关文件。
 
 ## 验证
 
-改完配置的默认验收标准：`nix fmt` + 对**受影响的主机**跑 dry-run 求值（与 CI 同款检查，本机约 10 秒）。
+修改配置后，在应用之前先验证更改。
+
+至少运行：
 
 ```bash
-# 单点查值（约 0.5 秒）：确认某选项的最终值、是否被 mkIf/mkForce 影响，比翻文件快
-nix eval --raw '.#nixosConfigurations.desktop.config.<选项路径>'
-
-# 全量求值（约 10 秒）：算出整机 toplevel 闭包，只求值、不构建
-nix build --dry-run --no-write-lock-file '.#nixosConfigurations.desktop.config.system.build.toplevel'
-
-# CI 第一个 job 的同款检查
-nix flake check --no-write-lock-file
+nix flake check
 ```
 
-- 跑哪些主机由**改动的影响范围**决定：改 `hosts/<host>/` 或单个功能模块 → 只跑该 host；改 `modules/nixos/core/`、`flake.nix`、`lib/`、`overlays/` → 「各主机配置」表里 5 个目标全跑（含 `darwinConfigurations.macbook`）。
-- 改了 tmux 模块 → 提示用户在 `switch` 后跑 `./tests/tmux-persistence.sh`（它读的是已生成的配置，自建沙箱、不碰运行中的 tmux server）。
-- GUI 渲染、硬件行为、Windows 客户机这类本机无法验证的部分，必须写明「未验证」，不要声称已验证。
-- 核对桌面（niri）配置要连**生成的文件**一起看：有效配置 = `modules/home-manager/gui/wm/config/`（symlink 到 `~/.config/niri`）+ `wm/default.nix` 生成的 `~/.config/niri-colors/{layout,overview}.kdl` 与 `~/.config/niri-outputs/outputs.kdl`。`Mod+Tab` 系列绑定就生成在 `overviewKdl` 里，只 grep `config/` 会得出错误结论。
+如果合适，还要评估或构建受影响的系统：
 
-## 架构
-
-### 基于选项的主机配置 (`mySystem` 命名空间)
-
-无需为每台主机单独导入模块，所有功能模块都由 `core/default.nix` 无条件导入，再通过选项开关控制是否生效。选项**就近定义在各自功能模块中**，只有三个顶层域开关集中在 `core/default.nix`：
-
-```nix
-options.mySystem = {
-  hardware.enable = ...;
-  desktop.enable = ...;
-  virtualization.enable = ...;
-};
+```bash
+nix build .#nixosConfigurations.<host>.config.system.build.toplevel
 ```
 
-各模块通过 `lib.mkIf config.mySystem.<foo>.enable` 实现条件启用。新增功能时，选项应定义在实现该功能的模块文件里（而非集中到 core），再在对应域的聚合模块中用 `lib.mkDefault` 给出默认开关值。
+使用 `flake.nix` 中的实际主机名。
 
-### 选项 → 文件映射
+如果验证失败：
+1. 检查错误；
+2. 判断失败是否由该更改引起；
+3. 如果合适，修复配置；
+4. 再次运行验证。
 
-| 选项 | 定义位置 | 说明 |
-|------|----------|------|
-| `mySystem.hardware.enable` | `modules/nixos/core/default.nix` | 顶层域开关，开启后默认连带启用下列 hardware 子选项 |
-| `mySystem.desktop.enable` | `modules/nixos/core/default.nix` | 顶层域开关 |
-| `mySystem.virtualization.enable` | `modules/nixos/core/default.nix` | 顶层域开关（QEMU/KVM） |
-| `mySystem.users.<name>.{enable,extraGroups,shell}` | `modules/nixos/core/users.nix` | 用户声明，主机配置中覆盖 |
-| `mySystem.proxy.{enable,port,extraNoProxy}` | `modules/nixos/networking/proxy.nix` | 本机 HTTP 代理（Clash Verge） |
-| `mySystem.hardware.audio.enable` | `modules/nixos/hardware/audio.nix` | PipeWire |
-| `mySystem.hardware.bluetooth.enable` | `modules/nixos/hardware/bluetooth.nix` | |
-| `mySystem.hardware.network.enable` | `modules/nixos/hardware/network.nix` | iwd + NetworkManager |
-| `mySystem.hardware.mcu.enable` | `modules/nixos/hardware/mcu.nix` | 嵌入式开发工具链 |
-| `mySystem.hardware.nvidia.enable` | `modules/nixos/hardware/nvidia-base.nix` | 需主机显式开启（server/WSL 不需要） |
-| `mySystem.desktop.niri.enable` | `modules/nixos/desktop/default.nix` | Niri WM |
-| `mySystem.desktop.gnome.enable` | `modules/nixos/desktop/default.nix` | GNOME |
-| `mySystem.desktop.gnome.extensions` | `modules/nixos/desktop/gnome/default.nix` | 扩展包单一来源，hm 侧 dconf `enabled-extensions` 由各包 `extensionUuid` 派生 |
-| `mySystem.desktop.scale` | `modules/nixos/desktop/default.nix` | 分数缩放，AWT 应用会向上取整 |
-| `mySystem.desktop.distrobox.enable` | `modules/nixos/desktop/distrobox.nix` | |
-| `mySystem.desktop.steam.enable` | `modules/nixos/desktop/steam.nix` | |
+不要隐藏或忽视验证失败。
 
-### Module layering
+## Git
 
-```
-modules/
-  nixos/core/       在所有NixOS主机中永久导入：用户配置、区域语言、硬件适配、桌面环境、虚拟化、网络组件
-  nixos/desktop/    永久导入，由mySystem.desktop.enable控制生效：boot、GDM、env、Niri、GNOME、Distrobox、Steam
-  nixos/hardware/   永久导入，由mySystem.hardware.enable控制生效：音频（PipeWire）、蓝牙、网络（iwd+NetworkManager）、MCU工具链、NVIDIA基础驱动（后者需显式开启）
-  home-manager/     多用户共用配置，同时兼容 NixOS 与 macOS 系统
-    cli/            通用加载项：Shell（Fish）、编辑器（Neovim）、开发工具、TUI终端交互工具
-    gui/            仅用于桌面用户加载：应用程序（含嵌入式工具链）、备用主题、窗口管理器（Niri / Noctalia）、VSCode、Fcitx5输入法
-  darwin/           macOS专属配置：系统默认设置、Homebrew图形化应用包
+使用 Git 检查和审阅变更。
+
+在完成任务之前：
+
+```bash
+git status
+git diff
 ```
 
-### `mkHomeManager` 样板代码
+最终 diff 应只包含与用户请求相关的改动。
 
-`flake.nix` 中定义了 `mkHomeManager` 函数，用于生成所有 NixOS 主机共用的 Home-Manager 集成配置块。带图形界面的主机传入参数 `extraModules = [ ./modules/home-manager/gui ]`；无图形服务器主机与 WSL 环境主机则不传入该参数。macOS 系统使用独立的内联 Home-Manager 配置块（不调用 `mkHomeManager`），原因是其需要通过 `lib.mkForce` 强制覆盖 NUR 软件源覆盖层，且共用模块的配置逻辑与 NixOS 不同。
+不要：
+- 重置或丢弃用户已有的更改；
+- 除非明确要求，否则不要修改提交；
+- 强制推送；
+- 重写 Git 历史。
 
-### 各主机配置
+如果已存在无关的未提交更改，请保留它们。
 
-| Host | System | Key features |
-|------|--------|-------------|
-| desktop | x86_64-linux | Niri WM, NVIDIA RTX 3060Ti, 4K@150Hz |
-| laptop | x86_64-linux | Niri WM（默认会话；GNOME 也装）, NVIDIA MX150 (legacy driver, PRIME offload), btrfs, TLP |
-| wsl | x86_64-linux | CLI-only, WSL container |
-| server | x86_64-linux | Stub, only nixosCore |
-| macbook | aarch64-darwin | nix-darwin, Homebrew casks |
+## 应用配置
 
-### 平台适配特殊处理
+除非用户明确要求，否则不要自动运行会更改系统的命令。
 
-每条只写「是什么 + 根因 + 移除条件 + 详见何处」，不超过 3 行；细节放对应源码注释或 `docs/` 里。
+尤其不要自动运行：
 
-- **国内清华镜像源**：二进制替换源与 nixpkgs 源码均使用 `mirrors.tuna.tsinghua.edu.cn`。若身处境外，下载速度会偏慢，可自行更换镜像。
-- **Super+C/X/V 全局剪贴板**：niri 无内置 copy/paste，旧方案用 `wtype` 向焦点客户端注入虚拟键盘事件，对不爱收注入的客户端（X11/XWayland 等）无效；现改由 keyd 在 evdev 层把 `[meta]` 层（按住 Super 那层）的 C/X/V 重映射成 `Ctrl+C/X/V`——keyd 里层自带的修饰键不作用于层内有显式映射的键，故送出的是干净 `Ctrl+C`，其余 `Mod+*` 照旧透传给 niri。终端要 `Ctrl+Shift+C/X/V`（Ctrl+C 是 SIGINT），由用户级 `keyd-app-niri` 按焦点覆写；`services.keyd` 与 `users.groups.keyd` 只在把 niri 当实际会话的主机开（两台主机的 `displayManager.defaultSession` 都是 nixpkgs niri 模块给的 `niri`；换成别家会话的主机需用 `desktop.niri.keydClipboard.enable = false` 关掉）。详见 `docs/niri.md`。
-- **Fish 4.8.0 覆盖补丁**：`modules/home-manager/default.nix` 对 Fish 打补丁，补全缺失的 `create_manpage_completions.py` 文件（对应 nixpkgs 工单 #535122）。待上游合并修复后即可移除该覆盖层。
-- **XWayland 下的 Xft.dpi 补写**：fcitx5 在 XWayland 客户端上只读 X11 资源库的 `Xft.dpi` 决定候选窗缩放，而 xwayland-satellite 0.8.2 只把缩放写进 XSETTINGS（且未给 Xwayland 传 `-dpi`），导致微信等 X11 应用候选词停在 1.0x、比 VSCode 等 Wayland 应用小 `scale` 倍。`modules/nixos/desktop/niri/default.nix` 的 `xwayland-xft-dpi` wrapper 补写 `96 × scale` 并在 `startup.kdl` 自启。**TODO**：待 nixpkgs 的 xwayland-satellite 包含 PR #477（sync Xft.dpi through RESOURCE_MANAGER）后删除该 workaround。
-- **NVIDIA 显存泄漏修复**：`modules/nixos/hardware/nvidia-base.nix` 配置 Niri 应用专属参数，限制空闲缓冲区池大小，规避显存泄漏问题。
-- **显示器冷启动 EDID 自愈**：4K 屏断电再上电时 NVIDIA 读到合成 stub EDID（只剩 640x480，叠加 scale 1.5 后内容巨大），stub 校验和有效、连接器仍 connected，内核认为状态没变而不补发 hotplug。`hosts/desktop/edid-reprobe.nix` 的 udev 规则**监听显卡节点 `card1`**（DRM 的 hotplug uevent 全发在显卡节点，匹配连接器子设备 `card1-DP-2` 永远收不到）、发现目标模式缺失即 `echo detect > status` 强制真实重读 EDID。`drm.edid_firmware` 与 `video=` 两路已排除（会黑屏）。完整根因、重试次数与升级手段见该文件头部注释。
-- **STM32Cube 固件仓库路径**：CubeMX 默认把约 500MB 固件包下到 `~/STM32Cube/Repository`，路径记在非托管的 `~/.stm32cubemx/plugins/updater/updater.ini`。已收拢到 `~/Apps/STM32Cube/Repository`，由 `modules/home-manager/gui/apps/embedded.nix` 每次切换钉住该行（ini 混着时间戳/窗口尺寸等可变状态，无法整体托管）。数据迁移需手动 `mv` 一次。
-- **WinApps（Windows 应用接入桌面）**：libvirt 后端，接入层 `modules/home-manager/gui/winapps.nix`，装机盘 `pkgs/windows-vm-media`（xorriso 往上游 ISO 追加，不重打包）。**密码不进 nix store**：`RDP_ASKPASS` 读本机 `~/.config/winapps/rdp-pass`（0600）。探针走 libvirt `<hostdev>` 直通而非 RDP，模块提供 `winapps-usb attach/detach <vid:pid>`「谁用谁拿」。**完整手册见 `docs/winapps.md`**。
-  - 两个已知坑：本地化 Windows 上 RDP 放行必须走 `WINAPPS-SETUP.bat`（上游按英文组名放行在中文系统必然失败）；直通期间设备**仍出现在 `lsusb` 里**，别拿它判断归属，看 `/dev/ttyUSB*` 或 `winapps-usb`。
-- **客户机使用宿主代理**：mihomo 只监听 `127.0.0.1`，客户机直接指向 `192.168.122.1:<port>` 会 `Connection refused`。`modules/nixos/networking/proxy-vm.nix` 的 `libvirt-proxy-forward.service`（`mySystem.proxy.exposeToVms`，desktop/laptop 已开）在 `virbr0` 地址上 socat 转发到回环端口——只暴露给客户机网段，且不必用 route_localnet + nftables DNAT 那套（会把回环地址变成可路由地址）。客户机侧仍需一次性把 WinINET 与 `netsh winhttp` 都指向 `192.168.122.1:<port>`，见 `docs/winapps.md` §10.4 / §12.5。
-- **输入法托盘图标**：fcitx5 只经 D-Bus 报图标名，图片由 Noctalia 按主题解析；MacTahoe 主题**自带** `status/24/fcitx-rime.svg` 且排在本层号之前，故只往 `hicolor` 放同名 SVG 无效。`modules/home-manager/gui/fcitx5.nix` 因此在与 `config.gtk.iconTheme.name` **同名**的目录下建薄覆盖层（`~/.local/share/icons/<主题>/scalable/apps/`，**绝对不能有 `index.theme`**——一旦有，GTK/Qt 会把它当整个主题的根，文件夹/文件类型/应用图标全回退 Adwaita）。字形取 HarmonyOS Sans SC 轮廓静态内联，靠 11% 留白控制视觉大小。详见 `docs/themes.md`「输入法托盘图标」。
-- **自动升级固定走 flake**：`system.autoUpgrade.flake` 由 `networking.hostName` 推导出 `/home/mengw/Projects/nixos-config#<host>`。新增主机时 `networking.hostName` 必须与 flake 输出属性同名，否则 autoUpgrade 会找错目标。`allowReboot = false` 意味着内核更新后**不会自动重启**，需手动重启才能用上新内核。各主机的 flake 仓库统一位于 `/home/mengw/Projects/nixos-config`，若某主机仓库路径不同需覆盖该选项。
-- **滚动升级的可追溯性**：`--refresh` 每日重写工作区的 `flake.lock`，而 Nix 对脏 git 树令 `self.rev = null`，`system.configurationRevision`（`flake.nix` 中显式声明）会退化为 `"dirty"`，代际就无法回溯 commit。因此 `nixos-upgrade.service` 的 `postStop` 在升级成功后以本人身份提交 `flake.lock`，保持工作区干净；另外 `.github/workflows/flake-check.yml` 的 `schedule` 触发每天 03:40 先把 nixpkgs 刷到 master HEAD 再求值所有主机，赶在 04:40 的 autoUpgrade 之前拦截上游回归（push/PR 触发只验已锁定的 `flake.lock`，看不到滚动通道的新提交）。
+```bash
+sudo nixos-rebuild switch
+```
 
-## 文档索引
+或修改运行中系统的其他命令。
 
-`docs/` 放各子系统的深度说明（本文件只留结论、坑与轮廓）；动某个子系统前先读对应那篇，能省一轮反推。
+当配置准备就绪时，报告用户可以运行的命令。
 
-| 改动主题 | 文档 | 对应代码 |
-|------|------|------|
-| Fish、环境变量、PATH | `docs/fish.md` | `modules/home-manager/cli/shell/fish.nix` |
-| Foot 终端 | `docs/foot.md` | `modules/home-manager/gui/apps/foot.nix` |
-| 输入法（Rime、候选窗、托盘图标） | `docs/input.md` + `docs/themes.md` | `modules/home-manager/gui/fcitx5.nix`、`modules/nixos/desktop/default.nix` |
-| 桌面主题 / GTK / Qt / 图标 / 壁纸 | `docs/themes.md` | `modules/home-manager/gui/themes/default.nix`、`modules/home-manager/gui/wm/noctalia.nix` |
-| Niri 快捷键、窗口与布局规则 | `docs/niri.md` | `modules/home-manager/gui/wm/config/` + 生成 KDL 的 `gui/wm/default.nix` |
-| GNOME（laptop 也装了，但默认会话是 Niri） | `docs/gnome.md` | `modules/nixos/desktop/gnome/default.nix` |
-| 装了哪些应用 | `docs/softwares.md` | `modules/home-manager/gui/apps/`（含嵌入式工具链） |
-| 开发工具链、Distrobox | `docs/environment.md` | `modules/home-manager/cli/dev` |
-| tmux（含会话持久化） | `docs/tmux.md` | `modules/home-manager/cli/tools/tmux.nix` + `tests/tmux-persistence.sh` |
-| WinApps / Windows 虚拟机 / 探针直通 | `docs/winapps.md` | `modules/home-manager/gui/winapps.nix`、`pkgs/windows-vm-media`、`modules/nixos/virtualization` |
-| 部署、升级、垃圾回收 | `docs/manager.md` | 命令速查，与本文件「命令」节互为补充 |
+例如：
+
+```bash
+sudo nixos-rebuild switch --flake ~/Projects/nixos-config#desktop
+sudo nixos-rebuild switch --flake ~/Projects/nixos-config#laptop
+sudo nixos-rebuild switch --flake ~/Projects/nixos-config#wsl
+```
+
+如果用户明确要求代理应用配置，请先验证配置，并在运行命令前清楚说明将会更改哪些内容。
+
+## 硬件配置
+
+将 `hardware-configuration.nix` 视为机器生成的配置。
+
+除非任务特别要求，否则不要手动修改它。
+
+不要将重新生成硬件配置作为无关任务的一部分。
+
+## 机密信息
+
+切勿将机密提交到此仓库。
+
+请勿暴露或打印：
+- 密码
+- API 令牌
+- SSH 私钥
+- 私人凭据
+- 加密密钥
+
+如果仓库使用 `sops`、`agenix` 或其他机密管理系统，请遵循现有的机制。
+
+请勿用明文值替换加密的机密。
+
+## 软件包选择
+
+在添加软件包之前：
+1. 检查它是否已经安装；
+2. 确定它属于系统软件包还是 Home Manager；
+3. 遵循现有的软件包组织方式。
+
+当存在合适的声明式选项时，优先使用它，而不是仅仅为了手动配置某个服务而安装软件包。
+
+## 服务
+
+启用服务时：
+1. 检查现有服务配置；
+2. 如果可用，使用 NixOS 原生模块；
+3. 配置所需的最少选项；
+4. 检查与现有服务的交互；
+5. 验证生成的配置。
+
+不要仅仅因为服务可能有用就启用它们。
+
+## 用户交互
+
+当请求的更改含义不明确且可能对系统产生重大影响时，应要求澄清，而不是猜测。
+
+对于常规、低风险的配置更改，应沿用现有约定继续操作。
+
+报告已完成的任务时，应总结：
+- 更改了什么；
+- 哪些文件发生了更改；
+- 执行的验证；
+- 正在运行的系统是否实际发生了更改。
+
+## 重要原则
+
+仓库是期望系统状态的唯一真实来源。
+
+偏好：
+
+```text
+理解
+    ↓
+修改 Nix 配置
+    ↓
+格式化
+    ↓
+验证
+    ↓
+审查 diff
+    ↓
+应用
+```
+
+避免：
+
+```text
+运行任意命令
+    ↓
+修改实时系统
+    ↓
+尝试在 Nix 中复现这些更改
+```
+

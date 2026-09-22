@@ -3,7 +3,7 @@
 在 Niri/GNOME 桌面上把 Windows 虚拟机里的程序当**原生窗口**使用（FreeRDP RemoteApp），
 典型用途：Keil MDK、仅 Windows 可用的串口/烧录工具、Office。
 
-- 方案与取舍的来龙去脉见 [`AGENTS.md`](../AGENTS.md) 的「WinApps」条目。
+- 方案与取舍的来龙去脉见 [`docs/quirks.md`](quirks.md) 的「WinApps」条目。
 - 本文是**操作手册**：从零建 VM 到日常使用、加应用、接单片机探针、排错。
 
 ---
