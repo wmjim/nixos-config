@@ -146,6 +146,27 @@ in
       EnableFractionalScale=True
     '';
 
+    # fcitx5 全局快捷键：只留 Ctrl+Space 切输入法。
+    #
+    # AltTriggerKeys 默认是 Shift_L，会在 fcitx5 这层就把 Shift 截走（表现为切中/英），
+    # Rime 的 ascii_composer 根本收不到——所以想让左右 Shift 的 inline_ascii 生效，必须
+    # 在这里清空。enumerate（按住修饰键轮换 / Super+Space 切换分组）系列一并清空，
+    # 避免它们再切一次输入法；未列出的键位保持 fcitx5 内置默认。
+    #
+    # 与 classicui.conf 同理：文件整体托管，fcitx5 GUI 里的改动会在下次 switch 被覆盖。
+    xdg.configFile."fcitx5/config".text = ''
+      [Hotkey]
+      EnumerateWithTriggerKeys=False
+      AltTriggerKeys=
+      EnumerateForwardKeys=
+      EnumerateBackwardKeys=
+      EnumerateGroupForwardKeys=
+      EnumerateGroupBackwardKeys=
+
+      [Hotkey/TriggerKeys]
+      0=Control+space
+    '';
+
     # Rime 页大小补丁（default.custom.yaml）
     #
     # ── 托盘（Noctalia）里的输入法图标 ────────────────────────────────
@@ -186,6 +207,10 @@ in
             __include: wanxiang_suggested_default:/
             __patch:
               menu/page_size: 7
+              # 万象默认 Shift_L/Shift_R 都是 commit_code（上屏编码再切英文）。
+              # 两键统一改回 inline_ascii：进临时英文模式，回车才上屏、回到中文态。
+              ascii_composer/switch_key/Shift_L: inline_ascii
+              ascii_composer/switch_key/Shift_R: inline_ascii
         '';
       }
       # 三个状态字形 × 两处放置位置（当前主题覆盖层 + hicolor 兜底）

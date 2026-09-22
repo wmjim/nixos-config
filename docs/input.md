@@ -76,9 +76,24 @@ patch:
   __include: wanxiang_suggested_default:/
   __patch:
     menu/page_size: 7
+    ascii_composer/switch_key/Shift_L: inline_ascii
+    ascii_composer/switch_key/Shift_R: inline_ascii
 ```
 
 - 使用万象拼音的推荐默认配置，候选词每页 7 个。
+- 万象默认把左右 Shift 都设成 `commit_code`（上屏编码再切英文）；两键统一改为
+  `inline_ascii`——按 Shift 进临时英文模式，回车才上屏并回到中文态，左右一致。
+
+## 输入法切换键
+
+`~/.config/fcitx5/config` 由 home-manager 托管（只写需要的键位，其余保持
+fcitx5 内置默认），只保留 `Ctrl+Space` 切输入法：
+
+- `AltTriggerKeys`（fcitx5 默认是 `Shift_L`）清空——否则 Shift 在 fcitx5
+  这层就被截走，Rime 的 `ascii_composer` 收不到，Shift 的切换行为完全失效。
+- enumerate（轮换）系列（`EnumerateWithTriggerKeys`、`Enumerate{Forward,Backward}Keys`、
+  `EnumerateGroup{Forward,Backward}Keys`）一并清空，避免按住修饰键或 `Super+Space`
+  再切一次输入法。
 
 > [!TIP] 万象拼音语法模型
 > 需手动下载语法模型文件 `wanxiang-lts-zh-hans.gram`，从
