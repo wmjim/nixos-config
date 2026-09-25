@@ -1,7 +1,8 @@
 # 显示器 EDID 首读失败自愈：热插拔后发现"已连接但读不到目标模式"时强制重读
 #
 # 现象：4K 屏长时间断电再上电，桌面内容变得巨大（2026-09-15 15:21、2026-09-17
-# 06:58、2026-09-18 11:40、2026-09-21 14:19 各复现一次，此前只能重启解决）。
+# 06:58、2026-09-18 11:40、2026-09-21 14:19、2026-09-25 08:54 各复现一次，
+# 此前只能重启解决）。
 #
 # 根因（已由 niri 日志 + 驱动源码确认）：
 #   1. 显示器刚上电时其 DDC/EDID 还没就绪，而 NVIDIA 驱动在 HPD 之后立刻取一次
@@ -30,17 +31,20 @@
 # 从未触发过（journal 里那两次 "Starting 重读显示器 EDID" 是手工
 # `systemctl start` / `udevadm trigger` 打的），自愈自然没生效。
 #
-# 升级手段（已内建进脚本的"阶段二"，自 2026-09-21 起自动执行）：
-#   echo off > status → 通知 niri 重扫 → 2s → echo detect > status
+# 升级手段（阶段二，最后手段，自 2026-09-21 起内建）：
+#   echo off > status → 通知 niri 重扫 → 10s → echo detect > status
 #   off 令 force=OFF，niri 随即摘掉输出、关掉 CRTC，DP 链路随之断开；再 detect
 #   复位 UNSPECIFIED 重新 probe，拿回的就该是重训后的真 EDID。代价是画面黑一下、
 #   niri 重排布局，但此时屏幕本来就只有 640x480，值。
 #
-# 为什么要走到重训这一步（2026-09-21 14:19 复现时测得）：
-#   单纯 detect 连打 60 轮 / 120s，每轮都真实重读了硬件（`cat edid` 每次都会
-#   刷新该属性 mtime，可自证），拿回的一直是同一个 stub。显示器早已上电、画面
-#   也在 640x480 上正常输出，所以"DDC 还没就绪"不成立——是 AUX/EDID 通道卡死，
-#   轮询再多也没用，只有重建链路才能恢复。
+# 为什么重试窗口要放宽到 10 分钟（2026-09-25 08:54 复现时测得）：
+#   该屏上电时序是"DP 接收端先起来、scaler/EDID 后起来"：接收端一就绪就能训练出
+#   640x480 并保持 HPD，所以连接器一直 connected，但 EDID 还要几十秒到几分钟才
+#   读得到。08:54:29 起 15 轮 detect（30s）+ 5 轮 off/detect 全部拿回 stub 后脚本
+#   放弃；等到 09:03 用 ddcutil 直读 I2C，同一根通道已能读出完整 EDID
+#   （EDID source: I2C、型号 ICD GX288UR）——即 09-21 那次"AUX/EDID 通道卡死"的
+#   推断不成立，只是重试窗口整段落在 EDID 尚未就绪的区间里；而内核侧的 stub 会因
+#   "状态未变"永不失效，必须有人再 probe 一次。故轮询窗口从 30s 放宽到 10 分钟。
 #
 # 已排除的其他方案（理由见 nvidia.nix 注释）：
 #   drm.edid_firmware  → 连接器恒 connected，阻止 DP 链路重训练，黑屏
@@ -57,14 +61,14 @@ let
     sys=/sys/class/drm/${connector}
     expected=${expectedMode}
     # 阶段一：单纯 detect 重读。无副作用（不摘输出），只刷新内核模式列表。
-    # 15 轮 × 2s = 30s：DDC 就绪只需几秒，再等下去也不会变。
-    detectRounds=15
-    # 阶段二：强制链路重训。2026-09-21 实测 60 轮 detect（120s）全部拿回 stub，
-    # 说明 EDID 读不到不是"DDC 还没上电"，而是 AUX/EDID 通道卡死——只有重建 DP
-    # 链路才能恢复：force=off 让 niri 摘掉输出（CRTC 关闭 = 链路断开），再 detect
-    # 复位 force 并重新 probe。代价是画面黑一下、niri 重排布局；但走到这一步时
-    # 屏幕本来就只有 640x480，值。
-    retrainRounds=5
+    # 300 轮 × 2s = 10 分钟：要覆盖显示器 scaler/EDID 从上电到可读的整段时间，
+    # 2026-09-25 实测 30s 远远不够（见文件头）。
+    detectRounds=300
+    # 阶段二：强制链路重训。2026-09-25 那次它是 5 轮全败收场，但当时 EDID 尚未
+    # 就绪，不能据此判定它无效，故保留为最后手段。
+    retrainRounds=2
+    # 断链时长：2s 时显示器往往还没察觉链路消失，给足 10s
+    retrainOff=10
     poll=2
 
     log() {
@@ -120,6 +124,11 @@ let
         exit 0
       fi
 
+      # 窗口很长，每 2 分钟留一条进度，方便下次回看"到放弃时等了多久"
+      if [ $((round % 60)) -eq 0 ]; then
+        log "${connector} 已 detect 重读 $round 轮（$((round * poll))s），仍无 $expected"
+      fi
+
       ${pkgs.coreutils}/bin/sleep "$poll"
     done
 
@@ -132,7 +141,7 @@ let
       # off ⇒ force=OFF：niri 重扫后摘掉输出、关掉 CRTC，DP 链路随之断开
       echo off > "$sys/status"
       notify_compositor
-      ${pkgs.coreutils}/bin/sleep "$poll"
+      ${pkgs.coreutils}/bin/sleep "$retrainOff"
 
       # detect ⇒ force 复位 UNSPECIFIED 并重新 probe，拿回的就该是重训后的真 EDID
       echo detect > "$sys/status"
@@ -170,8 +179,9 @@ in
     description = "重读显示器 EDID，修复冷启动后分辨率塌陷";
     serviceConfig = {
       Type = "oneshot";
-      # oneshot 默认无启动超时；脚本自带 120s 上限，这里再兜一层防止意外挂死
-      TimeoutStartSec = 180;
+      # oneshot 默认无启动超时；脚本自带约 10 分钟上限（阶段一）+ 阶段二，
+      # 这里再兜一层防止意外挂死
+      TimeoutStartSec = 900;
       ExecStart = "${reprobe}";
     };
   };
