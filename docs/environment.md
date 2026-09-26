@@ -13,10 +13,10 @@
 | 语言 | 工具 | LSP / 辅助 |
 | --- | --- | --- |
 | Go | `go` | gopls |
-| Node.js | `nodejs_latest`、`yarn`、`pnpm` | typescript-language-server、prettier、eslint |
+| Node.js | `fnm`、`yarn`、`pnpm` | typescript-language-server、prettier、eslint |
 | Rust | `rustc`、`cargo` | rust-analyzer、rustfmt、clippy、cargo-watch/audit/outdated/nextest、taplo、cargo-cross |
 | Python | `python3`（**跟随 nixpkgs 默认，不钉版本**，升级 flake 时整体平移）、`uv` | python-lsp-server、ruff、black、isort、mypy、pytest、pylint、bandit、mkdocs |
-| C/C++ | `clang`、`cmake`、`ninja`、`vcpkg`、`xmake` | clangd（clang-tools）、cppcheck、lldb、valgrind、perf-tools、strace |
+| C/C++ | `clang`、`cmake`、`ninja`、`vcpkg` | clangd（clang-tools）、cppcheck、lldb、valgrind、perf-tools、strace |
 | 其他 | bash / lua / nix / markdown / yaml / kdl | bash-language-server、lua-language-server、nil、marksman、ltex-ls-plus、yaml-language-server、kdlfmt |
 
 > 注意：Python 使用 `uv` 作为首选包管理器（替代 pip/poetry）。
