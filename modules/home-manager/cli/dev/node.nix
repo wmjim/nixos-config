@@ -12,9 +12,9 @@ in
   };
 
   config = lib.mkIf (cfg.enable && devCfg.enable && cliCfg.enable) {
-    # Node.js 环境
+    # Node.js 环境（版本交给 fnm，shell 初始化见 cli/shell/fish.nix）
     home.packages = with pkgs; [
-      nodejs_latest
+      fnm
       yarn
       pnpm
       typescript-language-server # typescript/js/tsx/jsx lsp

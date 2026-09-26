@@ -88,6 +88,8 @@ in
         # 设置终端为英文环境
         set -gx LC_ALL en_US.UTF-8
         set -gx EDITOR nvim
+        # 初始化 fnm（HM 无 programs.fnm 模块，需手动 source）
+        fnm env --use-on-cd | source
         # API 密钥存放于 git 外的本地文件，避免明文入库
         set -l atria_env ~/.config/atria/env.fish
         if test -f $atria_env
