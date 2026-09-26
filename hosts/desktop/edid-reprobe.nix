@@ -1,186 +1,204 @@
-# 显示器 EDID 首读失败自愈：热插拔后发现"已连接但读不到目标模式"时强制重读
+# 显示器 EDID 首读失败自愈：给连接器注入本屏完整 EDID，避免冷上电后分辨率塌陷
 #
-# 现象：4K 屏长时间断电再上电，桌面内容变得巨大（2026-09-15 15:21、2026-09-17
-# 06:58、2026-09-18 11:40、2026-09-21 14:19、2026-09-25 08:54 各复现一次，
-# 此前只能重启解决）。
+# 现象：4K 屏长时间断电再上电，桌面内容变得巨大（2026-09-15/17/18/21/25、09-26 多次
+# 复现）。此时 niri 日志里连接器身份是 "Nvidia 0x0000 Unknown"，模式列表只剩 640x480，
+# 叠加 outputs.kdl 的 scale 1.5 → 逻辑 426x320，只能重启或重插线恢复。
 #
-# 根因（已由 niri 日志 + 驱动源码确认）：
-#   1. 显示器刚上电时其 DDC/EDID 还没就绪，而 NVIDIA 驱动在 HPD 之后立刻取一次
-#      EDID，拿到的是合成 stub——niri 日志里连接器身份从 "ICD Inc ICD GX288UR"
-#      变成 "Nvidia 0x0000 Unknown"，模式列表只剩 640x480 兜底项。
-#   2. scale 1.5 照常生效，逻辑尺寸塌到 640/1.5 × 480/1.5 ≈ 427×320，于是所有
-#      窗口都巨大。
-#   3. stub EDID 校验和有效且连接器仍是 connected，内核判定"状态没变"，不会补发
-#      hotplug；驱动也不会自己重试——这是 stub 而非"读失败"的直接后果。
+# 根因（nvidia-drm 源码 + 内核 DRM 源码 + 2026-09-26 实测）：
+#   1. 该屏冷上电时序是"DP 接收端先起来（1~3s 内就拉高 HPD）、scaler/EDID 后起来"。
+#      NVIDIA 驱动在 HPD 边沿立刻取一次 EDID，拿到的是合成 stub（mfg "NVD"、product
+#      0x0000、无详细时序、校验和有效），并连同显示对象一起缓存在 RM 里。
+#   2. RM 的显示对象只在新 HPD 边沿或驱动重新加载时重建。`echo detect > status` 只做
+#      free(nv_connector->edid) + 再问一次 RM，而后者拿的是 pDetectParams->handle =
+#      nv_encoder->hDisplay 指向的既有显示对象，回的还是同一份 stub。2026-09-26 实测：
+#      detect 每 2s 打满 10 分钟、外加两轮 force=off（enabled 真的变 disabled、链路真断）
+#      + detect，模式列表始终是 640x480；同一时间 ddcutil 直读 I2C 已能读出本屏 EDID。
+#      旧版自愈（detect 轮询 + off/detect 重训）因此不可能生效——不是"等得不够久"。
+#   3. 该屏 EDID 本身也不可靠：同一台显示器、正在跑 4K150 的同时，i2c 直读它的块 2 却
+#      回一份 base block（最高 4K60、没有 DisplayID）。也就是说 EDID 内容不一定代表面板
+#      此刻的能力，只是固件选错了 bank，不能拿"直读到什么"当作面板能否上 4K150 的依据。
+#   4. 试过让显示器自己重初始化来产生新 HPD 边沿：本屏拒绝 VCP D6=0x04（DDCRC_VERIFY，
+#      HPD 从不撤销），硬关机 0x05 又会让 DDC 一起失效、只能人工按电源键；源侧 force=off
+#      同样不会撤销 sink 的 HPD。这条路不适合做成自动自愈。
 #
-# 修复思路：不改驱动行为，只做"强制重读 + 通知合成器"。
-#   nvidia-drm 的 fill_modes = drm_helper_probe_single_connector_modes，其 detect
-#   每次都会先释放缓存 EDID 再向 RM/DDC 重新取一次
-#   （nvidia-drm-connector.c: __nv_drm_connector_detect_internal 开头 free(edid)，
-#    再由 __nv_drm_detect_encoder 重新填充），因此
-#   `echo detect > /sys/class/drm/<conn>/status`（drm_sysfs.c status_store →
-#   connector->funcs->fill_modes）是一次真实的硬件重读；显示器 DDC 就绪前会持续
-#   失败，故需要有限次重试。
+# 修复思路：既然唯一可靠的是"在内核侧给连接器一份正确 EDID"，就用 DRM 自带的 EDID override
+# （连接器 debugfs 的 edid_override，写二进制 EDID，写 "reset" 撤销）：
+#   - 内核 7.2 起 drm_helper_probe_single_connector_modes() 不再因为 override 存在就跳过
+#     detect，所以连接器状态仍由 RM 按真实 HPD 汇报——显示器断电/拔线照样能感知，不会
+#     变成 drm.edid_firmware 那种"连接器永远 connected、关电也不复位"的黑屏。
+#   - nvidia-drm 每次 detect 都会调 drm_edid_override_connector_update()，把 override 塞进
+#     NvKmsKapiDynamicDisplayParams（overrideEdid=NV_TRUE）交给 RM，于是 RM 的模式列表就
+#     来自我们给的 EDID，niri 能重新选回 3840x2160@150。
+#   - 只在检出 stub、且显示器 MCU 已就绪（DDC 能应答）时才注入，避免冷启动早期把 4K 模式
+#     塞给还没起来的面板；连接器一旦断开就把 override 复位，下次上电仍从真实 HPD 判断。
 #
-# ⚠️ 触发源（旧版 bug 所在）：DRM 的 hotplug uevent 一律发在**显卡节点**上——
-# drm_sysfs.c 里无论是 drm_sysfs_hotplug_event() 还是
-# drm_sysfs_connector_hotplug_event()，都是
-# kobject_uevent_env(&dev->primary->kdev->kobj, KOBJ_CHANGE, envp)，即 card1；
-# 连接器子设备 card1-DP-2 永远收不到 change 事件（它也没有 devnum，niri/smithay
-# 同样只跟踪 card[0-9]）。旧规则匹配 KERNEL=="card1-DP-2"，所以真实热插拔时
-# 从未触发过（journal 里那两次 "Starting 重读显示器 EDID" 是手工
-# `systemctl start` / `udevadm trigger` 打的），自愈自然没生效。
+# hosts/desktop/edid/icd-gx288ur.bin = 本屏健康时的完整 EDID（384 字节，块 2 是 DisplayID，
+# 含 3840x2160@150 的 Type I 时序）。显示器换机或换固件后需要重新生成：
+#   cat /sys/class/drm/card1-DP-2/edid > hosts/desktop/edid/icd-gx288ur.bin   # 在 4K150 正常时
 #
-# 升级手段（阶段二，最后手段，自 2026-09-21 起内建）：
-#   echo off > status → 通知 niri 重扫 → 10s → echo detect > status
-#   off 令 force=OFF，niri 随即摘掉输出、关掉 CRTC，DP 链路随之断开；再 detect
-#   复位 UNSPECIFIED 重新 probe，拿回的就该是重训后的真 EDID。代价是画面黑一下、
-#   niri 重排布局，但此时屏幕本来就只有 640x480，值。
-#
-# 为什么重试窗口要放宽到 10 分钟（2026-09-25 08:54 复现时测得）：
-#   该屏上电时序是"DP 接收端先起来、scaler/EDID 后起来"：接收端一就绪就能训练出
-#   640x480 并保持 HPD，所以连接器一直 connected，但 EDID 还要几十秒到几分钟才
-#   读得到。08:54:29 起 15 轮 detect（30s）+ 5 轮 off/detect 全部拿回 stub 后脚本
-#   放弃；等到 09:03 用 ddcutil 直读 I2C，同一根通道已能读出完整 EDID
-#   （EDID source: I2C、型号 ICD GX288UR）——即 09-21 那次"AUX/EDID 通道卡死"的
-#   推断不成立，只是重试窗口整段落在 EDID 尚未就绪的区间里；而内核侧的 stub 会因
-#   "状态未变"永不失效，必须有人再 probe 一次。故轮询窗口从 30s 放宽到 10 分钟。
-#
-# 已排除的其他方案（理由见 nvidia.nix 注释）：
-#   drm.edid_firmware  → 连接器恒 connected，阻止 DP 链路重训练，黑屏
-#   video=DP-2:...     → user-defined 模式被 NVIDIA 拒绝，黑屏
+# 已排除：drm.edid_firmware（开机即生效 → 冷启动早期就把 4K 模式塞给未就绪面板，且 override
+# 不再复位 → 黑屏）、video=DP-2:...（NVIDIA 拒绝 user-defined 模式 → 黑屏）。
 { pkgs, ... }:
 let
   connector = "card1-DP-2";
   card = "card1";
   expectedMode = "3840x2160";
+  # 换屏保护：ddcutil 报的 mfg:model 必须与 EDID 文件对得上，否则不注入
+  expectedPanel = "ICD:ICD GX288UR";
+  panelEdid = ./edid/icd-gx288ur.bin;
+  # 冷上电后 scaler/DDC 要几十秒到几分钟才就绪：2026-09-26 07:17 出 stub，07:19 DDC
+  # 已能应答（约 2 分钟），留 10 分钟余量
+  readyTimeout = 600;
 
   reprobe = pkgs.writeShellScript "edid-reprobe" ''
     set -u
 
     sys=/sys/class/drm/${connector}
     expected=${expectedMode}
-    # 阶段一：单纯 detect 重读。无副作用（不摘输出），只刷新内核模式列表。
-    # 300 轮 × 2s = 10 分钟：要覆盖显示器 scaler/EDID 从上电到可读的整段时间，
-    # 2026-09-25 实测 30s 远远不够（见文件头）。
-    detectRounds=300
-    # 阶段二：强制链路重训。2026-09-25 那次它是 5 轮全败收场，但当时 EDID 尚未
-    # 就绪，不能据此判定它无效，故保留为最后手段。
-    retrainRounds=2
-    # 断链时长：2s 时显示器往往还没察觉链路消失，给足 10s
-    retrainOff=10
-    poll=2
+    expected_panel="${expectedPanel}"
+    panel_edid=${panelEdid}
+    ddc=${pkgs.ddcutil}/bin/ddcutil
+    date=${pkgs.coreutils}/bin/date
+    sleep=${pkgs.coreutils}/bin/sleep
+    cat=${pkgs.coreutils}/bin/cat
+    od=${pkgs.coreutils}/bin/od
+    head=${pkgs.coreutils}/bin/head
+    tr=${pkgs.coreutils}/bin/tr
+    find=${pkgs.findutils}/bin/find
+    grep=${pkgs.gnugrep}/bin/grep
 
     log() {
-      printf '[%s] [edid-reprobe] %s\n' \
-        "$(${pkgs.coreutils}/bin/date -Is)" "$*" >&2
+      printf '[%s] [edid-reprobe] %s\n' "$($date -Is)" "$*" >&2
     }
 
     connector_status() {
-      ${pkgs.coreutils}/bin/cat "$sys/status" 2>/dev/null || echo unknown
+      $cat "$sys/status" 2>/dev/null || echo unknown
     }
 
     has_expected_mode() {
-      ${pkgs.gnugrep}/bin/grep -qx "$expected" "$sys/modes" 2>/dev/null
+      $grep -qx "$expected" "$sys/modes" 2>/dev/null
     }
 
-    # niri（经 smithay 的 udev backend）只跟踪 sysname 匹配 card[0-9] 的显卡设备
-    # 本身，戳 card1-DP-2 这类连接器子设备会被 change 事件过滤直接丢弃，因此通知
-    # 目标必须是 card1。
+    # NVIDIA 合成 stub 的签名：manufacturer "NVD"(0x3ac4) + product 0x0000；
+    # 本屏真实 EDID 是 ICD(0x2464)/0x753c。
+    is_stub_edid() {
+      [ "$($od -An -j8 -N4 -tx1 "$sys/edid" 2>/dev/null | $tr -d ' \n')" = "3ac40000" ]
+    }
+
+    # 连接器 debugfs 目录用的是 connector->name（本机 DP-2），不是 sysfs 的 card1-DP-2；
+    # 实测完整路径是 /sys/kernel/debug/dri/0000:01:00.0/DP-2/edid_override
+    # （中间那层是 PCI 名，不是 minor 号），故这里按名字找而不是写死路径。
+    find_override() {
+      $find /sys/kernel/debug/dri -maxdepth 3 -type f -name edid_override 2>/dev/null |
+        $grep -E '/DP-2/edid_override$' | $head -1
+    }
+
+    # niri（经 smithay 的 udev backend）只跟踪 sysname 匹配 card[0-9] 的显卡设备本身，
+    # 戳连接器子设备会被 change 事件过滤丢弃，所以通知目标是 card1。
     notify_compositor() {
       ${pkgs.systemd}/bin/udevadm trigger \
         --subsystem-match=drm --sysname-match=${card} -c change
     }
 
-    # 规则挂在 card1 上，正常热插拔、本服务自愈后自己触发的 change 事件都会走到
-    # 这里，因此健康路径必须静默退出，避免刷日志。
-    case "$(connector_status)" in
-      connected) ;;
-      # 显示器断电/拔线：没有可修复的东西，等下一次上电的 hotplug
-      *) exit 0 ;;
-    esac
+    override=$(find_override)
 
+    # 显示器断电/拔线：撤销 override，让状态重新完全由 RM 的真实 HPD 决定，
+    # 免得下次上电时面板还没就绪就被塞进 4K 模式。
+    if [ "$(connector_status)" != connected ]; then
+      if [ -n "$override" ] && [ -s "$override" ]; then
+        printf reset > "$override" && log "连接器已断开，撤销 EDID override"
+      fi
+      exit 0
+    fi
+
+    # 规则挂在 card1 上，正常热插拔、自愈后自己触发的 change 事件都会走到这里，
+    # 健康路径必须静默退出。
     has_expected_mode && exit 0
 
-    log "${connector} 已连接但模式列表无 $expected，判定为 EDID 首读失败（stub），开始强制重读"
+    if ! is_stub_edid; then
+      log "${connector} 缺 $expected，但 EDID 不是 NVIDIA stub，跳过"
+      exit 0
+    fi
 
-    round=0
-    while [ "$round" -lt "$detectRounds" ]; do
-      round=$((round + 1))
+    [ -n "$override" ] || {
+      log "找不到 ${connector} 的 debugfs edid_override（debugfs 未挂载？），无法注入"
+      exit 1
+    }
+    [ -s "$panel_edid" ] || {
+      log "面板 EDID 文件 $panel_edid 为空，无法注入"
+      exit 1
+    }
 
-      # 副作用：detect 只刷新内核侧模式列表（连接器状态不变），内核不会因此发
-      # hotplug，合成器毫无感知——所以恢复后还要下面补一次显式通知。
-      echo detect > "$sys/status"
+    log "${connector} 已连接但 EDID 是 NVIDIA 合成 stub（无 $expected），等显示器就绪后注入真实 EDID"
 
-      if has_expected_mode; then
-        log "${connector} 第 $round 次 detect 重读后恢复，通知合成器重选模式"
-        notify_compositor
+    # ddcutil 在 NVIDIA 上映射不出连接器名（nvidia-drm 没把 ddc 从设备注册到连接器），
+    # 但本机只有这一台显示器，用 detect 的结果做"面板已就绪 + 身份匹配"的判据。
+    deadline=$(($($date +%s) + ${toString readyTimeout}))
+    rounds=0
+    while :; do
+      [ "$(connector_status)" = connected ] || {
+        log "等待显示器就绪期间断开，放弃本次修复"
+        exit 0
+      }
+
+      info=$($ddc detect --brief 2>/dev/null) || info=""
+      if [ -n "$info" ] && $ddc getvcp d6 >/dev/null 2>&1; then
+        if $grep -qF "$expected_panel" <<<"$info"; then
+          break
+        fi
+        log "检测到的显示器不是 $expected_panel，跳过（EDID 文件可能已过期）"
         exit 0
       fi
 
-      # 重试期间用户又把显示器关了/拔了线：留给下一次上电事件
-      if [ "$(connector_status)" != connected ]; then
-        log "${connector} 在第 $round 次重试期间断开，放弃本次修复"
-        exit 0
+      if [ "$($date +%s)" -ge "$deadline" ]; then
+        log "${toString readyTimeout}s 内显示器 DDC 未就绪（scaler 可能还在启动），放弃本次修复"
+        exit 1
       fi
 
-      # 窗口很长，每 2 分钟留一条进度，方便下次回看"到放弃时等了多久"
-      if [ $((round % 60)) -eq 0 ]; then
-        log "${connector} 已 detect 重读 $round 轮（$((round * poll))s），仍无 $expected"
+      # 冷上电后要等几十秒到几分钟，每分钟留一条进度，方便下次回看等了多久
+      rounds=$((rounds + 1))
+      if [ $((rounds % 12)) -eq 0 ]; then
+        log "已等待 $((rounds * 5))s，显示器 DDC 仍未就绪"
       fi
-
-      ${pkgs.coreutils}/bin/sleep "$poll"
+      $sleep 5
     done
 
-    log "${connector} $((detectRounds * poll))s 内 detect 读不到 $expected，转为强制链路重训"
+    log "显示器已就绪，注入面板完整 EDID（含 3840x2160@150 的 DisplayID 块）"
+    if ! $cat "$panel_edid" > "$override"; then
+      log "写入 edid_override 失败"
+      exit 1
+    fi
 
-    round=0
-    while [ "$round" -lt "$retrainRounds" ]; do
-      round=$((round + 1))
+    # override 生效还需要一次 probe 把模式列表刷出来，再通知合成器重选模式
+    echo detect > "$sys/status" 2>/dev/null || true
+    notify_compositor
 
-      # off ⇒ force=OFF：niri 重扫后摘掉输出、关掉 CRTC，DP 链路随之断开
-      echo off > "$sys/status"
-      notify_compositor
-      ${pkgs.coreutils}/bin/sleep "$retrainOff"
-
-      # detect ⇒ force 复位 UNSPECIFIED 并重新 probe，拿回的就该是重训后的真 EDID
-      echo detect > "$sys/status"
-
-      # force=OFF 期间连接器对外是 disconnected，这里必须先复位再看状态，
-      # 否则会把正常重训误判成"用户拔线"而放弃。
-      if [ "$(connector_status)" != connected ]; then
-        log "${connector} 第 $round 次链路重训期间断开，放弃本次修复"
-        exit 0
-      fi
-
-      notify_compositor
-
+    waited=0
+    while [ "$waited" -lt 10 ]; do
+      waited=$((waited + 1))
       if has_expected_mode; then
-        log "${connector} 第 $round 次链路重训后恢复，通知合成器重选模式"
+        log "注入后已恢复 $expected"
         exit 0
       fi
-
-      log "${connector} 第 $round 次链路重训后仍无 $expected"
-      ${pkgs.coreutils}/bin/sleep "$poll"
+      $sleep 1
     done
 
-    log "${connector} detect 与 $retrainRounds 次链路重训都没能读回 $expected（可能需要物理重插 DP 线或重启）"
+    log "注入后仍未出现 $expected（可能需要物理重插 DP 线或重启）"
     exit 1
   '';
 in
 {
-  # 显示器上电会触发 card1 的 change 事件（ACTION=="change"，见文件头 uevent 目标
-  # 说明）。--no-block 避免阻塞 udev 事件处理；服务自身幂等，重复触发无副作用。
+  # 显示器上电会触发 card1 的 change 事件（DRM 的 hotplug uevent 一律发在显卡节点，
+  # 连接器子设备收不到）。--no-block 避免阻塞 udev 事件处理；服务自身幂等。
   services.udev.extraRules = ''
     SUBSYSTEM=="drm", ACTION=="change", KERNEL=="${card}", RUN+="${pkgs.systemd}/bin/systemctl --no-block start edid-reprobe.service"
   '';
 
   systemd.services.edid-reprobe = {
-    description = "重读显示器 EDID，修复冷启动后分辨率塌陷";
+    description = "检出 NVIDIA stub EDID 时注入面板真实 EDID，修复冷启动后分辨率塌陷";
     serviceConfig = {
       Type = "oneshot";
-      # oneshot 默认无启动超时；脚本自带约 10 分钟上限（阶段一）+ 阶段二，
-      # 这里再兜一层防止意外挂死
+      # oneshot 默认无启动超时；脚本自带上限（10 分钟等就绪），这里再兜一层
       TimeoutStartSec = 900;
       ExecStart = "${reprobe}";
     };
