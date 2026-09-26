@@ -1,11 +1,20 @@
 # macOS 基础配置（所有 Darwin 主机共享）
-{ config, pkgs, lib, inputs, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  inputs,
+  ...
+}:
 
 {
   # Nix 配置
   nix.settings = {
     # 启用 Flakes 特性以及配套的新 nix 命令行工具
-    experimental-features = [ "nix-command" "flakes" ];
+    experimental-features = [
+      "nix-command"
+      "flakes"
+    ];
     # 自动存储优化，定期优化存储以节省空间
     auto-optimise-store = true;
     substituters = [
@@ -30,8 +39,12 @@
   # 放行 Linux-only 包的评估（flakehub-push 会评估所有平台，但 darwin 不需要这些包）
   nixpkgs.config.allowUnsupportedSystem = true;
 
-  # NUR overlay（home-manager useGlobalPkgs=true 时需在系统级设置）
-  nixpkgs.overlays = [ inputs.nur.overlays.default ];
+  # NUR overlay + 自定义包 overlay（主题 / mcpp 等，清单见 overlays/default.nix）。
+  # home-manager useGlobalPkgs=true 复用这份系统级实例，HM 侧无需重复注入。
+  nixpkgs.overlays = [
+    inputs.nur.overlays.default
+    (import ../../overlays { inherit inputs; })
+  ];
 
   # 系统级包
   environment.systemPackages = with pkgs; [

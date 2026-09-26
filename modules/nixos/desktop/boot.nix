@@ -1,5 +1,10 @@
 # 启动日志配置 — 安静模式
-{ lib, config, pkgs, ... }:
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}:
 let
   cfg = config.mySystem.desktop;
 in

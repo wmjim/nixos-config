@@ -1,7 +1,13 @@
 # Niri 窗口管理器 — 用户级配置文件部署
-{ lib, config, osConfig, pkgs, inputs, ... }:
+{
+  lib,
+  config,
+  osConfig,
+  pkgs,
+  inputs,
+  ...
+}:
 let
-  cfg = config.mengw.gui.wm;
   guiCfg = config.mengw.gui;
   niriConfigPath = "${config.home.homeDirectory}/Projects/nixos-config/modules/home-manager/gui/wm/config";
 
@@ -204,39 +210,37 @@ let
     }
   '';
 
-  # 生成的 outputs.kdl（按主机区分）
-  # niri 的 output 段按物理输出名匹配：把两台主机的定义混在一个文件里，
-  # 未连接的输出条目会静默失效；且两处 focus-at-startup 在双屏场景下
-  # 聚焦行为不确定。故按主机生成，每份配置只含一个 focus-at-startup。
-  laptopOutputs = ''
-    // 显示器设置（笔记本内屏）
-    output "eDP-1" {
-        mode "1920x1080@59.977"
-        scale 1.25
-        position x=0 y=0
-        focus-at-startup
-    }
-  '';
-
-  desktopOutputs = ''
-    // 显示器设置（台式机 4K 屏）
-    output "DP-2" {
-        // 设置屏幕分辨率和刷新率
-        mode "3840x2160@150.000"
-        // 界面缩放为 150%
-        scale 1.50
-        // 设置屏幕位置
-        position x=0 y=0
-        // niri 启动时默认聚焦输出
-        focus-at-startup
-    }
-  '';
-
+  # 生成的 outputs.kdl —— 由主机声明的 mySystem.desktop.monitors 数据驱动
+  # （hosts/<host>/default.nix）。此前这里按 hostName switch 硬编码两台主机
+  # 的输出，显示器数据泄漏进共享模块；现模块只做生成器，数据留在主机。
+  # niri 的 output 段按物理输出名匹配，未连接的输出条目会静默失效，
+  # 故每台主机只声明自己实际连接的屏幕；focus-at-startup 由数据控制，
+  # 多输出主机只应在一项上开启。
   outputsKdl =
-    let host = osConfig.networking.hostName; in
-    if host == "laptop" then laptopOutputs
-    else if host == "desktop" then desktopOutputs
-    else throw "mengw.gui.wm: 未定义主机 ${host} 的 niri 显示器配置";
+    let
+      monitors = osConfig.mySystem.desktop.monitors;
+      monitorKdl =
+        m:
+        let
+          # toJSON 而非 toString：新版 Nix 的 toString 对 float 固定输出 6 位
+          # 小数（1.5 → "1.500000"），KDL 虽能解析但可读性差；toJSON 给最短表示
+          scaleStr = builtins.toJSON m.scale;
+        in
+        lib.concatStringsSep "\n" (
+          [ "output \"${m.name}\" {" ]
+          ++ lib.optionals (m.mode != null) [ "    mode \"${m.mode}\"" ]
+          ++ [ "    scale ${scaleStr}" ]
+          ++ lib.optionals (m.position != null) [
+            "    position x=${toString m.position.x} y=${toString m.position.y}"
+          ]
+          ++ lib.optionals m.focus [ "    focus-at-startup" ]
+          ++ [ "}" ]
+        );
+    in
+    if monitors == [ ] then
+      throw "mengw.gui.wm: 主机未声明 mySystem.desktop.monitors，无法生成 niri outputs.kdl"
+    else
+      lib.concatMapStringsSep "\n" monitorKdl monitors;
 
   # Ctrl+Alt+Del 关闭全部窗口
   # niri 只有作用于焦点窗口的 close-window，没有"关闭全部"动作：这里先快照
@@ -315,17 +319,12 @@ let
   '';
 in
 {
-  options.mengw.gui.wm.enable = lib.mkOption {
-    type = lib.types.bool;
-    default = true;
-    description = "启用 Niri 窗口管理器用户级配置";
-  };
-
   imports = [
     ./noctalia.nix
   ];
 
-  config = lib.mkIf (cfg.enable && guiCfg.enable) {
+  # 门控：mengw.gui.enable 控制整个 GUI 层，无中间层开关
+  config = lib.mkIf guiCfg.enable {
     # Symlink 整个 Niri 配置目录到 git 仓库（保持可编辑性）
     xdg.configFile."niri".source = config.lib.file.mkOutOfStoreSymlink niriConfigPath;
 

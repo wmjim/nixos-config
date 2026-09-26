@@ -1,8 +1,12 @@
 # 开发工具
-{ lib, config, pkgs, ... }:
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}:
 let
   cfg = config.mengw.gui.apps.development;
-  appsCfg = config.mengw.gui.apps;
   guiCfg = config.mengw.gui;
 
   # skiko 渲染层依赖的运行时库。nixpkgs master 的 jetbrains 包装器把
@@ -16,11 +20,13 @@ let
   ];
 
   # 在 JetBrains 启动脚本 exec 前注入 LD_LIBRARY_PATH
-  wrapJb = binName: pkg: pkg.overrideAttrs (old: {
-    postInstall = (old.postInstall or "") + ''
-      sed -i '/^exec -a/i export LD_LIBRARY_PATH="${skikoLibs}"''${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}' "$out/bin/${binName}"
-    '';
-  });
+  wrapJb =
+    binName: pkg:
+    pkg.overrideAttrs (old: {
+      postInstall = (old.postInstall or "") + ''
+        sed -i '/^exec -a/i export LD_LIBRARY_PATH="${skikoLibs}"''${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}' "$out/bin/${binName}"
+      '';
+    });
 in
 {
   options.mengw.gui.apps.development.enable = lib.mkOption {
@@ -29,7 +35,7 @@ in
     description = "启用开发工具应用";
   };
 
-  config = lib.mkIf (cfg.enable && appsCfg.enable && guiCfg.enable) {
+  config = lib.mkIf (cfg.enable && guiCfg.enable) {
     home.packages = with pkgs; [
       (wrapJb "clion" jetbrains.clion)
       github-desktop

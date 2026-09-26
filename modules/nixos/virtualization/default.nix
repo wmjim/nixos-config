@@ -3,20 +3,14 @@
 # 消费者：virt-manager/virt-viewer 手动使用，以及 WinApps（Windows 应用独立窗口接入，
 # 见 modules/home-manager/gui/winapps.nix）。Windows 11 需要 swtpm（TPM 2.0）与
 # nixpkgs 默认携带的 OVMF（Secure Boot），二者均已在此模块就位。
-{ lib
-, config
-, pkgs
-, inputs
-, ...
+{
+  lib,
+  config,
+  pkgs,
+  ...
 }:
 let
   cfg = config.mySystem.virtualization;
-
-  # 装机介质：上游 virtio-win ISO + WinApps oem 注册脚本（单盘搞定装驱动与 RemoteApp 注册）。
-  # winappsRev 取自 flake.lock 的 winapps 输入，升级输入后 oem 脚本哈希失配会显式报错。
-  windowsVmMedia = pkgs.callPackage ../../../pkgs/windows-vm-media {
-    winappsRev = inputs.winapps.rev;
-  };
 in
 {
   config = lib.mkIf cfg.enable {
@@ -28,8 +22,10 @@ in
       virtiofsd
       # 虚拟机装机介质（挂 virt-manager 的 CDROM 设备）：
       #   /run/current-system/sw/share/windows-vm-media/windows-vm-media.iso
+      # 上游 virtio-win ISO + WinApps oem 注册脚本，经 overlays/default.nix
+      # 注入（winappsRev 按 flake.lock 固定，升级输入后哈希失配会显式报错）。
       # 文件本身不变时该派生不重建；日后不再新建虚拟机可以从这里删掉省 ~840MB
-      windowsVmMedia
+      windows-vm-media
     ];
 
     virtualisation.libvirtd = {

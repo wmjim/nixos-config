@@ -1,7 +1,18 @@
 # MacTahoe GTK 主题（vinceliuice，macOS Tahoe 风格）
 # nixpkgs 未收录，此处仿照 whitesur-gtk-theme 打包
 # 构建方式：install.sh 内部用 sassc 编译 SCSS 到 $out/share/themes
-{ lib, stdenv, fetchFromGitHub, dialog, glib, gnome-themes-extra, jdupes, libxml2, sassc, util-linux }:
+{
+  lib,
+  stdenv,
+  fetchFromGitHub,
+  dialog,
+  glib,
+  gnome-themes-extra,
+  jdupes,
+  libxml2,
+  sassc,
+  util-linux,
+}:
 
 stdenv.mkDerivation {
   pname = "mactahoe-gtk-theme";

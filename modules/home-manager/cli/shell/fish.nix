@@ -1,8 +1,12 @@
 # Fish 配置
-{ lib, config, pkgs, ... }:
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}:
 let
   cfg = config.mengw.cli.shell.fish;
-  shellCfg = config.mengw.cli.shell;
   cliCfg = config.mengw.cli;
 in
 {
@@ -12,7 +16,7 @@ in
     description = "启用 Fish Shell 配置";
   };
 
-  config = lib.mkIf (cfg.enable && shellCfg.enable && cliCfg.enable) {
+  config = lib.mkIf (cfg.enable && cliCfg.enable) {
     programs.fish = {
       enable = true;
       plugins = [

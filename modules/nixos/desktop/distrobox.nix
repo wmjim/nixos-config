@@ -1,5 +1,10 @@
 # Distrobox + Podman 容器工具（系统级）
-{ lib, config, pkgs, ... }:
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}:
 let
   cfg = config.mySystem.desktop;
 in

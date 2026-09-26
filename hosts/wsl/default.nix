@@ -1,5 +1,11 @@
 # WSL 主机（仅 CLI/TUI）
-{ config, pkgs, lib, inputs, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  inputs,
+  ...
+}:
 {
   imports = [
     inputs.nixos-wsl.nixosModules.default
@@ -11,9 +17,9 @@
   # WSL 容器模式，不需要 bootloader
   boot.isContainer = true;
 
-  # WSL 默认用户
+  # WSL 默认用户（由 mySystem.primaryUser 派生，与其它主机的接线同源）
   wsl.enable = true;
-  wsl.defaultUser = "mengw";
+  wsl.defaultUser = config.mySystem.primaryUser;
 
   # 根文件系统
   fileSystems."/" = {

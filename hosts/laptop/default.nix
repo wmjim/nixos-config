@@ -1,5 +1,10 @@
 # NixOS 笔记本（GNOME 桌面）
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 {
   imports = [
     ./hardware.nix
@@ -30,6 +35,15 @@
     hardware.enable = true;
     hardware.nvidia.enable = true;
     desktop.enable = true;
+    # 内屏 1080p，分数缩放 1.25（desktop.scale 由此派生）
+    desktop.monitors = [
+      {
+        name = "eDP-1";
+        mode = "1920x1080@59.977";
+        scale = 1.25;
+        focus = true;
+      }
+    ];
     desktop.gnome.enable = true;
     desktop.niri.enable = true;
     desktop.distrobox.enable = true;

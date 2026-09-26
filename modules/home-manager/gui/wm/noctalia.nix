@@ -1,15 +1,21 @@
 # Noctalia Shell 用户级配置
-{ lib, config, osConfig, inputs, ... }:
+{
+  lib,
+  config,
+  osConfig,
+  inputs,
+  ...
+}:
 let
   cfg = config.mengw.gui.wm.noctalia;
-  wmCfg = config.mengw.gui.wm;
   guiCfg = config.mengw.gui;
 
-  # DDC/CI 亮度依赖 i2c-dev 且需外接显示器支持，仅 desktop 满足
-  # （hosts/desktop/default.nix 开了 hardware.i2c.enable，laptop 未开）。
-  # laptop 内屏是 eDP，走 sysfs backlight；在 laptop 上 enable_ddcutil 只会让
+  # DDC/CI 亮度：由主机声明的 mySystem.desktop.monitors 中 ddc = true 的输出
+  # 派生（desktop 的外接屏 DP-2；需硬件支持且主机已开 hardware.i2c）。
+  # 内屏 eDP 走 sysfs backlight；在不支持的主机上 enable_ddcutil 只会让
   # noctalia 反复跑必然失败的 ddcutil detect。
-  useDdc = osConfig.networking.hostName == "desktop";
+  ddcMonitors = lib.filter (m: m.ddc) osConfig.mySystem.desktop.monitors;
+  useDdc = ddcMonitors != [ ];
 in
 {
   options.mengw.gui.wm.noctalia.enable = lib.mkOption {
@@ -22,7 +28,7 @@ in
     inputs.noctalia.homeModules.default
   ];
 
-  config = lib.mkIf (cfg.enable && wmCfg.enable && guiCfg.enable) {
+  config = lib.mkIf (cfg.enable && guiCfg.enable) {
     programs.noctalia = {
       enable = true;
 
@@ -48,7 +54,10 @@ in
         };
         brightness = {
           enable_ddcutil = useDdc;
-          monitor = lib.mkIf useDdc { "DP-2".backend = "ddcutil"; };
+          # 每个声明了 ddc = true 的输出各生成一条 ddcutil 后端映射
+          monitor = lib.mkIf useDdc (
+            lib.listToAttrs (map (m: lib.nameValuePair m.name { backend = "ddcutil"; }) ddcMonitors)
+          );
         };
         audio = {
           # 不写 enable：noctalia 1.0 的配置校验把它判为 "unknown setting"

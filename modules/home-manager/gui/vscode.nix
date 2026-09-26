@@ -5,7 +5,12 @@
 # extensions.json/.obsolete 索引相互打架 —— flake update 重建后扩展 store path
 # 变更、索引刷新时机又受"VSCode 是否在运行"影响，导致 nix 管理的插件反复丢失。
 # 现改由 VSCode 内置 Settings Sync（登录账号云同步）管理扩展，此处仅安装 code 本体。
-{ lib, config, pkgs, ... }:
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}:
 let
   cfg = config.mengw.gui.vscode;
   guiCfg = config.mengw.gui;

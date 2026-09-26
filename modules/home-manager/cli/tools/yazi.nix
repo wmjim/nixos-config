@@ -1,9 +1,13 @@
 # Yazi — 终端文件管理器
 # 暗色 flavor 用 Catppuccin Frappe，与 foot / Neovim 同家族（此前是 Everforest）
-{ lib, config, pkgs, ... }:
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}:
 let
   cfg = config.mengw.cli.tools.yazi;
-  toolsCfg = config.mengw.cli.tools;
   cliCfg = config.mengw.cli;
 
   # yazi flavor：把上游仓库里的 flavor 目录复制成 store 目录。
@@ -25,7 +29,14 @@ let
     pkgs.stdenv.mkDerivation {
       inherit pname;
       version = "unstable";
-      src = pkgs.fetchFromGitHub { inherit owner repo rev sha256; };
+      src = pkgs.fetchFromGitHub {
+        inherit
+          owner
+          repo
+          rev
+          sha256
+          ;
+      };
       installPhase = ''
         mkdir -p $out
         cp -r ${flavorGlob} $out/
@@ -55,7 +66,7 @@ in
     description = "启用 Yazi 终端文件管理器";
   };
 
-  config = lib.mkIf (cfg.enable && toolsCfg.enable && cliCfg.enable) {
+  config = lib.mkIf (cfg.enable && cliCfg.enable) {
     programs.yazi = {
       enable = true;
       enableFishIntegration = true;

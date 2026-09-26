@@ -52,8 +52,12 @@ DPI 只取自 X11 的 `Xft.dpi` 资源（RESOURCE_MANAGER）。xwayland-satellit
 
 | 主机 | `mySystem.desktop.scale` | 写入的 `Xft.dpi` |
 | --- | --- | --- |
-| desktop | 1.5 | 144 |
-| laptop | 未设（默认 1） | 96 —— 与 Xwayland 默认值相同，即 wrapper 在此为空转 |
+| desktop | 1.5（monitors 派生） | 144 |
+| laptop | 1.25（monitors 派生） | 120 |
+
+> 注：laptop 此前未声明 scale（默认 1），wrapper 在该机为空转，而 niri 实际按
+> 1.25 渲染——XWayland 候选词一直偏小。scale 改由 `mySystem.desktop.monitors`
+> 派生后两台主机一致，此表随之修正。
 
 验证：
 

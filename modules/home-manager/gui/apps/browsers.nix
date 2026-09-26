@@ -1,13 +1,13 @@
 # 浏览器
-{ lib
-, config
-, pkgs
-, inputs
-, ...
+{
+  lib,
+  config,
+  pkgs,
+  inputs,
+  ...
 }:
 let
   cfg = config.mengw.gui.apps.browsers;
-  appsCfg = config.mengw.gui.apps;
   guiCfg = config.mengw.gui;
 in
 {
@@ -19,7 +19,7 @@ in
     description = "启用浏览器应用";
   };
 
-  config = lib.mkIf (cfg.enable && appsCfg.enable && guiCfg.enable) {
+  config = lib.mkIf (cfg.enable && guiCfg.enable) {
     home.packages = with pkgs; [
       brave
     ];

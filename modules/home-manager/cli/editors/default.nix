@@ -1,15 +1,7 @@
 # 编辑器配置
-{ lib, config, ... }:
-let
-  cfg = config.mengw.cli.editors;
-in
+# 门控：目录导入即生效（mengw.cli.enable 控制整个 CLI 层），无中间层开关；
+# 单独关闭某个叶子（如 neovim）用该叶子自己的 enable 选项。
 {
-  options.mengw.cli.editors.enable = lib.mkOption {
-    type = lib.types.bool;
-    default = true;
-    description = "启用编辑器配置";
-  };
-
   imports = [
     ./neovim.nix
   ];

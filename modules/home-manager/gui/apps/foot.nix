@@ -3,7 +3,6 @@
 { lib, config, ... }:
 let
   cfg = config.mengw.gui.apps.foot;
-  appsCfg = config.mengw.gui.apps;
   guiCfg = config.mengw.gui;
 in
 {
@@ -13,7 +12,7 @@ in
     description = "启用 Foot 终端模拟器";
   };
 
-  config = lib.mkIf (cfg.enable && appsCfg.enable && guiCfg.enable) {
+  config = lib.mkIf (cfg.enable && guiCfg.enable) {
     programs.foot = {
       enable = true;
 

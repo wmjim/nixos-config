@@ -1,22 +1,22 @@
 # CLI 工具配置
-{ lib, config, pkgs, ... }:
+# 门控：目录导入即生效（mengw.cli.enable 控制整个 CLI 层），无中间层开关；
+# 单独关闭某个叶子（如 tmux）用该叶子自己的 enable 选项。
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}:
 let
-  cfg = config.mengw.cli.tools;
   cliCfg = config.mengw.cli;
 in
 {
-  options.mengw.cli.tools.enable = lib.mkOption {
-    type = lib.types.bool;
-    default = true;
-    description = "启用 CLI 工具（fastfetch、lazygit 等）";
-  };
-
   imports = [
     ./yazi.nix
     ./tmux.nix
   ];
 
-  config = lib.mkIf (cfg.enable && cliCfg.enable) {
+  config = lib.mkIf cliCfg.enable {
     home.packages = with pkgs; [
       fastfetch
       lazydocker

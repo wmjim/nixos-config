@@ -32,11 +32,12 @@
 # 附：bundle 自带的 xlings 会在首次运行后落到 $MCPP_HOME/registry/bin/xlings。
 # 想用上游的短命令（mp / mbuild / mrun …共 30 个），跑
 # `"$MCPP_HOME/registry/bin/xlings" install mcpp-short-cmd -y`。
-{ lib
-, stdenvNoCC
-, fetchurl
-, symlinkJoin
-, writeShellScriptBin
+{
+  lib,
+  stdenvNoCC,
+  fetchurl,
+  symlinkJoin,
+  writeShellScriptBin,
 }:
 let
   version = "2026.9.18.3";
@@ -57,11 +58,12 @@ let
     };
   };
 
-  source = sources.${stdenvNoCC.hostPlatform.system} or (throw ''
-    mcpp-m: 上游未发布 ${stdenvNoCC.hostPlatform.system} 的预编译包
-    可用平台：linux-x86_64 / linux-aarch64 / macosx-arm64
-    见 https://github.com/mcpp-community/mcpp/releases
-  '');
+  source =
+    sources.${stdenvNoCC.hostPlatform.system} or (throw ''
+      mcpp-m: 上游未发布 ${stdenvNoCC.hostPlatform.system} 的预编译包
+      可用平台：linux-x86_64 / linux-aarch64 / macosx-arm64
+      见 https://github.com/mcpp-community/mcpp/releases
+    '');
 
   # bundle 必须保持 bin/ 与 registry/ 同级（mcpp 以自身路径反推 PREFIX），故整体
   # 落在 libexec/ 下，再由 wrapper 暴露 $out/bin/mcpp——不能把 bin/mcpp 摊到顶层

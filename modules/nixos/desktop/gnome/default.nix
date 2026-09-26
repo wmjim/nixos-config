@@ -1,5 +1,10 @@
 # GNOME 桌面环境
-{ lib, config, pkgs, ... }:
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}:
 let
   cfg = config.mySystem.desktop.gnome;
   desktopCfg = config.mySystem.desktop;
@@ -30,12 +35,15 @@ in
       user-themes
     ];
 
-    environment.systemPackages = with pkgs; [
-      # GNOME Shell 依赖 ibus-daemon 二进制，即使使用 fcitx5 也需提供
-      ibus
-      # 软件：扩展管理
-      gnome-tweaks
-    ] ++ cfg.extensions;
+    environment.systemPackages =
+      with pkgs;
+      [
+        # GNOME Shell 依赖 ibus-daemon 二进制，即使使用 fcitx5 也需提供
+        ibus
+        # 软件：扩展管理
+        gnome-tweaks
+      ]
+      ++ cfg.extensions;
 
     # 在64位系统上为 Wine 32 位应用提供 OpenGL
     hardware.graphics.enable32Bit = true;

@@ -1,8 +1,13 @@
 # 通讯工具
-{ lib, config, pkgs, myLib, ... }:
+{
+  lib,
+  config,
+  pkgs,
+  myLib,
+  ...
+}:
 let
   cfg = config.mengw.gui.apps.communication;
-  appsCfg = config.mengw.gui.apps;
   guiCfg = config.mengw.gui;
 
   wechat-scaled = myLib.wrapQtXWayland {
@@ -17,7 +22,7 @@ in
     description = "启用通讯工具";
   };
 
-  config = lib.mkIf (cfg.enable && appsCfg.enable && guiCfg.enable) {
+  config = lib.mkIf (cfg.enable && guiCfg.enable) {
     home.packages = with pkgs; [
       discord
       telegram-desktop

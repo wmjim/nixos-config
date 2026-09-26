@@ -15,7 +15,14 @@
 # 客户机：日常用本模块提供的 `winapps-usb attach <vid:pid>`（热插拔，用完 detach 交还
 # Linux）；想要开机即直通就用 virt-manager → Add Hardware → USB Host Device
 # （代价：设备总被 VM 占着）。同一探针无法同时给 Linux 与 Windows，详见 docs/winapps.md §10。
-{ lib, config, pkgs, osConfig, inputs, ... }:
+{
+  lib,
+  config,
+  pkgs,
+  osConfig,
+  inputs,
+  ...
+}:
 let
   cfg = config.mengw.gui.winapps;
   guiCfg = config.mengw.gui;
@@ -32,9 +39,12 @@ let
   # 1.5 倍屏 → 140，2 倍及以上 → 180，其余 → 100。可用 cfg.rdpScale 覆盖。
   desktopScale = osConfig.mySystem.desktop.scale;
   derivedScale =
-    if desktopScale >= 1.7 then "180"
-    else if desktopScale >= 1.3 then "140"
-    else "100";
+    if desktopScale >= 1.7 then
+      "180"
+    else if desktopScale >= 1.3 then
+      "140"
+    else
+      "100";
   rdpScale = if cfg.rdpScale != null then cfg.rdpScale else derivedScale;
 
   extraDriveFlags = lib.concatMapStrings (d: " /drive:${d.name},${d.path}") cfg.extraDrives;
@@ -194,25 +204,38 @@ in
 
     # null 表示按 mySystem.desktop.scale 自动派生
     rdpScale = lib.mkOption {
-      type = lib.types.nullOr (lib.types.enum [ "100" "140" "180" ]);
+      type = lib.types.nullOr (
+        lib.types.enum [
+          "100"
+          "140"
+          "180"
+        ]
+      );
       default = null;
       description = "RDP 缩放档位（FreeRDP 只支持 100/140/180 三档）";
     };
 
     extraDrives = lib.mkOption {
-      type = lib.types.listOf (lib.types.submodule {
-        options = {
-          name = lib.mkOption {
-            type = lib.types.str;
-            description = "Windows 侧 \\\\tsclient\\<name> 的共享名";
+      type = lib.types.listOf (
+        lib.types.submodule {
+          options = {
+            name = lib.mkOption {
+              type = lib.types.str;
+              description = "Windows 侧 \\\\tsclient\\<name> 的共享名";
+            };
+            path = lib.mkOption {
+              type = lib.types.str;
+              description = "暴露给 Windows 的主机目录绝对路径";
+            };
           };
-          path = lib.mkOption {
-            type = lib.types.str;
-            description = "暴露给 Windows 的主机目录绝对路径";
-          };
-        };
-      });
-      default = [{ name = "proj"; path = "${homeDir}/Projects"; }];
+        }
+      );
+      default = [
+        {
+          name = "proj";
+          path = "${homeDir}/Projects";
+        }
+      ];
       description = "额外以 RDP 磁盘重定向暴露给 Windows 的目录";
     };
   };
@@ -222,7 +245,12 @@ in
     # 供手动全屏 RDP 会话（xfreerdp / wlfreerdp）与排错用（xfreerdp +auth-only 验凭据、
     # 单跑一次 RemoteApp 会话）。不会改变 winapps 的自动探测结果：包装器把同一份 freerdp
     # 前置到 PATH，仍取 sdl-freerdp。
-    home.packages = [ winapps.winapps winapps.winapps-launcher pkgs.freerdp winappsUsb ];
+    home.packages = [
+      winapps.winapps
+      winapps.winapps-launcher
+      pkgs.freerdp
+      winappsUsb
+    ];
 
     # 与 virt-manager/virsh 统一 URI，避免默认落到 qemu:///session 找不到域
     home.sessionVariables.LIBVIRT_DEFAULT_URI = "qemu:///system";
@@ -250,11 +278,10 @@ in
     '';
 
     # 密码文件是唯一不托管的输入，缺失时明确提示而非静默失败
-    home.activation.winappsRdpPasswordCheck =
-      lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-        if [ ! -f "${rdpPassFile}" ]; then
-          warnEcho "WinApps 尚未设置 Windows 密码，请执行：printf '%s' '你的密码' > ${rdpPassFile} && chmod 600 ${rdpPassFile}"
-        fi
-      '';
+    home.activation.winappsRdpPasswordCheck = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      if [ ! -f "${rdpPassFile}" ]; then
+        warnEcho "WinApps 尚未设置 Windows 密码，请执行：printf '%s' '你的密码' > ${rdpPassFile} && chmod 600 ${rdpPassFile}"
+      fi
+    '';
   };
 }

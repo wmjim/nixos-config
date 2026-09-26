@@ -1,8 +1,12 @@
 # 游戏工具（Steam 客户端由系统模块 modules/nixos/desktop/steam.nix 提供）
-{ lib, config, pkgs, ... }:
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}:
 let
   cfg = config.mengw.gui.apps.steam;
-  appsCfg = config.mengw.gui.apps;
   guiCfg = config.mengw.gui;
 in
 {
@@ -12,7 +16,7 @@ in
     description = "启用游戏工具（MangoHud、GameMode、Gamescope 等）";
   };
 
-  config = lib.mkIf (cfg.enable && appsCfg.enable && guiCfg.enable) {
+  config = lib.mkIf (cfg.enable && guiCfg.enable) {
     home.packages = with pkgs; [
       mangohud # 独立性能监控（非 Steam 原生应用可用 mangohud <app>）
       gamemode # gamemoderun 提频调用（原生应用）

@@ -1,5 +1,11 @@
 # Niri 窗口管理器 — 系统级配置
-{ lib, config, pkgs, inputs, ... }:
+{
+  lib,
+  config,
+  pkgs,
+  inputs,
+  ...
+}:
 let
   cfg = config.mySystem.desktop.niri;
   desktopCfg = config.mySystem.desktop;
@@ -78,7 +84,9 @@ in
     # keyd 把 /var/run/keyd.socket 的属组设为 keyd（缺组时只 warn 并保持
     # root-only），watcher 以普通用户身份调 `keyd bind` 需要这个组。
     users.groups.keyd = lib.mkIf cfg.keydClipboard.enable { };
-    mySystem.users.mengw.extraGroups = lib.mkIf cfg.keydClipboard.enable [ "keyd" ];
+    mySystem.users.${config.mySystem.primaryUser}.extraGroups = lib.mkIf cfg.keydClipboard.enable [
+      "keyd"
+    ];
 
     # keyd 建 socket 前会 setgid("keyd")（src/ipc.c 的 chgid()），失败就 exit(-1)；
     # 而 nixpkgs 模块的 CapabilityBoundingSet 只留 CAP_SYS_NICE/CAP_IPC_LOCK，
@@ -101,8 +109,7 @@ in
     # startup.kdl 是 git 仓库内的纯文本（symlink 进 ~/.config/niri），
     # 无法插入 store 路径，只能依赖 PATH 解析。
     environment.systemPackages = [
-      (pkgs.writeShellScriptBin "polkit-gnome-authentication-agent-1"
-        ''exec ${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1 "$@"'')
+      (pkgs.writeShellScriptBin "polkit-gnome-authentication-agent-1" ''exec ${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1 "$@"'')
 
       # XWayland 下的 Xft.dpi 补写（workaround）。
       #

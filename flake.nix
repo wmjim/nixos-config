@@ -15,8 +15,12 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # home-manager 跟踪 master：nixpkgs 走 master（unstable），HM release 分支
+    # 与之存在 API 错位（stdenv.isLinux 弃用、fish 补全脚本路径等），此前需要
+    # 两个 workaround overlay 维持（见 modules/home-manager/default.nix 的删除记录）。
+    # master 分支与 nixpkgs master 同步演进，错位消失后即可删掉那些 overlay。
     home-manager = {
-      url = "github:nix-community/home-manager/release-26.05";
+      url = "github:nix-community/home-manager/master";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -49,39 +53,39 @@
   };
 
   outputs =
-    { self
-    , nixpkgs
-    , nur
-    , noctalia
-    , home-manager
-    , nixos-wsl
-    , nix-darwin
-    , ...
+    {
+      self,
+      nixpkgs,
+      nur,
+      noctalia,
+      home-manager,
+      nixos-wsl,
+      nix-darwin,
+      ...
     }@inputs:
     let
       lib = nixpkgs.lib;
       myLib = import ./lib { inherit lib; };
 
-      # Home Manager 共享样板：减少每个主机的重复代码
+      # Home Manager 共享样板：减少每个主机的重复代码。
+      # useGlobalPkgs = true：HM 直接复用系统级 nixpkgs 实例（含 core 注入的
+      # NUR 与自定义包 overlay），不再单独实例化——overlay 与 allowUnfree 只需
+      # 在系统级维护一处，darwin 侧也因此不再需要 mkForce 清空 overlay 的 hack。
       mkHomeManager =
-        { extraModules ? [ ]
-        ,
+        {
+          extraModules ? [ ],
         }:
         { config, ... }:
         {
-          home-manager.useGlobalPkgs = false;
+          home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
           home-manager.backupFileExtension = "hm-bak";
           home-manager.extraSpecialArgs = { inherit inputs myLib; };
-          home-manager.users.mengw.imports = [
+          # 用户名不在此硬编码：由 core/users.nix 的 mySystem.primaryUser 派生
+          home-manager.users.${config.mySystem.primaryUser}.imports = [
             ./modules/home-manager
           ]
           ++ extraModules;
-          home-manager.sharedModules = [
-            {
-              nixpkgs.config.allowUnfree = true;
-            }
-          ];
         };
 
       # 所有 NixOS 主机共享的核心模块
@@ -101,7 +105,7 @@
         # 台式机（Niri 桌面）
         desktop = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
-          specialArgs = { inherit inputs; };
+          specialArgs = { inherit inputs myLib; };
           modules = nixosCore ++ [
             ./hosts/desktop
             (mkHomeManager { extraModules = [ ./modules/home-manager/gui ]; })
@@ -111,7 +115,7 @@
         # 笔记本（GNOME 桌面）
         laptop = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
-          specialArgs = { inherit inputs; };
+          specialArgs = { inherit inputs myLib; };
           modules = nixosCore ++ [
             ./hosts/laptop
             (mkHomeManager { extraModules = [ ./modules/home-manager/gui ]; })
@@ -121,7 +125,7 @@
         # WSL（仅 CLI/TUI）
         wsl = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
-          specialArgs = { inherit inputs; };
+          specialArgs = { inherit inputs myLib; };
           modules = nixosCore ++ [
             ./hosts/wsl
             (mkHomeManager { })
@@ -131,7 +135,7 @@
         # 服务器（无桌面）
         server = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
-          specialArgs = { inherit inputs; };
+          specialArgs = { inherit inputs myLib; };
           modules = nixosCore ++ [
             ./hosts/server
             (mkHomeManager { })
@@ -145,10 +149,11 @@
       darwinConfigurations = {
         macbook = nix-darwin.lib.darwinSystem {
           system = "aarch64-darwin";
-          specialArgs = { inherit inputs; };
+          specialArgs = { inherit inputs myLib; };
           modules = [
-            ./hosts/_common/darwin/base.nix
-            ./hosts/_common/darwin/users.nix
+            # macOS 共享层（base/users/gui）统一收口在 modules/darwin，
+            # 与 NixOS 侧「共享配置在 modules/、主机差异在 hosts/」的约定对齐
+            ./modules/darwin
             ./hosts/macbook
 
             home-manager.darwinModules.home-manager
@@ -156,15 +161,84 @@
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
               home-manager.extraSpecialArgs = { inherit inputs myLib; };
-              home-manager.users.mengw = {
-                nixpkgs.overlays = lib.mkForce [ ];
-                imports = [ ./modules/home-manager ];
-              };
-              home-manager.sharedModules = [ ];
+              home-manager.users.mengw.imports = [ ./modules/home-manager ];
             }
           ];
         };
       };
+
+      # ==========================================
+      # 自定义包与 overlay
+      # ==========================================
+      # packages 供 `nix build .#<name>` 单独构建验证某个自维护包；overlays 供
+      # 外部 flake 复用。两者与系统级注入（modules/nixos/core 与 modules/darwin/base
+      # 的 nixpkgs.overlays）共用同一份 overlays/default.nix，包清单只维护这一处。
+      # nix flake check 会逐一评估 packages.*，nixpkgs 滚动带来的包级回归
+      # （fetch 哈希失配、依赖 API 变更）在 CI 即暴露，不再只靠主机 dry-build 兜底。
+      overlays.default = import ./overlays { inherit inputs; };
+
+      packages =
+        let
+          # 把 overlay 直接应用到 legacyPackages，得到自定义包的属性集
+          customPkgs =
+            system:
+            (import ./overlays { inherit inputs; }) nixpkgs.legacyPackages.${system}
+              nixpkgs.legacyPackages.${system};
+        in
+        myLib.forAllSystems (
+          system:
+          let
+            pkgs = nixpkgs.legacyPackages.${system};
+          in
+          # 按各包 meta.platforms 过滤（如 windows-vm-media 仅 linux），
+          # 避免在不支持的平台上评估必败的包
+          lib.filterAttrs (_: pkg: lib.meta.availableOn pkgs.stdenv.hostPlatform pkg) (customPkgs system)
+        );
+
+      # ==========================================
+      # 检查（nix flake check / CI 会逐一执行）
+      # ==========================================
+      # niri 配置校验：niri 的用户配置走 mkOutOfStoreSymlink 直连 git 工作树，
+      # 编辑即生效、无代际回滚，改坏配置要到下次登录才暴露。这里把静态部分
+      # （仓库内 config/ 目录）与求值生成的部分（niri-colors / niri-outputs）
+      # 按真实布局拼装后跑 `niri validate`，把语法/结构错误拦在提交阶段。
+      # 主机清单不硬编码：从 nixosConfigurations 枚举开了 niri 的主机。
+      checks =
+        let
+          # niri 校验只在 linux 桌面主机上有意义（niri 为 linux-only 包）
+          pkgs = nixpkgs.legacyPackages.x86_64-linux;
+          niriHosts = lib.filterAttrs (_: c: c.config.mySystem.desktop.niri.enable) self.nixosConfigurations;
+          mkNiriValidate =
+            host:
+            let
+              hostCfg = self.nixosConfigurations.${host}.config;
+              hmUser = hostCfg.home-manager.users.${hostCfg.mySystem.primaryUser};
+              # config.kdl 的 include 对 ~ 展开到 $HOME，相对路径以 config.kdl
+              # 所在目录为基准——按真实布局放置后整目录拷出再校验
+              mkKdl = name: pkgs.writeText (baseNameOf name) hmUser.xdg.configFile.${name}.text;
+            in
+            pkgs.runCommand "niri-validate-${host}"
+              {
+                nativeBuildInputs = [ pkgs.niri ];
+              }
+              ''
+                set -eu
+                export HOME="$PWD/home"
+                mkdir -p "$HOME/.config/niri-colors" "$HOME/.config/niri-outputs"
+                cp ${mkKdl "niri-colors/layout.kdl"}   "$HOME/.config/niri-colors/layout.kdl"
+                cp ${mkKdl "niri-colors/overview.kdl"} "$HOME/.config/niri-colors/overview.kdl"
+                cp ${mkKdl "niri-outputs/outputs.kdl"} "$HOME/.config/niri-outputs/outputs.kdl"
+                cp -r ${./modules/home-manager/gui/wm/config} conf
+                chmod -R u+w conf
+                niri validate -c conf/config.kdl
+                touch "$out"
+              '';
+        in
+        {
+          x86_64-linux = lib.mapAttrs' (
+            host: _: lib.nameValuePair "niri-validate-${host}" (mkNiriValidate host)
+          ) niriHosts;
+        };
 
       # ==========================================
       # 开发 Shell
@@ -176,15 +250,21 @@
         in
         {
           default = pkgs.mkShell {
-            packages = with pkgs; [
-              git
-              nixpkgs-fmt
+            packages = [
+              pkgs.git
+              # treefmt 封装：整树/目录格式化（nix fmt 裸调用走的就是它）
+              pkgs.nixfmt-tree
+              # 裸 nixfmt：编辑器 format-on-save 等单文件场景（stdin 模式）
+              pkgs.nixfmt
             ];
           };
         }
       );
 
-      # 格式化配置
-      formatter = myLib.forAllSystems (system: nixpkgs.legacyPackages.${system}.nixpkgs-fmt);
+      # 格式化配置：nixfmt（RFC 166 风格，nixpkgs 官方采纳；nixpkgs-fmt 上游
+      # 已归档停更，2026-09 迁移）。用 nixfmt-tree 包装器而非裸 nixfmt：
+      # nixfmt 1.5 起裸调用（无参数）只读 stdin，`nix fmt` 会空转报错；
+      # nixfmt-tree 基于 treefmt，裸调用即递归格式化当前目录全部 .nix 文件。
+      formatter = myLib.forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt-tree);
     };
 }

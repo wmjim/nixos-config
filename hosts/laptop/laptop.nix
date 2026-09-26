@@ -1,4 +1,9 @@
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 
 {
   # 电池状态监控
@@ -41,7 +46,6 @@
     # 防止 TLP 自动挂起蓝牙 USB 设备导致蓝牙被关闭
     USB_EXCLUDE_BTUSB = "1";
   };
-
 
   # 温度监控工具：sensors 查看 CPU 温度
   environment.systemPackages = with pkgs; [ lm_sensors ];

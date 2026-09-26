@@ -1,5 +1,10 @@
 # Fcitx5 用户级配置
-{ lib, config, pkgs, ... }:
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}:
 let
   cfg = config.mengw.gui.fcitx5;
   guiCfg = config.mengw.gui;
@@ -42,14 +47,14 @@ let
 
   # 当前 GTK 图标主题名（主题模块设为 MacTahoe-dark）。
   # 必须与之同名建一份**只有图标、没有 index.theme** 的薄覆盖层，原因见 config 段开头的说明。
-  iconThemeName =
-    if config.gtk.iconTheme == null then null else config.gtk.iconTheme.name;
+  iconThemeName = if config.gtk.iconTheme == null then null else config.gtk.iconTheme.name;
   # 位置必须是 Qt 风格的 scalable/apps/：index.theme 缺失时 Noctalia 会用内置的
   # 回退目录表（src/system/icon_resolver.cpp）去搜，表里 scalable 在前，而
   # GTK 风格的 apps/scalable/ 不在表内。
-  imeIconDirs =
-    [ ".local/share/icons/hicolor/scalable/apps" ]
-    ++ lib.optional (iconThemeName != null) ".local/share/icons/${iconThemeName}/scalable/apps";
+  imeIconDirs = [
+    ".local/share/icons/hicolor/scalable/apps"
+  ]
+  ++ lib.optional (iconThemeName != null) ".local/share/icons/${iconThemeName}/scalable/apps";
 
   # rime 按 mtime 判断构建缓存是否失效，而 nix store 内文件 mtime 恒为 0，
   # 因此数据包路径变化时 rime 会重建词典却沿用旧 schema，导致输入法静默失效
@@ -200,44 +205,42 @@ in
     #
     # ⚠ Noctalia 缓存每个托盘项解析到的图标路径：改完图标后如果栏里没变，重启一次
     #   noctalia（或等该项图标名随输入法状态变化）即可。
-    home.file =
-      {
-        ".local/share/fcitx5/rime/default.custom.yaml".text = ''
-          patch:
-            __include: wanxiang_suggested_default:/
-            __patch:
-              menu/page_size: 7
-              # 万象默认 Shift_L/Shift_R 都是 commit_code（上屏编码再切英文）。
-              # 两键统一改回 inline_ascii：进临时英文模式，回车才上屏、回到中文态。
-              ascii_composer/switch_key/Shift_L: inline_ascii
-              ascii_composer/switch_key/Shift_R: inline_ascii
-        '';
-      }
-      # 三个状态字形 × 两处放置位置（当前主题覆盖层 + hicolor 兜底）
-      // lib.listToAttrs (
-        lib.concatMap (
-          dir:
-          lib.mapAttrsToList (name: text: {
-            name = "${dir}/${name}.svg";
-            value = { inherit text; };
-          }) imeIcons
-        ) imeIconDirs
-      );
+    home.file = {
+      ".local/share/fcitx5/rime/default.custom.yaml".text = ''
+        patch:
+          __include: wanxiang_suggested_default:/
+          __patch:
+            menu/page_size: 7
+            # 万象默认 Shift_L/Shift_R 都是 commit_code（上屏编码再切英文）。
+            # 两键统一改回 inline_ascii：进临时英文模式，回车才上屏、回到中文态。
+            ascii_composer/switch_key/Shift_L: inline_ascii
+            ascii_composer/switch_key/Shift_R: inline_ascii
+      '';
+    }
+    # 三个状态字形 × 两处放置位置（当前主题覆盖层 + hicolor 兜底）
+    // lib.listToAttrs (
+      lib.concatMap (
+        dir:
+        lib.mapAttrsToList (name: text: {
+          name = "${dir}/${name}.svg";
+          value = { inherit text; };
+        }) imeIcons
+      ) imeIconDirs
+    );
 
     # 只在数据源指纹变化时才清理，避免每次 switch 都触发全量重建。
     # 仅删除 build/（纯派生产物）；用户词典 *.userdb、*.gram、sync/ 均保留。
-    home.activation.rimeBuildCacheInvalidate =
-      lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-        if [ ! -d "${rimeDir}" ]; then
-          verboseEcho "rime 数据目录不存在，跳过构建缓存清理: ${rimeDir}"
-        elif [ "$(cat "${stampFile}" 2>/dev/null || true)" != "${rimeDataKey}" ]; then
-          verboseEcho "rime 数据源已变化，清理构建缓存（保留用户词典）"
-          $DRY_RUN_CMD rm -rf "${rimeDir}/build"
-          $DRY_RUN_CMD mkdir -p "$(dirname "${stampFile}")"
-          $DRY_RUN_CMD printf '%s\n' "${rimeDataKey}" > "${stampFile}"
-        else
-          verboseEcho "rime 数据源未变化，保留构建缓存"
-        fi
-      '';
+    home.activation.rimeBuildCacheInvalidate = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      if [ ! -d "${rimeDir}" ]; then
+        verboseEcho "rime 数据目录不存在，跳过构建缓存清理: ${rimeDir}"
+      elif [ "$(cat "${stampFile}" 2>/dev/null || true)" != "${rimeDataKey}" ]; then
+        verboseEcho "rime 数据源已变化，清理构建缓存（保留用户词典）"
+        $DRY_RUN_CMD rm -rf "${rimeDir}/build"
+        $DRY_RUN_CMD mkdir -p "$(dirname "${stampFile}")"
+        $DRY_RUN_CMD printf '%s\n' "${rimeDataKey}" > "${stampFile}"
+      else
+        verboseEcho "rime 数据源未变化，保留构建缓存"
+      fi
+    '';
   };
 }

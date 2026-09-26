@@ -1,9 +1,18 @@
 # NixOS 核心配置（所有 NixOS 主机共享）
 # 定义 mySystem 选项命名空间，导入所有子模块
-{ config, pkgs, lib, inputs, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  inputs,
+  ...
+}:
 let
+  # 主用户名（选项定义在 users.nix）：configDir、trusted-users、autoUpgrade
+  # 提交身份等均由此派生，避免用户名散落硬编码
+  primaryUser = config.mySystem.primaryUser;
   # 本机 flake 仓库路径（所有 NixOS 主机统一放在用户 Projects 目录下）
-  configDir = "${config.users.users.mengw.home}/Projects/nixos-config";
+  configDir = "${config.users.users.${primaryUser}.home}/Projects/nixos-config";
 in
 {
   # mySystem 选项命名空间 — 各主机通过设置这些选项来声明启用的功能
@@ -55,7 +64,7 @@ in
       [ "$SERVICE_RESULT" = "success" ] || exit 0
       repo="${configDir}"
       ${pkgs.git}/bin/git -C "$repo" diff --quiet -- flake.lock && exit 0
-      ${pkgs.util-linux}/bin/runuser -u ${config.users.users.mengw.name} -- \
+      ${pkgs.util-linux}/bin/runuser -u ${primaryUser} -- \
         ${pkgs.git}/bin/git -C "$repo" commit -m "chore(autoUpgrade): 刷新 flake.lock" -- flake.lock
     '';
 
@@ -68,7 +77,10 @@ in
 
     # Nix 配置
     nix.settings = {
-      experimental-features = [ "flakes" "nix-command" ];
+      experimental-features = [
+        "flakes"
+        "nix-command"
+      ];
       connect-timeout = 5;
       # 充分利用多核 CPU 加速构建
       max-jobs = "auto";
@@ -78,15 +90,20 @@ in
       # 保留 derivations 和 outputs 的依赖关系，避免重复构建
       keep-outputs = true;
       keep-derivations = true;
+      # 镜像在前（国内加速）。nixpkgs 的 config/nix.nix 会 mkAfter 追加官方源
+      # https://cache.nixos.org/、并无条件提供 root 用户与 cache.nixos.org 公钥，
+      # 故此处只声明增量，避免合并后出现重复项；与 darwin 侧
+      # （modules/darwin/base.nix）的镜像顺序保持一致
       substituters = [
         "https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store"
         "https://mirrors.ustc.edu.cn/nix-channels/store"
+        "https://nix-community.cachix.org"
       ];
       trusted-public-keys = [
         "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkj5bg+wLbWLCTCfOj2Wc="
-        "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
       ];
-      trusted-users = [ "root" "mengw" ];
+      # root 由 nixpkgs 提供，此处只加主用户
+      trusted-users = [ primaryUser ];
     };
 
     # 硬件加速
@@ -107,8 +124,14 @@ in
     # 允许不安全的包（每条须写明被哪个包需要，并定期复核是否仍有效）
     nixpkgs.config.permittedInsecurePackages = [ ];
 
-    # NUR overlay（系统级字体 harmonyos-sans 等依赖）
-    nixpkgs.overlays = [ inputs.nur.overlays.default ];
+    # NUR overlay（系统级字体 harmonyos-sans 等依赖）+ 自定义包 overlay
+    # （主题 / mcpp / windows-vm-media，清单见 overlays/default.nix）。
+    # useGlobalPkgs = true 后 Home Manager 直接复用这份系统级实例，
+    # overlay 只需在此注入一次，HM 侧不再重复维护。
+    nixpkgs.overlays = [
+      inputs.nur.overlays.default
+      (import ../../../overlays { inherit inputs; })
+    ];
 
     # nixos-upgrade.service 以 root 运行且 HOME=/root，读不到用户 ~/.gitconfig，
     # libgit2 因仓库属主非 root 而拒绝访问。必须在系统级 /etc/gitconfig 放开
@@ -123,7 +146,8 @@ in
     services.openssh = {
       enable = true;
       settings = {
-        # 允许密码登录
+        # 允许密码登录：有意为之——SSH 仅用于局域网登录，不暴露公网。
+        # 若某台主机日后需要暴露公网，应在该主机显式关闭此项并改用密钥认证。
         PasswordAuthentication = true;
         # 禁止root登录
         PermitRootLogin = "no";

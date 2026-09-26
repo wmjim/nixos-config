@@ -9,19 +9,19 @@ let
   # extraWrapArgs 用于注入应用专属的附加参数（如欧陆词典需要
   # 额外设置 XKB_CONFIG_ROOT 和清理 GST 插件路径）。
   wrapQtXWayland =
-    { pkgs
-    , pkg
-    , binary ? null
-    , scale ? 1.25
-    , # 可选：若应用运行窗口的 WM_CLASS 与桌面文件 ID 不一致（如欧陆词典窗口类为
+    {
+      pkgs,
+      pkg,
+      binary ? null,
+      scale ? 1.25,
+      # 可选：若应用运行窗口的 WM_CLASS 与桌面文件 ID 不一致（如欧陆词典窗口类为
       # eudic 而桌面文件是 eusoft-eudic.desktop），GNOME Shell / Dash to Panel 会
       # 无法把窗口与桌面文件关联，导致任务栏显示成通用图标。传入该窗口类名可为
       # 桌面文件补充 StartupWMClass 解决。
-      startupWMClass ? null
-    , # 需补充 StartupWMClass 的桌面文件名；null 时对包内所有 desktop 文件生效。
-      desktopFile ? null
-    , extraWrapArgs ? ""
-    ,
+      startupWMClass ? null,
+      # 需补充 StartupWMClass 的桌面文件名；null 时对包内所有 desktop 文件生效。
+      desktopFile ? null,
+      extraWrapArgs ? "",
     }:
     let
       # binary 未显式传入时，依次尝试包的 pname 与 meta.mainProgram；
@@ -31,9 +31,7 @@ let
         if binary != null then
           binary
         else
-          pkg.pname or pkg.meta.mainProgram or (
-            throw "wrapQtXWayland: 无法确定主程序名，请显式传入 binary=..."
-          );
+          pkg.pname or pkg.meta.mainProgram or (throw "wrapQtXWayland: 无法确定主程序名，请显式传入 binary=...");
 
       desktopFilePatch = lib.optionalString (startupWMClass != null) ''
         desktopFiles=${

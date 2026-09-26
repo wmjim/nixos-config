@@ -1,8 +1,12 @@
 # pot-translation 跨平台划词翻译
-{ lib, config, pkgs, ... }:
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}:
 let
   cfg = config.mengw.gui.apps.pot;
-  appsCfg = config.mengw.gui.apps;
   guiCfg = config.mengw.gui;
 
   pot-icon = pkgs.fetchurl {
@@ -20,7 +24,13 @@ let
     terminal = false;
     mimeTypes = [ ];
   };
-  tesseract = pkgs.tesseract.override { enableLanguages = [ "eng" "chi_sim" "chi_tra" ]; };
+  tesseract = pkgs.tesseract.override {
+    enableLanguages = [
+      "eng"
+      "chi_sim"
+      "chi_tra"
+    ];
+  };
 
   # Pot 调用封装：按需拉起常驻进程，再打它的本地 HTTP API。
   #
@@ -83,7 +93,7 @@ in
     description = "启用 Pot 划词翻译";
   };
 
-  config = lib.mkIf (cfg.enable && appsCfg.enable && guiCfg.enable) {
+  config = lib.mkIf (cfg.enable && guiCfg.enable) {
     home.packages = [
       potPackage
       potCtl

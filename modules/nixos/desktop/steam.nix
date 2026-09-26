@@ -1,6 +1,11 @@
 # Steam 游戏平台 — 系统级配置（仅 desktop 游戏机）
 # gamescope/MangoHud/GameMode 注入 Steam FHS 环境，游戏启动项可直接用 mangohud / gamemoderun
-{ lib, config, pkgs, ... }:
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}:
 let
   cfg = config.mySystem.desktop;
 in

@@ -1,21 +1,21 @@
 # Shell 配置
-{ lib, config, pkgs, ... }:
+# 门控：目录导入即生效（mengw.cli.enable 控制整个 CLI 层），无中间层开关；
+# 单独关闭某个叶子（如 fish）用该叶子自己的 enable 选项。
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}:
 let
-  cfg = config.mengw.cli.shell;
   cliCfg = config.mengw.cli;
 in
 {
-  options.mengw.cli.shell.enable = lib.mkOption {
-    type = lib.types.bool;
-    default = true;
-    description = "启用 Shell 配置（终端工具、Git 等）";
-  };
-
   imports = [
     ./fish.nix
   ];
 
-  config = lib.mkIf (cfg.enable && cliCfg.enable) {
+  config = lib.mkIf cliCfg.enable {
     # 快捷键速查表
     xdg.configFile."cheatsheets/" = {
       source = ./../cheatsheets;

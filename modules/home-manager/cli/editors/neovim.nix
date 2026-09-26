@@ -8,7 +8,6 @@
 { lib, config, ... }:
 let
   cfg = config.mengw.cli.editors.neovim;
-  editorsCfg = config.mengw.cli.editors;
   cliCfg = config.mengw.cli;
 in
 {
@@ -16,7 +15,7 @@ in
     default = true;
   };
 
-  config = lib.mkIf (cfg.enable && editorsCfg.enable && cliCfg.enable) {
+  config = lib.mkIf (cfg.enable && cliCfg.enable) {
     programs.neovim.enable = true;
     xdg.configFile."nvim".source = ./nvim;
   };

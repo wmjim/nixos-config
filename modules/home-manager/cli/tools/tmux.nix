@@ -3,11 +3,15 @@
 # 除基础配置外，本模块可选启用「会话持久化」：重启后把会话/窗口/面板/布局/每个
 # 面板的 cwd（可选：滚动历史、白名单程序）原样带回来。由 tmux-resurrect 负责
 # 快照的写入与重建，tmux-continuum 负责"server 刚启动时自动恢复"。
-{ lib, config, pkgs, ... }:
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}:
 let
   cfg = config.mengw.cli.tools.tmux;
   persist = cfg.persistence;
-  toolsCfg = config.mengw.cli.tools;
   cliCfg = config.mengw.cli;
 
   resurrect = pkgs.tmuxPlugins.resurrect;
@@ -73,7 +77,13 @@ let
         "$(${pkgs.coreutils}/bin/date -Is)" "$*" >&2
     }
 
-    export PATH=${lib.makeBinPath [ pkgs.coreutils pkgs.gawk pkgs.gnugrep ]}:$PATH
+    export PATH=${
+      lib.makeBinPath [
+        pkgs.coreutils
+        pkgs.gawk
+        pkgs.gnugrep
+      ]
+    }:$PATH
     tmux=${pkgs.tmux}/bin/tmux
     placeholder=main
 
@@ -219,7 +229,7 @@ in
     };
   };
 
-  config = lib.mkIf (cfg.enable && toolsCfg.enable && cliCfg.enable) {
+  config = lib.mkIf (cfg.enable && cliCfg.enable) {
     # 交给 HM 的 tmux 模块生成 ~/.config/tmux/tmux.conf（用 home.file 直写会与
     # 模块自身的 xdg.configFile 撞车），配置主体放在外部文件里保持可读。
     #
@@ -235,15 +245,14 @@ in
       plugins = lib.mkIf persist.enable [
         {
           plugin = resurrect;
-          extraConfig =
-            ''
-              # 快照目录 + 需要重新拉起的程序（写法说明见模块内注释与 docs/tmux.md）
-              set -g @resurrect-dir '${persist.directory}'
-              set -g @resurrect-processes '${processList}'
-            ''
-            + lib.optionalString persist.capturePaneContents ''
-              set -g @resurrect-capture-pane-contents 'on'
-            '';
+          extraConfig = ''
+            # 快照目录 + 需要重新拉起的程序（写法说明见模块内注释与 docs/tmux.md）
+            set -g @resurrect-dir '${persist.directory}'
+            set -g @resurrect-processes '${processList}'
+          ''
+          + lib.optionalString persist.capturePaneContents ''
+            set -g @resurrect-capture-pane-contents 'on'
+          '';
         }
         {
           plugin = continuum;

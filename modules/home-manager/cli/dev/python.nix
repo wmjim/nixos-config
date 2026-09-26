@@ -1,7 +1,11 @@
-{ lib, config, pkgs, ... }:
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}:
 let
   cfg = config.mengw.cli.dev.python;
-  devCfg = config.mengw.cli.dev;
   cliCfg = config.mengw.cli;
 in
 {
@@ -11,7 +15,7 @@ in
     description = "启用 Python 开发环境";
   };
 
-  config = lib.mkIf (cfg.enable && devCfg.enable && cliCfg.enable) {
+  config = lib.mkIf (cfg.enable && cliCfg.enable) {
     # Python 环境
     home.packages = with pkgs; [
       # 解释器与下面的包集必须同源，否则 PATH 里的 python3 与 site-packages 版本错配，

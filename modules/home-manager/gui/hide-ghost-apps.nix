@@ -20,8 +20,8 @@ in
   };
 
   config = lib.mkIf (cfg.enable && guiCfg.enable) {
-    xdg.dataFile = builtins.listToAttrs (builtins.map
-      (name: {
+    xdg.dataFile = builtins.listToAttrs (
+      builtins.map (name: {
         inherit name;
         value = {
           text = ''
@@ -30,7 +30,7 @@ in
             NoDisplay=true
           '';
         };
-      })
-      (builtins.map (x: "applications/${x}.desktop") ghostApps));
+      }) (builtins.map (x: "applications/${x}.desktop") ghostApps)
+    );
   };
 }

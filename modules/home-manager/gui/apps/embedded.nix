@@ -2,10 +2,14 @@
 # 覆盖：交叉编译工具链 + 烧录/调试工具 + PlatformIO 统一构建框架
 # 归属 GUI 层：CubeMX 是图形化配置器，探针/串口也都在桌面场景下用，无图形环境的主机
 # （server/wsl）不需要，故由 gui/apps 聚合而非 cli/dev。
-{ lib, config, pkgs, ... }:
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}:
 let
   cfg = config.mengw.gui.apps.embedded;
-  appsCfg = config.mengw.gui.apps;
   guiCfg = config.mengw.gui;
 
   # === stm32cubemx HiDPI 启动器包装 ===
@@ -60,7 +64,7 @@ in
     description = "启用嵌入式单片机开发环境（ARM/AVR 交叉工具链、烧录调试、PlatformIO）";
   };
 
-  config = lib.mkIf (cfg.enable && appsCfg.enable && guiCfg.enable) {
+  config = lib.mkIf (cfg.enable && guiCfg.enable) {
     home.packages =
       # === 通用（跨平台可用的烧录/调试协议与格式工具）===
       (with pkgs; [
@@ -92,34 +96,37 @@ in
         picotool # Pico 固件工具（BOOTSEL 模式 flash / info / 固件校验）
       ])
       # === Linux 原生（nixpkgs 仅构建 Linux 版或不可用于其它平台，见下注释）===
-      ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux (with pkgs; [
-        stlink # ST-Link 命令行烧录（st-flash / st-util），nixpkgs 仅构建 Linux 版
-        # lsusb：查 USB 设备的 VID:PID。之所以要专门装，是因为直通探针/串口到
-        # Windows 虚拟机时要填 vid:pid（见 winapps-usb 与 docs/winapps.md §10），
-        # 而 NixOS 默认不带 usbutils。（usbutils 的 meta.platforms 仅 linux，
-        # 故放这个 Linux 专属块而非上面的通用块。）
-        usbutils
-        stm32cubemxLauncher # STM32 引脚/外设图形化配置（unfree，仅 x86_64-linux；HiDPI 启动器包装见文件顶部）
-        android-tools
-        # 原生 AVR 交叉编译工具链（avr-gcc 走 pkgsCross 从源码构建，仅 Linux 可用）
-        pkgsCross.avr.buildPackages.gcc # avr-gcc 交叉编译器
-        pkgsCross.avr.buildPackages.binutils # avr-objcopy/objdump/ld 等
-        # 注意 1：不装 avr-gdb——它与 gcc-arm-embedded 自带同一批 GNU info 手册
-        # （sframe-spec/ctf-spec/annotate 等），buildEnv 合并 profile 时路径冲突。
-        # avr 调试可走 PlatformIO 或单机 devShell；需要 gdb 时在该 shell 里单独引入。
-        # 注意 2：不带 avr-libc——它的 meta.platforms = ["avr-none"]，属于 AVR 目标运行库，
-        # 不能被装进 x86_64 主机 profile。裸机 AVR（无 libc）avr-gcc 可直接用；
-        # 需要 libc 的 AVR 工程请走 PlatformIO（已装）或在该工程的 devShell 里以
-        # buildInputs 引用 pkgsCross.avr.avrlibc。
-      ]);
+      ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux (
+        with pkgs;
+        [
+          stlink # ST-Link 命令行烧录（st-flash / st-util），nixpkgs 仅构建 Linux 版
+          # lsusb：查 USB 设备的 VID:PID。之所以要专门装，是因为直通探针/串口到
+          # Windows 虚拟机时要填 vid:pid（见 winapps-usb 与 docs/winapps.md §10），
+          # 而 NixOS 默认不带 usbutils。（usbutils 的 meta.platforms 仅 linux，
+          # 故放这个 Linux 专属块而非上面的通用块。）
+          usbutils
+          stm32cubemxLauncher # STM32 引脚/外设图形化配置（unfree，仅 x86_64-linux；HiDPI 启动器包装见文件顶部）
+          android-tools
+          # 原生 AVR 交叉编译工具链（avr-gcc 走 pkgsCross 从源码构建，仅 Linux 可用）
+          pkgsCross.avr.buildPackages.gcc # avr-gcc 交叉编译器
+          pkgsCross.avr.buildPackages.binutils # avr-objcopy/objdump/ld 等
+          # 注意 1：不装 avr-gdb——它与 gcc-arm-embedded 自带同一批 GNU info 手册
+          # （sframe-spec/ctf-spec/annotate 等），buildEnv 合并 profile 时路径冲突。
+          # avr 调试可走 PlatformIO 或单机 devShell；需要 gdb 时在该 shell 里单独引入。
+          # 注意 2：不带 avr-libc——它的 meta.platforms = ["avr-none"]，属于 AVR 目标运行库，
+          # 不能被装进 x86_64 主机 profile。裸机 AVR（无 libc）avr-gcc 可直接用；
+          # 需要 libc 的 AVR 工程请走 PlatformIO（已装）或在该工程的 devShell 里以
+          # buildInputs 引用 pkgsCross.avr.avrlibc。
+        ]
+      );
 
     # === 固件仓库路径锚定 ===
     # 该路径记在 ~/.stm32cubemx/plugins/updater/updater.ini 的 [Path] 段，但同一 ini 还
     # 混着更新时间戳/窗口尺寸等可变状态，无法整体托管，故只在每次切换时钉住这一行。
     # 数据本身不搬运——首次迁移需手动 mv（见 docs/quirks.md），之后
     # CubeMX 下载新固件包即直接落到 cubemxRepository。
-    home.activation.stm32cubemxRepository =
-      lib.hm.dag.entryAfter [ "writeBoundary" ] (lib.optionalString pkgs.stdenv.hostPlatform.isLinux ''
+    home.activation.stm32cubemxRepository = lib.hm.dag.entryAfter [ "writeBoundary" ] (
+      lib.optionalString pkgs.stdenv.hostPlatform.isLinux ''
         ini="${config.home.homeDirectory}/.stm32cubemx/plugins/updater/updater.ini"
         if [ ! -f "$ini" ]; then
           verboseEcho "CubeMX 尚未运行过（$ini 不存在），跳过固件仓库路径锚定"
@@ -133,6 +140,7 @@ in
             $DRY_RUN_CMD ${pkgs.gnused}/bin/sed -i "s|^RepositoryPath=.*|RepositoryPath=${cubemxRepository}|" "$ini"
           fi
         fi
-      '');
+      ''
+    );
   };
 }

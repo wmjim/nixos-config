@@ -1,5 +1,10 @@
 # macOS GUI 管理：系统默认值 + Homebrew GUI 应用
-{ lib, config, pkgs, ... }:
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}:
 let
   cfg = config.mengw.darwin.gui;
   darwinCfg = config.mengw.darwin;

@@ -46,7 +46,10 @@
   # 提前进默认字体链，并给常见中文家族名做别名，让应用请求 SimSun /
   # 微软雅黑 / PingFang 等名称时也能命中覆盖完整的字体。
   fonts.fontconfig.defaultFonts = {
-    sansSerif = [ "HarmonyOS Sans SC" "LXGW WenKai" ];
+    sansSerif = [
+      "HarmonyOS Sans SC"
+      "LXGW WenKai"
+    ];
     serif = [ "LXGW WenKai" ];
     monospace = [ "Maple Mono Normal NL NF CN" ];
   };

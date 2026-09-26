@@ -5,7 +5,13 @@ let
   cfg = config.mySystem.proxy;
   proxyUrl = "http://127.0.0.1:${toString cfg.port}";
   noProxyList = lib.concatStringsSep "," (
-    [ "localhost" "127.0.0.1" "local.domain" "192.168.0.0/16" ] ++ cfg.extraNoProxy
+    [
+      "localhost"
+      "127.0.0.1"
+      "local.domain"
+      "192.168.0.0/16"
+    ]
+    ++ cfg.extraNoProxy
   );
   proxyEnv = {
     http_proxy = proxyUrl;

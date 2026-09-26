@@ -4,7 +4,11 @@
 # 上游仓库是整套 KDE 主题包，这里只取其中的 Kvantum 部分：plasma /
 # aurorae / look-and-feel 面向 Plasma 桌面，与本机（niri + Noctalia）无关，
 # 装进来只会增大闭包。
-{ lib, stdenv, fetchFromGitHub }:
+{
+  lib,
+  stdenv,
+  fetchFromGitHub,
+}:
 
 stdenv.mkDerivation {
   pname = "mactahoe-kvantum";

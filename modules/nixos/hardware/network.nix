@@ -1,5 +1,10 @@
 # WiFi 和网络管理
-{ lib, config, pkgs, ... }:
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}:
 let
   cfg = config.mySystem.hardware;
 in

@@ -11,7 +11,12 @@
 # 代理地址不可达时 http_proxy 语义是“只用代理且直接失败”，nix 不会回退直连，
 # 只能转源码构建——autoUpgrade 每日滚 flake.lock 会因此触发巨量本地编译，
 # 所以 nix-daemon 与 nixos-upgrade 必须拿到正确地址。
-{ lib, config, pkgs, ... }:
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}:
 let
   cfg = config.mySystem.proxy;
   envFile = "/run/clash-proxy/env";

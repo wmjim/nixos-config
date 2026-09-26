@@ -16,15 +16,15 @@
 # oem 脚本按 commit 固定抓取而非取自 inputs.winapps：上游 flake 的 nix-filter 未收录
 # oem/ 目录，store 里没有这些文件。winappsRev 由调用方从 flake.lock 的输入传入，
 # 保证与 winapps 版本同步（升级输入后哈希失配会显式构建失败，而非静默沿用旧脚本）。
-{ lib
-, stdenvNoCC
-, fetchurl
-, virtio-win
-, winappsRev
-, writeText
-, xorriso
-, gnused
-,
+{
+  lib,
+  stdenvNoCC,
+  fetchurl,
+  virtio-win,
+  winappsRev,
+  writeText,
+  xorriso,
+  gnused,
 }:
 let
   oemFiles = {
@@ -34,10 +34,12 @@ let
     "NetProfileCleanup.ps1" = "sha256-zsgVCr/FHG9Xad7eWvs7MFl2kuwdJx8Fzg2c8hpnn6w=";
   };
 
-  fetchOem = name: fetchurl {
-    url = "https://raw.githubusercontent.com/winapps-org/winapps/${winappsRev}/oem/${name}";
-    hash = oemFiles.${name};
-  };
+  fetchOem =
+    name:
+    fetchurl {
+      url = "https://raw.githubusercontent.com/winapps-org/winapps/${winappsRev}/oem/${name}";
+      hash = oemFiles.${name};
+    };
 
   # 客户机侧看不到 nix 配置，安装步骤必须落在介质上
   readme = writeText "README-WinApps.txt" ''

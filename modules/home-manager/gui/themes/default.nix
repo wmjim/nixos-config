@@ -1,5 +1,11 @@
 # Qt/GTK 主题配置
-{ lib, config, pkgs, osConfig, ... }:
+{
+  lib,
+  config,
+  pkgs,
+  osConfig,
+  ...
+}:
 let
   cfg = config.mengw.gui.themes;
   guiCfg = config.mengw.gui;
@@ -98,8 +104,7 @@ in
     # NixOS 桌面主机导入（见 flake.nix），macOS 不加载本模块，故必然存在。
     dconf.settings = {
       "org/gnome/shell" = {
-        enabled-extensions = map (e: e.extensionUuid)
-          (osConfig.mySystem.desktop.gnome.extensions or [ ]);
+        enabled-extensions = map (e: e.extensionUuid) (osConfig.mySystem.desktop.gnome.extensions or [ ]);
       };
       "org/gnome/shell/extensions/user-theme" = {
         name = "MacTahoe-Dark";

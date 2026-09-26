@@ -1,5 +1,10 @@
 # 蓝牙支持
-{ lib, config, pkgs, ... }:
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}:
 let
   cfg = config.mySystem.hardware;
 in

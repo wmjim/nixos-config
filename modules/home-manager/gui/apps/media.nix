@@ -1,8 +1,12 @@
 # 媒体 / 录屏 / 截图
-{ lib, config, pkgs, ... }:
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}:
 let
   cfg = config.mengw.gui.apps.media;
-  appsCfg = config.mengw.gui.apps;
   guiCfg = config.mengw.gui;
 
   picgo-clipboard-upload = pkgs.writeShellScriptBin "picgo-clipboard-upload" ''
@@ -74,7 +78,7 @@ in
     description = "启用媒体和录屏应用";
   };
 
-  config = lib.mkIf (cfg.enable && appsCfg.enable && guiCfg.enable) {
+  config = lib.mkIf (cfg.enable && guiCfg.enable) {
     home.packages = with pkgs; [
       vlc
       obs-studio

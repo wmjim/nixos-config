@@ -1,5 +1,10 @@
 # macOS 笔记本配置
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 
 {
   imports = [

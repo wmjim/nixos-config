@@ -58,9 +58,12 @@ nix store optimise
 ## 其他常用命令
 
 ```bash
-# 格式化所有 Nix 文件（nixpkgs-fmt）
+# 格式化所有 Nix 文件（nixfmt，RFC 166 风格；裸调用即递归格式化全树）
 nix fmt
 
-# 进入开发环境（git + nixpkgs-fmt）
+# 只格式化指定文件
+nix fmt path/to/file.nix
+
+# 进入开发环境（git + treefmt/nixfmt）
 nix develop
 ```

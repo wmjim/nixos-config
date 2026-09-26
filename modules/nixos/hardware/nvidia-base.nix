@@ -1,12 +1,18 @@
 # NVIDIA 驱动公共基础配置
-{ lib, config, pkgs, ... }:
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}:
 let
   cfg = config.mySystem.hardware;
 in
 {
   # 依赖 mySystem.hardware.enable：NVIDIA 配置体由该开关共同门控，且音频/图形等
   # 配套支持也由它统一启用。单独开启本开关会静默失效，见下方 assertions。
-  options.mySystem.hardware.nvidia.enable = lib.mkEnableOption "NVIDIA 驱动（须同时开启 mySystem.hardware.enable）";
+  options.mySystem.hardware.nvidia.enable =
+    lib.mkEnableOption "NVIDIA 驱动（须同时开启 mySystem.hardware.enable）";
 
   config = lib.mkMerge [
     {
@@ -44,7 +50,8 @@ in
           LIBVA_DRIVER_NAME = "nvidia";
           GBM_BACKEND = "nvidia-drm";
           __GLX_VENDOR_LIBRARY_NAME = "nvidia";
-        }) // {
+        })
+        // {
           __GL_VRR_ALLOWED = "1";
           NVD_BACKEND = "direct";
         };
@@ -70,32 +77,33 @@ in
       };
 
       # niri NVIDIA VRAM 泄漏修复
-      environment.etc."nvidia/nvidia-application-profiles-rc.d/50-limit-free-buffer-pool-in-wayland-compositors.json" = {
-        text = ''
-          {
-              "rules": [
-                  {
-                      "pattern": {
-                          "feature": "procname",
-                          "matches": "niri"
-                      },
-                      "profile": "Limit Free Buffer Pool On Wayland Compositors"
-                  }
-              ],
-              "profiles": [
-                  {
-                      "name": "Limit Free Buffer Pool On Wayland Compositors",
-                      "settings": [
-                          {
-                              "key": "GLVidHeapReuseRatio",
-                              "value": 0
-                          }
-                      ]
-                  }
-              ]
-          }
-        '';
-      };
+      environment.etc."nvidia/nvidia-application-profiles-rc.d/50-limit-free-buffer-pool-in-wayland-compositors.json" =
+        {
+          text = ''
+            {
+                "rules": [
+                    {
+                        "pattern": {
+                            "feature": "procname",
+                            "matches": "niri"
+                        },
+                        "profile": "Limit Free Buffer Pool On Wayland Compositors"
+                    }
+                ],
+                "profiles": [
+                    {
+                        "name": "Limit Free Buffer Pool On Wayland Compositors",
+                        "settings": [
+                            {
+                                "key": "GLVidHeapReuseRatio",
+                                "value": 0
+                            }
+                        ]
+                    }
+                ]
+            }
+          '';
+        };
 
       environment.systemPackages = with pkgs; [
         vulkan-tools

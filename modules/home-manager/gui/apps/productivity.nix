@@ -1,8 +1,12 @@
 # 生产力 / 笔记 / 文献管理
-{ lib, config, pkgs, ... }:
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}:
 let
   cfg = config.mengw.gui.apps.productivity;
-  appsCfg = config.mengw.gui.apps;
   guiCfg = config.mengw.gui;
 in
 {
@@ -12,7 +16,7 @@ in
     description = "启用生产力应用（笔记、文献管理等）";
   };
 
-  config = lib.mkIf (cfg.enable && appsCfg.enable && guiCfg.enable) {
+  config = lib.mkIf (cfg.enable && guiCfg.enable) {
     home.packages = with pkgs; [
       zotero
       anki

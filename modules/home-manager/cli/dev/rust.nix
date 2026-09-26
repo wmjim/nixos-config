@@ -1,7 +1,11 @@
-{ lib, config, pkgs, ... }:
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}:
 let
   cfg = config.mengw.cli.dev.rust;
-  devCfg = config.mengw.cli.dev;
   cliCfg = config.mengw.cli;
 in
 {
@@ -11,7 +15,7 @@ in
     description = "启用 Rust 开发环境";
   };
 
-  config = lib.mkIf (cfg.enable && devCfg.enable && cliCfg.enable) {
+  config = lib.mkIf (cfg.enable && cliCfg.enable) {
     # Rust 环境
     home.packages = with pkgs; [
       # Rust 工具链

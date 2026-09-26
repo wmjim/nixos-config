@@ -14,7 +14,12 @@
 # 故改为在网桥地址上做一次显式 TCP 转发：监听范围仅限 virbr0（客户机网段），
 # 不触碰全局 sysctl，也不依赖 Clash 侧的 GUI 开关。
 # 客户机侧仍需一次性把系统代理指向 http://192.168.122.1:<port>（见 docs/winapps.md §10.4）。
-{ lib, config, pkgs, ... }:
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}:
 let
   cfg = config.mySystem.proxy;
 
@@ -47,7 +52,11 @@ in
         RestartSec = retrySec;
       };
 
-      path = [ pkgs.iproute2 pkgs.gawk pkgs.coreutils ];
+      path = [
+        pkgs.iproute2
+        pkgs.gawk
+        pkgs.coreutils
+      ];
 
       script = ''
         port=${toString cfg.port}
