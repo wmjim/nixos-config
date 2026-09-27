@@ -42,6 +42,9 @@ let
   #
   # 端口取自 Pot 配置 ~/.config/com.pot-app.desktop/config.json 的 server_port
   # （默认 60828）；若在 Pot 设置里改了端口，这里的 PORT 要同步改。
+  #
+  # 文本来源：selection 动作不再让 Pot 自己抓选区，而是由 pot-ctl 读 PRIMARY
+  # 选区（为空时退回剪贴板）再 POST 给 /translate。原因见下方 selection 分支。
   potCtl = pkgs.writeShellScriptBin "pot-ctl" ''
     set -u
 
@@ -50,10 +53,11 @@ let
     readonly BASE="http://$HOST:$PORT"
 
     case "''${1:-}" in
-      selection) endpoint="/selection_translate" ;;
-      input)     endpoint="/input_translate" ;;
+      selection) mode="selection" ;;   # 取当前文本（选区优先）后翻译
+      input)     mode="input" ;;       # 打开输入框翻译
+      translate) mode="translate" ;;   # 从 stdin 读文本后翻译（供 OCR 管道调用）
       *)
-        printf '[DEBUG] pot-ctl: 未知动作 %s，支持 selection | input\n' "''${1:-<空>}" >&2
+        printf '[DEBUG] pot-ctl: 未知动作 %s，支持 selection | input | translate\n' "''${1:-<空>}" >&2
         exit 2
         ;;
     esac
@@ -83,7 +87,29 @@ let
       exit 1
     fi
 
-    exec ${pkgs.curl}/bin/curl -s -o /dev/null "$BASE$endpoint"
+    case "$mode" in
+      input)
+        exec ${pkgs.curl}/bin/curl -s -o /dev/null "$BASE/input_translate"
+        ;;
+      translate)
+        exec ${pkgs.curl}/bin/curl -s -o /dev/null --data-binary @- "$BASE/translate"
+        ;;
+    esac
+
+    # selection：自己取文本再打 /translate，不再走 Pot 的 /selection_translate。
+    # 后者读的是 PRIMARY 选区而非剪贴板（两条独立通路），所以「先复制、再按
+    # Alt+T」会翻到上一次的选区内容。这里改成「当前选区优先、剪贴板兜底」：
+    # 有高亮就翻高亮，选区为空时再翻最近复制的内容。
+    text="$(${pkgs.coreutils}/bin/timeout 2 ${pkgs.wl-clipboard}/bin/wl-paste --primary 2>/dev/null || true)"
+    if [ -z "$text" ]; then
+      text="$(${pkgs.coreutils}/bin/timeout 2 ${pkgs.wl-clipboard}/bin/wl-paste 2>/dev/null || true)"
+    fi
+    if [ -z "$text" ]; then
+      printf '[DEBUG] pot-ctl: 选区和剪贴板都是空的，没有可翻译的内容\n' >&2
+      exit 0
+    fi
+
+    printf '%s' "$text" | ${pkgs.curl}/bin/curl -s -o /dev/null --data-binary @- "$BASE/translate"
   '';
 in
 {
