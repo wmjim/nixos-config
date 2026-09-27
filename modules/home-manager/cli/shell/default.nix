@@ -25,19 +25,19 @@ in
 
     # 终端工具
     home.packages = with pkgs; [
-      eza
-      zoxide
-      bat
-      fzf
-      ripgrep
-      fd
-      jq
-      yq
-      sysstat
-      tldr
-      gh
-      git-repo
-      direnv
+      eza # ls 的现代替代
+      zoxide # cd 的现代替代
+      bat # cat 的现代替代
+      ripgrep # grep 的现代替代
+      fd # find 的现代替代
+      tldr # man 的现代替代
+      jq # json 处理器
+      yq # yaml/xml/toml 处理器 
+      fzf # 命令行模糊查找
+      sysstat # Linux的性能监控工具集（如sar、iostat和pidstat）
+      gh # github cli
+      git-repo # android 的仓库管理工具
+      direnv # 管理环境的 shell 扩展
     ];
 
     # Git
