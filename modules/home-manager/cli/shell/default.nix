@@ -32,7 +32,7 @@ in
       fd # find 的现代替代
       tldr # man 的现代替代
       jq # json 处理器
-      yq # yaml/xml/toml 处理器 
+      yq # yaml/xml/toml 处理器
       fzf # 命令行模糊查找
       sysstat # Linux的性能监控工具集（如sar、iostat和pidstat）
       gh # github cli
