@@ -14,6 +14,7 @@ in
   imports = [
     ./yazi.nix
     ./tmux.nix
+    ./distrobox.nix
   ];
 
   config = lib.mkIf cliCfg.enable {

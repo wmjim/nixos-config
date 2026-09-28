@@ -56,3 +56,34 @@ desktop / laptop 已启用 Distrobox + Podman，可快速进入其它发行版�
 arch     # distrobox enter arch
 ubuntu   # distrobox enter ubuntu
 ```
+
+### 容器 home 与宿主隔离
+
+distrobox 默认拿宿主 `$HOME` 当容器 home，两个方向都会出问题：
+
+- 宿主 HM 生成的 `~/.config/fish` 被容器里的 fish 读到，里面引用了容器没装的
+  `eza` / `zoxide` / `fnm`，进容器就报错；
+- 容器里 `pip install --user` / `cargo install` 写进 `~/.local/bin`、`~/.cargo/bin`，
+  宿主 PATH 里又有这些目录，容器装的二进制“跑”到了宿主上，绕过 NixOS 包管理。
+
+`mengw.cli.tools.distrobox`（`modules/home-manager/cli/tools/distrobox.nix`）因此写
+`~/.config/distrobox/distrobox.conf`，设 `container_home_prefix = ~/.distrobox`：
+新容器的 `HOME` 与 `XDG_*` 全部落在 `~/.distrobox/<name>`，宿主的 fish 配置和宿主
+PATH 都不再被卷入。容器里 `distrobox` 可能有自己的 fish（arch/ubuntu 里装了），
+读的是容器 home 里 `/etc/skel` 复制出来的默认配置。
+
+该键只在 `distrobox create` 时写进容器配置，改完必须重建容器（容器里手动装的包会丢，
+先记下来）：
+
+```bash
+podman exec arch pacman -Qqe                 # 记下 arch 里手动装的包
+podman exec ubuntu bash -lc 'apt-mark showmanual'
+distrobox rm --force arch ubuntu
+distrobox create --name arch --image docker.io/library/archlinux:latest
+distrobox create --name ubuntu --image docker.io/library/ubuntu:latest
+distrobox-export --app <app>                 # 之前导出到宿主菜单的重新导出
+```
+
+注意隔离的是“默认写入位置”，不是权限边界：宿主 `$HOME` 仍以同一 UID 挂载在容器里
+（`/home/mengw`，进程可用 `$DISTROBOX_HOST_HOME` 拿到），`~/Projects` 照旧能访问。
+真要互不干扰，就别在容器里用 `--user` / `-g` 装东西。
