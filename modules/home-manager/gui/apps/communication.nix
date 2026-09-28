@@ -26,7 +26,8 @@ in
     home.packages = with pkgs; [
       discord
       telegram-desktop
-      wechat-scaled
+      wechat-scaled # 微信
+      wemeet # 腾讯会议
       qq
     ];
   };
