@@ -30,6 +30,7 @@ in
       bat # cat 的现代替代
       ripgrep # grep 的现代替代
       fd # find 的现代替代
+      dust # du 的现代替代
       tldr # man 的现代替代
       jq # json 处理器
       yq # yaml/xml/toml 处理器
