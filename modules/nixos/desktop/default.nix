@@ -24,8 +24,8 @@ in
   };
 
   # 显示器声明：主机数据，驱动 niri outputs.kdl 生成与 Noctalia 的 DDC 亮度
-  # （消费方见 modules/home-manager/gui/wm/）。此前 wm 模块按 hostName switch
-  # 硬编码两台主机的输出，新增/换显示器要改共享模块；现在数据留在 hosts/。
+  # （消费方见 modules/home-manager/gui/wm/）。共享模块只做生成器，
+  # 新增/换显示器只动 hosts/。
   options.mySystem.desktop.monitors = lib.mkOption {
     type = lib.types.listOf (
       lib.types.submodule {
@@ -99,9 +99,7 @@ in
           kdePackages.fcitx5-configtool
           kdePackages.fcitx5-qt
           fcitx5-gtk
-          # fcitx5-mellow-themes 已移除：候选词窗主题改用 catppuccin-fcitx5
-          # 的 Frappe + mauve 变体（与终端/编辑器同家族），主题包及选择
-          # 集中在 modules/home-manager/gui/fcitx5.nix，不再留无人选用的主题包。
+          # 候选词窗主题不在此选择：见 modules/home-manager/gui/fcitx5.nix
           (fcitx5-rime.override {
             rimeDataPkgs = [ pkgs.rime-wanxiang ];
           })

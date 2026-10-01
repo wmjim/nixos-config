@@ -16,9 +16,8 @@
     };
 
     # home-manager 跟踪 master：nixpkgs 走 master（unstable），HM release 分支
-    # 与之存在 API 错位（stdenv.isLinux 弃用、fish 补全脚本路径等），此前需要
-    # 两个 workaround overlay 维持（见 modules/home-manager/default.nix 的删除记录）。
-    # master 分支与 nixpkgs master 同步演进，错位消失后即可删掉那些 overlay。
+    # 与之存在 API 错位（stdenv.isLinux 弃用、fish 补全脚本路径等），master
+    # 分支与 nixpkgs master 同步演进，错位随上游消失。
     home-manager = {
       url = "github:nix-community/home-manager/master";
       inputs.nixpkgs.follows = "nixpkgs";

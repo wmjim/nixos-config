@@ -103,9 +103,7 @@ in
     # 无易变状态，故整体托管；fcitx5 GUI 里的改动会在下次 switch 时被覆盖回此处。
     #
     # Theme 与 DarkTheme 指向同一个变体：桌面已是纯深色，不需要浅色分支，
-    # 这样候选词窗的观感就与"系统明暗检测"无关了。上一版依赖的是
-    # gtk.colorScheme → dconf → xdg-desktop-portal → fcitx5 跟随系统 这条链，
-    # 现在不再需要（UseDarkTheme 的语义确实是"跟随系统"而非"强制深色"）。
+    # 这样候选词窗的观感就与"系统明暗检测"无关了。
     #
     # UseAccentColor 取的是 portal 上报的系统重点色。这里置 False，
     # 否则它会用 #3584e4 盖掉主题自带的 mauve #ca9ee6；而本机 GNOME 的

@@ -1,5 +1,5 @@
 # Yazi — 终端文件管理器
-# 暗色 flavor 用 Catppuccin Frappe，与 foot / Neovim 同家族（此前是 Everforest）
+# 暗色 flavor 用 Catppuccin Frappe，与 foot / Neovim 同家族
 {
   lib,
   config,
