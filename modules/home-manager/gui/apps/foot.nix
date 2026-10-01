@@ -63,10 +63,15 @@ in
           foreground = "C6D0F5"; # text
 
           # 两值分别为文字色与光标色（对应 alacritty 的 cursor.text / cursor.cursor）
+          # 光标保持 rosewater：那是 Catppuccin 对终端光标的约定，而且光标不是“选中”。
           cursor = "303446 F2D5CF"; # base / rosewater
 
+          # 选区用 mauve 而不是上游的 rosewater，与输入法候选窗的选中项、编辑器的
+          # 强调色同源 —— 原值是从 alacritty 逐条照抄来的，不是为“选中”做的设计决定；
+          # 而两者会**同屏出现**（在终端里打中文时选区与候选高亮同时可见），一暖粉
+          # 一冷紫看着像两套系统。归属约定见 docs/themes.md 的「双层配色模型」。
           selection-foreground = "303446"; # base
-          selection-background = "F2D5CF"; # rosewater
+          selection-background = "CA9EE6"; # mauve
 
           regular0 = "51576D"; # surface1
           regular1 = "E78284"; # red

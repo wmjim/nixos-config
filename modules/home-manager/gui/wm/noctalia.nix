@@ -172,7 +172,8 @@ in
             foreground = "#C6D0F5";
             cursor = "#F2D5CF";
             cursorText = "#303446";
-            selectionBg = "#F2D5CF";
+            # 选区与 foot 同源：mauve（见 docs/themes.md 的「双层配色模型」）
+            selectionBg = "#CA9EE6";
             selectionFg = "#303446";
             normal = {
               black = "#51576D";
