@@ -5,7 +5,7 @@
 { ... }:
 {
   imports = [
-    ./foot.nix
+    ./ghostty.nix
     ./browsers.nix
     ./communication.nix
     ./media.nix

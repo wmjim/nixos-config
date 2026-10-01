@@ -154,7 +154,7 @@ let
         // draw-behind-window 保持默认的 false：文档说因为 niri 不知道 CSD 圆角
         // 才需要 true 来遮住方形角的伪影；而我们给了 geometry-corner-radius，
         // niri 自己知道圆角，不需要“画到窗口后面”，也就不会在半透明窗口
-        // （foot 0.85）里透出一圈暗影。
+        // （ghostty 0.85）里透出一圈暗影。
         //
         // 取值由 MacTahoe 自己的 CSD 阴影反推（gtk-4.0/gtk.css 的 window.csd）：
         //     0  3px  6px rgba(0,0,0,.15)
@@ -273,8 +273,8 @@ let
     set -u
 
     # 视为终端的 app_id，统一转小写后匹配
-    # btop 是 foot 用 --app-id=btop 起的监控窗口，同样按终端按键处理
-    TERMINALS="foot btop kitty org.gnome.terminal gnome-terminal-server blackbox com.gexperts.blackbox xterm org.wezfurl.wezterm"
+    # btop 是 ghostty 用 --class=btop 起的监控窗口，同样按终端按键处理
+    TERMINALS="ghostty com.mitchellh.ghostty btop kitty org.gnome.terminal gnome-terminal-server blackbox com.gexperts.blackbox xterm org.wezfurl.wezterm"
 
     niri=${pkgs.niri}/bin/niri
     keyd=${pkgs.keyd}/bin/keyd

@@ -164,15 +164,15 @@ in
           mShadow = "#000000";
 
           # 终端色槽属于"工作区"一族而不是壳层。填成 Catppuccin Frappe（取值对齐
-          # modules/home-manager/gui/apps/foot.nix）是为了万一将来开启 Noctalia 的
-          # 终端模板时，它生成的东西与本仓库 foot/btop 的配色一致；
+          # modules/home-manager/gui/apps/ghostty.nix）是为了万一将来开启 Noctalia 的
+          # 终端模板时，它生成的东西与本仓库 ghostty/btop 的配色一致；
           # 模板目前是关的（settings.toml 里 enable_builtin_templates = false）。
           terminal = {
             background = "#303446";
             foreground = "#C6D0F5";
             cursor = "#F2D5CF";
             cursorText = "#303446";
-            # 选区与 foot 同源：mauve（见 docs/themes.md 的「双层配色模型」）
+            # 选区与 ghostty 同源：mauve（见 docs/themes.md 的「双层配色模型」）
             selectionBg = "#CA9EE6";
             selectionFg = "#303446";
             normal = {
@@ -221,7 +221,7 @@ in
           mHover = "#EDEDED";
           mOnHover = "#242424";
           mShadow = "#000000";
-          # terminal 槽位暂不填：工作区一族（foot/btop/yazi/nvim/tmux/fastfetch/fcitx5）
+          # terminal 槽位暂不填：工作区一族（ghostty/btop/yazi/nvim/tmux/fastfetch/fcitx5）
           # 目前仍钉死 Catppuccin Frappe，亮色是否一并切 Latte 尚未决定；
           # 且该槽位只在 Noctalia 的终端模板开启时才被使用（当前是关的）。
         };

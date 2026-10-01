@@ -1,5 +1,5 @@
 # Yazi — 终端文件管理器
-# 暗色 flavor 用 Catppuccin Frappe，与 foot / Neovim 同家族
+# 亮/暗 flavor 分别用 Catppuccin Latte / Frappe，与 ghostty（终端）/ Neovim 同家族
 {
   lib,
   config,
@@ -84,13 +84,13 @@ in
           max_height = 2000;
         };
       };
-      # foot 原生支持 sixel，yazi 会优先选内置的 Sixel 驱动（见 yazi-adapter
-      # 的驱动选择：Brand::Foot => [Sixel]），ueberzugpp 仅作为 GNOME 终端 /
-      # WSLg 等无图形协议终端的兜底（nixpkgs 的 yazi wrapper 不带它，图片会空白）
+      # ghostty 走 Kitty 图形协议（yazi 的驱动选择按终端 brand 走，它认不认 ghostty
+      # 这一项我没验证）；ueberzugpp 作为 GNOME 终端 / WSLg 等无图形协议终端的兜底
+      # （nixpkgs 的 yazi wrapper 不带它，图片会空白），所以两者都留着。
       extraPackages = lib.optional pkgs.stdenv.hostPlatform.isLinux pkgs.ueberzugpp;
       theme = {
         flavor = {
-          light = "flexoki-light";
+          light = "catppuccin-latte";
           dark = "catppuccin-frappe";
         };
       };

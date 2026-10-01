@@ -45,10 +45,10 @@ in
     # frosted-glass.kdl 的 opacity 与模糊完全无从体现”——这是错的。niri 的
     # opacity 作用在**整个窗口**上（文档：“applied to every surface of the
     # window”），与窗口里面画不画底无关，磨砂效果一直都在。
-    # 而且本主题的 theme[main_bg] = #303446 恰好等于 foot 的背景色，两种取值
+    # 而且本主题的 theme[main_bg] = #303446 恰好等于 ghostty（Catppuccin Frappe）的背景色，两种取值
     # 在这个配色下是**视觉空操作**。
     # 保留 false 的真实理由：让 btop 的背景始终跟随终端，而不是把 #303446
-    # 再硬编码一份——以后改 foot 的背景色时不会两者脱节。
+    # 再硬编码一份——以后改终端主题的背景色时不会两者脱节。
     programs.btop = {
       # 包由本模块提供，故上面 home.packages 里不再列 btop
       enable = true;

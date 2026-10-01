@@ -53,9 +53,10 @@ in
 
       # Homebrew 4.x 起 cask 已并入核心 tap，无需额外 tap homebrew/cask
       # GUI 应用
-      # alacritty 是 macOS 侧的终端：foot 只支持 Wayland，无法在 darwin 上替代
+      # ghostty 是本体终端（Linux 走 HM 的 programs.ghostty，macOS 侧这里装 cask）；
+      # 两者的配置同一份，见 modules/home-manager/gui/apps/ghostty.nix
       casks = [
-        "alacritty"
+        "ghostty"
         "visual-studio-code"
         "obsidian"
         "brave"

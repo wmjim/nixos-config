@@ -6,7 +6,7 @@
 # 而这份 2.3KB 的主题正好可以随仓库一起审阅、grep。
 # 升级：把本文件与上游 diff 一次即可。
 #
-# 配色是 Catppuccin Frappe 标准色，与 foot / Neovim / yazi 同家族。
+# 配色是 Catppuccin Frappe 标准色，与 ghostty / Neovim / yazi 同家族。
 # 注意 theme[main_bg] 在 btop.conf 里设了 theme_background=False 时不生效。
 
 # Main background, empty for terminal default, need to be empty if you want transparent background

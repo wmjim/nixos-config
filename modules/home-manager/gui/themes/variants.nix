@@ -144,81 +144,116 @@ let
       pkgs.dconf # dconf 后端（否则 gsettings 写进内存后端，重启即丢）
     ];
     text = ''
-      # 参数可显式给模式（排查用）：theme-apply light
-      mode="''${1-}"
-      if [ -z "$mode" ]; then
-        state="''${XDG_STATE_HOME:-$HOME/.local/state}/noctalia/settings.toml"
-        # 只读 [theme] 段里的 mode；文件不存在或未写该键时保持暗色
-        mode="$(awk -F'"' '/^\[/{s=($0=="[theme]")} s && /^mode *=/ {print $2; exit}' "$state" 2>/dev/null)"
-      fi
-      case "$mode" in
-        light | dark) ;;
-        *) echo "theme-apply: 未知模式 '$mode'（取自 Noctalia state），保持现状" >&2; exit 1 ;;
-      esac
+            # 参数可显式给模式（排查用）：theme-apply light
+            mode="''${1-}"
+            if [ -z "$mode" ]; then
+              state="''${XDG_STATE_HOME:-$HOME/.local/state}/noctalia/settings.toml"
+              # 只读 [theme] 段里的 mode；文件不存在或未写该键时保持暗色
+              mode="$(awk -F'"' '/^\[/{s=($0=="[theme]")} s && /^mode *=/ {print $2; exit}' "$state" 2>/dev/null)"
+            fi
+            case "$mode" in
+              light | dark) ;;
+              *) echo "theme-apply: 未知模式 '$mode'（取自 Noctalia state），保持现状" >&2; exit 1 ;;
+            esac
 
-      v="$HOME/.config/${variantDir}"
+            # 幂等：已经是这个目标就不动，避免 path 单元每次触发都让 niri 重载
+            link() {
+              [ "$(readlink "$1" 2>/dev/null)" = "$2" ] || ln -sfn "$2" "$1"
+            }
 
-      # 幂等：已经是这个目标就不动，避免 path 单元每次触发都让 niri 重载
-      link() {
-        [ "$(readlink "$1" 2>/dev/null)" = "$2" ] || ln -sfn "$2" "$1"
-      }
+            # 本模块自己那五个 + 各层登记进来的（ghostty / btop / …）：case 同时把模式相关的
+            # 取值（dconf 的 scheme 与 gtk/icon 主题名）定下来
+            case "$mode" in
+              dark)
+                scheme=prefer-dark
+                gtk="${modes.dark.gtk}"
+                icons="${modes.dark.icons}"
+      ${lib.concatMapStringsSep "\n" (
+        t: "          link \"$HOME/${t.live}\" \"$HOME/${t.dark}\""
+      ) config.mengw.appearance.switchTargets}
+                ;;
+              light)
+                scheme=prefer-light
+                gtk="${modes.light.gtk}"
+                icons="${modes.light.icons}"
+      ${lib.concatMapStringsSep "\n" (
+        t: "          link \"$HOME/${t.live}\" \"$HOME/${t.light}\""
+      ) config.mengw.appearance.switchTargets}
+                ;;
+            esac
 
-      link "$HOME/.config/gtk-3.0/settings.ini" "$v/gtk-3.0/$mode.ini"
-      link "$HOME/.config/gtk-4.0/settings.ini" "$v/gtk-4.0/$mode.ini"
-      # gtk.css 不在切换范围内：它是模式无关的单一文件（见上面 gtk4UserCss）
-      link "$HOME/.config/Kvantum/kvantum.kvconfig" "$v/kvantum/$mode.kvconfig"
-      # niri 的配色是 include 进来的两个文件，niri 自己会 watch 到并重载
-      link "$HOME/.config/niri-colors/layout.kdl" "$v/niri/layout-$mode.kdl"
-      link "$HOME/.config/niri-colors/overview.kdl" "$v/niri/overview-$mode.kdl"
+            # dconf 侧：GTK4/libadwaita 只认 color-scheme，xdg-desktop-portal 也从这里读，
+            # 所以 Electron / 跟随系统的应用看的是这几个键。
+            # 注意与 HM 写 dconf 的值同形（org.gnome.desktop.interface）。
+            #
+            # 两个必须显式给的路径 —— 否则在 systemd 用户服务的环境里会静默地写进
+            # 内存后端（实测：clean env 下 gsettings 直接报「No schemas installed」，
+            # 加 schema 目录后又因找不到 dconf 模块而回退到内存后端，重启即丢）：
+            #   1. schema 搜索路径（GLib 不从 PATH 推）
+            #   2. dconf 的 GIO 模块（GSETTINGS_BACKEND=dconf 靠它）
+            schema_dir="$(echo ${pkgs.gsettings-desktop-schemas}/share/gsettings-schemas/*/glib-2.0/schemas)"
+            if [ -d "$schema_dir" ]; then
+              export GSETTINGS_SCHEMA_DIR="$schema_dir''${GSETTINGS_SCHEMA_DIR:+:$GSETTINGS_SCHEMA_DIR}"
+            fi
+            export GSETTINGS_BACKEND=dconf
+            # lib.getLib：dconf 的 GIO 模块在 **-lib 输出**里，写 ${pkgs.dconf}/lib/... 会指向
+            # out 输出 —— 那样 gsettings 找不到模块，却仍然退出 0（静默写进内存后端，重启即丢）。
+            export GIO_EXTRA_MODULES="${lib.getLib pkgs.dconf}/lib/gio/modules''${GIO_EXTRA_MODULES:+:$GIO_EXTRA_MODULES}"
+            gsettings set org.gnome.desktop.interface color-scheme "$scheme"
+            gsettings set org.gnome.desktop.interface gtk-theme "$gtk"
+            gsettings set org.gnome.desktop.interface icon-theme "$icons"
+            # 窗口按钮位置与亮/暗无关，但一并写：HM 只在 activation 时写一次，
+            # dconf 被别的东西（GNOME 系工具、临时脚本）改过之后不会自己回去。
+            gsettings set org.gnome.desktop.wm.preferences button-layout "${buttonLayout}"
 
-      # dconf 侧：GTK4/libadwaita 只认 color-scheme，xdg-desktop-portal 也从这里读，
-      # 所以 Electron / 跟随系统的应用看的是这几个键。
-      # 注意与 HM 写 dconf 的值同形（org.gnome.desktop.interface）。
-      #
-      # 两个必须显式给的路径 —— 否则在 systemd 用户服务的环境里会静默地写进
-      # 内存后端（实测：clean env 下 gsettings 直接报「No schemas installed」，
-      # 加 schema 目录后又因找不到 dconf 模块而回退到内存后端，重启即丢）：
-      #   1. schema 搜索路径（GLib 不从 PATH 推）
-      #   2. dconf 的 GIO 模块（GSETTINGS_BACKEND=dconf 靠它）
-      schema_dir="$(echo ${pkgs.gsettings-desktop-schemas}/share/gsettings-schemas/*/glib-2.0/schemas)"
-      if [ -d "$schema_dir" ]; then
-        export GSETTINGS_SCHEMA_DIR="$schema_dir''${GSETTINGS_SCHEMA_DIR:+:$GSETTINGS_SCHEMA_DIR}"
-      fi
-      export GSETTINGS_BACKEND=dconf
-      # lib.getLib：dconf 的 GIO 模块在 **-lib 输出**里，写 ${pkgs.dconf}/lib/... 会指向
-      # out 输出 —— 那样 gsettings 找不到模块，却仍然退出 0（静默写进内存后端，重启即丢）。
-      export GIO_EXTRA_MODULES="${lib.getLib pkgs.dconf}/lib/gio/modules''${GIO_EXTRA_MODULES:+:$GIO_EXTRA_MODULES}"
-      case "$mode" in
-        dark)
-          scheme=prefer-dark
-          gtk="${modes.dark.gtk}"
-          icons="${modes.dark.icons}"
-          ;;
-        light)
-          scheme=prefer-light
-          gtk="${modes.light.gtk}"
-          icons="${modes.light.icons}"
-          ;;
-      esac
-      gsettings set org.gnome.desktop.interface color-scheme "$scheme"
-      gsettings set org.gnome.desktop.interface gtk-theme "$gtk"
-      gsettings set org.gnome.desktop.interface icon-theme "$icons"
-      # 窗口按钮位置与亮/暗无关，但一并写：HM 只在 activation 时写一次，
-      # dconf 被别的东西（GNOME 系工具、临时脚本）改过之后不会自己回去。
-      gsettings set org.gnome.desktop.wm.preferences button-layout "${buttonLayout}"
+            # 回读校验：dconf 后端不可用时 gsettings 会静默写进内存后端（退出码仍为 0），
+            # 那时「跟随系统的应用」永远不跟，而日志里一点异常都没有。
+            got="$(gsettings get org.gnome.desktop.interface color-scheme)"
+            if [ "$got" != "'$scheme'" ]; then
+              echo "theme-apply: dconf 写入未生效（color-scheme 回读为 $got）—— 查 GIO_EXTRA_MODULES 里的 dconf 模块" >&2
+              exit 1
+            fi
 
-      # 回读校验：dconf 后端不可用时 gsettings 会静默写进内存后端（退出码仍为 0），
-      # 那时「跟随系统的应用」永远不跟，而日志里一点异常都没有。
-      got="$(gsettings get org.gnome.desktop.interface color-scheme)"
-      if [ "$got" != "'$scheme'" ]; then
-        echo "theme-apply: dconf 写入未生效（color-scheme 回读为 $got）—— 查 GIO_EXTRA_MODULES 里的 dconf 模块" >&2
-        exit 1
-      fi
+            # ghostty 不需要这里的信号：它的 theme 写成「亮:主题,暗:主题」一对，
+            # 由 ghostty 自己按桌面主题选（读的正是上面写的 dconf color-scheme），
+            # 新窗口天然跟随。其它 TUI（btop 等）无热重载，下次启动生效。
     '';
   };
 in
 {
   config = lib.mkIf (cfg.enable && guiCfg.enable) {
+    # 本模块自己那五个活文件也走同一张表（见 modules/home-manager/default.nix 的
+    # mengw.appearance.switchTargets）：theme-apply 只做「指软链」，不认具体应用。
+    # gtk.css 不在表里：它是模式无关的单一文件（见上面 gtk4UserCss）。
+    mengw.appearance.switchTargets = [
+      {
+        live = ".config/gtk-3.0/settings.ini";
+        dark = "${variantDir}/gtk-3.0/dark.ini";
+        light = "${variantDir}/gtk-3.0/light.ini";
+      }
+      {
+        live = ".config/gtk-4.0/settings.ini";
+        dark = "${variantDir}/gtk-4.0/dark.ini";
+        light = "${variantDir}/gtk-4.0/light.ini";
+      }
+      {
+        live = ".config/Kvantum/kvantum.kvconfig";
+        dark = "${variantDir}/kvantum/dark.kvconfig";
+        light = "${variantDir}/kvantum/light.kvconfig";
+      }
+      # niri 的配色是 include 进来的两个文件，niri 自己会 watch 到并重载
+      {
+        live = ".config/niri-colors/layout.kdl";
+        dark = "${variantDir}/niri/layout-dark.kdl";
+        light = "${variantDir}/niri/layout-light.kdl";
+      }
+      {
+        live = ".config/niri-colors/overview.kdl";
+        dark = "${variantDir}/niri/overview-dark.kdl";
+        light = "${variantDir}/niri/overview-light.kdl";
+      }
+    ];
+
     xdg.configFile = variants // {
       # 模式无关：GTK4 的亮/暗在同一份文件里靠 @media 切（不能靠换文件，见 gtk4UserCss）
       "gtk-4.0/gtk.css".source = gtk4UserCss;

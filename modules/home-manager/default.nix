@@ -15,6 +15,35 @@ in
     description = "启用 CLI/TUI 用户环境";
   };
 
+  options.mengw.appearance.switchTargets = lib.mkOption {
+    type = lib.types.listOf (
+      lib.types.submodule {
+        options = {
+          live = lib.mkOption {
+            type = lib.types.str;
+            description = "应用真正读的那个文件，相对 $HOME（如 .config/gtk-4.0/settings.ini）";
+          };
+          dark = lib.mkOption {
+            type = lib.types.str;
+            description = "暗色变体，相对 $HOME（如 theme-variants/gtk-3.0/dark.ini）";
+          };
+          light = lib.mkOption {
+            type = lib.types.str;
+            description = "亮色变体，相对 $HOME";
+          };
+        };
+      }
+    );
+    default = [ ];
+    description = ''
+      亮/暗切换时要翻的软链。真源是 Noctalia 的 theme mode，执行者是 gui/themes/variants.nix
+      里的 theme-apply：它只做「live 指到当前模式的变体」这件事，各层（GTK/Qt/niri、
+      btop…）把自己的两个变体生成到 store 并在这里登记。
+      登记者自己负责让 live 文件首次存在（HM 初始值 = 暗色）；rebuild 会把 live 还原成
+      暗色，登录时的 theme-apply 再按 Noctalia 的 mode 纠正，不需要额外的状态文件。
+    '';
+  };
+
   config = {
     home.stateVersion = "26.05";
     home.enableNixpkgsReleaseCheck = false;
