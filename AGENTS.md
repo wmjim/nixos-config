@@ -20,7 +20,7 @@
 
 本文件只放总规则（命令边界、验证、风格、提交）。仓库结构、选项映射、主机清单与平台适配坑位都不在这里：
 
-- `docs/architecture.md` — 仓库结构、`mySystem` 选项 → 文件映射、module 分层、`mkHomeManager`、各主机清单
+- `docs/architecture.md` — 仓库结构、选项与 module 分层约定、主机差异（选项清单不在此维护，`rg mkEnableOption modules/` 才是权威）
 - `docs/quirks.md` — 平台适配的坑与 workaround（改对应模块前必读）
 - `docs/README.md` — 全部文档索引；改某个子系统前先读对应那篇
 

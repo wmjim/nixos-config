@@ -4,7 +4,7 @@
 
 | 改动主题 | 文档 | 对应代码 |
 |------|------|----------|
-| 仓库结构、选项映射、module 分层、主机清单 | `docs/architecture.md` | `flake.nix`、`modules/`、`hosts/` |
+| 仓库结构、选项与 module 分层约定、主机差异 | `docs/architecture.md` | `flake.nix`、`modules/`、`hosts/` |
 | 平台适配坑位 / workaround / 待上游修复项 | `docs/quirks.md` | 各文件头部注释 |
 | Fish、环境变量、PATH | `docs/fish.md` | `modules/home-manager/cli/shell/fish.nix` |
 | Foot 终端 | `docs/foot.md` | `modules/home-manager/gui/apps/foot.nix` |
