@@ -37,7 +37,7 @@
 - `recent-windows` 高亮框圆角 12px（主题阶梯里的"独立弹层"档）
 - 模糊 `passes 4 / offset 5.0 / saturation 1.10`；终端（foot / btop）`opacity 0.85`，取值按最坏情况（近纯白壁纸）下的文字对比定，前提见下文壁纸一节
 - 窗口阴影由合成器提供（`shadow { on }`，参数由 MacTahoe 自己的 CSD 阴影反推，见下）
-- 窗口开/关动画 220ms / 180ms（退场比入场快；水波纹 shader）
+- 窗口开/关动画 220ms / 180ms（退场比入场快；scale 0.96→1.0 + 淡入，不用自定义波纹 shader）
 
 ### 圆角为何是 24px：参考 macOS 的 concentricity
 

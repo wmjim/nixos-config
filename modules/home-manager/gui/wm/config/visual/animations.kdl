@@ -24,17 +24,16 @@ animations {
         spring damping-ratio=1.0 stiffness=560 epsilon=0.0001
     }
 
-    // 窗口打开动画 — 水面轻涟 + 凝聚成形
+    // 窗口打开动画 — 轻微放大 + 淡入（scale 0.96 → 1.0，macOS 的做法）
     //
-    // 曲线换成 cubic-bezier(0.16,1,0.3,1)（Apple 的 ease-out-quart）：
-    // 起步极快、收尾干净，没有 ease-out-cubic 的拖尾。注意 curve 直接作用在
-    // niri_clamped_progress 上，所以波纹的相位也跟着被前置——正是想要的。
+    // 原先是"水面轻涟 + 凝聚成形"的自定义 shader（4 组方向波）。改成 scale+fade
+    // 的理由是隐喻而不是性能：整套动画语言讲的是"ζ=1.0 不回弹、小元件 130–170ms、
+    // 退场比入场快"，水波讲的是"液体被扰动"，是这套系统里唯一借来的第三种比喻；
+    // 而平铺 WM 里开窗通常同时还会让相邻窗口重排，水波等于在一个本就很热闹的时刻
+    // 再加一层注意。原来的代价其实不大（只在 220ms 内发生），所以这是取舍不是修 bug。
     //
-    // 相比原版的三处克制：
-    //   1. 振幅减半（0.16→0.09、位移 0.07→0.035），波纹只在边缘氛围里
-    //   2. 叠 0.97→1.0 的轻缩放，读作"凝聚成形"而不是"被泼进来"
-    //   3. 淡入用 smoothstep 在 55% 时长内完成，减少文字半透明的时间
-    // 三角函数从每组 6 次降到 4 次（4K 下这是最贵的渲染路径）。
+    // 曲线仍是 ease-out-quart：起步极快、收尾干净，没有 ease-out-cubic 的拖尾。
+    // 缩放取 0.96：幅度再大就读作"弹出"而不是"成形"。
     window-open {
         duration-ms 220
         curve "cubic-bezier" 0.16 1.0 0.3 1.0
@@ -43,57 +42,36 @@ animations {
             vec4 open_color(vec3 coords_geo, vec3 size_geo) {
                 float p = niri_clamped_progress;
 
-                float envelope = p * (1.0 - p) * 4.0;
-                float edge_fade = coords_geo.x * (1.0 - coords_geo.x)
-                                * coords_geo.y * (1.0 - coords_geo.y) * 16.0;
-
-                // 4 组方向波足够给出水面质感，三角函数调用减半
-                float rx = 0.0;
-                rx += sin(coords_geo.x * 45.0 + coords_geo.y * 20.0 - p * 42.0);
-                rx += sin(coords_geo.x * 30.0 - coords_geo.y * 50.0 - p * 48.0);
-                rx += cos(coords_geo.x * 55.0 + coords_geo.y * 40.0 - p * 36.0);
-                rx += cos(coords_geo.x * 20.0 - coords_geo.y * 60.0 - p * 55.0);
-                rx *= 0.09;
-
-                float ry = 0.0;
-                ry += cos(coords_geo.x * 40.0 + coords_geo.y * 35.0 - p * 44.0);
-                ry += sin(coords_geo.x * 25.0 - coords_geo.y * 55.0 - p * 38.0);
-                ry += sin(coords_geo.x * 50.0 + coords_geo.y * 45.0 - p * 48.0);
-                ry += cos(coords_geo.x * 35.0 - coords_geo.y * 30.0 - p * 51.0);
-                ry *= 0.09;
-
-                float zoom = mix(0.97, 1.0, p);
+                // 以窗口中心为原点缩放
+                float zoom = mix(0.96, 1.0, p);
                 vec2 base = (coords_geo.xy - 0.5) / zoom + 0.5;
-                vec2 displaced = base + vec2(rx, ry) * envelope * edge_fade * 0.035;
 
-                vec3 coords_tex = niri_geo_to_tex * vec3(displaced, 1.0);
+                vec3 coords_tex = niri_geo_to_tex * vec3(base, 1.0);
                 vec4 color = texture2D(niri_tex, coords_tex.st);
 
-                // 越界判据改用 displaced 而非 coords_geo：缩放过程中外圈
-                // 1.5% 会采样到纹理之外，判 coords_geo 会让那一圈拉伸边缘
-                // 像素（GL_CLAMP_TO_EDGE），判 displaced 则正确地透明掉。
-                if (displaced.x < 0.0 || displaced.x > 1.0
-                    || displaced.y < 0.0 || displaced.y > 1.0) {
+                // 越界判据用 base 而不是 coords_geo：缩放过程中外圈会采样到纹理
+                // 之外，判 coords_geo 会让那一圈拉伸边缘像素（GL_CLAMP_TO_EDGE），
+                // 判 base 则正确地透明掉。
+                if (base.x < 0.0 || base.x > 1.0 || base.y < 0.0 || base.y > 1.0) {
                     return vec4(0.0);
                 }
 
+                // 淡入在 55% 时长内完成：减少文字半透明的时间（原实现里的真细节，保留）
                 return color * smoothstep(0.0, 0.55, p);
             }
         "
     }
 
-    // 关闭窗口动画 — 涟漪轻散 + 微微下沉
+    // 关闭窗口动画 — 淡出（退场比入场快）
     //
-    // 两处 conventions 修正：
-    //   时长  离开要比进入快（Apple/HarmonyOS 退场 ≈ 入场的 70–80%），
-    //         原来的 300ms 比打开还慢，属于跨档逆序。
+    // 两处 conventions 保留：
+    //   时长  离开要比进入快（Apple/HarmonyOS 退场 ≈ 入场的 70–80%），180ms 对 220ms。
     //   缓动  离开用 ease-in（加速消失）。niri 无内置 ease-in 曲线，
     //         cubic-bezier(0.5,0,0.9,0.4) ≈ ease-in-quint。
-    //         副作用是可接受的：p 前半段走得慢，窗口保持完整、涟漪缓缓散开，
-    //         末段才迅速塌陷淡出——读作"消散后收走"。
     //
-    // drain 从 0.28 降到 0.12：原来整窗内容向中心塌 28% 幅度太大，
-    // 像被吸进下水道；退场的表现力应当交给淡出，位移只做余韵。
+    // 删掉了原先叠在这里的三样：涟漪散开、向心塌陷（drain）、切向位移。
+    // "退场的表现力应当交给淡出，位移只做余韵"这句原来就写在注释里 —— 现在才真的
+    // 按它做（原来恰恰是位移在争主体）。
     window-close {
         duration-ms 180
         curve "cubic-bezier" 0.5 0.0 0.9 0.4
@@ -102,38 +80,18 @@ animations {
             vec4 close_color(vec3 coords_geo, vec3 size_geo) {
                 float p = niri_clamped_progress;
 
-                vec2 center = vec2(0.5, 0.5);
-                vec2 delta = coords_geo.xy - center;
-                float dist = length(delta);
-                vec2 dir = dist > 0.001 ? delta / dist : vec2(0.0, 0.0);
+                // 轻微缩小（1.0 → 0.98）表示"收走"；幅度刻意只有入场的一半
+                float zoom = mix(1.0, 0.98, p);
+                vec2 base = (coords_geo.xy - 0.5) / zoom + 0.5;
 
-                float w1 = sin(dist * 14.0 - p * 24.0) * exp(-dist * 3.0);
-                float w2 = cos(dist * 26.0 - p * 42.0) * exp(-dist * 5.0) * 0.45;
-                float ripple = (w1 + w2) * 0.55;
-
-                float envelope = p * exp(-dist * 2.5);
-                float displacement = ripple * envelope * 0.05;
-
-                float drain = p * p * p * 0.12;
-
-                float tangent = sin(dist * 20.0 - p * 34.0) * envelope * 0.012;
-                vec2 perp = vec2(-dir.y, dir.x);
-
-                vec2 displaced = coords_geo.xy
-                    + dir * displacement
-                    - dir * drain
-                    + perp * tangent;
-
-                vec3 coords_tex = niri_geo_to_tex * vec3(displaced, 1.0);
+                vec3 coords_tex = niri_geo_to_tex * vec3(base, 1.0);
                 vec4 color = texture2D(niri_tex, coords_tex.st);
 
-                if (displaced.x < 0.0 || displaced.x > 1.0
-                    || displaced.y < 0.0 || displaced.y > 1.0) {
+                if (base.x < 0.0 || base.x > 1.0 || base.y < 0.0 || base.y > 1.0) {
                     return vec4(0.0);
                 }
 
-                float fade = 1.0 - p * p;
-                return color * fade;
+                return color * (1.0 - p);
             }
         "
     }
