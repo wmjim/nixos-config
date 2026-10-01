@@ -22,6 +22,13 @@ final: prev: {
   #（打包理由见 pkgs/mcpp-m/default.nix 顶部）。
   mcpp-m = prev.callPackage ../pkgs/mcpp-m { };
 
+  # magpie：多个 AI agent 的统一模型选择器（上游 yetone/magpie，nixpkgs 未收录）。
+  # 桌面版经 cgo 链接 GTK3 + WebKitGTK 4.1（闭包 847 MiB），只给有图形会话的主机；
+  # magpie-cli 是同源码的 nogui/CGO_ENABLED=0 终端版，给 WSL 这类主机。
+  # 注意：它自带 `magpie update` 自更新，在 store 里必然失败，升级改包的 version。
+  magpie = prev.callPackage ../pkgs/magpie { };
+  magpie-cli = prev.callPackage ../pkgs/magpie { gui = false; };
+
   # Windows 客户机装机介质（virtio-win ISO + WinApps oem 脚本）。
   # winappsRev 取自 flake.lock 的 winapps 输入，升级输入后 oem 脚本哈希失配
   # 会显式报错，保证介质与 winapps 版本同步（消费方：modules/nixos/virtualization）。

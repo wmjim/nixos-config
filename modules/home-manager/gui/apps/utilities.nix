@@ -48,6 +48,7 @@ in
       logisim-evolution
       localsend
       eudic-fixed
+      magpie # 各 AI agent 的模型选择器（托盘/窗口版；终端版见 hosts/wsl）
     ];
 
     # === tmp.text 垃圾文件拦截 ===
