@@ -1,9 +1,13 @@
 # Noctalia Shell 用户级配置
+#
+# 不 import 上游 flake 的 homeModules.default：home-manager 自带 programs.noctalia
+# （选项集与上游模块相同，且多出 calendar 账户集成）。上游模块里的
+# `disabledModules = [ "programs/noctalia.nix" ]` 只对旧文件名生效，HM 把该模块改成
+# programs/noctalia/default.nix 后失效，两者同声明 → 求值报 "already declared"。
 {
   lib,
   config,
   osConfig,
-  inputs,
   ...
 }:
 let
@@ -44,10 +48,6 @@ in
     default = true;
     description = "启用 Noctalia Shell 用户级配置";
   };
-
-  imports = [
-    inputs.noctalia.homeModules.default
-  ];
 
   config = lib.mkIf (cfg.enable && guiCfg.enable) {
     # 默认壁纸集部署进 picker 目录（见上方 wallpaperSet）
