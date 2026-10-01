@@ -156,8 +156,15 @@ let
               *) echo "theme-apply: 未知模式 '$mode'（取自 Noctalia state），保持现状" >&2; exit 1 ;;
             esac
 
-            # 幂等：已经是这个目标就不动，避免 path 单元每次触发都让 niri 重载
+            # 幂等：已经是这个目标就不动，避免 path 单元每次触发都让 niri 重载。
+            # 目标不存在就报错退出：上一次就是把变体路径写少了 .config/，脚本默默把软链
+            # 指到不存在的文件，niri 因为 include 读不到而**整份配置拒绝加载**，
+            # 现象却是「某些改动没生效」，很难往这里想。
             link() {
+              if [ ! -e "$2" ]; then
+                echo "theme-apply: 变体不存在：$2（登记的目标路径写错了？）" >&2
+                exit 1
+              fi
               [ "$(readlink "$1" 2>/dev/null)" = "$2" ] || ln -sfn "$2" "$1"
             }
 
@@ -228,29 +235,29 @@ in
     mengw.appearance.switchTargets = [
       {
         live = ".config/gtk-3.0/settings.ini";
-        dark = "${variantDir}/gtk-3.0/dark.ini";
-        light = "${variantDir}/gtk-3.0/light.ini";
+        dark = ".config/${variantDir}/gtk-3.0/dark.ini";
+        light = ".config/${variantDir}/gtk-3.0/light.ini";
       }
       {
         live = ".config/gtk-4.0/settings.ini";
-        dark = "${variantDir}/gtk-4.0/dark.ini";
-        light = "${variantDir}/gtk-4.0/light.ini";
+        dark = ".config/${variantDir}/gtk-4.0/dark.ini";
+        light = ".config/${variantDir}/gtk-4.0/light.ini";
       }
       {
         live = ".config/Kvantum/kvantum.kvconfig";
-        dark = "${variantDir}/kvantum/dark.kvconfig";
-        light = "${variantDir}/kvantum/light.kvconfig";
+        dark = ".config/${variantDir}/kvantum/dark.kvconfig";
+        light = ".config/${variantDir}/kvantum/light.kvconfig";
       }
       # niri 的配色是 include 进来的两个文件，niri 自己会 watch 到并重载
       {
         live = ".config/niri-colors/layout.kdl";
-        dark = "${variantDir}/niri/layout-dark.kdl";
-        light = "${variantDir}/niri/layout-light.kdl";
+        dark = ".config/${variantDir}/niri/layout-dark.kdl";
+        light = ".config/${variantDir}/niri/layout-light.kdl";
       }
       {
         live = ".config/niri-colors/overview.kdl";
-        dark = "${variantDir}/niri/overview-dark.kdl";
-        light = "${variantDir}/niri/overview-light.kdl";
+        dark = ".config/${variantDir}/niri/overview-dark.kdl";
+        light = ".config/${variantDir}/niri/overview-light.kdl";
       }
     ];
 

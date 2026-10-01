@@ -38,7 +38,7 @@ window-rule {
 // 0.85 在纯白壁纸下仍达 AA，而暗壁纸下为 8.3:1，玻璃质感也还看得出来。
 // 若想更透，代价是“壁纸必须是暗调”——那是个合理的设计立场，但得是有意选的。
 window-rule {
-    match app-id="^(ghostty|com\.mitchellh\.ghostty|btop)$"
+    match app-id=r#"^(ghostty|com\.mitchellh\.ghostty|btop)$"#
     opacity 0.85
     background-effect {
         blur true
