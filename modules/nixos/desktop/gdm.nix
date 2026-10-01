@@ -12,12 +12,28 @@
 let
   cfg = config.mySystem.desktop;
 
-  # 登录界面背景：greeter 从 gdm 用户的 dconf profile 读
-  # org.gnome.desktop.background。这里取 store 路径（wallpapers 首项）而不是
-  # ~/Pictures 里那份部署副本：greeter 的 systemd 单元受限、且 store 路径
-  # 世界可读、不可变。深色变体一并设：greeter 恒为深色，GNOME 42+ 在深色
-  # 模式下读 picture-uri-dark 而不是 picture-uri。
-  greeterDatabases = lib.optionals (cfg.wallpapers != [ ]) [
+  # 登录界面与桌面会话共用一套外观：字体 / 图标 / 光标 + 壁纸。
+  #
+  # 字体与图标必须显式声明：主题包与图标包虽然在 gdm 的 extraPackages 里（能解析到），
+  # 但 MacTahoe 的 gnome-shell.css 不含 font-family 声明，不写这条 greeter 就会用
+  # GSettings 默认（Adwaita Sans / Adwaita 图标），与桌面上的 HarmonyOS Sans SC /
+  # MacTahoe-dark 对不上。
+  # cursor-size 必须用 gvariant 带类型 —— toDconfINI 拒绝裸 int。
+  #
+  # 背景取 store 路径（wallpapers 首项）而不是 ~/Pictures 里那份部署副本：greeter 的
+  # systemd 单元受限、且 store 路径世界可读、不可变。深色变体一并设：greeter 恒为
+  # 深色，GNOME 42+ 在深色模式下读 picture-uri-dark 而不是 picture-uri。
+  greeterDatabases = [
+    {
+      settings."org/gnome/desktop/interface" = {
+        font-name = "HarmonyOS Sans SC 12";
+        icon-theme = "MacTahoe-dark";
+        cursor-theme = "Bibata-Modern-Classic";
+        cursor-size = lib.gvariant.mkInt32 24;
+      };
+    }
+  ]
+  ++ lib.optionals (cfg.wallpapers != [ ]) [
     {
       settings."org/gnome/desktop/background" = {
         picture-uri = "file://${lib.head cfg.wallpapers}";

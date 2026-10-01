@@ -15,7 +15,7 @@
 | 光标 | **Bibata-Modern-Classic** | 24px，XWayland 亦生效（软链到 `~/.local/share/icons`） |
 | Qt | **Kvantum + MacTahoeDark** | `QT_STYLE_OVERRIDE=kvantum`；主题来自自打包的 `pkgs/mactahoe-kvantum`（与 GTK 侧同一个上游作者），见下文 |
 | 输入法候选窗 | **catppuccin-frappe-mauve** | `classicui.conf` 托管主题，圆角 **12px**（对齐阶梯的“独立弹层”档；上游 SVG 烘的是 8，由 `fcitx5.nix` 的 runCommand 改成 12 并把九宫格 Margin 抬到 14）；归“工作区”一侧而非壳层 |
-| GDM 登录界面 | MacTahoe | 本仓库不再装 GNOME 会话，只留 GDM 做登录器；其 greeter 用的 gnome-shell 由 GDM 自己的闭包提供，靠 overlay 覆盖 `gnome-shell-theme.gresource` 换肤（见 `modules/nixos/desktop/gdm.nix`），壁纸与桌面会话共用同一张 |
+| GDM 登录界面 | MacTahoe | 本仓库不再装 GNOME 会话，只留 GDM 做登录器；其 greeter 用的 gnome-shell 由 GDM 自己的闭包提供，靠 overlay 覆盖 `gnome-shell-theme.gresource` 换肤，**字体 / 图标 / 光标 / 壁纸**也一并声明（不然 greeter 会退回 Adwaita 默认），全部在 `modules/nixos/desktop/gdm.nix` |
 | Niri 壳层配色 | MacTahoe-Dark 同源 | 由 `niri-colors/{layout,overview}.kdl` 生成；强调色 `#0088FF`、中性发丝线 `#999999`（焦点环）、中性面 `#333333`/`#242424`、紧急 `#ED5F5D`，全部取自 MacTahoe-Dark 的 `gtk-4.0/gtk.css` |
 | Noctalia Shell | **自定义调色板 `mactahoe`** | `customPalettes.mactahoe`，色值与 GTK/Qt/niri 同源；界面字体 HarmonyOS Sans SC。**仅调色板归 Nix，bar 布局归 GUI**，见下文 |
 | 壁纸 | **默认集纳管**（`assets/wallpapers/`） | `mySystem.desktop.wallpapers` 首项即默认；桌面会话与 GDM 登录界面共用同一张，可覆盖，见下文 |
@@ -343,8 +343,17 @@ bar 文字（`#DEDEDE`）的对比度，背景取**屏顶 5% 均值**（bar 背�
 
 一次性步骤（已经选过壁纸的主机）：`noctalia msg wallpaper-set <path>` 会把所有输出与 `wallpaper.default.path` 一起写进 `settings.toml`。只改 Nix 声明不会生效——运行时状态优先（同 `theme.source` 那条）。把图丢进 `~/Pictures/wallpaper/` 即在面板里可选。
 
-## 相关命令
+### 不认领的三个面（写下来的决定）
 
+有些像素不属于这套设计语言。逐一查明后**明确不认领**，免得以后重复怀疑：
+
+- **锁屏**：已经一致，无需配置。Noctalia 的 `settings.toml` 里**没有** `[lockscreen]` 段，即全默认：`wallpaper = ""`（跟随桌面壁纸）、`blur_intensity 0.5`、`tint_intensity 0.3`。锁屏上的部件位置（登录框等）归 GUI，存在 `lockscreen_widgets` 里。
+- **niri 自绘的浮层**（快捷键 overlay、截图 UI、退出确认对话框）：**配不了**。实测 `hotkey-overlay {}` / `screenshot-ui {}` / `ui {}` 三个节点都被 `niri validate` 拒绝——niri 的配置里没有给它们的颜色入口。它们的观感是 niri 自己的，改不了，也不必惦记。
+- **Windows / RemoteApp 窗口与 Steam 的内部 UI**：只有**外框**是我们的—— 24px 圆角与合成器阴影由 niri 统一绘制，所以它们与其它窗口的框架一致；窗口内部的标题栏、配色、控件全是它们自己的。这是“覆盖不了”，不是“没覆盖”。
+
+（第四个面——GDM 登录界面——是**认领**的：字体 / 图标 / 光标 / 壁纸都声明在 `modules/nixos/desktop/gdm.nix`，与桌面会话共用一套。）
+
+## 相关命令
 ```bash
 # 查看系统级主题
 ls /run/current-system/sw/share/themes/

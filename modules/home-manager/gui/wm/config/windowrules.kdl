@@ -80,6 +80,14 @@ window-rule {
     open-maximized true
 }
 
+// Steam — 商店 / 库
+// app-id 取 X11 的 WM_CLASS（steam 走 XWayland）；若实际不是这个，用
+// `niri msg windows` 看真实 app-id 再改。
+window-rule {
+    match app-id="(?i)^steam$"
+    open-maximized true
+}
+
 
 // ═══════════════════════════════════════════════
 // 浮动窗口（按用途分档，不逐个手调）
