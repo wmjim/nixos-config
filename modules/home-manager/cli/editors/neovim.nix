@@ -17,6 +17,24 @@ in
 
   config = lib.mkIf (cfg.enable && cliCfg.enable) {
     programs.neovim.enable = true;
-    xdg.configFile."nvim".source = ./nvim;
+    xdg.configFile = {
+      "nvim".source = ./nvim;
+
+      # 亮/暗跟随桌面（见 nvim/lua/plugins/theme.lua）：theme.lua 读这里翻软链的 mode 文件
+      # 来设 vim.o.background，catppuccin 的 flavour="auto" 据此在 frappe / latte 之间选。
+      # nvim 在启动时读，运行中的实例要重进（或 :colorscheme catppuccin）。
+      "theme-variants/nvim/dark.lua".text = ''return "dark"'';
+      "theme-variants/nvim/light.lua".text = ''return "light"'';
+      # 初始值 = 暗色（与改造前一致）：rebuild 后被还原，登录时 theme-apply 再纠正
+      "theme-variants/nvim/mode.lua".text = ''return "dark"'';
+    };
+
+    mengw.appearance.switchTargets = [
+      {
+        live = ".config/theme-variants/nvim/mode.lua";
+        dark = ".config/theme-variants/nvim/dark.lua";
+        light = ".config/theme-variants/nvim/light.lua";
+      }
+    ];
   };
 }

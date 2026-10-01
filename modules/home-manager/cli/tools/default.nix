@@ -53,13 +53,31 @@ in
       # 包由本模块提供，故上面 home.packages 里不再列 btop
       enable = true;
       settings = {
-        color_theme = "catppuccin-frappe";
+        # 主题名固定为 catppuccin，亮/暗由**主题文件本身**换（下面两个变体 + theme-apply
+        # 翻软链）：btop 的 color_theme 只是个名字，写成固定名才能运行时切换。
+        color_theme = "catppuccin";
         # btop 内嵌配置说明：set to False if you want terminal background
         # transparency
         theme_background = false;
       };
-      themes.catppuccin-frappe = ./btop/catppuccin-frappe.theme;
+      # 初始值 = 暗色（与改造前一致）；rebuild 后被还原，登录时 theme-apply 再按模式纠正
+      themes.catppuccin = ./btop/catppuccin-frappe.theme;
     };
+
+    # 两套 btop 主题变体（Frappe / Latte）+ 登记给 theme-apply 翻软链。
+    # 运行中的 btop 没有热重载，下次启动生效。
+    xdg.configFile = {
+      "theme-variants/btop/dark.theme".source = ./btop/catppuccin-frappe.theme;
+      "theme-variants/btop/light.theme".source = ./btop/catppuccin-latte.theme;
+    };
+
+    mengw.appearance.switchTargets = [
+      {
+        live = ".config/btop/themes/catppuccin.theme";
+        dark = ".config/theme-variants/btop/dark.theme";
+        light = ".config/theme-variants/btop/light.theme";
+      }
+    ];
 
     home.file.".config/fastfetch/config.jsonc" = {
       source = ../../../../assets/fastfetch/nixos-01.jsonc;

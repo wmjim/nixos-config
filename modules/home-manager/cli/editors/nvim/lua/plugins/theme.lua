@@ -6,9 +6,19 @@ return {
     "catppuccin/nvim",
     name = "catppuccin",
     priority = 1000,
-    opts = {
-      flavour = "frappe", -- 与 ghostty（Fedora Frappe）配色保持一致；亮/暗切换待接（见 theme.lua 上文）
-    },
+    -- 亮/暗跟随桌面：读 theme-apply 翻软链过来的那份 mode 文件（见本文件下面 opts 的
+    -- 注释），据此设 vim.o.background，再让 catppuccin 的 flavour="auto" 自己选
+    -- frappe / latte。两个名字只在模块里写一次：appearance.switchTargets。
+    opts = function()
+      local ok, mode = pcall(dofile, vim.fn.expand("~/.config/theme-variants/nvim/mode.lua"))
+      if ok and (mode == "light" or mode == "dark") then
+        vim.o.background = mode
+      end
+      return {
+        -- auto = 按 vim.o.background 选（catppuccin 的约定）
+        flavour = "auto",
+      }
+    end,
   },
   {
     "LazyVim/LazyVim",

@@ -86,23 +86,31 @@ let
   # TextMargin 8 < Margin 10，inset 为负，同心在那个轴上本来就不成立，而选中
   # 条是宽扁矩形，视觉由水平 inset 决定）。
   #
-  # 不 fork 主题内容：只改这四行，Frappe 调色板仍随 nixpkgs 更新。
-  theme = pkgs.runCommand "fcitx5-theme-catppuccin-frappe-mauve" { } ''
-    themeDir=$out/share/fcitx5/themes/catppuccin-frappe-mauve
-    mkdir -p "$themeDir"
-    cp -r ${pkgs.catppuccin-fcitx5}/share/fcitx5/themes/catppuccin-frappe-mauve/. "$themeDir/"
-    chmod -R u+w "$themeDir"
+  # 不 fork 主题内容：只改这四行，调色板仍随 nixpkgs 更新。
+  # 亮/暗各一份：fcitx5 的 UseDarkTheme=True 会按系统明暗在 Theme / DarkTheme 之间选，
+  # 而它读的是 Qt6 的 colorScheme（平台主题 adwaita → gsettings 的 color-scheme，
+  # 正是 theme-apply 在切的键），所以两套都装、两边都不需要我们自己翻文件。
+  mkTheme =
+    flavour:
+    pkgs.runCommand "fcitx5-theme-catppuccin-${flavour}-mauve" { } ''
+      themeName=catppuccin-${flavour}-mauve
+      themeDir=$out/share/fcitx5/themes/$themeName
+      mkdir -p "$themeDir"
+      cp -r ${pkgs.catppuccin-fcitx5}/share/fcitx5/themes/$themeName/. "$themeDir/"
+      chmod -R u+w "$themeDir"
 
-    # 打开圆角（上游默认是注释掉的直角）
-    substituteInPlace "$themeDir/theme.conf" \
-      --replace-fail '# Image=panel.svg' 'Image=panel.svg' \
-      --replace-fail '# Image=highlight.svg' 'Image=highlight.svg'
+      # 打开圆角（上游默认是注释掉的直角）
+      substituteInPlace "$themeDir/theme.conf" \
+        --replace-fail '# Image=panel.svg' 'Image=panel.svg' \
+        --replace-fail '# Image=highlight.svg' 'Image=highlight.svg'
 
-    # 圆角对齐阶梯 12px + 九宫格 Margin 10 → 14（rx 不能大于 Margin）
-    sed -i 's/rx="8"/rx="12"/' "$themeDir/panel.svg"
-    sed -i 's/rx="8"/rx="4"/' "$themeDir/highlight.svg"
-    sed -i '/^\[InputPanel\/Background\/Margin\]$/,/^\[/ s/^\(Left\|Right\|Top\|Bottom\)=10$/\1=14/' "$themeDir/theme.conf"
-  '';
+      # 圆角对齐阶梯 12px + 九宫格 Margin 10 → 14（rx 不能大于 Margin）
+      sed -i 's/rx="8"/rx="12"/' "$themeDir/panel.svg"
+      sed -i 's/rx="8"/rx="4"/' "$themeDir/highlight.svg"
+      sed -i '/^\[InputPanel\/Background\/Margin\]$/,/^\[/ s/^\(Left\|Right\|Top\|Bottom\)=10$/\1=14/' "$themeDir/theme.conf"
+    '';
+  themeDark = mkTheme "frappe";
+  themeLight = mkTheme "latte";
 in
 {
   options.mengw.gui.fcitx5.enable = lib.mkOption {
@@ -112,7 +120,10 @@ in
   };
 
   config = lib.mkIf (cfg.enable && guiCfg.enable) {
-    home.packages = [ theme ];
+    home.packages = [
+      themeDark
+      themeLight
+    ];
 
     # 经典界面（候选词窗口）主题。该文件由 fcitx5 自行生成，但内容全是用户偏好、
     # 无易变状态，故整体托管；fcitx5 GUI 里的改动会在下次 switch 时被覆盖回此处。
@@ -148,8 +159,8 @@ in
       ShowLayoutNameInIcon=True
       # 使用输入法的语言来显示文字
       UseInputMethodLanguageToDisplayText=True
-      # 主题（浅色模式）：与深色同值，见上方说明
-      Theme=catppuccin-frappe-mauve
+      # 主题（浅色模式）：UseDarkTheme=True 时系统为浅色就用这一份
+      Theme=catppuccin-latte-mauve
       # 深色主题
       DarkTheme=catppuccin-frappe-mauve
       # 跟随系统浅色/深色设置
