@@ -1,8 +1,38 @@
 # 主题与外观
 
-配置位置：`modules/home-manager/gui/themes/default.nix`（Qt/GTK）+ `modules/home-manager/gui/wm/default.nix`（Niri 配色）+ `modules/home-manager/gui/wm/noctalia.nix`（Noctalia 调色板）+ `modules/home-manager/gui/fcitx5.nix`（输入法候选窗与托盘图标）。
+配置位置：`modules/home-manager/gui/themes/variants.nix`（亮/暗的真源接线与 `theme-apply`，见下节）+ `modules/home-manager/gui/themes/default.nix`（Qt/GTK）+ `modules/home-manager/gui/wm/default.nix`（Niri 配色）+ `modules/home-manager/gui/wm/noctalia.nix`（Noctalia 调色板）+ `modules/home-manager/gui/fcitx5.nix`（输入法候选窗与托盘图标）。
 
-整个桌面统一为**深色**：niri / Noctalia / 终端 / 编辑器都是深色，GTK/Qt/输入法也一并为深色，避免白底窗口浮在深色桌面上。
+整个桌面有**两套外观**，真源是 Noctalia 的 theme mode（状态栏那个主题图标，`noctalia msg theme-mode-toggle`）：
+切一下，壳层（macOS 中性灰 + 单一强调色）与工作区（Catppuccin）各自在亮/暗两态之间换，而
+「壳层冷中性 / 工作区低饱和」这些约定不变。下面几节里的具体取值都是**暗色那一套**，亮色的
+对应值见各文件自己的注释。
+
+## 亮/暗切换
+
+**真源只有一个**：Noctalia 的 theme mode。接线在 `modules/home-manager/gui/themes/variants.nix`：
+HM 把两套变体都生成到 `~/.config/theme-variants/`，`theme-apply` 只做三件事 —— 把各层登记的
+活文件软链指到当前模式、写 dconf（`color-scheme` / `gtk-theme` / `icon-theme` / 窗口按钮位置）、
+必要时给应用发信号；登录时跑一次，之后由 path 单元盯 Noctalia 的 state 目录触发（盯目录是因为
+它保存走 temp+rename，盯文件会漏事件）。Nix 仍持有全部取值，运行时只有一个「哪一套」的选择。
+
+哪些东西怎么跟：
+
+| 面 | 跟的方式 | 运行中的实例 |
+|---|---|---|
+| GTK3/GTK4、图标、Qt/Kvantum | `theme-apply` 翻软链 + 写 dconf | GTK 多数要重开（Qt/Kvantum 也要） |
+| GTK4 的主题本体 | 一份**模式无关**的 `gtk.css`（浅色整份包在 `@media (prefers-color-scheme: light)` 里） | color-scheme 一变就重算，无需重开 |
+| niri 自身配色 | 翻 `niri-colors/*.kdl` 软链 | niri watch 到即重载 |
+| ghostty | `theme = light:Catppuccin Latte,dark:Catppuccin Frappe`，由 ghostty 自己按桌面主题选 | **不重选**：按 `ctrl+shift+,`（reload）或新开窗口/分屏 |
+| btop（主题文件）、fastfetch（config + logo） | 登记进 `mengw.appearance.switchTargets`，翻软链 | 下次启动生效 |
+| nvim | 翻一份 `mode.lua`，`theme.lua` 据此设 `vim.o.background`，catppuccin `flavour="auto"` | 要重进（或 `:colorscheme catppuccin`） |
+| fcitx5 候选词窗 | `Theme` / `DarkTheme` 一对 + `UseDarkTheme=True`，fcitx5 自己按系统明暗选 | 要重启 fcitx5 |
+| tmux | 颜色全用 ANSI 名称，配色由终端提供 | 随终端自动跟 |
+| yazi | `theme.flavor` 写成 latte/frappe 一对，由 yazi 按终端背景自选 | — |
+
+两个需要知道的边界：① **ghostty 运行中的窗口不会自己重选主题**，而且从外部也触发不了 ——
+实测它的 D-Bus 对象在（`/com/mitchellh/ghostty/window/<id>`），但 `reload_config` 并没有作为
+action 导出（`Unknown action`），也没有 SIGUSR1/2 之类的入口；② fastfetch 的亮色那份是
+**重算**的，不是换色值（推导见 `assets/fastfetch/nixos-01-light.jsonc` 顶部注释）。
 
 ## 主题栈
 
