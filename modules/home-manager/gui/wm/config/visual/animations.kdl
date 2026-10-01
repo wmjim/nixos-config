@@ -10,6 +10,11 @@
 // 弹簧时长按 t ≈ 4/(ζ·√k) 估算（单位质量、近临界阻尼下的 98% 建立时间），
 // 仅供相对比较；epsilon 也参与终止判定，绝对值以实际观感为准。
 // 调参时在 animations 块里临时加 slowdown 0.4 放慢看轨迹。
+//
+// ⚠ custom-shader r"..." 是 KDL 的**原始字符串**，以第一个 ASCII 双引号结束。
+//   所以 shader 内部（包括它里面的 // 注释）不能出现 ASCII 双引号——写一个就会
+//   提前结束字符串，报错是 "found `收`, expected `;`" 这类看不出所以然的。写中文
+//   注释时用括号或全角引号。（niri validate 会拦住，但报错点在字符串之后，难定位）
 
 animations {
     // 关闭所有动画
@@ -80,7 +85,7 @@ animations {
             vec4 close_color(vec3 coords_geo, vec3 size_geo) {
                 float p = niri_clamped_progress;
 
-                // 轻微缩小（1.0 → 0.98）表示"收走"；幅度刻意只有入场的一半
+                // 轻微缩小（1.0 → 0.98）表示收走；幅度刻意只有入场的一半
                 float zoom = mix(1.0, 0.98, p);
                 vec2 base = (coords_geo.xy - 0.5) / zoom + 0.5;
 
