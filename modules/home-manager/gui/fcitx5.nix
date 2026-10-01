@@ -75,18 +75,33 @@ let
   # mauve 又是 Catppuccin 的默认强调色。
   #
   # 上游为每个变体都带了一对圆角 SVG（39x39，rx=8，填充色随变体烘焦），
-  # 但 theme.conf 里把 `Image=` 两行注释掉了（默认为直角）。而桌面其余部分的
-  # 圆角阶梓是 12px（窗口）/ 8px（popover、菜单、标签指示器），候选词窗又是
-  # 全屏出现频率最高的浮层，留直角会显得突兀，故用 runCommand 就地打开这两行。
-  # 不 fork 主题内容：只改这两行，Frappe 调色板仍随 nixpkgs 更新。
+  # 但 theme.conf 里把 `Image=` 两行注释掉了（默认为直角），而候选词窗是全屏
+  # 出现频率最高的浮层，留直角会显得突兀，故用 runCommand 就地打开这两行。
+  #
+  # 圆角值也一并对齐桌面阶梯的"独立弹层"档 12px（阶梯表见 windowrules.kdl，
+  # 理由见 docs/themes.md）：fcitx5 按九宫格切图，角片大小 = Margin，故 rx 必须
+  # ≤ Margin——rx=12 > Margin=10 会被切角，Margin 一并抬到 14。
+  # highlight 是嵌在 panel 内的选中条，按 concentricity 取 r_inner = r_outer −
+  # inset = 12 − 8 = 4（inset 取水平方向的 TextMargin−Margin = 8；垂直方向
+  # TextMargin 8 < Margin 10，inset 为负，同心在那个轴上本来就不成立，而选中
+  # 条是宽扁矩形，视觉由水平 inset 决定）。
+  #
+  # 不 fork 主题内容：只改这四行，Frappe 调色板仍随 nixpkgs 更新。
   theme = pkgs.runCommand "fcitx5-theme-catppuccin-frappe-mauve" { } ''
     themeDir=$out/share/fcitx5/themes/catppuccin-frappe-mauve
     mkdir -p "$themeDir"
     cp -r ${pkgs.catppuccin-fcitx5}/share/fcitx5/themes/catppuccin-frappe-mauve/. "$themeDir/"
     chmod -R u+w "$themeDir"
+
+    # 打开圆角（上游默认是注释掉的直角）
     substituteInPlace "$themeDir/theme.conf" \
       --replace-fail '# Image=panel.svg' 'Image=panel.svg' \
       --replace-fail '# Image=highlight.svg' 'Image=highlight.svg'
+
+    # 圆角对齐阶梯 12px + 九宫格 Margin 10 → 14（rx 不能大于 Margin）
+    sed -i 's/rx="8"/rx="12"/' "$themeDir/panel.svg"
+    sed -i 's/rx="8"/rx="4"/' "$themeDir/highlight.svg"
+    sed -i '/^\[InputPanel\/Background\/Margin\]$/,/^\[/ s/^\(Left\|Right\|Top\|Bottom\)=10$/\1=14/' "$themeDir/theme.conf"
   '';
 in
 {
@@ -106,9 +121,9 @@ in
     # 这样候选词窗的观感就与"系统明暗检测"无关了。
     #
     # UseAccentColor 取的是 portal 上报的系统重点色。这里置 False，
-    # 否则它会用 #3584e4 盖掉主题自带的 mauve #ca9ee6；而本机 GNOME 的
-    # accent-color 只接受命名值（blue/teal/…），根本钉不到壳层的 #0088FF，
-    # 与其留一个近似蓝，不如用主题自带色。
+    # 否则它会用 #3584e4 盖掉主题自带的 mauve #ca9ee6；而壳层强调色 #0088FF 是
+    # 自定调色板里的值，portal 只报 GSettings 的默认蓝（GNOME 会话已移除，没人
+    # 再设置它），根本钉不到 #0088FF，与其留一个近似蓝，不如用主题自带色。
     xdg.configFile."fcitx5/conf/classicui.conf".text = ''
       # 垂直候选列表
       Vertical Candidate List=False

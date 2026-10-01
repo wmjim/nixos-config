@@ -11,9 +11,13 @@ window-rule {
     //     .sidebar-pane / .content-pane 18 ├ 嵌在窗口内（24−5 / 24−6）
     //     notebook > header           16   │
     //     notebook … tab              14   ┘
-    //     popover / menu / osd        12   ← 独立弹层
+    //     popover / menu / osd        12   ← 独立弹层（含输入法候选窗，见下）
     //     按钮 / 输入框                 6
     //     药丸                      9999
+    //
+    // 注：输入法候选窗本属这一档，但它的圆角烘在上游 SVG 里（39×39, rx=8），
+    // 由 fcitx5.nix 的 runCommand 改成 12、并把九宫格 Margin 从 10 抬到 14
+    // （rx 必须 ≤ Margin，否则角片会被切）。
     //
     // 改这个值之前先读 docs/themes.md「圆角为何是 24px」：为何取主题自己的 24
     // 而不是字面的 macOS 16、内层为何不能比外层更圆、以及被 clip-to-geometry
