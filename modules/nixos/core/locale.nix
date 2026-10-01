@@ -35,17 +35,24 @@
     lxgw-wenkai # 霞鹜文楷，中文衬线补充字体
   ];
 
-  # 次像素渲染（彩边）保持开启，尚未评估；下面两个 hinting 选项是一对矛盾的一件事：
-  # fonts.packages 里的等宽字体特意选了 **-unhinted** 构建（那一档就是为了放弃笔画
-  # 对齐、换取轮廓干净），而 autohint 正是对“没有自带 hinting”的字体生效的开关
-  # —— 一个决定被另一个决定撤销。关掉 autohint 后 style 也随之为空（无笔画指令
-  # 可对齐），写成 none 只是把“不 hinting”这个意图写明白。
-  # 参照：macOS 从 Mojave 起就是灰度 + 不 hinting。
-  # TODO: subpixel.rgba 是否也改 none（灰度）待评估，见 docs/themes.md 的字体一节。
-  fonts.fontconfig.subpixel.rgba = "rgb";
-  fonts.fontconfig.subpixel.lcdfilter = "default";
+  # ── 字形渲染：灰度 + 不 hinting（macOS 自 Mojave 起就是这套）────────────
+  # 这两件事是一对：hinting 把笔画对齐到像素网格，次像素渲染再借 R/G/B 子像素
+  # 骗出更高的横向分辨率 —— 两者都是为了在小字号下抢清晰度，代价是字形失去字体
+  # 原本的比例、字边出现彩边。这里两个都不要。
+  #
+  # autohint 尤其与字体选型矛盾：fonts.packages 里的等宽字体特意选了 **-unhinted**
+  # 构建（同一包也有 NormalNL-NF / NormalNL-NF-CN 两个 hinted 变体而没选），
+  # 而 autohint 正是对“没有自带 hinting”的字体生效的开关 —— 等于把那份刻意
+  # 不 hinting 的轮廓重新对齐一遍。
+  #
+  # 说明：hinting.style 与 subpixel.* 不是写进生成的那个 conf 文件，而是替换
+  # conf.d 里指向 fontconfig 自带预设的软链（10-hinting-none.conf /
+  # 10-sub-pixel-none.conf），所以核实时要看软链目标。
   fonts.fontconfig.hinting.style = "none";
   fonts.fontconfig.hinting.autohint = false;
+  fonts.fontconfig.subpixel.rgba = "none";
+  # 不写 subpixel.lcdfilter：LCD 滤镜只对次像素渲染有意义，rgba = none 时它是空转，
+  # 而它的默认值本来就是 "default"（即上游默认，不替换任何 conf.d 软链）。
 
   # 中文回退加固：部分国产 Qt 应用（迅雷、欧陆词典等）对 fontconfig
   # 的逐字回退依赖不可靠，若命中的字体（如 HarmonyOS Sans SC 仅覆盖

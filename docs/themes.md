@@ -24,8 +24,10 @@
 
 - 界面字体：HarmonyOS Sans SC（12pt）
 - 中文衬线阅读：LXGW WenKai（霞鹜文楷）
-- 代码 / 终端：Maple Mono Normal NL NF（CN）
+- 代码 / 终端：Maple Mono Normal NL NF（CN）—— 特意取 `-unhinted` 构建
 - 中文兜底：Noto Sans/Serif CJK SC（fontconfig 别名加固，防止国产 Qt 应用缺字方块）
+
+**字形渲染：灰度 + 不 hinting**（`modules/nixos/core/locale.nix`）。hinting 把笔画对齐到像素网格、次像素渲染借 R/G/B 子像素换横向分辨率；两者都是为小字号抢清晰度，代价是字形失去原本比例、字边出现彩边 —— 这里两个都不要，与 macOS 自 Mojave 起的取向一致。autohint 与字体选型尤其矛盾：等宽字体特意选了 `-unhinted` 构建（同一包有 hinted 变体而没选），而 autohint 正是对**没有自带 hinting** 的字体生效的开关。
 
 ## Niri 视觉细节
 
