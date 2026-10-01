@@ -41,15 +41,9 @@
         name = "eDP-1";
         mode = "1920x1080@59.977";
         scale = 1.25;
-        focus = true;
       }
     ];
-    desktop.gnome.enable = true;
-    desktop.niri.enable = true;
-    desktop.distrobox.enable = true;
-    virtualization.enable = true;
-    proxy.enable = true;
-    # 客户机（libvirt NAT 网段）经网桥地址 192.168.122.1 使用宿主代理
-    proxy.exposeToVms = true;
+    # 其余桌面能力（niri/gnome/distrobox/virtualization/proxy）由 desktop 域
+    # 聚合默认值给出
   };
 }

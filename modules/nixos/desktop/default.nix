@@ -45,29 +45,6 @@ in
             default = 1;
             description = "此输出的逻辑缩放";
           };
-          position = lib.mkOption {
-            type = lib.types.nullOr (
-              lib.types.submodule {
-                options = {
-                  x = lib.mkOption {
-                    type = lib.types.int;
-                    default = 0;
-                  };
-                  y = lib.mkOption {
-                    type = lib.types.int;
-                    default = 0;
-                  };
-                };
-              }
-            );
-            default = null;
-            description = "输出位置；null 则由 niri 自动排列";
-          };
-          focus = lib.mkOption {
-            type = lib.types.bool;
-            default = false;
-            description = "niri 启动时聚焦此输出（多输出主机只应有一台开启）";
-          };
           ddc = lib.mkOption {
             type = lib.types.bool;
             default = false;
@@ -96,6 +73,17 @@ in
     mySystem.desktop.scale = lib.mkDefault (
       if cfg.monitors == [ ] then 1 else (lib.head cfg.monitors).scale
     );
+
+    # 桌面主机的默认开关集：本仓库两台桌面主机（desktop/laptop）验证过的组合，
+    # 主机文件只写例外（与 ../hardware/default.nix 的聚合同构）。关单项用 lib.mkForce。
+    mySystem.desktop.niri.enable = lib.mkDefault true;
+    mySystem.desktop.gnome.enable = lib.mkDefault true;
+    mySystem.desktop.distrobox.enable = lib.mkDefault true;
+    # 桌面主机即工作站：WinApps / distrobox 依赖 libvirt，客户机又要靠宿主代理
+    # 上网（见 ../networking/proxy-vm.nix），故与桌面能力一并给默认值
+    mySystem.virtualization.enable = lib.mkDefault true;
+    mySystem.proxy.enable = lib.mkDefault true;
+    mySystem.proxy.exposeToVms = lib.mkDefault true;
 
     # gvfs：文件管理、回收站、网络共享
     services.gvfs.enable = true;

@@ -211,11 +211,9 @@ let
   '';
 
   # 生成的 outputs.kdl —— 由主机声明的 mySystem.desktop.monitors 数据驱动
-  # （hosts/<host>/default.nix）。此前这里按 hostName switch 硬编码两台主机
-  # 的输出，显示器数据泄漏进共享模块；现模块只做生成器，数据留在主机。
+  # （hosts/<host>/default.nix）：本模块只做生成器，显示器数据留在主机。
   # niri 的 output 段按物理输出名匹配，未连接的输出条目会静默失效，
-  # 故每台主机只声明自己实际连接的屏幕；focus-at-startup 由数据控制，
-  # 多输出主机只应在一项上开启。
+  # 故每台主机只声明自己实际连接的屏幕。
   outputsKdl =
     let
       monitors = osConfig.mySystem.desktop.monitors;
@@ -230,10 +228,6 @@ let
           [ "output \"${m.name}\" {" ]
           ++ lib.optionals (m.mode != null) [ "    mode \"${m.mode}\"" ]
           ++ [ "    scale ${scaleStr}" ]
-          ++ lib.optionals (m.position != null) [
-            "    position x=${toString m.position.x} y=${toString m.position.y}"
-          ]
-          ++ lib.optionals m.focus [ "    focus-at-startup" ]
           ++ [ "}" ]
         );
     in
