@@ -29,7 +29,7 @@
         ddc = true;
       }
     ];
-    # 其余桌面能力（niri/gnome/distrobox/virtualization/proxy）由 desktop 域
+    # 其余桌面能力（niri/distrobox/virtualization/proxy）由 desktop 域
     # 聚合默认值给出，此处只留与 laptop 的真实差异
     desktop.steam.enable = true;
   };

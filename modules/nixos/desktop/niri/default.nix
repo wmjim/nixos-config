@@ -165,8 +165,8 @@ in
       };
     };
 
-    # 注意：XDG_CURRENT_DESKTOP 由 niri-session 在会话启动时自动设置，
-    # 不要在此处全局写死，否则 GNOME 等共存桌面会读取到错误的值。
+    # 注意：XDG_CURRENT_DESKTOP 由 niri-session 在会话启动时自动设置，不要在此处
+    # 全局写死（本仓库只装 Niri 一个会话，但 XWayland 应用也读这个变量）。
 
     # RDP 远程桌面端口
     networking.firewall.allowedTCPPorts = [ 3389 ];

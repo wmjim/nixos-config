@@ -43,7 +43,7 @@
         scale = 1.25;
       }
     ];
-    # 其余桌面能力（niri/gnome/distrobox/virtualization/proxy）由 desktop 域
+    # 其余桌面能力（niri/distrobox/virtualization/proxy）由 desktop 域
     # 聚合默认值给出
   };
 }

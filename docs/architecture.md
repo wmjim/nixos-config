@@ -47,7 +47,7 @@ flake.nix / flake.lock      # 唯一入口：inputs + 各主机输出 + overlays
 | wsl | x86_64-linux | CLI-only，`boot.isContainer`，额外 WSL2 代理地址探测（`hosts/wsl/proxy.nix`） |
 | macbook | aarch64-darwin | nix-darwin，Homebrew casks |
 
-两台桌面主机是**同一款配置的两个尺寸**：桌面能力（niri / gnome / distrobox /
+两台桌面主机是**同一款配置的两个尺寸**：桌面能力（niri / distrobox /
 virtualization / proxy）由 `desktop.enable` 的聚合默认值给出，主机文件里只留硬件数据
 与真正的差异。
 

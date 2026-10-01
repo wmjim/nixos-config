@@ -11,9 +11,8 @@ let
 in
 {
   options.mySystem.desktop.niri.enable = lib.mkEnableOption "Niri 窗口管理器";
-  options.mySystem.desktop.gnome.enable = lib.mkEnableOption "GNOME 桌面环境";
 
-  # 显示器逻辑缩放（GNOME/Niri 的 fractional scaling 值，如 4K 屏的 1.5）。
+  # 显示器逻辑缩放（Niri 的 fractional scaling 值，如 4K 屏的 1.5）。
   # AWT 的 sun.java2d.uiScale 只接受整数，此处统一声明桌面缩放，
   # 由 env.nix 向上取整后喂给 JVM，避免各处重复推导或硬编码无效值。
   # 默认从下方 monitors 首项派生（单一数据源），主机可显式覆盖。
@@ -81,7 +80,6 @@ in
     ./gdm.nix
     ./env.nix
     ./niri
-    ./gnome
     ./distrobox.nix
     ./steam.nix
   ];
@@ -96,7 +94,6 @@ in
     # 桌面主机的默认开关集：本仓库两台桌面主机（desktop/laptop）验证过的组合，
     # 主机文件只写例外（与 ../hardware/default.nix 的聚合同构）。关单项用 lib.mkForce。
     mySystem.desktop.niri.enable = lib.mkDefault true;
-    mySystem.desktop.gnome.enable = lib.mkDefault true;
     mySystem.desktop.distrobox.enable = lib.mkDefault true;
     # 桌面主机即工作站：WinApps / distrobox 依赖 libvirt，客户机又要靠宿主代理
     # 上网（见 ../networking/proxy-vm.nix），故与桌面能力一并给默认值
@@ -106,6 +103,17 @@ in
 
     # gvfs：文件管理、回收站、网络共享
     services.gvfs.enable = true;
+
+    # 以下三项原先由 GNOME 会话模块顺带打开（mkDefault），本仓库不再装 GNOME 会话后
+    # 显式声明——它们与 GNOME 无关，而是桌面/音视频栈真正需要的：
+    services.upower.enable = true; # 电源/电量状态（Noctalia 电量控件、笔记本）
+    services.avahi.enable = true; # mDNS 局域网发现（LocalSend、网络打印机）
+    security.rtkit.enable = true; # PipeWire 实时优先级（缺它时高负载下会垚音）
+    # 故意不跟着开的（GNOME 曾经顺带打开，均已确认本机无用）：
+    #   colord（ICC 色彩管理）geoclue2（浏览器定位）services.hardware.bolt（雷电
+    #   设备授权）power-profiles-daemon（笔记本用 TLP、游戏用 gamemode）
+    #   gnome-remote-desktop（RDP 服务端）：要远程访问时单独开
+    #   services.gnome.gnome-remote-desktop
 
     # 输入法（系统层面）
     i18n.inputMethod = {

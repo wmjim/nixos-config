@@ -3,7 +3,6 @@
   lib,
   config,
   pkgs,
-  osConfig,
   ...
 }:
 let
@@ -93,22 +92,5 @@ in
     # Kvantum 主题包（MacTahoeDark：只含深色那一对，见 pkgs/mactahoe-kvantum）
     home.packages = [ pkgs.mactahoe-kvantum ];
 
-    # GNOME Shell 换肤：启用 user-theme 扩展并指向 MacTahoe 主题
-    # enabled-extensions 为整数组写入，故须列出全部已装扩展的 UUID，
-    # 否则会覆盖用户已手动启用的扩展。
-    #
-    # UUID 不再硬编码：安装列表在 NixOS 侧 mySystem.desktop.gnome.extensions
-    # 单一维护，此处经 osConfig 取回各包的 extensionUuid 派生启用列表，
-    # 避免"装了没启用 / 启用但没装"的静默脱节。
-    # osConfig 仅在 home-manager 作为 NixOS 模块集成时可用；gui 模块只在
-    # NixOS 桌面主机导入（见 flake.nix），macOS 不加载本模块，故必然存在。
-    dconf.settings = {
-      "org/gnome/shell" = {
-        enabled-extensions = map (e: e.extensionUuid) (osConfig.mySystem.desktop.gnome.extensions or [ ]);
-      };
-      "org/gnome/shell/extensions/user-theme" = {
-        name = "MacTahoe-Dark";
-      };
-    };
   };
 }

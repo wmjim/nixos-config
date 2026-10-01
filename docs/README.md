@@ -11,7 +11,6 @@
 | 输入法（Rime、候选窗、托盘图标） | `docs/input.md` + `docs/themes.md` | `modules/home-manager/gui/fcitx5.nix`、`modules/nixos/desktop/default.nix` |
 | 桌面主题 / GTK / Qt / 图标 / 壁纸 | `docs/themes.md` | `modules/home-manager/gui/themes/default.nix`、`modules/home-manager/gui/wm/noctalia.nix` |
 | Niri 快捷键、窗口与布局规则 | `docs/niri.md` | `modules/home-manager/gui/wm/config/` + 生成 KDL 的 `gui/wm/default.nix` |
-| GNOME（laptop 也装了，但默认会话是 Niri） | `docs/gnome.md` | `modules/nixos/desktop/gnome/default.nix` |
 | 装了哪些应用 | `docs/softwares.md` | `modules/home-manager/gui/apps/`（含嵌入式工具链） |
 | 开发工具链、Distrobox | `docs/environment.md` | `modules/home-manager/cli/{dev,tools}` |
 | tmux（含会话持久化） | `docs/tmux.md` | `modules/home-manager/cli/tools/tmux.nix` + `tests/tmux-persistence.sh` |

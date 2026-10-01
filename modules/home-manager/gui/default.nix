@@ -30,6 +30,5 @@ in
     ./fcitx5.nix
     ./vscode.nix
     ./winapps.nix
-    ./hide-ghost-apps.nix
   ];
 }
