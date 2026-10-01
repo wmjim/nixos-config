@@ -85,6 +85,29 @@ in
           # 跑一次 noctalia msg wallpaper-set <path>（见 docs/manager.md）
           default.path = defaultWallpaper;
         };
+        # bar 布局：这四项可以声明式 —— 它们没有密钥（明文 API key 在 state 的
+        # [plugin_settings."coder/deepseek_usage"] 段里，与本组无关）。bar 的其余键
+        # （capsule / enabled / margin_edge / members …）仍归 GUI，本模块只钉这四项。
+        # 取值理由与对比度算据见 docs/themes.md 的「bar 收敛」。
+        # 注意：运行时 state 里已有同键会遮蔽这里，首次生效需把 state 那四行删一次
+        # （见 docs/manager.md）。
+        bar.default = {
+          background_opacity = 0.30;
+          start = [ "workspaces" ];
+          center = [ "date" ];
+          end = [
+            "tray"
+            "clipboard"
+            "notifications"
+            "volume"
+            "brightness"
+            "session"
+          ];
+        };
+        # 不写 widget.cat.rave_mode：小部件本身（其 id 与 type）由 GUI 持有，
+        # 只声明它的一个子键会在 config.toml 里生成一个无 type 的 [widget.cat] 段，
+        # noctalia config validate 会报 `unrecognized widget type "cat"`。
+        # 关掉 rave 动画改为 GUI 侧一次性步骤（见 docs/manager.md）。
         brightness = {
           enable_ddcutil = useDdc;
           # 每个声明了 ddc = true 的输出各生成一条 ddcutil 后端映射

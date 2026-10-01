@@ -33,7 +33,18 @@ noctalia msg color-scheme-set custom mactahoe
 noctalia msg color-scheme-get   # 应回：custom mactahoe
 ```
 
-bar 的布局也只能在 GUI 里点（那些键在 `settings.toml` 里，会覆盖 Nix 声明）：`background_opacity` → **0.30**；`end` 留 tray / clipboard / notifications / volume / brightness / session；`center` 只留 date；`start` 只留 workspaces；cat 的 `rave_mode` 关掉。数值与算据见 `docs/themes.md` 的「bar 收敛」。
+bar 布局的**四项**（`bar.default` 的 opacity / start / center / end）已声明在 `programs.noctalia.settings`，但它们**运行时状态优先**：state 里已有的同键会遮蔽 Nix 声明。首次要让它生效，把 state 里这四行删掉（其余键都别动，尤其 `[plugin_settings."coder/deepseek_usage"]` 里的 api_key）：
+
+```bash
+# ~/.local/state/noctalia/settings.toml 的 [bar.default] 段，删这四行：
+#   background_opacity / start / center / end
+noctalia config validate ~/.config/noctalia/config.toml   # 删完校验一下
+# 然后注销重登（壳层重启才会重新读 config.toml）
+```
+
+之后在 GUI 里改这几项会重新写回 state、再次遮蔽它——与 `theme.source` 同一个模式。
+
+还有一项**只能在 GUI 里关**：cat 小部件的 `rave_mode`（动画在静止的壳层里是持续噪音）。它不能声明——小部件本身（id 与 type）由 GUI 持有，只声明它的一个子键会生成一个无 `type` 的 `[widget.cat]` 段，`noctalia config validate` 会报 `unrecognized widget type "cat"`。
 
 ## 排错
 

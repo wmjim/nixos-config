@@ -183,6 +183,7 @@ GUI 里的任何改动            →  ~/.local/state/noctalia/settings.toml ←
 | `audio.enable_overdrive` | `true` | 在 settings.toml 里 → 以 GUI 为准 |
 | `brightness.enable_ddcutil` | laptop 上 `false` | desktop 实测 `true`（laptop 需单独核） |
 | `shell.font_family` | `HarmonyOS Sans SC` | 不在 settings.toml → **生效** ✅ |
+| `bar.default.background_opacity` / `start` / `center` / `end` | `0.30` / 三处控件清单 | state 里有旧值 → **遮蔽**，要删一次才生效 |
 
 audio 那组里 `sound_volume` / `volume_change_sound` / `notification_sound` 已删：它们服务的功能被
 `enable_sounds = false` 关掉，留着就是服务死功能的旋钮（以后开音效时 GUI 会自己写回去）。
@@ -190,7 +191,8 @@ audio 那组里 `sound_volume` / `volume_change_sound` / `notification_sound` �
 **职责划分（这是决定，不是妥协）**：
 
 - **调色板归 Nix**：`programs.noctalia.customPalettes.mactahoe` 写 `~/.config/noctalia/palettes/mactahoe.json`，配合 `theme.source = "custom"`。这是唯一能在版本控制里钉死“MacTahoe 中性灰 + `#0088FF`”的入口
-- **bar 布局 / 控件 / 插件归 GUI**：那些在 `settings.toml` 里，而那个文件包含明文插件 API key（`deepseek_usage.api_key`）。托管它等于把密钥写进全局可读的 store，与当初 WinApps RDP 密码做到一半的判断一个道理，所以不做
+- **bar 布局的四项归 Nix**：`bar.default` 的 `background_opacity` / `start` / `center` / `end` —— 它们没有密钥，可以声明式
+- **bar 其余键与插件配置归 GUI**：前者是 `capsule` / `enabled` / `margin_edge` 这类外观键，后者在 `settings.toml` 里且包含明文 API key（`[plugin_settings."coder/deepseek_usage"]` 的 `api_key`）。托管插件配置等于把密钥写进全局可读的 store，与当初 WinApps RDP 密码做到一半的判断一个道理，所以不做
 - 因此 `theme.source` 即使写在 Nix 里，**首次也需在 GUI 选一次**，或跑：
 
   ```bash
@@ -302,9 +304,9 @@ ls ~/.local/share/icons/$(gsettings get org.gnome.desktop.interface icon-theme |
 | `end`（12 → 6） | launcher, deepseek_usage, activity, cat, tray, clipboard, notifications, bluetooth, brightness, volume, theme_mode, session | tray, clipboard, notifications, volume, brightness, session | 两个第三方信息流（DeepSeek 用量、GitHub 动态）与猫占的是最右端的视觉焦点 |
 | `center`（4 → 1） | capsule(media+audio_visualizer), date, todo, notes | date | 音频可视化 + 待办/便签属于“盯着看”的内容，与应用层争焦 |
 | `start`（3 → 1） | workspaces, keymap, w-engine | workspaces | 键盘布局切换很少用 |
-| `widget.cat.rave_mode` | `true` | `false` | 动画在静止的壳层里是持续噪音 |
+| `widget.cat.rave_mode` | `true` | `false` | 动画在静止的壳层里是持续噪音；只能在 GUI 里关，原因见下方执行方式 |
 
-**执行方式**：这些键的权威副本在 `~/.local/state/noctalia/settings.toml`（运行时状态优先于 Nix 声明，机制见「Noctalia：调色板归 Nix」一节），所以是装完系统后在面板/设置里点一次。清单见 `docs/manager.md` 的「装机后的一次性步骤」。
+**执行方式**：四项（`bar.default` 的 `background_opacity`/`start`/`center`/`end`）已声明在 `programs.noctalia.settings` —— 它们没有密钥，可以纳管。但运行时状态优先，已有 state 的主机要把 state 里那四行删一次才会生效，见 `docs/manager.md` 的「装机后的一次性步骤」。bar 其余的键（`capsule` / `enabled` / `margin_edge` …）仍归 GUI；表里的 `rave_mode` 也是 GUI 侧关（小部件的 id/type 归 GUI，只声明子键会被 validate 判为 “unrecognized widget type”）。
 
 ### 壁纸：默认集纳管，可覆盖
 
