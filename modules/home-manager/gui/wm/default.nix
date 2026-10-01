@@ -44,7 +44,7 @@ let
     // https://niri-wm.github.io/niri/Configuration%3A-Layout.html
     layout {
         // 窗口之间、以及窗口与屏幕边缘的间距（逻辑像素）。
-        // 取 16 是因为窗口圆角是 12（见 windowrules.kdl 的 geometry-corner-radius）：
+        // 取 16 是因为窗口圆角是 24（见 windowrules.kdl 的 geometry-corner-radius）：
         // 间距小于圆角时，相邻两窗的圆角弧比它自己的半径还靠得近，缝隙看上去是
         // “被掐住”而不是留白（8 逻辑像素在 1.5 缩放下 = 12 物理像素，只有 24
         // 物理像素圆角的一半）。16 能在两个圆角之间留出一段直边。
