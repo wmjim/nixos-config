@@ -35,10 +35,17 @@
     lxgw-wenkai # 霞鹜文楷，中文衬线补充字体
   ];
 
+  # 次像素渲染（彩边）保持开启，尚未评估；下面两个 hinting 选项是一对矛盾的一件事：
+  # fonts.packages 里的等宽字体特意选了 **-unhinted** 构建（那一档就是为了放弃笔画
+  # 对齐、换取轮廓干净），而 autohint 正是对“没有自带 hinting”的字体生效的开关
+  # —— 一个决定被另一个决定撤销。关掉 autohint 后 style 也随之为空（无笔画指令
+  # 可对齐），写成 none 只是把“不 hinting”这个意图写明白。
+  # 参照：macOS 从 Mojave 起就是灰度 + 不 hinting。
+  # TODO: subpixel.rgba 是否也改 none（灰度）待评估，见 docs/themes.md 的字体一节。
   fonts.fontconfig.subpixel.rgba = "rgb";
   fonts.fontconfig.subpixel.lcdfilter = "default";
-  fonts.fontconfig.hinting.style = "slight";
-  fonts.fontconfig.hinting.autohint = true;
+  fonts.fontconfig.hinting.style = "none";
+  fonts.fontconfig.hinting.autohint = false;
 
   # 中文回退加固：部分国产 Qt 应用（迅雷、欧陆词典等）对 fontconfig
   # 的逐字回退依赖不可靠，若命中的字体（如 HarmonyOS Sans SC 仅覆盖
