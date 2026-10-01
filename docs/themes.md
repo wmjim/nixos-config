@@ -37,7 +37,7 @@
 - 标签指示器在列右侧，圆角 8px（3px 宽的条，半径大于半宽就是胶囊，同主题的"药丸"档）；**仅当列进入 tabbed 显示模式（`Mod+W`）时出现**
 - 概览缩放 0.50，背景 `#242424`
 - `recent-windows` 高亮框圆角 12px（主题阶梯里的"独立弹层"档）
-- 模糊 `passes 4 / offset 5.0 / saturation 1.10`；终端（foot / btop）`opacity 0.85`，取值按最坏情况（近纯白壁纸）下的文字对比定，前提见下文壁纸一节
+- 模糊 `passes 4 / offset 5.0 / saturation 1.10`；终端（ghostty / btop）`opacity 0.85`，取值按最坏情况（近纯白壁纸）下的文字对比定，前提见下文壁纸一节
 - 窗口阴影由合成器提供（`shadow { on }`，参数由 MacTahoe 自己的 CSD 阴影反推，见下）
 - 窗口开/关动画 220ms / 180ms（退场比入场快；scale 0.96→1.0 + 淡入，不用自定义波纹 shader）
 
@@ -73,7 +73,7 @@ shadow {
 推导过程写在 `modules/home-manager/gui/wm/default.nix` 的注释里。三个要点：
 
 - **不会叠成两层**。niri 文档：设了 `prefer-no-csd` 与/或 `geometry-corner-radius` 之后，*“These will also remove client-side shadows if the window draws any.”* 而且无论 GTK 是否响应 `prefer-no-csd`（保留 CSD / 放弃 CSD），结论都一致：要么自绘阴影被裁、合成器补上，要么本来就没有
-- `draw-behind-window` 保持默认 `false`——文档说只有"niri 不知道 CSD 圆角"时才需要 `true`；我们给了 `geometry-corner-radius`，niri 自己知道圆角，也就不会在半透明窗口（foot 0.85）里透出一圈暗影
+- `draw-behind-window` 保持默认 `false`——文档说只有"niri 不知道 CSD 圆角"时才需要 `true`；我们给了 `geometry-corner-radius`，niri 自己知道圆角，也就不会在半透明窗口（ghostty 0.85）里透出一圈暗影
 - 阴影跟随 `geometry-corner-radius`（24px）绘制，天然与窗口同心
 
 仍可选的另一条路：改回字面 macOS 值 16，并按 concentricity 把上表里 ≥ 18px 的选择器用 `gtk.gtk{3,4}.extraCss` 一并下移。
@@ -137,7 +137,7 @@ shadow {
 | 层 | 家族 | 元 |
 |---|---|---|
 | 壳层：niri 装饰 + GTK + Qt + Noctalia bar | macOS 中性灰 + 单一强调色 `#0088FF` | MacTahoe-Dark 的 `gtk-4.0/gtk.css` |
-| 工作区：终端 + 编辑器 + shell + 文件管理器 + 系统监控 + 输入法候选窗 | Catppuccin Frappe（`#303446` 底） | foot、Neovim、yazi、btop、fastfetch、fcitx5 六处同源 |
+| 工作区：终端 + 编辑器 + shell + 文件管理器 + 系统监控 + 输入法候选窗 | Catppuccin Frappe（`#303446` 底） | ghostty、Neovim、yazi、btop、fastfetch、fcitx5 六处同源 |
 
 输入法候选窗归到工作区而非壳层，理由：它是跟随文本光标出现的**打字层**浮层，同屏的总是终端 / 编辑器 / 浏览器，而那些都是 Frappe。
 

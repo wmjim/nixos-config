@@ -1,14 +1,11 @@
 # Ghostty 终端配置
 #
-# 这份是 1b04c1c（终端从 Ghostty 换成 Alacritty）之前那份的恢复，并接上亮/暗切换。
-# 与 foot 时期的差异只有配色机制：
-#   - foot 用 [colors-dark]/[colors-light] 两段 + SIGUSR1/SIGUSR2 热切换，
-#     且新实例永远以 colors-dark 起（亮色下新终端仍是深色，是它没有「初始主题」选项）；
-#   - ghostty 一个 theme 选项就能写「亮:主题,暗:主题」两条，由它自己按**当前桌面主题**
-#     选（Linux 侧读到的是 dconf 的 org.gnome.desktop.interface color-scheme，正是
-#     theme-apply 在切的那个键），所以新窗口天然跟随，不需要我们再翻文件或发信号。
-# 两个名字必须写全、两态都写（ghostty 文档：light:NAME,dark:NAME；只写一个会报错），
-# 均为 ghostty 自带主题 —— `ghostty +list-themes` 里有 Catppuccin Frappe / Latte。
+# 亮/暗：一个 theme 选项写两态，ghostty 自己按「当前桌面主题」选（Linux 侧读的是 dconf 的
+# org.gnome.desktop.interface color-scheme —— 正是 theme-apply 在切的那个键），所以新窗口
+# 天然跟随，不需要翻文件或发信号。两个名字必须写全、两态都写（ghostty 文档：
+# light:NAME,dark:NAME，只写一个会报错）；均取自 ghostty 自带的主题
+# （`ghostty +list-themes` 里有 Catppuccin Frappe / Latte）。
+# 其它取值（字体、内置着色器、quick terminal、shell 集成等）见各条注释。
 { lib, config, ... }:
 let
   cfg = config.mengw.gui.apps.ghostty;
@@ -38,9 +35,9 @@ in
         adjust-cell-height = 2;
 
         # 背景保持不透明（1.0）：窗口的半透明与模糊统一交给 niri 的 window-rule，
-        # 见 wm/config/visual/frosted-glass.kdl —— 与 foot 时期同一约定。
+        # 见 wm/config/visual/frosted-glass.kdl。
         background-opacity = 1.0;
-        # 内边距 x=8 y=6（与 foot 时期的 8x6 一致）
+        # 内边距 x=8 y=6
         window-padding-x = 8;
         window-padding-y = 6;
 
@@ -85,7 +82,7 @@ in
         working-directory = "inherit";
         window-save-state = "always";
         # 窗口装饰交给 niri：本仓库走 prefer-no-csd + 自绘圆角/阴影（见 docs/themes.md），
-        # 故这里不要 GTK 的完整标题栏，否则会和 foot 时期一样多出一条标题栏。
+        # 故这里不要 GTK 的完整标题栏，否则会多出一条标题栏。
         window-decoration = "auto";
         gtk-titlebar = false;
         term = "xterm-ghostty";

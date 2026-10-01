@@ -7,7 +7,7 @@
 | 仓库结构、选项与 module 分层约定、主机差异 | `docs/architecture.md` | `flake.nix`、`modules/`、`hosts/` |
 | 平台适配坑位 / workaround / 待上游修复项 | `docs/quirks.md` | 各文件头部注释 |
 | Fish、环境变量、PATH | `docs/fish.md` | `modules/home-manager/cli/shell/fish.nix` |
-| Foot 终端 | `docs/foot.md` | `modules/home-manager/gui/apps/foot.nix` |
+| Ghostty 终端 | `docs/ghostty.md` | `modules/home-manager/gui/apps/ghostty.nix` |
 | 输入法（Rime、候选窗、托盘图标） | `docs/input.md` + `docs/themes.md` | `modules/home-manager/gui/fcitx5.nix`、`modules/nixos/desktop/default.nix` |
 | 桌面主题 / GTK / Qt / 图标 / 壁纸 | `docs/themes.md` | `modules/home-manager/gui/themes/default.nix`、`modules/home-manager/gui/wm/noctalia.nix` |
 | Niri 快捷键、窗口与布局规则 | `docs/niri.md` | `modules/home-manager/gui/wm/config/` + 生成 KDL 的 `gui/wm/default.nix` |
