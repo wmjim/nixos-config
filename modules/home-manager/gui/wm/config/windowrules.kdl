@@ -82,101 +82,114 @@ window-rule {
 
 
 // ═══════════════════════════════════════════════
-// 浮动窗口（按应用性质设定合适比例）
+// 浮动窗口（按用途分档，不逐个手调）
 // ═══════════════════════════════════════════════
-// Fcitx5 配置 — 输入法设置
+//
+// 档位表（2026-10-01 定）：niri 的 kdl 没有变量，所以下面每条规则仍写具体数字，
+// 但数字只允许取自这张表，规则行上注明所属档位。新增浮窗应用时先归到某一档，
+// 不要新造数字 —— 此前 13 条规则用出 11 种几何（0.45 与 0.5、0.5 与 0.55 同屏
+// 出现没有任何理由），档位就是为了消掉这种"看起来都差不多"的累积。
+//
+//     档位          宽     高      用途
+//     sidebar      0.20   1.00    贴边的旁路工具（划词/翻译，满高度）
+//     tool         0.30   0.40    看一眼就关（查词、便签、上传小面板）
+//     chat         0.45   0.70    消息
+//     transfer     0.50   0.60    传文件（要放设备列表/二维码）
+//     settings     0.55   0.70    偏好面板
+//     content      0.60   0.70    看图 / 看数字
+
+// Fcitx5 配置 — 输入法设置 · settings
 window-rule {
     match app-id="(?i)fcitx5"
     open-floating true
-    default-column-width { proportion 0.5; }
-    default-window-height { proportion 0.55; }
+    default-column-width { proportion 0.55; }
+    default-window-height { proportion 0.70; }
 }
 
-// PicGo — 图床上传工具
+// PicGo — 图床上传工具 · tool
 window-rule {
     match app-id="(?i)picgo"
     open-floating true
-    default-column-width { proportion 0.35; }
-    default-window-height { proportion 0.5; }
+    default-column-width { proportion 0.30; }
+    default-window-height { proportion 0.40; }
 }
 
-// btop++ — 终端系统监控
+// btop++ — 终端系统监控 · content
 window-rule {
     match app-id="(?i)btop"
     open-floating true
-    default-column-width { proportion 0.7; }
-    default-window-height { proportion 0.7; }
+    default-column-width { proportion 0.60; }
+    default-window-height { proportion 0.70; }
 }
 
-// qView — 图片查看器
+// qView — 图片查看器 · content
 window-rule {
     match app-id="(?i)qview"
     open-floating true
-    default-column-width { proportion 0.6; }
-    default-window-height { proportion 0.7; }
+    default-column-width { proportion 0.60; }
+    default-window-height { proportion 0.70; }
 }
 
-// LocalSend — 局域网文件传输
+// LocalSend — 局域网文件传输 · transfer
 window-rule {
     match app-id="(?i)localsend"
     open-floating true
-    default-column-width { proportion 0.5; }
-    default-window-height { proportion 0.6; }
+    default-column-width { proportion 0.50; }
+    default-window-height { proportion 0.60; }
 }
 
-// WeChat — 微信
+// 微信 / QQ / Telegram / Discord — 消息 · chat
+// 四条同档，故尺寸相同（Discord 原为 0.5 宽，收进 chat）
 window-rule {
     match app-id="(?i)wechat"
     open-floating true
     default-column-width { proportion 0.45; }
-    default-window-height { proportion 0.7; }
+    default-window-height { proportion 0.70; }
 }
 
-// QQ
 window-rule {
     match app-id="(?i)^qq$"
     open-floating true
     default-column-width { proportion 0.45; }
-    default-window-height { proportion 0.7; }
+    default-window-height { proportion 0.70; }
 }
 
-// Telegram
 window-rule {
     match app-id="(?i)telegram"
     open-floating true
     default-column-width { proportion 0.45; }
-    default-window-height { proportion 0.7; }
+    default-window-height { proportion 0.70; }
 }
 
-// Discord
 window-rule {
     match app-id="(?i)discord"
     open-floating true
-    default-column-width { proportion 0.5; }
-    default-window-height { proportion 0.7; }
+    default-column-width { proportion 0.45; }
+    default-window-height { proportion 0.70; }
 }
 
-// 欧陆词典 — 查词小窗
+// 欧陆词典 — 查词小窗 · tool
 window-rule {
     match app-id="(?i)eudic"
     open-floating true
-    default-column-width { proportion 0.3; }
-    default-window-height { proportion 0.4; }
+    default-column-width { proportion 0.30; }
+    default-window-height { proportion 0.40; }
 }
 
-// gnome-text-editor
+// gnome-text-editor — 便签 · tool
+// （原为 0.20×0.10：4K 上约 512×144 逻辑像素，四行高，不是一个能用的尺寸）
 window-rule {
     match app-id="(?i)gnome-text-editor"
     open-floating true
-    default-column-width { proportion 0.2; }
-    default-window-height { proportion 0.1; }
+    default-column-width { proportion 0.30; }
+    default-window-height { proportion 0.40; }
 }
 
 // ═══════════════════════════════════════════════
 // 侧边浮动
 // ═══════════════════════════════════════════════
 
-// Pot — 划词翻译（右侧浮动长条，满高度）
+// Pot — 划词翻译（右侧浮动长条，满高度）· sidebar
 //
 // 曾漏写 open-floating：全局规则已声明 open-floating false，而本规则只给了
 // 尺寸和 default-floating-position —— 后者**只对浮动窗口生效**，于是查词窗
@@ -185,12 +198,12 @@ window-rule {
 window-rule {
     match app-id="(?i)pot"
     open-floating true
-    default-column-width { proportion 0.2; }
-    default-window-height { proportion 1.0; }
+    default-column-width { proportion 0.20; }
+    default-window-height { proportion 1.00; }
     default-floating-position x=0 y=0 relative-to="top-right"
 }
 
-// Pot — 偏好设置面板（覆盖上面的通用规则）
+// Pot — 偏好设置面板（覆盖上面的通用规则）· settings
 //
 // open-floating 同样显式写出：设置面板必须浮动，不依赖上一条规则的继承
 // （两条规则都命中同一窗口时，后者的 open-floating 会覆盖前者）。
