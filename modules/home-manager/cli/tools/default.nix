@@ -60,8 +60,9 @@ in
         # transparency
         theme_background = false;
       };
-      # 初始值 = 暗色（与改造前一致）；rebuild 后被还原，登录时 theme-apply 再按模式纠正
-      themes.catppuccin = ./btop/catppuccin-frappe.theme;
+      # 初始值 = 暗色（与改造前一致）；rebuild 后被还原，登录时 theme-apply 再按模式纠正。
+      # 注意不能用 programs.btop.themes：那个选项写出来的软链不允许被覆盖，而 theme-apply
+      # 运行时要把这里指到亮/暗变体，HM 的 checkLinkTargets 会判成外来文件而整份激活失败。
     };
 
     # 两套 btop 主题变体（Frappe / Latte）+ 登记给 theme-apply 翻软链。
@@ -101,8 +102,17 @@ in
       # #8CAAEE，亮色 = Latte 蓝 #1E66F5）。之所以是文件而不是内置 logo，见 jsonc 里的说明
       # —— 内置的 NixOS logo 不可着色。两套变体的文件名与源文件同名，只靠软链区分，
       # 所以 jsonc 里那句 source 路径（~/.config/fastfetch/logo/nixos_logo_1.txt）不用变。
-      ".config/fastfetch/logo/nixos_logo_1.txt".source =
-        ../../../../assets/fastfetch/logo/nixos_logo_1.txt;
+      # btop 主题：初始值 = 暗色（与改造前一致），theme-apply 运行时按模式指到亮/暗变体。
+      # 不能用 programs.btop.themes —— 那个选项写出的软链不允许覆盖，而这里会被接管，
+      # HM 的 checkLinkTargets 判成外来文件「would be clobbered」会让整份激活失败。
+      ".config/btop/themes/catppuccin.theme" = {
+        source = ./btop/catppuccin-frappe.theme;
+        force = true;
+      };
+      ".config/fastfetch/logo/nixos_logo_1.txt" = {
+        source = ../../../../assets/fastfetch/logo/nixos_logo_1.txt;
+        force = true;
+      };
 
       ".config/theme-variants/fastfetch/dark.jsonc".source = ../../../../assets/fastfetch/nixos-01.jsonc;
       ".config/theme-variants/fastfetch/light.jsonc".source =
