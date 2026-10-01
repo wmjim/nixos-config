@@ -38,8 +38,25 @@ let
     hairline = "#999999";
   };
 
-  # 生成的 layout.kdl
-  layoutKdl = ''
+  # 亮色版本的同一组值，取自 MacTahoe-Light/gtk-4.0/gtk.css 的 @define-color
+  # （与上面 shell 一一对应，写的是角色名而非“看着像”的取色）：
+  #   accent   同 accent_bg_color（两态同色）
+  #   dim      同 headerbar_fg_color（亮色下是中性灰）
+  #   surface  同 window_bg_color（= 窗口底）
+  #   backdrop 同 view_bg_color（= 内容面，暗色态反而是更深的那一个）
+  #   red      同 destructive_bg_color（两态同色）
+  #   hairline 两态共用：它只给焦点环用，中性灰在亮/暗底上都能看见
+  shellLight = {
+    accent = "#0088FF";
+    dim = "#575757";
+    surface = "#F5F5F5";
+    backdrop = "#FFFFFF";
+    red = "#ED5F5D";
+    hairline = "#999999";
+  };
+
+  # 生成的 layout.kdl（shell 与 shellLight 各生成一份，见下方 home.file）
+  mkLayout = shell: ''
     // niri 窗口布局配置
     // https://niri-wm.github.io/niri/Configuration%3A-Layout.html
     layout {
@@ -163,7 +180,7 @@ let
   '';
 
   # 生成的 overview.kdl
-  overviewKdl = ''
+  mkOverview = shell: ''
     // 概览
     overview {
         // 0.50：文字可读，保留一定信息量，兼顾全局视野
@@ -322,9 +339,24 @@ in
     # ../niri-colors/ 相对路径，因为 niri 解析 include 时会跟随
     # symlink 链，导致 .. 解析到 git 仓库父目录而非 ~/.config/。
     # outputs.kdl 同理：按主机区分的内容也无法放进被 symlink 的共享目录。
-    xdg.configFile."niri-colors/layout.kdl".text = layoutKdl;
-    xdg.configFile."niri-colors/overview.kdl".text = overviewKdl;
+    # force：这两个软链归 theme-apply 运行时接管（light 模式会指到 light 变体），
+    # 而 HM 的 checkLinkTargets 只认「指向本 generation」的软链，指到变体就判成
+    # 外来文件「would be clobbered」而整个激活失败。force 只跳过碰撞检查，
+    # HM 仍会把自己那份先按普通软链铺好（= 初始暗色）。
+    xdg.configFile."niri-colors/layout.kdl".text = mkLayout shell;
+    xdg.configFile."niri-colors/layout.kdl".force = true;
+    xdg.configFile."niri-colors/overview.kdl".text = mkOverview shell;
+    xdg.configFile."niri-colors/overview.kdl".force = true;
     xdg.configFile."niri-outputs/outputs.kdl".text = outputsKdl;
+
+    # 亮/暗两套配色也各生成一份到 store：运行时由 theme-apply 把上面两个软链
+    # 指过来（见 gui/themes/variants.nix，那里是唯一的切换入口）
+    xdg.configFile = {
+      "theme-variants/niri/layout-dark.kdl".text = mkLayout shell;
+      "theme-variants/niri/layout-light.kdl".text = mkLayout shellLight;
+      "theme-variants/niri/overview-dark.kdl".text = mkOverview shell;
+      "theme-variants/niri/overview-light.kdl".text = mkOverview shellLight;
+    };
 
     home.packages = [
       # keyd CLI：watcher 用 `keyd bind` 切换键位，手动排查也用得上

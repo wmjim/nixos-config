@@ -197,6 +197,34 @@ in
             };
           };
         };
+
+        # 亮色：角色映射与 GTK 侧同源，取自 MacTahoe-Light/gtk-4.0/gtk.css 的 @define-color
+        # （view_bg #ffffff / window_bg #f5f5f5 / window_fg #363636 / headerbar_fg #575757；
+        #  强调色与错误色两态同色：accent_bg #0088FF、destructive_bg #ED5F5D）。
+        # 两个推导值沿用暗色那份的口径：
+        #   mOutline = MacTahoe-Light 的发丝边 rgba(0,0,0,0.12) 压在 #FFFFFF 上
+        #   mHover   = 它自带的 shade rgba(0,0,0,0.07) 压在 #FFFFFF 上
+        light = {
+          mPrimary = "#0088FF";
+          mOnPrimary = "#FFFFFF";
+          mSecondary = "#2E7CF7";
+          mOnSecondary = "#FFFFFF";
+          mTertiary = "#4DACFF";
+          mOnTertiary = "#FFFFFF";
+          mError = "#ED5F5D";
+          mOnError = "#FFFFFF";
+          mSurface = "#FFFFFF";
+          mOnSurface = "#363636";
+          mSurfaceVariant = "#F5F5F5";
+          mOnSurfaceVariant = "#575757";
+          mOutline = "#E0E0E0";
+          mHover = "#EDEDED";
+          mOnHover = "#242424";
+          mShadow = "#000000";
+          # terminal 槽位暂不填：工作区一族（foot/btop/yazi/nvim/tmux/fastfetch/fcitx5）
+          # 目前仍钉死 Catppuccin Frappe，亮色是否一并切 Latte 尚未决定；
+          # 且该槽位只在 Noctalia 的终端模板开启时才被使用（当前是关的）。
+        };
       };
     };
   };

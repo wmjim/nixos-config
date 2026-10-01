@@ -10,6 +10,9 @@ let
   guiCfg = config.mengw.gui;
 in
 {
+  # 亮/暗两套变体与切换入口（真源：Noctalia 的 theme mode）
+  imports = [ ./variants.nix ];
+
   options.mengw.gui.themes.enable = lib.mkOption {
     type = lib.types.bool;
     default = true;
@@ -17,8 +20,8 @@ in
   };
 
   config = lib.mkIf (cfg.enable && guiCfg.enable) {
-    # 全部深色：niri / Noctalia / foot / Neovim 均为深色，GTK/Qt 侧若停留在
-    # 浅色，文件对话框、微信、GNOME 设置会以白底浮在深色桌面上。
+    # 下面写的是**初始值**，即暗色那一套（与改造前一致）：rebuild 后 HM 的 store 软链
+    # 就是它，登录时 theme-apply 再按 Noctalia 当前的 theme mode 覆盖（见 variants.nix）。
     # MacTahoe 的 Dark 变体是中性灰（#242424 / #333333）+ 单一强调色 #0088FF。
     gtk = {
       enable = true;
@@ -47,15 +50,21 @@ in
       # 不设则 libadwaita 按 "default"（浅色）渲染，且 GNOME 系应用不跟随桌面。
       colorScheme = "dark";
 
-      # HM 26.05 起 gtk.gtk4.theme 的默认值改为 null
-      # （mkStateVersionOptionDefault，stateVersion>=26.05 时不报弃用警告），
-      # 而 ~/.config/gtk-4.0/gtk.css 仅在 gtk4.theme.package != null 时才生成。
-      # 不显式设置 → GTK4 应用完全拿不到 MacTahoe，退回原生 Adwaita。
-      # 其余 gtk4 子选项（iconTheme/cursorTheme/font）默认继承顶层，无需重复。
-      gtk4.theme = {
-        package = pkgs.mactahoe-gtk-theme;
-        name = "MacTahoe-Dark";
-      };
+      # 不再设 gtk.gtk4.theme：~/.config/gtk-4.0/gtk.css 由 gui/themes/variants.nix 拥有
+      # （模式无关的单一文件，亮/暗在同一份里用 @media 切；两个模块同时写该文件会冲突）。
+      # color-scheme 仍从顶层继承（见上），libadwaita 靠它决定明暗。
+    };
+
+    # 这 4 个软链归 theme-apply 运行时接管（按 Noctalia 的 mode 指到亮/暗变体），
+    # 加了 force 才能让 HM 跳过碰撞检查 —— 否则下一次 rebuild 时那几个软链指向
+    # 变体（不在本 generation 里），HM 会判「would be clobbered」直接中断激活。
+    # 不能用 xdg.configFile.… 重写（会和 gtk/qt 模块的同名目标冲突），
+    # 故各设一个独立的 force 标记项（force 项只贡献本路径，不重复铺设）。
+    xdg.configFile = {
+      "gtk-3.0/settings.ini".force = true;
+      "gtk-4.0/settings.ini".force = true;
+      "gtk-4.0/gtk.css".force = true;
+      "Kvantum/kvantum.kvconfig".force = true;
     };
 
     # XWayland 应用（Steam 等）的光标查找路径是 ~/.local/share/icons，
