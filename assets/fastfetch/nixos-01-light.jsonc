@@ -1,0 +1,265 @@
+{
+  "logo": {
+    // 用文本 logo（type=file）而不是图片。
+    // 内置的 NixOS logo 是纯文本、**不可着色**（实测 --logo-color-1..9 对它完全无效，
+    // 输出逐字节相同），而文本文件可以逐行内嵌 ANSI 码，于是 logo 能跟着
+    // 工作区的 Frappe 调色板走，而不是全屏幕唯一一处不着色的东西。
+    // 图片 logo 在这个尺寸下只有约 80×42 像素（40×21 字符 × 半块两像素），
+    // 比 ASCII 更糊；而且当时配的 nixos_logo_1.webp 根本不存在，一直在静默回退。
+    // 文件由 home-manager 从 assets/fastfetch/logo/nixos_logo_1.txt 部署。
+    // 不再写 height/width：那两个选项只对图片 logo 有效。
+    "type": "file",
+    "source": "~/.config/fastfetch/logo/nixos_logo_1.txt",
+    "padding": {
+      "top": 2,
+      "left": 3,
+    },
+  },
+  "display": {
+    "separator": " ",
+    // {$1}..{$10}：一条冷色明度渐变，不是彩虹。
+    //
+    // 为什么不用彩虹：这 10 个常量会被用在约 30 个键名标签上（├ Board / ├ CPU …），
+    // 10 个不同色相铺满一整列文字就是噪声；一条同色族的渐变才读得出“一列”。
+    //
+    // 亮色那份的 10 阶是**重算**的，不是把暗色的色值换掉：暗色那份的关键帧是
+    // overlay2 → blue → sapphire → sky（冷色明度渐变），但 Latte 底色 #EFF1F5 上
+    // Latte 的 blue 只有 4.34:1，sapphire / sky / teal 更低，全部达不到 AA 4.53。
+    // 实测 Latte 调色板里达标的只有 subtext1 (5.53)、text (7.06)、mauve (4.79)、red (4.80)，
+    // 故改用 subtext1 → mauve 两个端点（冷灰 → 工作区强调色）线性插值 10 阶，
+    // 每阶的对比度都记在下面各行的注释里（全部 ≥ 4.79）。
+    // 另：状态色（colored number 的 green / yellow / red）保留 Latte 同名色，它们在浅底上
+    // 只有 2.96 / 2.31 / 4.80，达不到 AA —— 刻意取舍（语义优先），要改就得用非调色板色。
+      "constants": [
+      "\u001b[38;2;92;95;119m\u001B[1m", // {$1}  #5C5F77  subtext1  5.53:1
+      "\u001b[38;2;97;91;132m\u001B[1m", // {$2}  #615B84  5.56:1
+      "\u001b[38;2;102;87;146m\u001B[1m", // {$3}  #665792  5.55:1
+      "\u001b[38;2;107;82;159m\u001B[1m", // {$4}  #6B529F  5.57:1
+      "\u001b[38;2;112;78;172m\u001B[1m", // {$5}  #704EAC  5.50:1
+      "\u001b[38;2;116;74;186m\u001B[1m", // {$6}  #744ABA  5.41:1
+      "\u001b[38;2;121;70;199m\u001B[1m", // {$7}  #7946C7  5.29:1
+      "\u001b[38;2;126;65;212m\u001B[1m", // {$8}  #7E41D4  5.17:1
+      "\u001b[38;2;131;61;226m\u001B[1m", // {$9}  #833DE2  4.98:1
+      "\u001b[38;2;136;57;239m\u001B[1m", // {$10}  #8839EF  mauve  4.79:1
+      "┌──────", // {$11},
+      "───────", // {$12},
+      "──────┐", // {$13},
+    ],
+    "percent": {
+      "type": 9, // 1=number, 2=bar, 3=both, 9=colored number
+      // 键名指的是阈值档位而非字面色：green = 低于第一阈值，yellow = 两阈值之间，
+      // red = 高于第二阈值。此前分别填的是蓝色/绿色/橙色，读起来很迷惑。
+      "color": {
+        "green": "#40A02B", // Frappe green
+        "yellow": "#DF8E1D", // Frappe yellow
+        "red": "#D20F39", // Frappe red
+      },
+    },
+  },
+  "modules": [
+    "break",
+    {
+      "type": "version",
+      "color": {
+        "keys": "",
+      },
+      "key": "{$4}                󱐋󱐋 Fastfetch ",
+      "format": "{$6}{2}",
+    },
+    {
+      "type": "custom",
+      "format": "{$1}{$11}{$2}{$12}{$3}{$12}{$4}{$12}{$5}{$12}{$6}{$12}{$7}{$12}{$8}{$12}{$9}{$12}{$10}{$13} Hardware ",
+    },
+    {
+      "type": "host",
+      "key": "{$1}├   PC        ",
+    },
+    {
+      "type": "board",
+      "key": "{$2}├ 󱔼  Board     ",
+    },
+    {
+      "type": "cpu",
+      "key": "{$3}├   CPU       ",
+    },
+    {
+      "type": "gpu",
+      "key": "{$4}├ 󰾲  GPU       ",
+    },
+    {
+      "type": "display",
+      "key": "{$5}├ 󰍹  Display   ",
+    },
+    {
+      "type": "sound",
+      //"format": "{platform-api}/{2} ({3})",
+      "key": "{$6}├   Sound     ",
+    },
+    {
+      "type": "battery",
+      "key": "{$6}├ 󰢟  Battery   ",
+      "format": "{manufacturer} {model-name} ({capacity})",
+    },
+    {
+      "type": "memory",
+      "key": "{$7}├   Memory    ",
+      "percent": {
+        "type": 3, // 3 = show number + bar + percentage
+        "green": 30, // <30% is green
+        "yellow": 70, // 30-70% is yellow, >70% is red
+      },
+    },
+    {
+      "type": "swap",
+      "key": "{$8}├ 󰯍  Swap      ",
+      "percent": {
+        "type": 3, // 3 = show number + bar + percentage
+        "green": 30, // <30% is green
+        "yellow": 70, // 30-70% is yellow, >70% is red
+      },
+    },
+
+    {
+      "type": "disk",
+      "key": "{$9}├   NixOS     ",
+      "folders": ["/"],
+      "percent": {
+        "type": 3, // 3 = show number + bar + percentage
+        "green": 30, // <30% is green
+        "yellow": 70, // 30-70% is yellow, >70% is red
+      },
+    },
+    {
+      "type": "disk",
+      "key": "{$10}└   Home      ",
+      "folders": ["/home"],
+      "percent": {
+        "type": 3, // 3 = show number + bar + percentage
+        "green": 30, // <30% is green
+        "yellow": 70, // 30-70% is yellow, >70% is red
+      },
+    },
+    {
+      "type": "custom",
+      "format": "{$10}{$11}{$9}{$12}{$8}{$12}{$7}{$12}{$6}{$12}{$5}{$12}{$4}{$12}{$3}{$12}{$2}{$12}{$1}{$13} Software ",
+    },
+    {
+      "type": "os",
+      "key": "{$10}├   Distro    ",
+      "format": "{name} {build-id} ({codename}) {arch}",
+    },
+    {
+      "type": "kernel",
+      "key": "{$10}├   Kernel    ",
+    },
+    {
+      "type": "bios",
+      "key": "{$9}├ 󰚗  BIOS      ",
+    },
+    {
+      "type": "packages",
+      "key": "{$9}├ 󰏖  Packages  ",
+    },
+    {
+      "type": "Processes",
+      "key": "{$9}├ 󰑮  Processes ",
+    },
+    {
+      "type": "shell",
+      "key": "{$8}├   Shell     ",
+    },
+    {
+      "type": "terminal",
+      "key": "{$7}├   Terminal  ",
+    },
+    {
+      "type": "terminalfont",
+      "key": "{$6}├ 󰛖  Term Font ",
+    },
+    {
+      "type": "de",
+      "key": "{$5}├   DE        ",
+    },
+    {
+      "type": "lm",
+      "key": "{$4}├ 󰧨  Login     ",
+    },
+    {
+      "type": "wm",
+      "key": "{$3}├   Window    ",
+    },
+    {
+      "type": "wmtheme",
+      "key": "{$2}├ 󰉼  Theme     ",
+    },
+    {
+      "type": "font",
+      "key": "{$2}├ 󰛖  Font      ",
+    },
+    {
+      "type": "opengl",
+      "key": "{$1}├ 󰆧  OpenGL    ",
+    },
+    {
+      "type": "vulkan",
+      "key": "{$1}└ 󰈸  Vulkan    ",
+    },
+    {
+      "type": "custom",
+      "format": "{$1}{$11}{$2}{$12}{$3}{$12}{$4}{$12}{$5}{$12}{$6}{$12}{$7}{$12}{$8}{$12}{$9}{$12}{$10}{$13} Connectivity",
+    },
+    {
+      "type": "bluetooth",
+      "key": "{$1}├ 󰂱  Bluetooth ",
+      "format": "{1} - {4}",
+    },
+    {
+      "type": "bluetoothradio",
+      "key": "{$1}├ 󰂯  BT Radio  ",
+      "format": "{5}",
+    },
+    {
+      "type": "wifi",
+      "key": "{$2}├   WiFi      ",
+      "format": "{4} - {7} - {13} GHz - {10}",
+      "showErrors": "never",
+    },
+    {
+      "type": "dns",
+      "key": "{$4}├ 󱦂  DNS       ",
+    },
+    {
+      "type": "localip",
+      "key": "{$6}├ 󰩟  Local IP  ",
+      "format": "{1} - {3}",
+      "showMac": true,
+    },
+    {
+      "type": "publicip",
+      "key": "{$8}└ 󰩠  Public IP ",
+      "format": "{1} - {2}",
+    },
+    {
+      "type": "custom",
+      "format": "{$10}{$11}{$9}{$12}{$8}{$12}{$7}{$12}{$6}{$12}{$5}{$12}{$4}{$12}{$3}{$12}{$2}{$12}{$1}{$13} Time ",
+    },
+    {
+      "type": "DateTime",
+      "key": "{$10}├ 󰥔  Date/Time ",
+    },
+    {
+      "key": "{$8}├   OS Age    ",
+      "type": "disk",
+      "folders": "/",
+      "format": "{create-time:10} ({days} days)",
+    },
+    {
+      "type": "uptime",
+      "key": "{$6}└   Uptime    ",
+    },
+    {
+      "type": "custom",
+      "format": "                {$10}󱄅 {$9}󱄅 {$8}󱄅 {$7}󱄅 {$6}󱄅 {$5}󱄅 {$4}󱄅 {$3}󱄅 {$2}󱄅 {$1}󱄅",
+    },
+  ],
+}
