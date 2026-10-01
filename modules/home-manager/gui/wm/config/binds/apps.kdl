@@ -7,7 +7,7 @@ binds {
     XF86AudioRaiseVolume    allow-when-locked=true hotkey-overlay-title="音量+"        { spawn-sh "noctalia msg volume-up"; }
     XF86AudioLowerVolume    allow-when-locked=true hotkey-overlay-title="音量-"        { spawn-sh "noctalia msg volume-down"; }
     XF86AudioMute           allow-when-locked=true hotkey-overlay-title="麦克风开启"   { spawn-sh "noctalia msg volume-mute"; }
-    XF86AudioMicMute        allow-when-locked=true hotkey-overlay-title="麦克风静音"   { spawn-sh "noctalia msg volume-micmute"; }
+    XF86AudioMicMute        allow-when-locked=true hotkey-overlay-title="麦克风静音"   { spawn-sh "noctalia msg mic-mute"; }
 
     // 亮度控制
     XF86MonBrightnessUp     allow-when-locked=true hotkey-overlay-title="亮度+"     { spawn-sh "noctalia msg brightness-up"; }
