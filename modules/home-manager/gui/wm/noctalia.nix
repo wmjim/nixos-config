@@ -16,6 +16,27 @@ let
   # noctalia 反复跑必然失败的 ddcutil detect。
   ddcMonitors = lib.filter (m: m.ddc) osConfig.mySystem.desktop.monitors;
   useDdc = ddcMonitors != [ ];
+
+  # ── 壁纸 ──────────────────────────────────────────────────────────────
+  # 默认集来自系统层 mySystem.desktop.wallpapers（首项为默认壁纸），部署到
+  # picker 浏览根下的独立子目录：与用户自己的图分开，同时仍是面板里可浏览的
+  # 一层（面板把子目录列成条目）。
+  #
+  # "Pictures/wallpaper" 是相对形式：home.file 的键必须相对 $HOME，而面板要
+  # 绝对路径，两者同源避免写两遍。
+  wallpaperRootRel = "Pictures/wallpaper";
+  wallpaperRoot = "${config.home.homeDirectory}/${wallpaperRootRel}";
+  wallpaperSetRel = "${wallpaperRootRel}/默认集";
+  wallpaperSet = "${config.home.homeDirectory}/${wallpaperSetRel}";
+  wallpapers = osConfig.mySystem.desktop.wallpapers;
+
+  # 发布后的真实路径，不是 store 路径：面板选中的路径会被写进 settings.toml，
+  # 写 store 路径会在 rebuild 后指向一个可能已被 GC 的旧 hash。
+  defaultWallpaper =
+    if wallpapers == [ ] then
+      throw "mengw.gui.wm.noctalia：mySystem.desktop.wallpapers 为空，无法确定默认壁纸"
+    else
+      "${wallpaperSet}/${baseNameOf (lib.head wallpapers)}";
 in
 {
   options.mengw.gui.wm.noctalia.enable = lib.mkOption {
@@ -29,6 +50,11 @@ in
   ];
 
   config = lib.mkIf (cfg.enable && guiCfg.enable) {
+    # 默认壁纸集部署进 picker 目录（见上方 wallpaperSet）
+    home.file = lib.listToAttrs (
+      map (w: lib.nameValuePair "${wallpaperSetRel}/${baseNameOf w}" { source = w; }) wallpapers
+    );
+
     programs.noctalia = {
       enable = true;
 
@@ -51,6 +77,13 @@ in
           #   noctalia msg color-scheme-set custom mactahoe
           source = lib.mkForce "custom";
           custom_palette = lib.mkForce "mactahoe";
+        };
+        wallpaper = {
+          # picker 面板按此目录列图，不写则回落到 XDG Pictures（多一层目录）
+          directory = wallpaperRoot;
+          # 默认壁纸：新机器或状态里没有选择时生效。已有选择的主机要让它生效，
+          # 跑一次 noctalia msg wallpaper-set <path>（见 docs/manager.md）
+          default.path = defaultWallpaper;
         };
         brightness = {
           enable_ddcutil = useDdc;

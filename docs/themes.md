@@ -18,6 +18,7 @@
 | GNOME Shell / GDM | MacTahoe | GDM 侧靠 overlay 覆盖 `gnome-shell-theme.gresource`（见 `modules/nixos/desktop/gnome/default.nix`） |
 | Niri 壳层配色 | MacTahoe-Dark 同源 | 由 `niri-colors/{layout,overview}.kdl` 生成；强调色 `#0088FF`、中性发丝线 `#999999`（焦点环）、中性面 `#333333`/`#242424`、紧急 `#ED5F5D`，全部取自 MacTahoe-Dark 的 `gtk-4.0/gtk.css` |
 | Noctalia Shell | **自定义调色板 `mactahoe`** | `customPalettes.mactahoe`，色值与 GTK/Qt/niri 同源；界面字体 HarmonyOS Sans SC。**仅调色板归 Nix，bar 布局归 GUI**，见下文 |
+| 壁纸 | **默认集纳管**（`assets/wallpapers/`） | `mySystem.desktop.wallpapers` 首项即默认；桌面会话与 GDM 登录界面共用同一张，可覆盖，见下文 |
 
 ## 字体
 
@@ -34,7 +35,7 @@
 - 标签指示器在列右侧，圆角 8px（3px 宽的条，半径大于半宽就是胶囊，同主题的"药丸"档）；**仅当列进入 tabbed 显示模式（`Mod+W`）时出现**
 - 概览缩放 0.40，背景 `#242424`
 - `recent-windows` 高亮框圆角 12px（主题阶梯里的"独立弹层"档）
-- 模糊 `passes 4 / offset 5.0 / saturation 1.10`；终端（foot / btop）`opacity 0.85`，取值按亮壁纸下的文字对比定，见 `frosted-glass.kdl`
+- 模糊 `passes 4 / offset 5.0 / saturation 1.10`；终端（foot / btop）`opacity 0.85`，取值按最坏情况（近纯白壁纸）下的文字对比定，前提见下文壁纸一节
 - 窗口阴影由合成器提供（`shadow { on }`，参数由 MacTahoe 自己的 CSD 阴影反推，见下）
 - 窗口开/关动画 240ms / 300ms（水波纹 shader）
 
@@ -321,13 +322,38 @@ bar（文字 #DEDEDE，底色 #242424）
 | `start`（3 个） | workspaces, keymap, w-engine | **留 workspaces** | 键盘布局切换很少用 |
 | `widget.cat.rave_mode` | `true` | `false` 或移除 | 动画在静止的壳层里是持续噪音 |
 
-### 壁纸：**有意不纳管**
+**前提已变，本表待重算**：上表按“壁纸是自由变量、取最坏情况”推算，而壁纸默认集已纳管（见下节）——默认集下 `background_opacity = 0.15` 已有 7.24:1，不需要退回 0.80。以壁纸一节的新算据重算后再执行。
 
-壁纸不写进 Nix，保持手动更换（Noctalia 面板或 `Mod+Alt+W`）。这是明确的决定，不是遗漏：
+### 壁纸：默认集纳管，可覆盖
 
-- 模糊与半透明的观感直接吃壁纸，而壁纸是要经常换的，纳管反而碍事
-- 因此壁纸**不入 git**，`assets/` 下不再有 `wallpapers/` 目录
-- 选壁纸的准则（配合 `saturation 1.10`）：大面积暗部、低彩度、少高频细节。`~/Pictures/wallpaper/` 里那些高彩度插画会被模糊 + 饱和度放大成“打翻的调色盘”
+`assets/wallpapers/` 放默认集（`city-street.jpg`、`ocean-waves.jpg`），由
+`mySystem.desktop.wallpapers` 声明 —— **首项即默认壁纸**（与 `monitors` 首项派生
+`scale` 同一约定）。两处消费同一份声明：
+
+| 消费者 | 用哪条路径 | 为什么 |
+|---|---|---|
+| Noctalia（桌面会话） | `~/Pictures/wallpaper/默认集/<名>` | 面板会把选中的路径写进 `settings.toml`，写 store 路径会在 rebuild 后指向一个可能已被 GC 的旧 hash |
+| GDM（登录界面） | store 路径 | greeter 的 systemd 单元受限；store 世界可读且不可变 |
+
+默认集部署成 picker 浏览根（`~/Pictures/wallpaper/`）下的**子目录**：用户自己的图仍在同一层可浏览、可选中，换壁纸的流程（`Mod+Alt+W` / 面板）没有任何变化。锁屏不需要单独配：`lockscreen.wallpaper` 留空即“跟随桌面壁纸”。
+
+**为何改掉原来的“有意不纳管”**：透明度、模糊饱和度、焦点环对比度三处取值都建立在“壁纸是自由变量、按最坏情况定”这个前提上；而那个最坏情况不是假想的——近纯白的图就真实躺在 `~/Pictures/wallpaper/` 里。把默认集换成已知底色后，前提从“最坏情况”变成“已知情况”，这些约束才可以重算，而不是防御性拉高。
+
+选图准则（配合 `saturation 1.10`）：大面积暗部、低彩度、少高频细节。实测（YAVG 亮度 / SATAVG 饱和度，0–255）：
+
+| 图 | 分辨率 | YAVG | SATAVG |
+|---|---|---|---|
+| `city-street`（默认） | 5120×2880 | 44.8 | 2.4 |
+| `ocean-waves` | 5434×3053 | 85.4 | 8.9 |
+
+bar 文字（`#DEDEDE`）的对比度，背景取**屏顶 5% 均值**（bar 背后亮度的上界，模糊会把它拉向局部均值）：
+
+| 壁纸（屏顶均值） | opacity 0.15 | 0.50 | 0.80 |
+|---|---|---|---|
+| `city-street`（73.4） | **7.24:1** ✅ | 8.85:1 | 10.52:1 |
+| `ocean-waves`（120.7） | 3.90:1 ⚠️ | 6.19:1 ✅ | 9.12:1 |
+
+一次性步骤（已经选过壁纸的主机）：`noctalia msg wallpaper-set <path>` 会把所有输出与 `wallpaper.default.path` 一起写进 `settings.toml`。只改 Nix 声明不会生效——运行时状态优先（同 `theme.source` 那条）。把图丢进 `~/Pictures/wallpaper/` 即在面板里可选。
 
 ## 相关命令
 

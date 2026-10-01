@@ -20,6 +20,21 @@ darwin-rebuild switch --flake ~/Projects/nixos-config#macbook
 
 > Fish 别名：`updatedp` / `updatedplog` / `updatelp` / `updatelplog` / `updatewsl`
 
+## 装机后的一次性步骤
+
+有一类状态由 Noctalia 自己持有（`~/.local/state/noctalia/settings.toml`）且**运行时覆盖 Nix 声明**，`switch` 不会替你改。新机器上跑一次，已经跑过的不必重复：
+
+```bash
+# 壁纸：把所有输出与 wallpaper.default.path 一起写进 settings.toml
+noctalia msg wallpaper-set ~/Pictures/wallpaper/默认集/city-street.jpg
+
+# 调色板：让 theme.source 真正生效（改后也可在 Noctalia 外观面板选一次）
+noctalia msg color-scheme-set custom mactahoe
+noctalia msg color-scheme-get   # 应回：custom mactahoe
+```
+
+> bar 的布局（控件清单、`background_opacity`）也在那个文件里，同理归 GUI：见 `docs/themes.md` 的「bar 收敛目标」。
+
 ## 排错
 
 ```bash
