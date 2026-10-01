@@ -12,9 +12,6 @@ sudo nixos-rebuild switch --flake ~/Projects/nixos-config#laptop
 # WSL
 sudo nixos-rebuild switch --flake ~/Projects/nixos-config#wsl
 
-# 服务器
-sudo nixos-rebuild switch --flake ~/Projects/nixos-config#server
-
 # macOS
 darwin-rebuild switch --flake ~/Projects/nixos-config#macbook
 ```

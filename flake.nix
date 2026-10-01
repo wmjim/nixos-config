@@ -133,15 +133,6 @@
           ];
         };
 
-        # 服务器（无桌面）
-        server = nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
-          specialArgs = { inherit inputs myLib; };
-          modules = nixosCore ++ [
-            ./hosts/server
-            (mkHomeManager { })
-          ];
-        };
       };
 
       # ==========================================

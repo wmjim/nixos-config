@@ -18,6 +18,6 @@ in
     mySystem.hardware.bluetooth.enable = lib.mkDefault true;
     mySystem.hardware.network.enable = lib.mkDefault true;
     mySystem.hardware.mcu.enable = lib.mkDefault true;
-    # nvidia 需要主机显式开启（server/WSL 不需要）
+    # nvidia 需要主机显式开启（WSL 不需要）
   };
 }

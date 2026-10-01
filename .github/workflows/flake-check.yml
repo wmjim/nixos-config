@@ -45,7 +45,7 @@ jobs:
         run: nix flake check --no-write-lock-file
 
   # 干跑构建：计算各主机 system.build.toplevel 的完整闭包，只求值不真正构建。
-  # 逐台继续而非 fail-fast，某台失败时能直接看出是哪台（server stub 曾因无人构建而长期坏着）。
+  # 逐台继续而非 fail-fast，某台失败时能直接看出是哪台。
   dry-build:
     runs-on: "ubuntu-latest"
     steps:
