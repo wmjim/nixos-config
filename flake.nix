@@ -67,13 +67,15 @@
       lib = nixpkgs.lib;
       myLib = import ./lib { inherit lib; };
 
-      # Home Manager 共享样板：减少每个主机的重复代码。
+      # Home Manager 共享样板（NixOS 与 darwin 同一份）：减少每个主机重复的接线。
       # useGlobalPkgs = true：HM 直接复用系统级 nixpkgs 实例（含 core 注入的
-      # NUR 与自定义包 overlay），不再单独实例化——overlay 与 allowUnfree 只需
-      # 在系统级维护一处，darwin 侧也因此不再需要 mkForce 清空 overlay 的 hack。
+      # NUR 与自定义包 overlay），overlay 与 allowUnfree 只在系统级维护一处。
+      # 用户名不硬编码：取值方式由调用方给出，默认取 mySystem.primaryUser，
+      # darwin 侧改取 nix-darwin 的 system.primaryUser。
       mkHomeManager =
         {
           extraModules ? [ ],
+          primaryUser ? (cfg: cfg.mySystem.primaryUser),
         }:
         { config, ... }:
         {
@@ -81,8 +83,7 @@
           home-manager.useUserPackages = true;
           home-manager.backupFileExtension = "hm-bak";
           home-manager.extraSpecialArgs = { inherit inputs myLib; };
-          # 用户名不在此硬编码：由 core/users.nix 的 mySystem.primaryUser 派生
-          home-manager.users.${config.mySystem.primaryUser}.imports = [
+          home-manager.users.${primaryUser config}.imports = [
             ./modules/home-manager
           ]
           ++ extraModules;
@@ -157,12 +158,10 @@
             ./hosts/macbook
 
             home-manager.darwinModules.home-manager
-            {
-              home-manager.useGlobalPkgs = true;
-              home-manager.useUserPackages = true;
-              home-manager.extraSpecialArgs = { inherit inputs myLib; };
-              home-manager.users.mengw.imports = [ ./modules/home-manager ];
-            }
+            # 与 NixOS 侧共用同一份接线；darwin 的用户名来源是 system.primaryUser
+            (mkHomeManager {
+              primaryUser = cfg: cfg.system.primaryUser;
+            })
           ];
         };
       };

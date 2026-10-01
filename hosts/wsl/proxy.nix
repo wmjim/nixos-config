@@ -81,7 +81,7 @@ in
     # 交互式 shell：覆盖 sessionVariables 里的静态 127.0.0.1。
     # 非交互的 root 会话（如 sudo）仍拿到静态值，NAT 模式下会直连失败而报错，
     # 失败是显式的，不会静默退回源码构建。
-    home-manager.users.mengw.programs.fish.shellInit = ''
+    home-manager.users.${config.mySystem.primaryUser}.programs.fish.shellInit = ''
       if test -f ${envFile}
         while read -l line
           set -l kv (string split -m1 '=' -- $line)
