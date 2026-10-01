@@ -47,19 +47,8 @@ Apple 在 WWDC 2025 的 *Build an AppKit app with the new design* 里把新设�
 
 对应数值：Tahoe 的标题栏型窗口默认为 **16**，带工具栏的用更大的半径；Sequoia（macOS 15）为 **10**（来源：`m4rkw/macos-corner-fix` 的对照表）。
 
-MacTahoe-Dark 在 `gtk-4.0/gtk.css` 里实现的正是这套阶梯，基准 **24**：
-
-| 半径 | 选择器 | 层级 |
-|---|---|---|
-| **24px** | `window.csd` | 窗口本身 |
-| 24px | `floating-sheet` / `bottom-sheet > sheet` | 独立浮动面板 |
-| 19px | `notebook.frame` | 嵌在窗口内（24−5） |
-| 18px | `.sidebar-pane` / `.content-pane` | 嵌在窗口内（24−6） |
-| 16px | `notebook > header` | 嵌套更深 |
-| 14px | `notebook > tabs > tab` | 嵌套更深 |
-| 12px | `popover` / `menu` / `osd` | 独立弹层 |
-| 6px | 按钮 / 输入框 | 控件 |
-| 9999px | 药丸 | 胶囊 |
+MacTahoe-Dark 在 `gtk-4.0/gtk.css` 里实现的正是这套阶梯，基准 **24**；逐行对照表在
+`modules/home-manager/gui/wm/config/windowrules.kdl`（表只此一份 —— 那里才是改的时候会打开的文件）。
 
 **为何取主题的 24 而不是字面的 16**：内层元素是 18/19px，把窗口压到 16 会让内层比外层更圆，必须连带重写窗口 + 侧边栏 + notebook + tab 共 5 个选择器（via `gtk.gtk{3,4}.extraCss`），且主题更新后会静默失配。取 24 则**零主题覆盖**，而且 GTK 自绘（24）与不自绘圆角的应用（Electron / Chromium / X11：VSCode、Discord、QQ、Telegram、Zotero、Typora、Anki、Steam）终于一致——这才是这套圆角在修的事。macOS 的 24 属于"带工具栏窗口"那一档，与本机以工具栏密集型应用为主的实际场景相符。
 
@@ -99,16 +88,7 @@ shadow {
 
 **根本理由：Apple 从不把强调色放在窗口边界上。** macOS 用强调色标**控件**（按钮、输入框焦点、选中的列表行），窗口边界只靠中性发丝线（主题里就是 `rgba(255,255,255,.15)` 那一条，也是 Noctalia 调色板 `mOutline = #454545` 的来源）加阴影区分活动与否。所以那个 3px 饱和蓝边是整套改造里**唯一“不像 macOS”的地方** —— 它比任何别的元素都跳，正是因为它同时具备高饱和度和位置错误两个特点。
 
-**宽度取 2 而不是 3**：niri 会把逻辑像素按缩放取整到物理像素。desktop 的 1.5 缩放下：
-
-| width | 物理像素 | |
-|---|---|---|
-| 1 | 1.5 | ⚠️ 取整到 2 → 实际 1.33 逻辑 |
-| **2** | **3.0** | ✅ 精确 |
-| 3 | 4.5 | ⚠️ 落在半像素边界，只能跳成 4 或 5 → 实际 2.67~3.33 |
-| 4 | 6.0 | ✅ 精确（但太粗） |
-
-laptop 的 1.25 缩放下 2 仍不精确（2.5），**两台都精确的宽度只有 4、8**，那又太粗。所以取了 desktop 的精确值。
+**宽度取 2 而不是 3**：物理像素取整表在 `modules/home-manager/gui/wm/default.nix` 的 `layoutKdl`（表只此一份）。要点：desktop 的 1.5 缩放下 2 → 3.0 物理精确，而 laptop 的 1.25 下 2 仍不精确（2.5）；两台都精确的宽度只有 4、8，那又太粗。所以取了 desktop 的精确值。
 
 **为何不靠降不透明度来减重**：焦点环画在 16px 缝隙上，背景就是壁纸，而降不透明度在亮壁纸下会让它消失：
 
@@ -121,8 +101,6 @@ laptop 的 1.25 缩放下 2 仍不精确（2.5），**两台都精确的宽度�
 所以减重只能靠**宽度和色相**。`#999999` 在两种壁纸上都立得住（暗壁纸 5.4:1、亮壁纸 2.9:1），而纯白在亮壁纸上会消失。
 
 两个选它的依据：它在 MacTahoe-Dark 的 `gtk-4.0/gtk.css` 里（出现 3 次），而 niri 自己（`default-config.kdl`）也把它当作 recent-windows 高亮框的默认中性色。
-
-想换回强调色就把 `active-color` 改回 `#0088FF`；想恢复原粗细就把 `width` 改回 3。都在 `wm/default.nix` 的 `layoutKdl` 里。
 
 ### 两处容易搞错的 niri 语义
 
