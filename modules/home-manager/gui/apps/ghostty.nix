@@ -34,8 +34,14 @@ in
         # 行间距：+2 像素
         adjust-cell-height = 2;
 
-        # 背景保持不透明（1.0）：窗口的半透明与模糊统一交给 niri 的 window-rule，
-        # 见 wm/config/visual/frosted-glass.kdl。
+        # 背景保持不透明（1.0）：半透明与模糊都交给 niri 的 window-rule，见
+        # wm/config/visual/frosted-glass.kdl 那条规则的注释（含对比度算据）。
+        #
+        # 试过另一种做法并量过：ghostty 自己只压背景（background-opacity = 0.80）+
+        # niri 侧 opacity 1.0。结果文字确实更清晰，但**玻璃基本看不出来** —— 让玻璃“显形”
+        # 的其实是文字连同底色一起透到壁纸上（实测：暗区背后 0.8×#303446 = #2A2E3F，与纯色
+        # #303446 几乎无差）；而且 niri 的透明度对**已经开着**的窗口即时生效，ghostty 自己的
+        # 配置要重开才生效。故回到 niri 侧整体透明度。
         background-opacity = 1.0;
         # 内边距 x=8 y=6
         window-padding-x = 8;
