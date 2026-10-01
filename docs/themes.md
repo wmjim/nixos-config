@@ -179,9 +179,13 @@ GUI 里的任何改动            →  ~/.local/state/noctalia/settings.toml ←
 | 键 | 仓库里声明的 | 实际生效的 |
 |---|---|---|
 | `theme.builtin` | `Catppuccin` | —（已删，见下） |
-| `audio.enable_sounds` | `false` | **`true`**（关音效的意图被推翻） |
+| `audio.enable_sounds` | `false` | **`true`** —— 出厂默认被 GUI 推翻（见下） |
+| `audio.enable_overdrive` | `true` | 在 settings.toml 里 → 以 GUI 为准 |
 | `brightness.enable_ddcutil` | laptop 上 `false` | desktop 实测 `true`（laptop 需单独核） |
-| `shell.font_family` / `audio.sound_volume` | 有声明 | 不在 settings.toml → **生效** ✅ |
+| `shell.font_family` | `HarmonyOS Sans SC` | 不在 settings.toml → **生效** ✅ |
+
+audio 那组里 `sound_volume` / `volume_change_sound` / `notification_sound` 已删：它们服务的功能被
+`enable_sounds = false` 关掉，留着就是服务死功能的旋钮（以后开音效时 GUI 会自己写回去）。
 
 **职责划分（这是决定，不是妥协）**：
 
@@ -273,34 +277,34 @@ ls ~/.local/share/icons/$(gsettings get org.gnome.desktop.interface icon-theme |
 即可。
 
 
-### bar 收敛目标（GUI 侧执行）
+### bar 收敛（GUI 侧执行，一次性步骤）
 
 当前 19 个控件、`background_opacity = 0.15`。以应用层为主体后应当退到背景，但不是退回隐形。
 
-**透明度是可算的，不该拍脑袋。** 合成永远是“`opacity` × 底色 + (1−`opacity`) × 模糊后的壁纸”，而壁纸是经常更换的自由变量，所以按**最坏情况（模糊后接近纯白）** 定值：
+**透明度是可算的，不该拍脑袋。** 合成永远是“`opacity` × 底色 + (1−`opacity`) × 模糊后的壁纸”。壁纸默认集纳管之后（见下节）这个输入是**已知**的，于是按两个默认壁纸各自的**屏顶 5% 均值**（bar 背后亮度的上界，模糊只会把它拉低）算：
 
-```
-bar（文字 #DEDEDE，底色 #242424）
-  0.15  →  可见底色 #DEDEDE  对比 1.00:1  ❌ 文字完全消失
-  0.35  →  可见底色 #B2B2B2  对比 1.58:1  ❌ 仍不可读
-  0.50  →  可见底色 #929292  对比 2.31:1  ❌
-  0.80  →  可见底色 #505050  对比 5.99:1  ✅ AA
+| opacity | `city-street`（73.4） | `ocean-waves`（120.7） |
+|---|---|---|
+| 0.15（原值） | `#444444` 7.24:1 ✅ | `#6C6C6C` 3.90:1 ⚠️ |
+| 0.25 | 7.71:1 ✅ | 4.40:1 ⚠️ |
+| **0.30（取）** | **7.95:1** ✅ | **4.75:1** ✅ |
+| 0.35 | 8.20:1 ✅ | 5.05:1 ✅ |
+| 0.80（旧“目标”） | 10.52:1 ✅ | 9.12:1 ✅ |
 
-终端（文字 #C6D0F5，底色 #303446）—— 参数在 frosted-glass.kdl
-  0.70  →  对比 3.18:1  ⚠️        0.85  →  对比 5.06:1  ✅ AA
-```
+取 **0.30**：两个默认壁纸下都过 AA，同时还是玻璃而不是板子。0.15 在 `ocean-waves` 下只有 3.90:1——默认集里有一张会让 bar 的字变糊；0.25 差一点（4.40）；而 0.80 是“壁纸是自由变量”时代按最坏情况推出来的，现在既没必要也不好看。
 
-0.15 那行值得看一眼：`#242424` 的 15% 压在纯白上正好等于 `#DEDEDE`，与文字色**完全相同**，所以亮壁纸下 bar 的字是真的看不见。（早先我建议的 0.35 也是错的，同样不可读。）
+（终端 `opacity 0.85` 维持不变：用 16×16 分块的最亮块当背后最坏情况，0.80 只到 4.8:1，0.85 是 5.5:1。表在 `frosted-glass.kdl`。）
 
-| 项 | 当前 | 目标 | 理由 |
+控件 19 → 8：
+
+| 位置 | 现状 | 留 | 理由 |
 |---|---|---|---|
-| `background_opacity` | 0.15 | **0.80** | 低于 0.80 时亮壁纸下文字对比低于 AA 4.5:1；“退到背景”应当是“低对比但可读”，不是“隐形” |
-| `end`（12 个） | launcher, deepseek_usage, activity, cat, tray, clipboard, notifications, bluetooth, brightness, volume, theme_mode, session | **留 6**：tray, clipboard, notifications, volume, brightness, session | 两个第三方信息流（DeepSeek 用量、GitHub 动态）与第三个猫占的是最右端的视觉焦点 |
-| `center`（4 个） | capsule(media+audio_visualizer), date, todo, notes | **留 date** | 音频可视化 + 待办/便签都属于“盯着看”的内容，与应用层争焦 |
-| `start`（3 个） | workspaces, keymap, w-engine | **留 workspaces** | 键盘布局切换很少用 |
-| `widget.cat.rave_mode` | `true` | `false` 或移除 | 动画在静止的壳层里是持续噪音 |
+| `end`（12 → 6） | launcher, deepseek_usage, activity, cat, tray, clipboard, notifications, bluetooth, brightness, volume, theme_mode, session | tray, clipboard, notifications, volume, brightness, session | 两个第三方信息流（DeepSeek 用量、GitHub 动态）与猫占的是最右端的视觉焦点 |
+| `center`（4 → 1） | capsule(media+audio_visualizer), date, todo, notes | date | 音频可视化 + 待办/便签属于“盯着看”的内容，与应用层争焦 |
+| `start`（3 → 1） | workspaces, keymap, w-engine | workspaces | 键盘布局切换很少用 |
+| `widget.cat.rave_mode` | `true` | `false` | 动画在静止的壳层里是持续噪音 |
 
-**前提已变，本表待重算**：上表按“壁纸是自由变量、取最坏情况”推算，而壁纸默认集已纳管（见下节）——默认集下 `background_opacity = 0.15` 已有 7.24:1，不需要退回 0.80。以壁纸一节的新算据重算后再执行。
+**执行方式**：这些键的权威副本在 `~/.local/state/noctalia/settings.toml`（运行时状态优先于 Nix 声明，机制见「Noctalia：调色板归 Nix」一节），所以是装完系统后在面板/设置里点一次。清单见 `docs/manager.md` 的「装机后的一次性步骤」。
 
 ### 壁纸：默认集纳管，可覆盖
 

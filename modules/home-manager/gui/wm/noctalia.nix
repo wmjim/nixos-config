@@ -97,9 +97,11 @@ in
           # （noctalia config validate 实测报 audio.enable: unknown setting）
           enable_overdrive = true;
           enable_sounds = false;
-          sound_volume = 0.6;
-          volume_change_sound = "";
-          notification_sound = "";
+          # 不写 sound_volume / volume_change_sound / notification_sound：
+          # 这三个键服务的功能已被 enable_sounds = false 关掉，留着就是服务死功能的
+          # 旋钮（以后开音效时 GUI 会自己把音量写进 settings.toml）。
+          # 注意上面两个也是“出厂默认”而非“本机现状”：本机 settings.toml 里有自己
+          # 的值且优先生效，约定见 docs/themes.md 的「Noctalia：调色板归 Nix」一节。
         };
       };
 

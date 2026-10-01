@@ -33,7 +33,7 @@ noctalia msg color-scheme-set custom mactahoe
 noctalia msg color-scheme-get   # 应回：custom mactahoe
 ```
 
-> bar 的布局（控件清单、`background_opacity`）也在那个文件里，同理归 GUI：见 `docs/themes.md` 的「bar 收敛目标」。
+bar 的布局也只能在 GUI 里点（那些键在 `settings.toml` 里，会覆盖 Nix 声明）：`background_opacity` → **0.30**；`end` 留 tray / clipboard / notifications / volume / brightness / session；`center` 只留 date；`start` 只留 workspaces；cat 的 `rave_mode` 关掉。数值与算据见 `docs/themes.md` 的「bar 收敛」。
 
 ## 排错
 
