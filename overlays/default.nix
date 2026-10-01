@@ -29,6 +29,11 @@ final: prev: {
   magpie = prev.callPackage ../pkgs/magpie { };
   magpie-cli = prev.callPackage ../pkgs/magpie { gui = false; };
 
+  # liquidbird：Thunderbird 的 Liquid Glass 主题（上游 StatIndet/liquidbird，
+  # nixpkgs 未收录）。不是 add-on，是 profile 里的 userChrome/userContent 体系：
+  # 包只摆好文件，落地见 modules/home-manager/gui/apps/productivity.nix。
+  liquidbird = prev.callPackage ../pkgs/liquidbird { };
+
   # Windows 客户机装机介质（virtio-win ISO + WinApps oem 脚本）。
   # winappsRev 取自 flake.lock 的 winapps 输入，升级输入后 oem 脚本哈希失配
   # 会显式报错，保证介质与 winapps 版本同步（消费方：modules/nixos/virtualization）。

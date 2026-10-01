@@ -8,12 +8,29 @@
 let
   cfg = config.mengw.gui.apps.productivity;
   guiCfg = config.mengw.gui;
+
+  # Thunderbird 的 profile 目录：前缀是 TB 首次启动时自己生成的随机串，除了
+  # ~/.thunderbird/profiles.ini 的 Path= 之外没有稳定来源（HM 读不到那个文件，
+  # 也不该替它建 profile —— 那是 TB 的运行时状态）。故做成可选值，每台主机
+  # 自己对上（`grep '^Path=' ~/.thunderbird/profiles.ini`）。
+  tbProfile = ".thunderbird/${cfg.thunderbirdProfileDir}";
+  lbChrome = "${pkgs.liquidbird}/share/liquidbird/chrome";
 in
 {
   options.mengw.gui.apps.productivity.enable = lib.mkOption {
     type = lib.types.bool;
     default = true;
     description = "启用生产力应用（笔记、文献管理等）";
+  };
+
+  options.mengw.gui.apps.productivity.thunderbirdProfileDir = lib.mkOption {
+    type = lib.types.str;
+    default = "g0uk404f.default";
+    description = ''
+      ~/.thunderbird 下 Thunderbird 自己那个 profile 目录名，用于摆 LiquidBird
+      主题（只是目录名，不是路径）。前缀由 TB 生成、每台主机不同；对不上的主机
+      会在 ~/.thunderbird 下生成一个 TB 不读的目录，主题不生效。
+    '';
   };
 
   config = lib.mkIf (cfg.enable && guiCfg.enable) {
@@ -42,6 +59,33 @@ in
       categories = [ "Utility" ];
       type = "Application";
       settings.StartupWMClass = "org.b3log.siyuan";
+    };
+
+    # ── LiquidBird：Thunderbird 的 Liquid Glass 主题 ──────────────────────
+    # 由 pkgs/liquidbird 提供文件（钉在上游 main 的 commit，见该包顶部），这里
+    # 按上游要求的 chrome/ 布局摆进 profile。store 软链即可：chrome 下全是只读
+    # 素材，TB 只读不写；个人覆盖走同目录的 custom.css（上游 loader 最后 import
+    # 它，故意不由 HM 管理，模板是旁边的 custom.css.example）。
+    home.file = {
+      "${tbProfile}/chrome/liquidbird.css".source = "${lbChrome}/liquidbird.css";
+      "${tbProfile}/chrome/liquidbird-content.css".source = "${lbChrome}/liquidbird-content.css";
+      # 两个 loader 用上游原件：升级包时 import 列表跟着走，不用手工合并
+      "${tbProfile}/chrome/userChrome.css".source = "${lbChrome}/userChrome.css";
+      "${tbProfile}/chrome/userContent.css".source = "${lbChrome}/userContent.css";
+      # 图标集 + Linux 层（模糊/布局/标题按钮图）；相对路径必须原样保留
+      "${tbProfile}/chrome/Icons".source = "${lbChrome}/Icons";
+      "${tbProfile}/chrome/linux".source = "${lbChrome}/linux";
+      "${tbProfile}/chrome/custom.css.example".source = "${lbChrome}/custom.css.example";
+
+      # 主题开关。写 user.js 而不是 prefs.js：后者是 TB 自己维护的文件（它随时
+      # 重写），HM 插手会与 TB 相互覆盖；user.js 由 Gecko 在每次启动时应用。
+      # 代价是这一项被钉住 —— 在 TB 的 Config Editor 里关它下次启动会回来，
+      # 要关主题就从这个模块里去掉下面几行。
+      "${tbProfile}/user.js".text = ''
+        // 由 Home Manager 生成（modules/home-manager/gui/apps/productivity.nix），
+        // 不要手改：TB 每次启动都会按这里的内容覆盖同名 prefs。
+        user_pref("toolkit.legacyUserProfileCustomizations.stylesheets", true);
+      '';
     };
   };
 }

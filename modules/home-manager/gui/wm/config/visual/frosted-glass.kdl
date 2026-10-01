@@ -46,6 +46,24 @@ window-rule {
     }
 }
 
+// --- Thunderbird（LiquidBird 主题）：菜单/提示的模糊 ---
+// 主题把 TB 的 chrome 做成半透明（见 modules/home-manager/gui/apps/productivity.nix），
+// 窗口本体已被上面的全局规则盖住；但弹层不继承窗口规则的 background-effect，
+// 不单独声明就是一块不带模糊的透明方块。
+// 半径 18 取上游 integration/niri.kdl：TB 自己的 XUL 菜单就这个圆角，比桌面
+// 统一用的窗口圆角 24 小一档。另注：Gecko 部分菜单走 wl-subsurface（如 Firefox），
+// 那些不是 xdg-popup，本块管不到 —— 属上游规则边界，不是配置遗漏。
+window-rule {
+    match app-id=r#"^org\.mozilla\.Thunderbird$"#
+    popups {
+        geometry-corner-radius 18
+        background-effect {
+            blur true
+            xray false
+        }
+    }
+}
+
 // 模糊概览壁纸
 layer-rule {
     match namespace="^noctalia-backdrop"
