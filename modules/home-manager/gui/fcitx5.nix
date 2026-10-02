@@ -22,39 +22,97 @@ let
   # 也就不必把 fontTools 拖进构建依赖。四边留白 11%（相对 em）——壳层会把 SVG 按比例
   # 撑满图标槽位，留白是唯一能控制字形视觉大小的旋钮；11% 大约对应 macOS 菜单栏里
   # 那个字符相对菜单栏高度的占比，**删掉留白字形会顶满槽位、比相邻图标还大**。
-  # 颜色写死调色板 mOnSurface（#DEDEDE）：非 symbolic 图标不会被壳层重新着色。
-  imeIcons = {
+  # 颜色与 Noctalia 状态栏其它图标/文字对齐（实测拦图取色：暗色栏 #FFFFFF、亮色栏
+  # #262626）。非 symbolic 图标不会被壳层重新着色，所以必须写死；两态各一套。
+  imeIcons = onSurface: {
     # 中文态（fcitx5-rime 报的 fcitx-rime）：拼（对应 macOS 菜单栏的拼音图标）
     "fcitx-rime" = ''
       <svg xmlns="http://www.w3.org/2000/svg" width="27.43" height="27.98" viewBox="-80 37 1143 1166">
-        <path fill="#DEDEDE" d="M953 363V271H825V-77H734V271H568Q559 150 522.5 70.5Q486 -9 402 -93L323 -35Q379 18 410.5 62.5Q442 107 458.0 156.0Q474 205 479 271H366V363H483V404V574H400V663H535Q479 749 436 804L509 850Q557 790 615 705L554 663H690Q740 745 801 853L888 811Q837 726 795 663H935V574H825V363ZM358 358 266 327V41Q266 -20 241.5 -43.5Q217 -67 156 -67Q132 -67 84 -63L65 29Q101 23 138 23Q159 23 168.0 36.5Q177 50 177 81V296L52 252L30 348Q83 363 177 392V568H54V657H177V833H266V657H355V568H266V421L346 448ZM573 363H734V574H573V415Z" transform="scale(1,-1) translate(0,-1000)"/>
+        <path fill="${onSurface}" d="M953 363V271H825V-77H734V271H568Q559 150 522.5 70.5Q486 -9 402 -93L323 -35Q379 18 410.5 62.5Q442 107 458.0 156.0Q474 205 479 271H366V363H483V404V574H400V663H535Q479 749 436 804L509 850Q557 790 615 705L554 663H690Q740 745 801 853L888 811Q837 726 795 663H935V574H825V363ZM358 358 266 327V41Q266 -20 241.5 -43.5Q217 -67 156 -67Q132 -67 84 -63L65 29Q101 23 138 23Q159 23 168.0 36.5Q177 50 177 81V296L52 252L30 348Q83 363 177 392V568H54V657H177V833H266V657H355V568H266V421L346 448ZM573 363H734V574H573V415Z" transform="scale(1,-1) translate(0,-1000)"/>
       </svg>
     '';
     # Rime 的 ascii_mode：A
     "fcitx_rime_latin" = ''
       <svg xmlns="http://www.w3.org/2000/svg" width="21.34" height="22.85" viewBox="-103 158 889 952">
-        <path fill="#DEDEDE" d="M382 732 676 0H559L484 196H187L115 0H7L290 732ZM448 290 332 592 222 290Z" transform="scale(1,-1) translate(0,-1000)"/>
+        <path fill="${onSurface}" d="M382 732 676 0H559L484 196H187L115 0H7L290 732ZM448 290 332 592 222 290Z" transform="scale(1,-1) translate(0,-1000)"/>
       </svg>
     '';
     # 禁用态（Rime 暂停）：拼 + 斜杠
     "fcitx_rime_disable" = ''
       <svg xmlns="http://www.w3.org/2000/svg" width="27.43" height="27.98" viewBox="-80 37 1143 1166">
-        <path fill="#DEDEDE" d="M953 363V271H825V-77H734V271H568Q559 150 522.5 70.5Q486 -9 402 -93L323 -35Q379 18 410.5 62.5Q442 107 458.0 156.0Q474 205 479 271H366V363H483V404V574H400V663H535Q479 749 436 804L509 850Q557 790 615 705L554 663H690Q740 745 801 853L888 811Q837 726 795 663H935V574H825V363ZM358 358 266 327V41Q266 -20 241.5 -43.5Q217 -67 156 -67Q132 -67 84 -63L65 29Q101 23 138 23Q159 23 168.0 36.5Q177 50 177 81V296L52 252L30 348Q83 363 177 392V568H54V657H177V833H266V657H355V568H266V421L346 448ZM573 363H734V574H573V415Z" transform="scale(1,-1) translate(0,-1000)"/>
-        <path d="M-11 1133 L994 107" stroke="#DEDEDE" stroke-width="103" stroke-linecap="round"/>
+        <path fill="${onSurface}" d="M953 363V271H825V-77H734V271H568Q559 150 522.5 70.5Q486 -9 402 -93L323 -35Q379 18 410.5 62.5Q442 107 458.0 156.0Q474 205 479 271H366V363H483V404V574H400V663H535Q479 749 436 804L509 850Q557 790 615 705L554 663H690Q740 745 801 853L888 811Q837 726 795 663H935V574H825V363ZM358 358 266 327V41Q266 -20 241.5 -43.5Q217 -67 156 -67Q132 -67 84 -63L65 29Q101 23 138 23Q159 23 168.0 36.5Q177 50 177 81V296L52 252L30 348Q83 363 177 392V568H54V657H177V833H266V657H355V568H266V421L346 448ZM573 363H734V574H573V415Z" transform="scale(1,-1) translate(0,-1000)"/>
+        <path d="M-11 1133 L994 107" stroke="#FFFFFF" stroke-width="103" stroke-linecap="round"/>
       </svg>
     '';
   };
 
-  # 当前 GTK 图标主题名（主题模块设为 MacTahoe-dark）。
+  # 输入法图标要建在**两套** GTK 图标主题名下：theme-apply 会按模式把 gsettings 的
+  # icon-theme 在 MacTahoe-{dark,light} 之间切（见 gui/themes/variants.nix），而 Noctalia
+  # 的图标解析器是按**当前**主题名去 ~/.local/share/icons/<name>/scalable/apps 找图标 ——
+  # 只建暗色那份的话，切到亮色后状态栏那个输入法图标会回退成默认图标（表现为“切了主题
+  # 之后输入法的效果没了”）。两个名字与 theme-apply 切的 icon-theme 两个值保持一致。
   # 必须与之同名建一份**只有图标、没有 index.theme** 的薄覆盖层，原因见 config 段开头的说明。
-  iconThemeName = if config.gtk.iconTheme == null then null else config.gtk.iconTheme.name;
   # 位置必须是 Qt 风格的 scalable/apps/：index.theme 缺失时 Noctalia 会用内置的
   # 回退目录表（src/system/icon_resolver.cpp）去搜，表里 scalable 在前，而
   # GTK 风格的 apps/scalable/ 不在表内。
+  # 每份覆盖层配对应的字形色：hicolor 是兜底（只有主题名解析不到时才会用到，用暗色那份），
+  # 两个主题名下各放与它匹配的一套 —— 否则浅色栏上是浅灰字形，等于看不见。
   imeIconDirs = [
-    ".local/share/icons/hicolor/scalable/apps"
-  ]
-  ++ lib.optional (iconThemeName != null) ".local/share/icons/${iconThemeName}/scalable/apps";
+    {
+      dir = ".local/share/icons/hicolor/scalable/apps";
+      onSurface = "#FFFFFF";
+    }
+    {
+      dir = ".local/share/icons/MacTahoe-dark/scalable/apps";
+      onSurface = "#FFFFFF";
+    }
+    {
+      dir = ".local/share/icons/MacTahoe-light/scalable/apps";
+      onSurface = "#262626";
+    }
+  ];
+
+  # classicui.conf 的字面内容：两态只差三行（Theme / DarkTheme / UseDarkTheme），其余 40 余行
+  # 共用，所以写成一个函数而不是两份。flavour 就是 Catppuccin 变体名，也是上游
+  # catppuccin-fcitx5 主题目录名的中段（catppuccin-<flavour>-mauve）。
+  classicuiConf = flavour: ''
+    # 垂直候选列表
+    Vertical Candidate List=False
+    # 使用鼠标滚轮翻页
+    WheelForPaging=True
+    # 字体：与 GTK 界面字体一致（12pt）。
+    # 主题里的 [InputPanel] Font 不会被 fcitx5 消费（上游
+    # src/ui/classic/inputwindow.cpp 用的是 classicui.conf 的 Font，
+    # theme.cpp 里唯一的字体用途是 trayFont），所以这里设的就是最终值。
+    Font="HarmonyOS Sans SC 11"
+    # 菜单字体
+    MenuFont="HarmonyOS Sans SC Medium Medium 11"
+    # 托盘字体
+    TrayFont="HarmonyOS Sans SC Medium Medium 11"
+    # 托盘标签轮廓颜色
+    TrayOutlineColor=#000000
+    # 托盘标签文本颜色
+    TrayTextColor=#ffffff
+    # 优先使用文字图标
+    PreferTextIcon=False
+    # 在图标中显示布局名称
+    ShowLayoutNameInIcon=True
+    # 使用输入法的语言来显示文字
+    UseInputMethodLanguageToDisplayText=True
+    # 主题：每个模式下只装了一个变体，Theme 与 DarkTheme 都指它（见上面 config 段说明）
+    Theme=catppuccin-${flavour}-mauve
+    DarkTheme=catppuccin-${flavour}-mauve
+    # 不跟随系统明暗：两态由 theme-apply 翻软链决定
+    UseDarkTheme=False
+    # 使用系统重点色：关闭，否则会盖掉主题自带的 mauve
+    UseAccentColor=False
+    # 在 X11 上针对不同屏幕使用单独的 DPI
+    PerScreenDPI=False
+    # 固定 Wayland 的字体 DPI
+    ForceWaylandDPI=0
+    # 在 Wayland 下启用分数缩放
+    EnableFractionalScale=True
+  '';
 
   # rime 按 mtime 判断构建缓存是否失效，而 nix store 内文件 mtime 恒为 0，
   # 因此数据包路径变化时 rime 会重建词典却沿用旧 schema，导致输入法静默失效
@@ -74,43 +132,9 @@ let
   # 与它同屏的总是终端/编辑器/浏览器，而那些都是 Catppuccin Frappe；
   # mauve 又是 Catppuccin 的默认强调色。
   #
-  # 上游为每个变体都带了一对圆角 SVG（39x39，rx=8，填充色随变体烘焦），
-  # 但 theme.conf 里把 `Image=` 两行注释掉了（默认为直角），而候选词窗是全屏
-  # 出现频率最高的浮层，留直角会显得突兀，故用 runCommand 就地打开这两行。
-  #
-  # 圆角值也一并对齐桌面阶梯的"独立弹层"档 12px（阶梯表见 windowrules.kdl，
-  # 理由见 docs/themes.md）：fcitx5 按九宫格切图，角片大小 = Margin，故 rx 必须
-  # ≤ Margin——rx=12 > Margin=10 会被切角，Margin 一并抬到 14。
-  # highlight 是嵌在 panel 内的选中条，按 concentricity 取 r_inner = r_outer −
-  # inset = 12 − 8 = 4（inset 取水平方向的 TextMargin−Margin = 8；垂直方向
-  # TextMargin 8 < Margin 10，inset 为负，同心在那个轴上本来就不成立，而选中
-  # 条是宽扁矩形，视觉由水平 inset 决定）。
-  #
-  # 不 fork 主题内容：只改这四行，调色板仍随 nixpkgs 更新。
-  # 亮/暗各一份：fcitx5 的 UseDarkTheme=True 会按系统明暗在 Theme / DarkTheme 之间选，
-  # 而它读的是 Qt6 的 colorScheme（平台主题 adwaita → gsettings 的 color-scheme，
-  # 正是 theme-apply 在切的键），所以两套都装、两边都不需要我们自己翻文件。
-  mkTheme =
-    flavour:
-    pkgs.runCommand "fcitx5-theme-catppuccin-${flavour}-mauve" { } ''
-      themeName=catppuccin-${flavour}-mauve
-      themeDir=$out/share/fcitx5/themes/$themeName
-      mkdir -p "$themeDir"
-      cp -r ${pkgs.catppuccin-fcitx5}/share/fcitx5/themes/$themeName/. "$themeDir/"
-      chmod -R u+w "$themeDir"
-
-      # 打开圆角（上游默认是注释掉的直角）
-      substituteInPlace "$themeDir/theme.conf" \
-        --replace-fail '# Image=panel.svg' 'Image=panel.svg' \
-        --replace-fail '# Image=highlight.svg' 'Image=highlight.svg'
-
-      # 圆角对齐阶梯 12px + 九宫格 Margin 10 → 14（rx 不能大于 Margin）
-      sed -i 's/rx="8"/rx="12"/' "$themeDir/panel.svg"
-      sed -i 's/rx="8"/rx="4"/' "$themeDir/highlight.svg"
-      sed -i '/^\[InputPanel\/Background\/Margin\]$/,/^\[/ s/^\(Left\|Right\|Top\|Bottom\)=10$/\1=14/' "$themeDir/theme.conf"
-    '';
-  themeDark = mkTheme "frappe";
-  themeLight = mkTheme "latte";
+  # 候选窗主题直接用上游 catppuccin-fcitx5（自带 frappe/latte 两套 mauve 变体），不做任何
+  # 后处理。特别注意：**不要**为「候选窗上的横竖残影」去改这套主题的素材或 Margin —— 实测
+  # 那是 fcitx5 在 fractional scaling 下的渲染问题（见 docs/quirks.md），改主题毫无效果。
 in
 {
   options.mengw.gui.fcitx5.enable = lib.mkOption {
@@ -120,10 +144,7 @@ in
   };
 
   config = lib.mkIf (cfg.enable && guiCfg.enable) {
-    home.packages = [
-      themeDark
-      themeLight
-    ];
+    home.packages = [ pkgs.catppuccin-fcitx5 ];
 
     # 经典界面（候选词窗口）主题。该文件由 fcitx5 自行生成，但内容全是用户偏好、
     # 无易变状态，故整体托管；fcitx5 GUI 里的改动会在下次 switch 时被覆盖回此处。
@@ -135,45 +156,26 @@ in
     # 否则它会用 #3584e4 盖掉主题自带的 mauve #ca9ee6；而壳层强调色 #0088FF 是
     # 自定调色板里的值，portal 只报 GSettings 的默认蓝（GNOME 会话已移除，没人
     # 再设置它），根本钉不到 #0088FF，与其留一个近似蓝，不如用主题自带色。
-    xdg.configFile."fcitx5/conf/classicui.conf".text = ''
-      # 垂直候选列表
-      Vertical Candidate List=False
-      # 使用鼠标滚轮翻页
-      WheelForPaging=True
-      # 字体：与 GTK 界面字体一致（12pt）。
-      # 主题里的 [InputPanel] Font 不会被 fcitx5 消费（上游
-      # src/ui/classic/inputwindow.cpp 用的是 classicui.conf 的 Font，
-      # theme.cpp 里唯一的字体用途是 trayFont），所以这里设的就是最终值。
-      Font="HarmonyOS Sans SC 12"
-      # 菜单字体
-      MenuFont="HarmonyOS Sans SC Medium Medium 12"
-      # 托盘字体
-      TrayFont="HarmonyOS Sans SC Medium Medium 12"
-      # 托盘标签轮廓颜色
-      TrayOutlineColor=#000000
-      # 托盘标签文本颜色
-      TrayTextColor=#ffffff
-      # 优先使用文字图标
-      PreferTextIcon=False
-      # 在图标中显示布局名称
-      ShowLayoutNameInIcon=True
-      # 使用输入法的语言来显示文字
-      UseInputMethodLanguageToDisplayText=True
-      # 主题（浅色模式）：UseDarkTheme=True 时系统为浅色就用这一份
-      Theme=catppuccin-latte-mauve
-      # 深色主题
-      DarkTheme=catppuccin-frappe-mauve
-      # 跟随系统浅色/深色设置
-      UseDarkTheme=True
-      # 使用系统重点色：关闭，否则会盖掉主题自带的 mauve
-      UseAccentColor=False
-      # 在 X11 上针对不同屏幕使用单独的 DPI
-      PerScreenDPI=False
-      # 固定 Wayland 的字体 DPI
-      ForceWaylandDPI=0
-      # 在 Wayland 下启用分数缩放
-      EnableFractionalScale=True
-    '';
+    #
+    # 亮/暗两态由 theme-apply 翻软链决定（两个变体都生成到 store，见下面
+    # mengw.appearance.switchTargets），不依赖 fcitx5 自己的系统明暗探测：它跑在 Qt 上，
+    # 那份探测在 niri 会话里并不可靠，而进程常驻开机以来就不重读配置，候选词窗又是打字层
+    # 浮层、主题错了很扎眼。（启动时读一次这点无法绕过：切主题时 theme-apply 会重启它。）
+    xdg.configFile."fcitx5/conf/classicui.conf" = {
+      text = classicuiConf "frappe"; # 初始值 = 暗色（与改造前一致）
+      # force：这个软链运行时归 theme-apply 接管，不跳过碰撞检查会让整份 HM 激活失败
+      force = true;
+    };
+    xdg.configFile."theme-variants/fcitx5/classicui-dark.conf".text = classicuiConf "frappe";
+    xdg.configFile."theme-variants/fcitx5/classicui-light.conf".text = classicuiConf "latte";
+
+    mengw.appearance.switchTargets = [
+      {
+        live = ".config/fcitx5/conf/classicui.conf";
+        dark = ".config/theme-variants/fcitx5/classicui-dark.conf";
+        light = ".config/theme-variants/fcitx5/classicui-light.conf";
+      }
+    ];
 
     # fcitx5 全局快捷键：只留 Ctrl+Space 切输入法。
     #
@@ -244,11 +246,11 @@ in
     # 三个状态字形 × 两处放置位置（当前主题覆盖层 + hicolor 兜底）
     // lib.listToAttrs (
       lib.concatMap (
-        dir:
+        d:
         lib.mapAttrsToList (name: text: {
-          name = "${dir}/${name}.svg";
+          name = "${d.dir}/${name}.svg";
           value = { inherit text; };
-        }) imeIcons
+        }) (imeIcons d.onSurface)
       ) imeIconDirs
     );
 

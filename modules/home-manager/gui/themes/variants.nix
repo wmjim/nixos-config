@@ -142,6 +142,10 @@ let
       pkgs.gawk
       pkgs.glib # gsettings
       pkgs.dconf # dconf 后端（否则 gsettings 写进内存后端，重启即丢）
+      # 重启 fcitx5 那段用的两个命令：不能指望继承来的 PATH 里有它们
+      # （systemd 用户服务的 PATH 与交互式 shell 不同，缺了就静默不重启）
+      pkgs.procps # pgrep
+      pkgs.util-linux # setsid
     ];
     text = ''
             # 参数可显式给模式（排查用）：theme-apply light
@@ -160,12 +164,18 @@ let
             # 目标不存在就报错退出：上一次就是把变体路径写少了 .config/，脚本默默把软链
             # 指到不存在的文件，niri 因为 include 读不到而**整份配置拒绝加载**，
             # 现象却是「某些改动没生效」，很难往这里想。
+            # flipped 记录「本次是否真翻了东西」：只有真翻了才值得去重启 fcitx5 —— path 单元
+            # 会被 settings.toml 的任何改动触发，每次都重启 IME 会很烦人。
+            flipped=0
             link() {
               if [ ! -e "$2" ]; then
                 echo "theme-apply: 变体不存在：$2（登记的目标路径写错了？）" >&2
                 exit 1
               fi
-              [ "$(readlink "$1" 2>/dev/null)" = "$2" ] || ln -sfn "$2" "$1"
+              if [ "$(readlink "$1" 2>/dev/null)" != "$2" ]; then
+                ln -sfn "$2" "$1"
+                flipped=1
+              fi
             }
 
             # 本模块自己那五个 + 各层登记进来的（ghostty / btop / …）：case 同时把模式相关的
@@ -224,6 +234,56 @@ let
             # ghostty 不需要这里的信号：它的 theme 写成「亮:主题,暗:主题」一对，
             # 由 ghostty 自己按桌面主题选（读的正是上面写的 dconf color-scheme），
             # 新窗口天然跟随。其它 TUI（btop 等）无热重载，下次启动生效。
+            #
+            # fcitx5 的候选窗主题**只在启动时读一次**（热重载不会重套主题），所以真翻了配置就
+            # 必须真重启它。
+            #
+            # 判断它在不在跑**不能用 pgrep -x fcitx5**：NixOS 的 fcitx5 是包装脚本，进程名是
+            # .fcitx5-wrapped（实测；pgrep -x fcitx5 永远为假，于是整段重启逻辑静默失效，
+            # 现象就是「切主题后要手动重启 IME 才换皮肤」）。改成问 D-Bus 名字归属 ——
+            # 那也正是新实例要抢的资源，所以这个判断和失败原因是同一件事。
+            # 两道判断取或：gdbus 问 D-Bus 名字归属是最准的，但它依赖 glib 的 bin 与
+            # 会话总线都在服务环境里可见 —— 实测在服务里它返回假，于是整段被静默跳过
+            # （服务报成功、conf 也翻了，就是 IME 不动，最难查）。所以补一道纯进程名兜底：
+            # NixOS 的 fcitx5 进程名是 .fcitx5-wrapped，两种名字都匹配。
+            fcitx5_running() {
+              gdbus call --session --dest org.freedesktop.DBus --object-path /org/freedesktop/DBus \
+                --method org.freedesktop.DBus.NameHasOwner org.fcitx.Fcitx5 2>/dev/null | grep -q true ||
+                pgrep -x '.fcitx5-wrapped|fcitx5' >/dev/null 2>&1
+            }
+            # 用系统里那对**包装版**命令（就是你平时敲的 fcitx5 / fcitx5-remote），不要用
+            # pkgs.fcitx5 的裸二进制：裸的 fcitx5-remote 未必能跟包装版实例说上话，于是
+            # 重启悄悄没发生；而「重启后有没有起来」的检查看到旧实例还在，就报了成功。
+            ime=/run/current-system/sw/bin/fcitx5
+            remote=/run/current-system/sw/bin/fcitx5-remote
+            [ -x "$ime" ] || ime="${pkgs.fcitx5}/bin/fcitx5"
+            [ -x "$remote" ] || remote="${pkgs.fcitx5}/bin/fcitx5-remote"
+            if [ "$flipped" = 1 ] && fcitx5_running; then
+              "$remote" -e 2>/dev/null || true
+              for _ in $(seq 20); do
+                fcitx5_running || break
+                sleep 0.25
+              done
+              # 它赖着不退（-e 不生效）就直接给它信号 —— 本意本来就是重启 IME，
+              # 留着旧实例等于「皮肤不换」，那是这个特性唯一要避免的事。
+              if fcitx5_running; then
+                pkill -x '.fcitx5-wrapped|fcitx5' 2>/dev/null || true
+                for _ in $(seq 20); do
+                  fcitx5_running || break
+                  sleep 0.25
+                done
+              fi
+              setsid "$ime" -d >/dev/null 2>&1 || true
+              sleep 2
+              if ! fcitx5_running; then
+                setsid "$ime" -d >/dev/null 2>&1 || true # 再给一次机会
+                sleep 2
+              fi
+              if ! fcitx5_running; then
+                echo "theme-apply: fcitx5 重启后未起来（主题已翻，但 IME 需要手动跑 fcitx5 -d）" >&2
+                exit 1
+              fi
+            fi
     '';
   };
 in
