@@ -59,17 +59,28 @@ action 导出（`Unknown action`），也没有 SIGUSR1/2 之类的入口；② 
 
 ## Niri 视觉细节
 
-- 窗口间距 12px（见下），单列工作区自动居中（有意为之的"专注模式"，`Mod+F` 可把单列铺满）
+- 窗口间距 8px（见下），单列工作区自动居中（有意为之的"专注模式"，`Mod+F` 可把单列铺满）
 - 焦点环 1px，中性发丝线 `#999999`（**用中性色而不是强调色**，理由见下）
-- 窗口圆角 **24px**（`windowrules.kdl` 的 `geometry-corner-radius`），禁用边框。取值参考 macOS 的 concentricity 阶梯，见下
-- 标签指示器在列右侧，圆角 8px（3px 宽的条，半径大于半宽就是胶囊，同主题的"药丸"档）；**仅当列进入 tabbed 显示模式（`Mod+W`）时出现**
+- 窗口圆角 **8px**（`windowrules.kdl` 的 `geometry-corner-radius`），禁用边框。取值参考 Omarchy 的 8（原为 macOS 阶梯的 24），见下
+- 标签指示器在列右侧，圆角 2px（3px 宽的条，半径 ≥ 半宽就是胶囊，不超过窗口圆角）；**仅当列进入 tabbed 显示模式（`Mod+W`）时出现**
 - 概览缩放 0.50，背景 `#242424`
-- `recent-windows` 高亮框圆角 12px（主题阶梯里的"独立弹层"档）
+- `recent-windows` 高亮框圆角 8px（与窗口圆角同档；Omarchy 无对应项）
 - 模糊 `passes 4 / offset 5.0 / saturation 1.10`；终端（ghostty / btop）`opacity 0.85`，取值按最坏情况（近纯白壁纸）下的文字对比定，前提见下文壁纸一节
 - 窗口阴影由合成器提供（`shadow { on }`，参数由 MacTahoe 自己的 CSD 阴影反推，见下）
 - 窗口开/关动画 220ms / 180ms（退场比入场快；scale 0.96→1.0 + 淡入，不用自定义波纹 shader）
 
-### 圆角为何是 24px：参考 macOS 的 concentricity
+### 圆角为何是 8px（原为 macOS 的 24）
+
+**当前取 8**，参考 Omarchy（Arch + Hyprland）：它默认是直角（`decoration.rounding = 0`，手册
+给出的圆角档是 **8**）；原来的 24 照 macOS 的 concentricity 阶梯取、与 MacTahoe-Dark 主题自己
+的窗口档 1:1，看下来太圆，故降档。
+
+**未解**：主题内层仍有 `19 / 18 / 16 / 14 / 12` 的圆角，比窗口的 8 更圆 —— 正是下面
+「内层不能比外层更圆」那条的反面。压平内层要用 `gtk.gtk{3,4}.extraCss` 覆盖 5 个以上选择器
+（主题更新后会静默失配），还没做；先看视觉能否接受，不行就在「降档 + 压内层」与「回到主题
+自己的 24」之间选。
+
+#### 原 24 的推导（判据仍适用，数值已不再沿用）
 
 Apple 在 WWDC 2025 的 *Build an AppKit app with the new design* 里把新设计概括为 **concentricity**：每个内层元素的曲率都落在容器圆角之内（`r_inner = r_outer − inset`），而且**窗口圆角随窗口样式变化**：
 
@@ -102,15 +113,20 @@ shadow {
 
 - **不会叠成两层**。niri 文档：设了 `prefer-no-csd` 与/或 `geometry-corner-radius` 之后，*“These will also remove client-side shadows if the window draws any.”* 而且无论 GTK 是否响应 `prefer-no-csd`（保留 CSD / 放弃 CSD），结论都一致：要么自绘阴影被裁、合成器补上，要么本来就没有
 - `draw-behind-window` 保持默认 `false`——文档说只有"niri 不知道 CSD 圆角"时才需要 `true`；我们给了 `geometry-corner-radius`，niri 自己知道圆角，也就不会在半透明窗口（ghostty 0.85）里透出一圈暗影
-- 阴影跟随 `geometry-corner-radius`（24px）绘制，天然与窗口同心
+- 阴影跟随 `geometry-corner-radius` 绘制（现为 8px），天然与窗口同心
 
 仍可选的另一条路：改回字面 macOS 值 16，并按 concentricity 把上表里 ≥ 18px 的选择器用 `gtk.gtk{3,4}.extraCss` 一并下移。
 
-### 窗口间距为何是 12px
 
-窗口圆角是 24px(`windowrules.kdl` 的 `geometry-corner-radius`,取值理由见上节)。间距若小于圆角,相邻两窗的圆角弧比它自己的半径还靠得近,缝隙看上去是“被捻住”而不是留白。原来按 desktop 1.5 倍的物理像素定过 16px；desktop 改为整数 2 倍后取 12px —— 12 逻辑（24 物理）正好等于 24 逻辑圆角（48 物理）的一半，是这条判据的下限，视觉间隙与改缩放前一致。
+### 窗口间距为何是 8px
 
-`gaps` 同时作用于内缝隙与外留白。若以后想两者不同，niri 的官方写法是 `gaps 12` 配 `struts { left/right/top/bottom -6; }`，但负 struts 会把平铺区推到屏幕外，引入额外边界情况，故未采用。
+窗口圆角是 8px（`windowrules.kdl` 的 `geometry-corner-radius`），间距若小于圆角的一半，相邻
+两窗的圆角弧比自己半径还靠得近，缝隙看上去是"被掐住"而不是留白 —— 8 就是这条判据在圆角 8 下
+的下限（原来 12 配的是 24；桌面 2 倍缩放下 8 逻辑 = 16 物理，正是圆角 8 逻辑的一半）。
+
+`gaps` 同时作用于内缝隙与外留白。想分开（如 Omarchy 的 `gaps_in 5` / `gaps_out 10`）用
+`struts`（niri wiki: Layout#struts，**正值 = 外间隙**；负值是把窗口推出屏幕外那条路，方向相反），
+但左右方向的 struts 会让侧边窗口"探头"（niri 文档明说），故未采用。
 
 ### 焦点环为何是中性发丝线，而不是强调色
 
@@ -313,7 +329,7 @@ bar 文字（`#DEDEDE`）的对比度，背景取**屏顶 5% 均值**（bar 背�
 
 - **锁屏**：已经一致，无需配置。Noctalia 的 `settings.toml` 里**没有** `[lockscreen]` 段，即全默认：`wallpaper = ""`（跟随桌面壁纸）、`blur_intensity 0.5`、`tint_intensity 0.3`。锁屏上的部件位置（登录框等）归 GUI，存在 `lockscreen_widgets` 里。
 - **niri 自绘的浮层**（快捷键 overlay、截图 UI、退出确认对话框）：**配不了**。实测 `hotkey-overlay {}` / `screenshot-ui {}` / `ui {}` 三个节点都被 `niri validate` 拒绝——niri 的配置里没有给它们的颜色入口。它们的观感是 niri 自己的，改不了，也不必惦记。
-- **Windows / RemoteApp 窗口与 Steam 的内部 UI**：只有**外框**是我们的—— 24px 圆角与合成器阴影由 niri 统一绘制，所以它们与其它窗口的框架一致；窗口内部的标题栏、配色、控件全是它们自己的。这是“覆盖不了”，不是“没覆盖”。
+- **Windows / RemoteApp 窗口与 Steam 的内部 UI**：只有**外框**是我们的—— 8px 圆角与合成器阴影由 niri 统一绘制，所以它们与其它窗口的框架一致；窗口内部的标题栏、配色、控件全是它们自己的。这是“覆盖不了”，不是“没覆盖”。
 
 （第四个面——GDM 登录界面——是**认领**的：字体 / 图标 / 光标 / 壁纸都声明在 `modules/nixos/desktop/gdm.nix`，与桌面会话共用一套。）
 

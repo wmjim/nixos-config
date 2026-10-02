@@ -114,4 +114,4 @@ keyd 位于合成器之下，所以 XWayland 应用（微信/QQ/Snipaste）、�
 - **最大化打开**：VSCode、Logisim、Brave、Zotero
 - **浮动打开**：Fcitx5 配置、PicGo、btop、qView、LocalSend、微信、QQ、Telegram、Discord、欧陆词典
 - **侧边浮动**：Pot（右侧 20% 宽长条）
-- 全局默认平铺，圆角 24px（`geometry-corner-radius`，取值理由见 `docs/themes.md`）
+- 全局默认平铺，圆角 8px（`geometry-corner-radius`，原为 24，理由见 `docs/themes.md`）

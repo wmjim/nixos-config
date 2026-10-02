@@ -1,28 +1,30 @@
 // 窗口规则
 // 全局：默认平铺，圆角修饰
 window-rule {
-    // ── 圆角：对齐 macOS 的 concentricity 阶梯 ───────────────────────────────
+    // ── 圆角：当前 8（Omarchy 档）──────────────────────────────────────────
     //
-    // MacTahoe-Dark 在 gtk-4.0/gtk.css 里实现的档位（2026-10-01 对照代码核过）：
+    // 2026-10-02 从 24 降到 8。24 那版照 macOS 的 concentricity 阶梯取、与
+    // MacTahoe-Dark 主题自己的窗口档 1:1，看下来太圆；Omarchy（Arch + Hyprland）
+    // 默认是直角（decoration.rounding = 0），手册给出的圆角档是 8。
     //
-    //     window.csd                 24   ← 窗口本身（= 下面取的值）
-    //     floating/bottom-sheet       24   ← 独立浮动面板
-    //     notebook.frame              19   ┐
-    //     .sidebar-pane / .content-pane 18 ├ 嵌在窗口内（24−5 / 24−6）
-    //     notebook > header           16   │
-    //     notebook … tab              14   ┘
-    //     popover / menu / osd        12   ← 独立弹层（含输入法候选窗，见下）
-    //     按钮 / 输入框                 6
-    //     药丸                      9999
+    // 主题自己的档位（gtk-4.0/gtk.css，2026-10-01 对照代码核过）：
     //
-    // 注：输入法候选窗本属这一档，但它的圆角烘在上游 SVG 里（39×39, rx=8），
-    // 由 fcitx5.nix 的 runCommand 改成 12、并把九宫格 Margin 从 10 抬到 14
-    // （rx 必须 ≤ Margin，否则角片会被切）。
+    //     window.csd / floating/bottom-sheet  24   ← 已不再沿用
+    //     notebook.frame 19 / .sidebar-pane 18 / notebook > header 16 / tab 14
+    //     popover / menu / osd                12   ← 独立弹层
+    //     按钮 / 输入框                         6
+    //     药丸                              9999
     //
-    // 改这个值之前先读 docs/themes.md「圆角为何是 24px」：为何取主题自己的 24
-    // 而不是字面的 macOS 16、内层为何不能比外层更圆、以及被 clip-to-geometry
-    // 裁掉的 CSD 阴影由谁补上（现由合成器阴影提供，见 wm/default.nix）。
-    geometry-corner-radius 24
+    // ⚠ 未解：主题内层仍有 19/18/16/14/12，比窗口的 8 更圆 —— 正是
+    // docs/themes.md「内层不能比外层更圆」那条的反面。压平内层要用
+    // gtk.gtk{3,4}.extraCss 覆盖 5 个以上选择器，还没做，先看视觉能否接受。
+    //
+    // 注：输入法候选窗的圆角烘在上游 SVG 里（39×39, rx=8），由 fcitx5.nix 的
+    // runCommand 改成 12、九宫格 Margin 从 10 抬到 14（rx 必须 ≤ Margin，否则角片会被切）。
+    //
+    // 阴影由合成器按本值绘制（wm/default.nix 的 shadow 块）；clip-to-geometry
+    // 会连 CSD 自绘阴影一起裁掉。
+    geometry-corner-radius 8
     clip-to-geometry true
     draw-border-with-background false
     open-maximized false

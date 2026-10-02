@@ -61,16 +61,14 @@ let
     // https://niri-wm.github.io/niri/Configuration%3A-Layout.html
     layout {
         // 窗口之间、以及窗口与屏幕边缘的间距（逻辑像素）。
-        // 取 12 是因为窗口圆角是 24（见 windowrules.kdl 的 geometry-corner-radius）：
-        // 间距小于圆角的一半时，相邻两窗的圆角弧比它自己的半径还靠得近，缝隙看上去
-        // 是“被掐住”而不是留白。12 在 desktop 的 2 倍缩放下 = 24 物理像素，正好是
-        // 24 逻辑圆角（48 物理）的一半 —— 这条判据的下限，也是改缩放前的视觉间隙。
+        // 8 与窗口圆角 8（windowrules.kdl 的 geometry-corner-radius）同档：
+        // 间距小于圆角的一半时，相邻两窗的圆角弧比自己半径还靠得近，缝隙看上去
+        // 是“被掐住”而不是留白 —— 8 就是圆角 8 时的下限（原来 12 配的是 24）。
         //
-        // 注意 gaps 同时作用于内缝隙与外留白；若以后想两者不同（外小内大），
-        // niri 的官方写法是 gaps 12 配 struts { left/right/top/bottom -6; }，
-        // 这里没有采用——本机没有用 open-maximized-to-edges，但负 struts 会把
-        // 平铺区推到屏幕外，不想引入这个边界情况。
-        gaps 12
+        // Omarchy 取 gaps_in 5 / gaps_out 10。要分开就得靠 struts（niri wiki:
+        // Layout#struts，正值 = 外间隙），但左右方向的 struts 会让侧边窗口
+        // “探头”（niri 文档明说），所以这里只用对称的 gaps。
+        gaps 8
         background-color "transparent"  // 工作区透明
         center-focused-column "never"   // 无特殊居中效果
         // 单列工作区居中：有意为之的“专注模式”——一个窗口时留在屏幕中间保持
@@ -121,10 +119,9 @@ let
             length total-proportion=1.0 // 指示器长度占列总高度比例
             position "right" // 指示器在列的右侧
             gaps-between-tabs 2 // 多个标签指示器并排时间距
-            // 指示器宽度只有 3px，而半径 8 > 宽度一半 ⇒ 两端自然成胶囊，
-            // 与 MacTahoe 的"药丸"（border-radius 9999px）同一语义。
-            // 阶梯见 windowrules.kdl 顶部的 concentricity 说明。
-            corner-radius 8 // 指示器圆角半径
+            // 指示器宽度 3px，半径 2 ≥ 半宽 ⇒ 两端仍是胶囊（“药丸”语义），
+            // 同时不超过窗口圆角 8 —— 内层不会比外层更圆。
+            corner-radius 2 // 指示器圆角半径
             active-color "${shell.accent}" // 焦点列
             // 非焦点列：指示器要说明"此列是 tabbed"，需在深色壁纸上可见，
             // 故用次要前景色而不是表面色
@@ -202,8 +199,8 @@ let
             active-color "${shell.accent}"
             urgent-color "${shell.red}"
             padding 30
-            // 12 = MacTahoe 阶梯里的"独立弹层"档（popover / menu / osd）
-            corner-radius 12
+            // 8：与窗口圆角同档（Omarchy 无对应项，按阶梯取 ≤ 窗口圆角）
+            corner-radius 8
         }
 
         previews {
