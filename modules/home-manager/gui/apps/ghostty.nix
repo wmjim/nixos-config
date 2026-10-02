@@ -30,7 +30,7 @@ in
           "Maple Mono Normal NL NF"
           "LXGW WenKai Mono"
         ];
-        font-size = 11;
+        font-size = 9;
         # 行间距：+2 像素
         adjust-cell-height = 2;
 
