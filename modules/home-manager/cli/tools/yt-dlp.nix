@@ -53,6 +53,17 @@ in
         # 默认只下载指定的视频
         no-playlist = true;
 
+        # 认证：YouTube 反爬要求登录态，直接读 Brave 的 cookie 库（Chrome 系会
+        # 复制一份再读，Brave 开着也能用），不落盘明文 cookies.txt。保持 Brave
+        # 里 YouTube 登录即可。
+        #
+        # 必须带 +gnomekeyring：Brave 的 cookie 是 v11（用 gnome-keyring 解锁的
+        # 「Safe Storage」密钥加密）。yt-dlp 默认按桌面环境推 keyring，而 niri 不在
+        # 它认识的 DE 名单里 → 归为 OTHER → 选 BASICTEXT → 取不到 v11 密钥 →
+        # 0 cookies → YouTube 报「Sign in to confirm you're not a bot」。后缀强制
+        # 走 gnome-keyring。若将来换 KDE，改成 brave+kwallet6。
+        cookies-from-browser = "brave+gnomekeyring";
+
         # 网络重试
         retries = 10;
         fragment-retries = 10;
