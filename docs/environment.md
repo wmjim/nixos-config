@@ -7,6 +7,7 @@
 - Shell：Fish + 常用 CLI 工具（eza / zoxide / bat / fzf / ripgrep / fd / jq / yq）
 - 编辑器：Neovim（`nvim`）+ VSCode（GUI）+ CLion
 - AI 编程：Claude Code（`cc` 别名）、pi-coding-agent、CodeX
+- GitHub CLI：`gh`（`~/.config/gh/config.yml` 由 `programs.gh.settings` 生成，`gh config set` 的改动会被下次激活覆盖；`hosts.yml` 与登录状态不接管，token 在 keyring）
 
 ### 语言工具链
 

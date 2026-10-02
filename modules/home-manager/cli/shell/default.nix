@@ -44,6 +44,23 @@ in
       ];
     };
 
+    # GitHub CLI；config.yml 由 HM 生成（gh config set 的改动会被下次激活覆盖，改配置回仓库），
+    # hosts.yml 与认证状态留给 gh 自己；gitCredentialHelper.enable 默认为 true，helper 自动写入
+    programs.gh = {
+      # 启用 gh
+      enable = true;
+      settings = {
+        # 执行 git 操作时使用的协议
+        git_protocol = "ssh";
+        # 启用交互式提示
+        prompt = "enabled";
+        # 长输出使用 less
+        pager = "less";
+        # gh 在创建议题、拉取请求时默认编辑器
+        editor = "nvim";
+      };
+    };
+
     # 终端工具
     home.packages = with pkgs; [
       zoxide # cd 的现代替代
@@ -56,7 +73,6 @@ in
       yq # yaml/xml/toml 处理器
       fzf # 命令行模糊查找
       sysstat # Linux的性能监控工具集（如sar、iostat和pidstat）
-      gh # github cli
       git-repo # android 的仓库管理工具
       direnv # 管理环境的 shell 扩展
     ];
