@@ -36,8 +36,12 @@ in
         paths = "~/Videos/yt-dlp";
         output = "%(title)s.%(ext)s";
         
-        # 画质：最佳画质，mp4 格式
-        format = "bestvideo*+bestaudio/best";
+        # 画质：优先 H.264(avc1)+AAC(mp4a)，落 mp4 容器。
+        # 不能用 bestvideo*+bestaudio：YouTube 现在把 AV1 塞进 mp4 容器（format 399，
+        # ext 也是 mp4），故 ext=mp4 挡不住 AV1；而部分播放器只能解 H.264，AV1 会
+        # 「只有音频」。这里显式按 vcodec/acodec 挑，兼容性优先于画质。
+        # 回落链：/b[vcodec^=avc1]（合流 H.264）→ /b（最坏情况下退到任意可用）。
+        format = "bv*[vcodec^=avc1]+ba[acodec^=mp4a]/b[vcodec^=avc1]/b";
         merge-output-format = "mp4";
 
         # 元数据
