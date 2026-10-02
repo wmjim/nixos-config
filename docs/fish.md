@@ -16,12 +16,15 @@
 
 ## 文件与目录
 
+`ls` / `ll` / `la` / `lla` / `lt` 的参数（icons / colors / git / 排序）来自 `programs.eza`，
+配置在 `modules/home-manager/cli/shell/default.nix`。模块生成的别名体调 `eza`，参数挂在
+`eza` 这条别名上，所以改参数去那里，不要在 `fish.nix` 重写整条别名。
+
 | 别名 | 功能 |
 |------|--------|
 | `..` / `...` | 上级 / 上上级目录 |
 | `ls` / `ll` / `la` / `lla` | eza 增强列表 |
-| `lt` | 目录树（2 层） |
-| `ldir` | 仅显示目录 |
+| `lt` | 目录树 |
 | `cat` | bat 分页显示 |
 
 ## Git

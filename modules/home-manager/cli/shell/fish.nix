@@ -114,12 +114,6 @@ in
         updatelp = "sudo nixos-rebuild switch --flake ~/Projects/nixos-config#laptop";
         # 构建 laptop 笔记本 NixOS，并获取详细错误信息
         updatelplog = "sudo nixos-rebuild switch --flake ~/Projects/nixos-config#laptop --show-trace --print-build-logs --verbose";
-        ls = "eza --icons=auto --group-directories-first --color=auto";
-        ll = "eza -l --icons=auto --group-directories-first --git --header";
-        la = "eza -a --icons=auto --group-directories-first";
-        lla = "eza -la --icons=auto --group-directories-first --git --header";
-        lt = "eza --tree --level=2 --icons=auto";
-        ldir = "eza -D --icons=auto";
         gs = "git status";
         ga = "git add";
         gc = "git commit";

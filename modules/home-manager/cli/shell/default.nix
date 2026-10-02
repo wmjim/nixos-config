@@ -23,9 +23,29 @@ in
       force = true;
     };
 
+    # ls 的现代替代；fish 的 ls / ll / la / lla / lt 别名由该模块生成
+    programs.eza = {
+      # 启用 eza
+      enable = true;
+      # 文件图标
+      icons = "auto";
+      # 彩色输出
+      colors = "auto";
+      # 启用 Fish 集成
+      enableFishIntegration = true;
+      # Git 状态
+      git = true;
+      # 额外的 eza CLI 参数
+      extraOptions = [
+        # 目录排在文件前
+        "--group-directories-first"
+        # long view 显示列标题
+        "--header"
+      ];
+    };
+
     # 终端工具
     home.packages = with pkgs; [
-      eza # ls 的现代替代
       zoxide # cd 的现代替代
       bat # cat 的现代替代
       ripgrep # grep 的现代替代
