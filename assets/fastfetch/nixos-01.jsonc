@@ -1,15 +1,17 @@
 {
   "logo": {
-    // 用文本 logo（type=file）而不是图片。
-    // 内置的 NixOS logo 是纯文本、**不可着色**（实测 --logo-color-1..9 对它完全无效，
-    // 输出逐字节相同），而文本文件可以逐行内嵌 ANSI 码，于是 logo 能跟着
-    // 工作区的 Frappe 调色板走，而不是全屏幕唯一一处不着色的东西。
-    // 图片 logo 在这个尺寸下只有约 80×42 像素（40×21 字符 × 半块两像素），
-    // 比 ASCII 更糊；而且当时配的 nixos_logo_1.webp 根本不存在，一直在静默回退。
-    // 文件由 home-manager 从 assets/fastfetch/logo/nixos_logo_1.txt 部署。
+    // DeepSeek 像素鲸鱼，走文本（type=file）而不是图片。
+    // 文本文件可以逐行内嵌真彩色 ANSI：这里用半块字符（▀/▄）打包上下两个像素 ——
+    // 前景色 = 上半像素、背景色 = 下半像素，于是 32×22 的像素图只占 32 列 × 11 行，
+    // 而且亮度色（腹部冰蓝、白色前鳍）用背景色也能画出来，纯前景色的 ASCII 画不出来。
+    // 内置 logo 不可着色（实测 --logo-color-1..9 对它完全无效，输出逐字节相同），
+    // 所以必须是文件。图形取自 @lhh010 的手绘像素材（dsh-ui-whale），
+    // 经 MIT 许可的 dsh-TUI 转成半块像素图：https://github.com/ccch1mneyyy/dsh-TUI
+    // 文件由 home-manager 从 assets/fastfetch/logo/deepseek_whale.txt 部署，
+    // 亮色那份换成更深的调色板（浅底上原蓝会糊）。
     // 不再写 height/width：那两个选项只对图片 logo 有效。
     "type": "file",
-    "source": "~/.config/fastfetch/logo/nixos_logo_1.txt",
+    "source": "~/.config/fastfetch/logo/deepseek_whale.txt",
     "padding": {
       "top": 2,
       "left": 3,
@@ -43,9 +45,11 @@
       "\u001b[38;2;140;198;220m\u001B[1m", // {$8}  #8CC6DC           6.58:1
       "\u001b[38;2;146;204;219m\u001B[1m", // {$9}  #92CCDB           6.97:1
       "\u001b[38;2;153;209;219m\u001B[1m", // {$10} #99D1DB  sky       7.33:1
-      "┌──────", // {$11},
-      "───────", // {$12},
-      "──────┐", // {$13},
+      "┌──", // {$11},
+      "──", // {$12},
+      "──┐", // {$13},
+      // 横线长度按"整行 ≲ 100 列"定：10 段 × 2 字符，颜色仍走满 {$1}..{$10}。
+      // 原来每段 7 字符，横线自己就有 70 列，叠加 43 列的 logo 后整行 133 列 —— 半屏终端放不下。,
     ],
     "percent": {
       "type": 9, // 1=number, 2=bar, 3=both, 9=colored number
@@ -59,209 +63,126 @@
     },
   },
   "modules": [
+    // 宽度预算：logo 32 列之后，模块行 ≲ 100 列（半屏终端）。
+    // 信息头用中文 —— fastfetch 不会按显示宽度对齐 CJK，空格是手工补到 8 列的。
+    // 分组：硬件 / 软件 / 网络。原来的 Time 组只剩「系统年龄」一行，并进软件组。
     "break",
     {
       "type": "version",
-      "color": {
-        "keys": "",
-      },
+      "color": { "keys": "" },
       "key": "{$4}                󱐋󱐋 Fastfetch ",
       "format": "{$6}{2}",
     },
     {
       "type": "custom",
-      "format": "{$1}{$11}{$2}{$12}{$3}{$12}{$4}{$12}{$5}{$12}{$6}{$12}{$7}{$12}{$8}{$12}{$9}{$12}{$10}{$13} Hardware ",
+      "format": "{$1}{$11}{$2}{$12}{$3}{$12}{$4}{$12}{$5}{$12}{$6}{$12}{$7}{$12}{$8}{$12}{$9}{$12}{$10}{$12}{$13} 硬件 ",
     },
     {
       "type": "host",
-      "key": "{$1}├   PC        ",
-    },
-    {
-      "type": "board",
-      "key": "{$2}├ 󱔼  Board     ",
+      "key": "{$1}├   主机    ",
     },
     {
       "type": "cpu",
-      "key": "{$3}├   CPU       ",
+      "format": "{name}",
+      "key": "{$2}├   处理器  ",
     },
     {
       "type": "gpu",
-      "key": "{$4}├ 󰾲  GPU       ",
+      "format": "{name}",
+      "key": "{$3}├ 󰾲  显卡    ",
     },
     {
       "type": "display",
-      "key": "{$5}├ 󰍹  Display   ",
-    },
-    {
-      "type": "sound",
-      //"format": "{platform-api}/{2} ({3})",
-      "key": "{$6}├   Sound     ",
-    },
-    {
-      "type": "battery",
-      "key": "{$6}├ 󰢟  Battery   ",
-      "format": "{manufacturer} {model-name} ({capacity})",
+      "format": "{1}x{2} @ {3}Hz",
+      "key": "{$4}├ 󰍹  显示器  ",
     },
     {
       "type": "memory",
-      "key": "{$7}├   Memory    ",
-      "percent": {
-        "type": 3, // 3 = show number + bar + percentage
-        "green": 30, // <30% is green
-        "yellow": 70, // 30-70% is yellow, >70% is red
-      },
+      "key": "{$5}├   内存    ",
     },
     {
       "type": "swap",
-      "key": "{$8}├ 󰯍  Swap      ",
-      "percent": {
-        "type": 3, // 3 = show number + bar + percentage
-        "green": 30, // <30% is green
-        "yellow": 70, // 30-70% is yellow, >70% is red
-      },
-    },
-
-    {
-      "type": "disk",
-      "key": "{$9}├   NixOS     ",
-      "folders": ["/"],
-      "percent": {
-        "type": 3, // 3 = show number + bar + percentage
-        "green": 30, // <30% is green
-        "yellow": 70, // 30-70% is yellow, >70% is red
-      },
+      "key": "{$6}├ 󰯍  交换    ",
     },
     {
       "type": "disk",
-      "key": "{$10}└   Home      ",
+      "key": "{$7}└   家目录  ",
+      "format": "{size-used} / {size-total} ({size-percentage})",
       "folders": ["/home"],
-      "percent": {
-        "type": 3, // 3 = show number + bar + percentage
-        "green": 30, // <30% is green
-        "yellow": 70, // 30-70% is yellow, >70% is red
-      },
     },
     {
       "type": "custom",
-      "format": "{$10}{$11}{$9}{$12}{$8}{$12}{$7}{$12}{$6}{$12}{$5}{$12}{$4}{$12}{$3}{$12}{$2}{$12}{$1}{$13} Software ",
+      "format": "{$10}{$11}{$9}{$12}{$8}{$12}{$7}{$12}{$6}{$12}{$5}{$12}{$4}{$12}{$3}{$12}{$2}{$12}{$1}{$12}{$13} 软件 ",
     },
     {
       "type": "os",
-      "key": "{$10}├   Distro    ",
-      "format": "{name} {build-id} ({codename}) {arch}",
+      "key": "{$8}├   发行版  ",
+      "format": "{name} {version}",
     },
     {
       "type": "kernel",
-      "key": "{$10}├   Kernel    ",
-    },
-    {
-      "type": "bios",
-      "key": "{$9}├ 󰚗  BIOS      ",
-    },
-    {
-      "type": "packages",
-      "key": "{$9}├ 󰏖  Packages  ",
-    },
-    {
-      "type": "Processes",
-      "key": "{$9}├ 󰑮  Processes ",
-    },
-    {
-      "type": "shell",
-      "key": "{$8}├   Shell     ",
-    },
-    {
-      "type": "terminal",
-      "key": "{$7}├   Terminal  ",
-    },
-    {
-      "type": "terminalfont",
-      "key": "{$6}├ 󰛖  Term Font ",
+      "key": "{$9}├   内核    ",
     },
     {
       "type": "de",
-      "key": "{$5}├   DE        ",
+      "key": "{$10}├   桌面    ",
     },
     {
       "type": "lm",
-      "key": "{$4}├ 󰧨  Login     ",
+      "key": "{$1}├ 󰧨  登录    ",
     },
     {
       "type": "wm",
-      "key": "{$3}├   Window    ",
+      "key": "{$2}├   窗口    ",
     },
     {
       "type": "wmtheme",
-      "key": "{$2}├ 󰉼  Theme     ",
+      "key": "{$3}├ 󰉼  主题    ",
+    },
+    {
+      "type": "terminal",
+      "key": "{$4}├   终端    ",
+    },
+    {
+      "type": "shell",
+      "key": "{$5}├   Shell   ",
     },
     {
       "type": "font",
-      "key": "{$2}├ 󰛖  Font      ",
+      "key": "{$6}├ 󰛖  字体    ",
     },
     {
       "type": "opengl",
-      "key": "{$1}├ 󰆧  OpenGL    ",
+      "key": "{$7}├ 󰆧  OpenGL  ",
     },
     {
       "type": "vulkan",
-      "key": "{$1}└ 󰈸  Vulkan    ",
+      "key": "{$8}├ 󰈸  Vulkan  ",
     },
     {
-      "type": "custom",
-      "format": "{$1}{$11}{$2}{$12}{$3}{$12}{$4}{$12}{$5}{$12}{$6}{$12}{$7}{$12}{$8}{$12}{$9}{$12}{$10}{$13} Connectivity",
-    },
-    {
-      "type": "bluetooth",
-      "key": "{$1}├ 󰂱  Bluetooth ",
-      "format": "{1} - {4}",
-    },
-    {
-      "type": "bluetoothradio",
-      "key": "{$1}├ 󰂯  BT Radio  ",
-      "format": "{5}",
-    },
-    {
-      "type": "wifi",
-      "key": "{$2}├   WiFi      ",
-      "format": "{4} - {7} - {13} GHz - {10}",
-      "showErrors": "never",
-    },
-    {
-      "type": "dns",
-      "key": "{$4}├ 󱦂  DNS       ",
-    },
-    {
-      "type": "localip",
-      "key": "{$6}├ 󰩟  Local IP  ",
-      "format": "{1} - {3}",
-      "showMac": true,
-    },
-    {
-      "type": "publicip",
-      "key": "{$8}└ 󰩠  Public IP ",
-      "format": "{1} - {2}",
-    },
-    {
-      "type": "custom",
-      "format": "{$10}{$11}{$9}{$12}{$8}{$12}{$7}{$12}{$6}{$12}{$5}{$12}{$4}{$12}{$3}{$12}{$2}{$12}{$1}{$13} Time ",
-    },
-    {
-      "type": "DateTime",
-      "key": "{$10}├ 󰥔  Date/Time ",
-    },
-    {
-      "key": "{$8}├   OS Age    ",
+      "key": "{$9}└   系统年龄",
       "type": "disk",
       "folders": "/",
       "format": "{create-time:10} ({days} days)",
     },
     {
-      "type": "uptime",
-      "key": "{$6}└   Uptime    ",
+      "type": "custom",
+      "format": "{$1}{$11}{$2}{$12}{$3}{$12}{$4}{$12}{$5}{$12}{$6}{$12}{$7}{$12}{$8}{$12}{$9}{$12}{$10}{$12}{$13} 网络 ",
+    },
+    {
+      "type": "bluetooth",
+      "key": "{$10}├ 󰂱  蓝牙    ",
+      "format": "{1} - {4}",
+    },
+    {
+      "type": "localip",
+      "key": "{$1}└ 󰩟  局域网  ",
+      "format": "{1}",
+      "showMac": false,
     },
     {
       "type": "custom",
-      "format": "                {$10}󱄅 {$9}󱄅 {$8}󱄅 {$7}󱄅 {$6}󱄅 {$5}󱄅 {$4}󱄅 {$3}󱄅 {$2}󱄅 {$1}󱄅",
+      "format": "{$10}󱄅 {$9}󱄅 {$8}󱄅 {$7}󱄅 {$6}󱄅 {$5}󱄅 {$4}󱄅 {$3}󱄅 {$2}󱄅 {$1}󱄅",
     },
   ],
 }

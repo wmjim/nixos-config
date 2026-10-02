@@ -193,18 +193,37 @@ shadow {
 
 细节全在 `assets/fastfetch/nixos-01.jsonc` 的注释里，两个结论：
 
-- **logo 必须是文件（文本），不能靠内置 logo。** fastfetch 内置的 NixOS ASCII logo
-  是纯文本、不可着色 —— 实测 `--logo-color-1..9` 对它完全无效（输出逐字节相同）。
-  而文本文件可以逐行内嵌 ANSI 码，于是 logo 能跟着 Frappe 走。
-  文件在 `assets/fastfetch/logo/nixos_logo_1.txt`（单色 Frappe blue `#8CAAEE`），
-  由 `cli/tools/default.nix` 部署。原配置指向的 `nixos_logo_1.webp` 本来就不存在，
-  一直在静默回退到内置 ASCII。
+- **logo 是 DeepSeek 像素鲸鱼，走文件（文本）而不是内置 logo。** fastfetch 内置 logo
+  不可着色 —— 实测 `--logo-color-1..9` 对它完全无效（输出逐字节相同）。而文本文件可以
+  逐行内嵌真彩色 ANSI，于是能用**半块字符**（`▀`/`▄`）一个字符塞两个像素：前景 = 上半
+  像素、背景 = 下半像素，32×22 的像素图只占 32 列 × 11 行；腹部冰蓝、白色前鳍这些
+  亮度差靠背景色画出来，纯前景色的 ASCII 画不出来。
+  文件：`assets/fastfetch/logo/deepseek_whale{,-light}.txt`，由 `cli/tools/default.nix`
+  部署（暗色 / 亮色两套调色板，浅底上原蓝会糊）。图形取自 @lhh010 的手绘像素材
+  （`dsh-ui-whale`），经 MIT 许可的 `ccch1mneyyy/dsh-TUI` 转成半块像素图。
+  ⚠️ 文件路径写错时 fastfetch **静默回退到内置 logo**（不报错）—— 量宽度时踩过一次，
+  以为在量鲸鱼，其实量的是内置 NixOS ASCII。
 - **那 10 个常量是冷色明度渐变，不是彩虹。** 它们会被用在约 30 个键名标签上
   （`├ Board` / `├ CPU` …），10 个色相铺满一列文字就是噪声。
   而原设计的端点是 NixOS 品牌蓝 `#5277C3`，压在终端底色 `#303446` 上只有 **2.81:1**
   （低于 AA），最上面几行的键名本身就偏暗 —— 所以这里既修可读性，也修配色家族：
   改为经过 4 个 Frappe 真实色的关键帧插值（`overlay2` → `blue` → `sapphire` → `sky`），
   10 阶全部 ≥ 4.53:1。
+
+- **宽度预算 ≲ 100 列**（半屏终端），实测最长 **90 列**。历史上是 133 列：分组横线原来是
+  10 段 × 7 字符（横线自己就有 70 列）+ 43 列的 logo。收的过程：横线改 10 段 × 2 字符；
+  logo 换 32 列的鲸鱼；模块格式只留有效字段（`os` 名字+版本、`disk` 不留文件系统类型、
+  `localip` 不留 MAC、`display` 分辨率+刷新率、`packages` 改 `nix: A+B`）；模块清单也砍了
+  一批（Board / Sound / BIOS / Packages / Processes / Term Font / BT Radio / WiFi / DNS /
+  Public IP / 日期时间 / 运行时长）。
+  量法：`fastfetch --pipe -c assets/fastfetch/nixos-01.jsonc` 后取最长行（**先把 logo 路径
+  换成绝对路径**，否则静默回退到内置 logo，量出来的宽度是假的）。
+  信息头（键名）改成中文，按显示宽度手工补空格到 8 列 —— fastfetch 不会自己对齐 CJK。
+  分组收敛成三组：**硬件 / 软件 / 网络**（原来的 Time 组只剩「系统年龄」一行，并进软件组）。
+  用量相关的三行（memory / swap / 两块 disk）统一成 `已用 / 总量 (百分比)`，**没有进度条**：
+  memory / swap 的 `percent` 覆盖块直接删掉（阈值本来就只作用于进度条），disk 用
+  `{size-percentage}` 把百分比内联进 `format`。还想更窄只剩两个杠杆：去掉
+  `Font` / `Vulkan` / `OpenGL` / `BT Radio` 几行、把 logo 换窄一档。
 
 ## Noctalia：调色板归 Nix，其余归 GUI
 
