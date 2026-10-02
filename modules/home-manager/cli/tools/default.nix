@@ -15,13 +15,13 @@ in
     ./yazi.nix
     ./tmux.nix
     ./distrobox.nix
+    ./yt-dlp.nix
   ];
 
   config = lib.mkIf cliCfg.enable {
     home.packages = with pkgs; [
       fastfetch
       lazydocker
-      yt-dlp
       lazygit
       claude-code
       pi-coding-agent
