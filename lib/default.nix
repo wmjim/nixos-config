@@ -2,7 +2,7 @@
 # 提供跨模块共享的工具函数，避免重复代码
 { lib }:
 let
-  # 包装 Qt 应用以在 XWayland 下正确运行（带输入法和缩放适配）
+  # 包装 Qt 应用以在 XWayland 下正确运行（带输入法；缩放交给 Xft.dpi，见 docs/input.md）
   # 许多国产 Qt 应用（微信、欧陆词典等）在 Wayland 原生模式下存在
   # 渲染异常或输入法无法调起的问题，因此统一走 XWayland 回退路径。
   #
@@ -13,7 +13,6 @@ let
       pkgs,
       pkg,
       binary ? null,
-      scale ? 1.25,
       # 可选：若应用运行窗口的 WM_CLASS 与桌面文件 ID 不一致（如欧陆词典窗口类为
       # eudic 而桌面文件是 eusoft-eudic.desktop），GNOME Shell / Dash to Panel 会
       # 无法把窗口与桌面文件关联，导致任务栏显示成通用图标。传入该窗口类名可为
@@ -62,7 +61,6 @@ let
         wrapProgram $out/bin/${bin} \
           --unset WAYLAND_DISPLAY \
           --set QT_QPA_PLATFORM "wayland;xcb" \
-          --set QT_SCALE_FACTOR ${builtins.toString scale} \
           --set GTK_IM_MODULE "fcitx" \
           --set QT_IM_MODULE "fcitx" \
           --set XMODIFIERS "@im=fcitx" \

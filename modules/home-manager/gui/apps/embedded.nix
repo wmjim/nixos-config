@@ -12,47 +12,6 @@ let
   cfg = config.mengw.gui.apps.embedded;
   guiCfg = config.mengw.gui;
 
-  # === stm32cubemx HiDPI 启动器包装 ===
-  # CubeMX 的 Swing 窗口内嵌 JxBrowser(Chromium) 渲染整个配置界面。GNOME 分数缩放
-  # (如桌面 4K@scale=1.5) 下 XWayland 只按整数缩放上报,AWT 因而默认落在 1x,
-  # 整窗文字远小于桌面。系统级 _JAVA_OPTIONS 由 mySystem.desktop.scale 向上取整
-  # 得到整数 uiScale,但那是全局变量、无法只对本进程生效,故启动器在运行时读
-  # monitors.xml 的 GNOME 逻辑缩放,向上取整为整数(1→1、>1→2)再喂给 JVM。
-  stm32cubemxLauncher = pkgs.symlinkJoin {
-    name = "stm32cubemx-launcher";
-    paths = [
-      (pkgs.writeShellScriptBin "stm32cubemx" ''
-        uiScale=""
-        if [ -r "$HOME/.config/monitors.xml" ]; then
-          # 取文件里第一个 <scale>（首个配置布局的主显示器），如 1 / 1.5 / 2
-          while IFS= read -r line; do
-            if [[ "$line" =~ \<scale\>([0-9.]+)\</scale\> ]]; then
-              case "''${BASH_REMATCH[1]}" in
-                1 | 1.0 | 1.00) uiScale=1 ;;
-                *) uiScale=2 ;;
-              esac
-              break
-            fi
-          done < "$HOME/.config/monitors.xml"
-        fi
-
-        # 覆盖外层环境变量，补齐 AWT 字体抗锯齿选项
-        export _JAVA_OPTIONS="-Dawt.useSystemAAFontSettings=true -Dswing.aatext=true"
-        if [ -n "$uiScale" ]; then
-          _JAVA_OPTIONS="$_JAVA_OPTIONS -Dsun.java2d.uiScale=$uiScale"
-        fi
-
-        exec ${pkgs.stm32cubemx}/bin/stm32cubemx "$@"
-      '')
-    ];
-    # 原包的 .desktop 菜单项与图标随启动器一起带出,应用菜单入口不受影响
-    postBuild = ''
-      mkdir -p $out/share
-      ln -s ${pkgs.stm32cubemx}/share/applications $out/share/applications
-      ln -s ${pkgs.stm32cubemx}/share/icons $out/share/icons
-    '';
-  };
-
   # CubeMX 固件包（HAL/LL/Cube 库，约 500MB）的下载位置。默认是 ~/STM32Cube/Repository，
   # 收拢到 ~/Apps（与 xwechat_files、Zotero 等应用数据同放一处）。
   cubemxRepository = "${config.home.homeDirectory}/Apps/STM32Cube/Repository/";
@@ -105,7 +64,10 @@ in
           # 而 NixOS 默认不带 usbutils。（usbutils 的 meta.platforms 仅 linux，
           # 故放这个 Linux 专属块而非上面的通用块。）
           usbutils
-          stm32cubemxLauncher # STM32 引脚/外设图形化配置（unfree，仅 x86_64-linux；HiDPI 启动器包装见文件顶部）
+          # STM32 引脚/外设图形化配置（unfree，仅 x86_64-linux）。
+          # HiDPI：AWT 的 uiScale 由全局 _JAVA_OPTIONS 按 mySystem.desktop.scale
+          # 向上取整给出（modules/nixos/desktop/env.nix），无需单独包装。
+          stm32cubemx
           android-tools
           # 原生 AVR 交叉编译工具链（avr-gcc 走 pkgsCross 从源码构建，仅 Linux 可用）
           pkgsCross.avr.buildPackages.gcc # avr-gcc 交叉编译器
