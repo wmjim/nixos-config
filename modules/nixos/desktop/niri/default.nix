@@ -122,7 +122,7 @@ in
       # xwayland-satellite 0.8.2 把缩放写进 XSETTINGS 的 Xft/DPI，但 fcitx5 读
       # XSETTINGS 时只消费 Net/IconThemeName；它同时也没给 Xwayland 传 -dpi
       # （默认 96，屏幕被报成 3840x2160/1016x571mm）。于是 XCBUI 得到 96 → 缩放
-      # 1.0，候选词比 Wayland 侧小 scale 倍（桌面 1.5× 屏上尤其明显）。
+      # 1.0，候选词比 Wayland 侧小 scale 倍（分数缩放的屏上尤其明显）。
       # 这里把 96×scale 补写进 RESOURCE_MANAGER——fcitx5 唯一会读的通道；
       # 该值与 satellite 已广播的 XSETTINGS Xft/DPI 一致，不会造成二次缩放。
       #

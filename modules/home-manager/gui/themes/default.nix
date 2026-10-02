@@ -41,7 +41,7 @@ in
       };
       font = {
         name = "HarmonyOS Sans SC";
-        size = 12;
+        size = 11;
       };
 
       # GTK4/libadwaita 不认 gtk-theme-name，只认 color-scheme：

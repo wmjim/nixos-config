@@ -61,16 +61,16 @@ let
     // https://niri-wm.github.io/niri/Configuration%3A-Layout.html
     layout {
         // 窗口之间、以及窗口与屏幕边缘的间距（逻辑像素）。
-        // 取 16 是因为窗口圆角是 24（见 windowrules.kdl 的 geometry-corner-radius）：
-        // 间距小于圆角时，相邻两窗的圆角弧比它自己的半径还靠得近，缝隙看上去是
-        // “被掐住”而不是留白（8 逻辑像素在 1.5 缩放下 = 12 物理像素，只有 24
-        // 物理像素圆角的一半）。16 能在两个圆角之间留出一段直边。
+        // 取 12 是因为窗口圆角是 24（见 windowrules.kdl 的 geometry-corner-radius）：
+        // 间距小于圆角的一半时，相邻两窗的圆角弧比它自己的半径还靠得近，缝隙看上去
+        // 是“被掐住”而不是留白。12 在 desktop 的 2 倍缩放下 = 24 物理像素，正好是
+        // 24 逻辑圆角（48 物理）的一半 —— 这条判据的下限，也是改缩放前的视觉间隙。
         //
         // 注意 gaps 同时作用于内缝隙与外留白；若以后想两者不同（外小内大），
-        // niri 的官方写法是 gaps 16 配 struts { left/right/top/bottom -8; }，
+        // niri 的官方写法是 gaps 12 配 struts { left/right/top/bottom -6; }，
         // 这里没有采用——本机没有用 open-maximized-to-edges，但负 struts 会把
         // 平铺区推到屏幕外，不想引入这个边界情况。
-        gaps 16
+        gaps 12
         background-color "transparent"  // 工作区透明
         center-focused-column "never"   // 无特殊居中效果
         // 单列工作区居中：有意为之的“专注模式”——一个窗口时留在屏幕中间保持
@@ -85,18 +85,17 @@ let
         // 颜色用中性发丝线而不是强调色，为何 —— 含不透明度压到壁纸上的对照表
         // —— 见 docs/themes.md「焦点环为何是中性发丝线，而不是强调色」。
         //
-        // 宽度取 2 而不是 3：niri 会把逻辑像素按缩放取整到物理像素。
-        //   width 1 → 1.5 物理  ⚠️ 取整到 2（实际 1.33 逻辑）
-        //   width 2 → 3.0 物理  ✅ 精确
-        //   width 3 → 4.5 物理  ⚠️ 落在半像素边界，只能跳成 4 或 5
-        //   width 4 → 6.0 物理  ✅ 但太粗
-        // laptop 的 1.25 缩放下 2 → 2.5 仍不精确，两台都精确的宽度只有 4、8。
+        // 宽度取 1（发丝线语义）：niri 会把逻辑像素按缩放取整到物理像素。
+        //   width 1 → desktop 2 倍 = 2 物理 ✅ 发丝线
+        //              laptop 1.25 倍 = 1.25 → 取整 1 物理（更细，仍是一条线）
+        //   width 2 → desktop 4 物理，已经明显粗于发丝线
+        //           （laptop 2.5 → 取整 2 或 3）
         //
         // 减重只能靠宽度与色相：降不透明度在亮壁纸下会让提示失效。
-        // 想换回强调色就把 active-color 改回 ${shell.accent}；想恢复原来的粗细就把 width 改回 3。
+        // 想换回强调色就把 active-color 改回 ${shell.accent}；想加粗就把 width 改成 2（desktop 下为 4 物理像素）。
         focus-ring {
             on          // 开启焦点环
-            width 2     // 2 × 1.5 = 3 物理像素，无取整误差
+            width 1     // desktop 2 倍 = 2 物理像素（发丝线）
             active-color "${shell.hairline}"
             // 注意：焦点环只围绕每块显示器上的活动窗口，inactive-color 仅在
             // **非焦点显示器**上可见，单显示器永远看不到（niri wiki:
