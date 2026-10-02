@@ -55,3 +55,4 @@
 | `zquery` | zoxide 查询历史目录 |
 | `Ctrl` + `o` | 命令选择器（fzf 模糊选择常用命令） |
 | `cheat <provider>` | 快捷键速查表（fish / tmux / vim） |
+| `lg` | lazygit（由 `programs.lazygit` 的 fish 集成提供，退出时 `cd` 到刚才操作过的目录） |

@@ -22,7 +22,7 @@ in
     home.packages = with pkgs; [
       fastfetch
       lazydocker
-      lazygit
+      delta
       claude-code
       pi-coding-agent
       codex
@@ -37,6 +37,59 @@ in
       hugo
       ffmpeg
     ];
+
+    # lazygit：包由模块提供（上面 home.packages 里不再列）。
+    # settings 非空 ⇒ HM 接管 ~/.config/lazygit/config.yml（首次激活会把 lazygit 自己写的
+    # 那个空文件备成 .hm-bak），所以在 UI 里改的配置不会持久 —— 改配置回这里。
+    # delta 只作为 lazygit 的 diff renderer；git 本体（`git diff` / `git log`）没配 pager。
+    programs.lazygit = {
+      enable = true;
+
+      settings = {
+        gui = {
+          nerdFontsVersion = "3";
+          showCommandLog = false;
+          showBottomLine = true;
+          scrollOffMargin = 2;
+          scrollOffBehavior = "margin";
+        };
+
+        git = {
+          autoFetch = true;
+          autoRefresh = true;
+
+          # 注意写的是新 schema 的 diffRenderers，不是到处抄得到的那份
+          # `git.paging = { colorArg; pager; useConfig; }`：后者是旧键，lazygit 启动时会
+          # 迁移它（paging → pagers → diffRenderers，pager → command）并**写回**配置文件；
+          # 而 HM 生成的 config.yml 是只读的 store 软链，写回必然失败 → lazygit 直接退出 1。
+          diffRenderers = [
+            {
+              command = "delta --dark --paging=never";
+              colorArg = "always";
+              useConfig = false;
+            }
+          ];
+
+          commit = {
+            signOff = false;
+            autoWrapCommitMessage = true;
+            autoWrapWidth = 72;
+          };
+        };
+
+        os = {
+          edit = "nvim {{filename}}";
+          editAtLine = "nvim +{{line}} {{filename}}";
+          editAtLineAndWait = "nvim +{{line}} {{filename}}";
+          openDirInEditor = "nvim {{dir}}";
+          editInTerminal = true;
+        };
+
+        notARepository = "prompt";
+        promptToReturnFromSubprocess = true;
+        confirmOnQuit = false;
+      };
+    };
 
     # btop：终端系统监控。此前只装包、零配置，于是它跑在自带的 Default 主题上
     # （终端里多出第 4 套配色）。这里补主题。
