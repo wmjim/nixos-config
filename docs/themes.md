@@ -1,6 +1,6 @@
 # 主题与外观
 
-配置位置：`modules/home-manager/gui/themes/variants.nix`（亮/暗的真源接线与 `theme-apply`，见下节）+ `modules/home-manager/gui/themes/default.nix`（Qt/GTK）+ `modules/home-manager/gui/wm/default.nix`（Niri 配色）+ `modules/home-manager/gui/wm/noctalia.nix`（Noctalia 调色板）+ `modules/home-manager/gui/fcitx5.nix`（输入法候选窗与托盘图标）。
+配置位置：`modules/home-manager/gui/themes/variants.nix`（亮/暗的真源接线与 `theme-apply`，见下节）+ `modules/home-manager/gui/themes/default.nix`（Qt/GTK）+ `modules/home-manager/gui/wm/default.nix`（Niri 配色）+ `modules/home-manager/gui/wm/noctalia.nix`（Noctalia 调色板）。
 
 整个桌面有**两套外观**，真源是 Noctalia 的 theme mode（状态栏那个主题图标，`noctalia msg theme-mode-toggle`）：
 切一下，壳层（macOS 中性灰 + 单一强调色）与工作区（Catppuccin）各自在亮/暗两态之间换，而
@@ -25,7 +25,6 @@ HM 把两套变体都生成到 `~/.config/theme-variants/`，`theme-apply` 只�
 | ghostty | `theme = light:Catppuccin Latte,dark:Catppuccin Frappe`，由 ghostty 自己按桌面主题选 | **不重选**：按 `ctrl+shift+,`（reload）或新开窗口/分屏 |
 | btop（主题文件）、fastfetch（config + logo） | 登记进 `mengw.appearance.switchTargets`，翻软链 | 下次启动生效 |
 | nvim | 翻一份 `mode.lua`，`theme.lua` 据此设 `vim.o.background`，catppuccin `flavour="auto"` | 要重进（或 `:colorscheme catppuccin`） |
-| fcitx5 候选词窗 | `Theme` / `DarkTheme` 一对 + `UseDarkTheme=True`，fcitx5 自己按系统明暗选 | 要重启 fcitx5 |
 | tmux | 颜色全用 ANSI 名称，配色由终端提供 | 随终端自动跟 |
 | yazi | `theme.flavor` 写成 latte/frappe 一对，由 yazi 按终端背景自选 | — |
 
@@ -44,7 +43,6 @@ action 导出（`Unknown action`），也没有 SIGUSR1/2 之类的入口；② 
 | 图标 | **MacTahoe-dark** | 自定义打包图标（`pkgs/mactahoe-icon-theme`），为深色背景设计 |
 | 光标 | **Bibata-Modern-Classic** | 24px，XWayland 亦生效（软链到 `~/.local/share/icons`） |
 | Qt | **Kvantum + MacTahoeDark** | `QT_STYLE_OVERRIDE=kvantum`；主题来自自打包的 `pkgs/mactahoe-kvantum`（与 GTK 侧同一个上游作者），见下文 |
-| 输入法候选窗 | **catppuccin-frappe-mauve** | `classicui.conf` 托管主题，圆角 **12px**（对齐阶梯的“独立弹层”档；上游 SVG 烘的是 8，由 `fcitx5.nix` 的 runCommand 改成 12 并把九宫格 Margin 抬到 14）；归“工作区”一侧而非壳层 |
 | GDM 登录界面 | MacTahoe | 本仓库不再装 GNOME 会话，只留 GDM 做登录器；其 greeter 用的 gnome-shell 由 GDM 自己的闭包提供，靠 overlay 覆盖 `gnome-shell-theme.gresource` 换肤，**字体 / 图标 / 光标 / 壁纸**也一并声明（不然 greeter 会退回 Adwaita 默认），全部在 `modules/nixos/desktop/gdm.nix` |
 | Niri 壳层配色 | MacTahoe-Dark 同源 | 由 `niri-colors/{layout,overview}.kdl` 生成；强调色 `#0088FF`、中性发丝线 `#999999`（焦点环）、中性面 `#333333`/`#242424`、紧急 `#ED5F5D`，全部取自 MacTahoe-Dark 的 `gtk-4.0/gtk.css` |
 | Noctalia Shell | **自定义调色板 `mactahoe`** | `customPalettes.mactahoe`，色值与 GTK/Qt/niri 同源；界面字体 HarmonyOS Sans SC。**仅调色板归 Nix，bar 布局归 GUI**，见下文 |
@@ -167,11 +165,9 @@ shadow {
 | 层 | 家族 | 元 |
 |---|---|---|
 | 壳层：niri 装饰 + GTK + Qt + Noctalia bar | macOS 中性灰 + 单一强调色 `#0088FF` | MacTahoe-Dark 的 `gtk-4.0/gtk.css` |
-| 工作区：终端 + 编辑器 + shell + 文件管理器 + 系统监控 + 输入法候选窗 | Catppuccin Frappe（`#303446` 底） | ghostty、Neovim、yazi、btop、fastfetch、fcitx5 六处同源 |
+| 工作区：终端 + 编辑器 + shell + 文件管理器 + 系统监控 | Catppuccin Frappe（`#303446` 底） | ghostty、Neovim、yazi、btop、fastfetch 五处同源 |
 
-输入法候选窗归到工作区而非壳层，理由：它是跟随文本光标出现的**打字层**浮层，同屏的总是终端 / 编辑器 / 浏览器，而那些都是 Frappe。
-
-**“选中 / 活动”的归属**（这是决定，不是默认）：壳层的蓝只标**壳层控件**（按钮、输入框焦点、niri 标签指示器）；工作区里“选中”一律用 Catppuccin 的强调色 **mauve** —— 终端选区、输入法候选窗的选中项、编辑器的 mauve 同源。终端光标是唯一例外，保持 rosewater（Catppuccin 对终端光标的约定，光标不是“选中”）。理由：选区与候选高亮会**同屏出现**（在终端里打中文），rosewater 与 mauve 一暖粉一冷紫，分属两套会让它们看着来自不同系统。
+**“选中 / 活动”的归属**（这是决定，不是默认）：壳层的蓝只标**壳层控件**（按钮、输入框焦点、niri 标签指示器）；工作区里“选中”一律用 Catppuccin 的强调色 **mauve** —— 终端选区与编辑器同源。终端光标是唯一例外，保持 rosewater（Catppuccin 对终端光标的约定，光标不是“选中”）。理由：终端选区与光标会**同屏出现**，rosewater 与 mauve 一暖粉一冷紫，分属两套会让它们看着来自不同系统。
 
 选这个组合的理由：一是 GTK/GDM/图标/自打包已经全部在 MacTahoe 上，二是“macOS 壳 + 低饱和冷调工作区”比单纯的全局 Catppuccin 更有辨识度。
 
@@ -250,68 +246,6 @@ audio 那组里 `sound_volume` / `volume_change_sound` / `notification_sound` �
 | `mSurfaceVariant` | `#1e1e1e` | 比主面更暗，层叠方向反了 | `#333333` |
 | `mOnSurface` | `#ffffff` | 比 MacTahoe 的 `#dedede` 刺眼 | `#dedede` |
 | `mOutline` | `#3d3846` | 紫调灰，与中性壳层不同族 | `#454545`（= MacTahoe 的 `rgba(255,255,255,.15)` 发丝边合成值） |
-
-### 输入法托盘图标：macOS 风格字形，以及覆盖层为什么不能带 index.theme
-
-fcitx5 只经 D-Bus StatusNotifierItem 报一个**图标名**（中文态 `fcitx-rime`、Rime 的
-ascii_mode `fcitx_rime_latin`、禁用态 `fcitx_rime_disable`），图片由壳层按图标主题解析。
-而 MacTahoe 图标主题**自己也带了** `status/{16,22,24,32,symbolic}/fcitx-rime.svg`
-（上游那枚浅灰方章 logo），落到 24px 的托盘槽位里有效字形只剩 13px——在深色栏上就是
-一块灰扑扑的小方块。
-
-于是「往 `~/.local/share/icons/hicolor/scalable/apps/` 放同名 SVG」这条路走不通：
-Noctalia 的搜索顺序（`src/system/icon_resolver.cpp`）是
-
-```
-当前主题（MacTahoe-dark）目录 → 继承主题（hicolor、breeze）目录 → …
-  主题内：scalable 优先，其次尺寸降序；同一主题内 .svg 整体优先于 .png
-```
-
-当前主题的 `status/24/fcitx-rime.svg` 排在 hicolor 之前被命中。故必须建一份**与当前
-GTK 图标主题同名**（`config.gtk.iconTheme.name`，即 MacTahoe-dark）的薄覆盖层——它因为
-排在 baseDirs 首位（`$XDG_DATA_HOME/icons`）而天然优先：
-
-```
-~/.local/share/icons/MacTahoe-dark/
-└── scalable/apps/            # ← 不能有 index.theme，理由见下
-    ├── fcitx-rime.svg        # 中文态：拼
-    ├── fcitx_rime_latin.svg  # ascii_mode：A
-    └── fcitx_rime_disable.svg# 禁用态：拼 + 斜杠
-```
-
-**字形对齐 macOS 菜单栏**：macOS 的输入法指示就是一个字形（拼音 拼、ABC 为 A），不是
-图标。这里取桌面 UI 字体 HarmonyOS Sans SC Medium 的字形轮廓（U+62FC / U+0041），用
-fontTools 转成 path **静态内联**在模块里（轮廓是固定几何，无需构建期再跑一次转换），
-四边留白 11%——壳层会把 SVG 按比例撑满图标槽位，**留白是唯一能控制字形视觉大小的旋钮**，
-11% 大致对应 macOS 菜单栏里那个字符相对菜单栏高度的占比。
-
-**⚠ 覆盖层里绝对不能有 `index.theme`**（踩过一次：结果文件管理器里的文件/文件夹图标
-全变成了 Adwaita 默认值）。GTK/Qt 解析主题时，一旦在本层号里找到 `index.theme`，就把
-这层号当成**整个主题的根**；而覆盖层里只有三个图标文件，主题自带的 `places/*`、`mimes/*`
-（文件夹/文件类型图标）与 `apps/16..32`（应用图标）随之全部落空，全体回退默认主题。
-没有 `index.theme` 时两者行为分道扬镳：
-
-| 消费者 | 没有 index.theme 时的行为 |
-| --- | --- |
-| GTK / Qt（Nautilus、VSCode…） | **直接忽略本层号**（它们只认 index.theme），主题自带图标照旧 |
-| Noctalia | 改用内置的回退目录表搜（同一函数里的 `FALLBACK`：`/scalable/apps/`、`/512x512/apps/`、…、`/48x48/apps/`、`/`）→ 命中我们的三个字形 |
-
-所以覆盖层**只对壳层生效、对其他应用零影响**（实测：加与不加，nautilus 窗口渲染
-逐像素相同，PSNR `inf`）。也正因为走的是那张回退表，文件必须放在 **Qt 风格**
-`scalable/apps/` 下（GTK 风格的 `apps/scalable/` 不在表里）。
-
-hicolor 里另放同样一份字形作**兜底**：换成不带 `fcitx-rime` 的图标主题时，覆盖层不再被
-搜索，图标会回落到 fcitx5-rime 包自带的 SVG，那时 hicolor 版本生效。
-
-```bash
-# 看当前实际命中的文件（baseDirs 首位 + 同名主题 = 覆盖层）
-ls ~/.local/share/icons/$(gsettings get org.gnome.desktop.interface icon-theme | tr -d "'")/scalable/apps/
-```
-
-三种状态（拼 / A / 禁用）都已实测在栏内生效：**图标名变化**会清掉 Noctalia 的按项缓存，
-所以按 Ctrl+Space 切中/英会立即看到新字形；若只换了文件而图标名不变，重启一次 `noctalia`
-即可。
-
 
 ### bar 收敛（GUI 侧执行，一次性步骤）
 

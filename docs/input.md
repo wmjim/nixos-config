@@ -26,16 +26,13 @@ GLFW_IM_MODULE = "fcitx";
 
 ## 候选词窗外观
 
-在 home-manager 侧（`modules/home-manager/gui/fcitx5.nix`）：
+home-manager 侧（`modules/home-manager/gui/fcitx5.nix`）**不再托管** `classicui.conf`：候选窗
+用 fcitx5 内置的 `default` 主题与内置默认偏好（字体 / DPI / 候选方向均为 fcitx5 默认值）。
+原先那套「候选窗用 Catppuccin、`Theme`/`DarkTheme` 两态由 `theme-apply` 翻软链」的接线，
+连同 `catppuccin-fcitx5` 主题包与状态栏自定义图标，已全部删除。
 
-- 主题：上游 `catppuccin-fcitx5` 的 `catppuccin-frappe-mauve`，与终端 / 编辑器
-  同家族（而不是壳层的 MacTahoe 中性灰）。主题包由该模块用 runCommand 重新打包，
-  仅为了打开上游自带的 8px 圆角 SVG（`theme.conf` 里两行 `Image=` 默认被注释）
-- `Font` / `MenuFont` / `TrayFont` 与 GTK 界面字体一致（HarmonyOS Sans SC 12）。
-  主题里的 `[InputPanel] Font` **不会被 fcitx5 消费**（上游
-  `inputwindow.cpp` 用的是 `classicui.conf` 的 `Font`），所以这里的值是最终值
-- `UseAccentColor=False`：不拿 portal 上报的系统重点色（本机只能是命名值
-  `blue/teal/...`，会盖掉主题自带的 mauve，且钉不到壳层的 `#0088FF`）
+要改候选窗的字体 / DPI / 方向，直接用 fcitx5 的 GUI 配置（`kdePackages.fcitx5-configtool`）
+—— 现在没有 HM 覆盖这些文件，改动会保留。
 
 ## XWayland 候选窗缩放（workaround）
 
@@ -79,25 +76,23 @@ displays=$(fcitx5-diagnose | grep -c 'Group \[x11::0\]')   # 微信等 X11 客�
 patch:
   __include: wanxiang_suggested_default:/
   __patch:
-    menu/page_size: 7
-    ascii_composer/switch_key/Shift_L: inline_ascii
-    ascii_composer/switch_key/Shift_R: inline_ascii
+    menu/page_size: 5
 ```
 
-- 使用万象拼音的推荐默认配置，候选词每页 7 个。
-- 万象默认把左右 Shift 都设成 `commit_code`（上屏编码再切英文）；两键统一改为
-  `inline_ascii`——按 Shift 进临时英文模式，回车才上屏并回到中文态，左右一致。
+- 使用万象拼音的推荐默认配置，候选词每页 5 个。
+- 左右 Shift 未做覆盖 —— 走万象默认的 `commit_code`（上屏编码再切英文）。原先把两键
+  改成 `inline_ascii` 的补丁已删除。
 
 ## 输入法切换键
 
-`~/.config/fcitx5/config` 由 home-manager 托管（只写需要的键位，其余保持
-fcitx5 内置默认），只保留 `Ctrl+Space` 切输入法：
+`~/.config/fcitx5/config` 不再由 home-manager 托管，键位回到 fcitx5 内置默认。原先那份
+「只留 `Ctrl+Space` 切输入法」的托管配置已删除，其中有两点后果值得知道：
 
-- `AltTriggerKeys`（fcitx5 默认是 `Shift_L`）清空——否则 Shift 在 fcitx5
-  这层就被截走，Rime 的 `ascii_composer` 收不到，Shift 的切换行为完全失效。
-- enumerate（轮换）系列（`EnumerateWithTriggerKeys`、`Enumerate{Forward,Backward}Keys`、
-  `EnumerateGroup{Forward,Backward}Keys`）一并清空，避免按住修饰键或 `Super+Space`
-  再切一次输入法。
+- `AltTriggerKeys` 回到默认的 `Shift_L` —— 会在 fcitx5 这层就把 Shift 截走，Rime 的
+  `ascii_composer` 收不到，Shift 的切换行为因此失效。
+- enumerate（轮换）系列回到默认：按住修饰键或 `Super+Space` 会再切一次输入法。
+
+要改键位就用 fcitx5 的 GUI 配置（`kdePackages.fcitx5-configtool`），改动会保留。
 
 > [!TIP] 万象拼音语法模型
 > 需手动下载语法模型文件 `wanxiang-lts-zh-hans.gram`，从
@@ -120,15 +115,15 @@ Rime 按 mtime 判断构建缓存是否过期，而 nix store 内文件 mtime �
 `rime-wanxiang` 的数据包路径发生变化时（例如更新 nixpkgs），Rime 会重建词典
 却沿用旧 schema，导致输入法**静默失效**：进程在、schema 在，却打不出候选词。
 
-该情况已在 `modules/home-manager/gui/fcitx5.nix` 中自动处理：以 rime 数据源
-路径作为指纹，指纹变化时清理 `build/`（仅派生缓存，用户词典 `*.userdb`、
-`*.gram`、`sync/` 均保留）。指纹记录在 `~/.local/share/fcitx5/.rime-data-key`。
-
-需要手动补救时：
+该情况原先由 `modules/home-manager/gui/fcitx5.nix` 自动处理（以 rime 数据源路径作为指纹，
+指纹变化时清理 `build/`）。**该自动处理已删除**：HM 侧现在只剩 rime 的
+`default.custom.yaml`，所以更新词库后需手动清理：
 
 ```bash
 rm -rf ~/.local/share/fcitx5/rime/build
 ```
+
+仅删派生缓存，用户词典 `*.userdb`、`*.gram`、`sync/` 保留。
 
 排查时优先看日志（fcitx5 自动启动，stderr 会进 journal）：
 
