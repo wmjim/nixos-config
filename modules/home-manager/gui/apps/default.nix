@@ -9,6 +9,7 @@
     ./browsers.nix
     ./communication.nix
     ./media.nix
+    ./mpv.nix
     ./productivity.nix
     ./steam.nix
     ./development.nix

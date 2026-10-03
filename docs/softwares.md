@@ -56,6 +56,7 @@
 | 软件 | 用途 |
 |------|------|
 | VLC / Freetube / gapless / parabolic | 视频 / 音乐 / 下载（yt-dlp 前端） |
+| mpv | 视频播放器，uosc「Cupertino」定制界面（配置整棵 vendored 在 `modules/home-manager/gui/apps/mpv/`，见该目录的 README.md / CUSTOMIZATION.md） |
 | OBS Studio | 录屏 / 直播 |
 | PicGo + snipaste | 截图与图床上传 |
 | Mission Center / btop / fastfetch | 系统监控 |
@@ -87,6 +88,7 @@ eza、zoxide、bat、fzf、ripgrep、fd、jq、yq、tldr、duf、btop、glow、h
 |------|------|
 | Maple Mono NF（CN） | 等宽 / 代码 |
 | HarmonyOS Sans SC | 界面无衬线 |
+| CupertinoIcons | mpv 的 uosc 界面图标（随 `gui/apps/mpv` 落到 `~/.local/share/fonts`，名字在 uosc 的 Lua 里写死、字形是 Flutter Cupertino Icons 的私有区码位，故必须自带；同目录还有一支上游的 `uosc_textures.ttf` 在本 fork 里已无调用点，不安装） |
 | LXGW WenKai（霞鹜文楷） | 中文衬线阅读 |
 | Noto Sans/Serif CJK SC | 中文回退兜底（由 `fonts.enableDefaultPackages` 带入） |
 | Source Serif Pro | 英文衬线 |
