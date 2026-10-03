@@ -6,11 +6,11 @@ let
   # 导致分数缩放主机上 Java 应用整体落在 1x、文字偏小。
   # 按桌面声明的 scale 向上取整：scale=1 → 1，>1 → 2。对 desktop（整数 2）这就是
   # 精确值，取整只对笔记本这类分数缩放主机才是近似。
-  # XWayland 光标尺寸：niri/GTK 侧统一按 24 逻辑像素配置（cursor.kdl、
+  # XWayland 光标尺寸：niri/GTK 侧统一按 20 逻辑像素配置（cursor.kdl、
   # gtk.cursorTheme.size），libXcursor 却只认物理图像尺寸。分数缩放主机上
   # niri 会加载 xcursor-size*2 的纹理再缩放，故此处同样按 scale 翻倍，
   # 否则 scale=1 的主机会拿到比原生光标大一倍的 X11 光标。
-  xcursorSize = 24 * (if cfg.scale > 1 then 2 else 1);
+  xcursorSize = 20 * (if cfg.scale > 1 then 2 else 1);
   javaUiScale = if cfg.scale > 1 then 2 else 1;
 in
 {

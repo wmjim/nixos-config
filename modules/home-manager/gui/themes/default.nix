@@ -37,7 +37,10 @@ in
       cursorTheme = {
         package = pkgs.bibata-cursors;
         name = "Bibata-Modern-Classic";
-        size = 24;
+        # 20：Bibata 的箭头比 macOS 原版更撑满画布，24 在 2 倍缩放下看着偏大。
+        # 改这一个数不够 —— 光标的尺寸是**多处各写一份**（niri 的 cursor.kdl、
+        # GTK 的 variants.nix、XWayland 的 env.nix、GDM 的 gdm.nix），改就一起改。
+        size = 20;
       };
       font = {
         name = "HarmonyOS Sans SC";
