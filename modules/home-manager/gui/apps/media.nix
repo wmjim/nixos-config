@@ -80,7 +80,6 @@ in
 
   config = lib.mkIf (cfg.enable && guiCfg.enable) {
     home.packages = with pkgs; [
-      vlc
       obs-studio
       snipaste-wrapped
       picgo-wrapped

@@ -55,7 +55,7 @@
 
 | 软件 | 用途 |
 |------|------|
-| VLC / Freetube / gapless / parabolic | 视频 / 音乐 / 下载（yt-dlp 前端） |
+| Freetube / gapless / parabolic | 视频 / 音乐 / 下载（yt-dlp 前端） |
 | mpv | 视频播放器，uosc「Cupertino」定制界面（配置整棵 vendored 在 `modules/home-manager/gui/apps/mpv/`，见该目录的 README.md / CUSTOMIZATION.md） |
 | OBS Studio | 录屏 / 直播 |
 | PicGo + snipaste | 截图与图床上传 |
