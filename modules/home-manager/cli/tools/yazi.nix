@@ -1,5 +1,5 @@
 # Yazi — 终端文件管理器
-# 亮/暗 flavor 分别用 Catppuccin Latte / Frappe，与 ghostty（终端）/ Neovim 同家族
+# 主题由 Noctalia 统一管理（community "yazi" 模板），不再 vendored 上游 flavor。
 {
   lib,
   config,
@@ -9,55 +9,6 @@
 let
   cfg = config.mengw.cli.tools.yazi;
   cliCfg = config.mengw.cli;
-
-  # yazi flavor：把上游仓库里的 flavor 目录复制成 store 目录。
-  # subdir 是为了应付上游两种组织方式：独立仓库（flexoki-light.yazi）的 flavor
-  # 就在仓库根目录；而官方合集（yazi-rs/flavors）把每个 flavor 放在同名子目录下，
-  # 根目录还有 README / scripts / package.json 等与 flavor 无关的内容。
-  mkYaziFlavor =
-    {
-      pname,
-      owner,
-      repo,
-      rev,
-      sha256,
-      subdir ? null,
-    }:
-    let
-      flavorGlob = if subdir == null then "*" else "${subdir}/*";
-    in
-    pkgs.stdenv.mkDerivation {
-      inherit pname;
-      version = "unstable";
-      src = pkgs.fetchFromGitHub {
-        inherit
-          owner
-          repo
-          rev
-          sha256
-          ;
-      };
-      installPhase = ''
-        mkdir -p $out
-        cp -r ${flavorGlob} $out/
-      '';
-    };
-  flexoki-light-yazi = mkYaziFlavor {
-    pname = "flexoki-light.yazi";
-    owner = "gosxrgxx";
-    repo = "flexoki-light.yazi";
-    rev = "1b1e67795a3eeec51aec0be74b3d76316be9aaa1";
-    sha256 = "sha256-yIYkgGeYHl3/iRrKzsPnh2nw0PwPD/LYm1BQMy/yvBw=";
-  };
-  # 官方 flavor 合集里的 Catppuccin Frappe（含 flavor.toml 与 tmtheme.xml）
-  catppuccin-frappe-yazi = mkYaziFlavor {
-    pname = "catppuccin-frappe.yazi";
-    owner = "yazi-rs";
-    repo = "flavors";
-    rev = "20b47bfd78880c2674899597fd26bc01b21ff48c";
-    sha256 = "sha256-NGnfrQdsnQITKCZ0oh6DCxeCR2ozJoPAZetsi3ghHAI=";
-    subdir = "catppuccin-frappe.yazi";
-  };
 in
 {
   options.mengw.cli.tools.yazi.enable = lib.mkOption {
@@ -88,15 +39,14 @@ in
       # 这一项我没验证）；ueberzugpp 作为 GNOME 终端 / WSLg 等无图形协议终端的兜底
       # （nixpkgs 的 yazi wrapper 不带它，图片会空白），所以两者都留着。
       extraPackages = lib.optional pkgs.stdenv.hostPlatform.isLinux pkgs.ueberzugpp;
+      # 主题由 Noctalia 统一管理（gui/wm/noctalia.nix 启用 community "yazi" 模板）：
+      # Noctalia 写到 ~/.config/yazi/flavors/noctalia.yazi/{flavor.toml,tmtheme.xml}，其 apply.sh
+      # 会把本段改成 dark/light = "noctalia"。这里先写好最终值，apply.sh 检测到已是目标值即不写。
       theme = {
         flavor = {
-          light = "catppuccin-latte";
-          dark = "catppuccin-frappe";
+          light = "noctalia";
+          dark = "noctalia";
         };
-      };
-      flavors = {
-        flexoki-light = flexoki-light-yazi;
-        catppuccin-frappe = catppuccin-frappe-yazi;
       };
     };
   };

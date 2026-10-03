@@ -1,10 +1,8 @@
 # Ghostty 终端配置
 #
-# 亮/暗：一个 theme 选项写两态，ghostty 自己按「当前桌面主题」选（Linux 侧读的是 dconf 的
-# org.gnome.desktop.interface color-scheme —— 正是 theme-apply 在切的那个键），所以新窗口
-# 天然跟随，不需要翻文件或发信号。两个名字必须写全、两态都写（ghostty 文档：
-# light:NAME,dark:NAME，只写一个会报错）；均取自 ghostty 自带的主题
-# （`ghostty +list-themes` 里有 Catppuccin Frappe / Latte）。
+# 主题：`theme = "noctalia"`，由 Noctalia 统一管理（见 gui/wm/noctalia.nix 的 builtin "ghostty"
+# 模板）。Noctalia 把当前调色板渲染成 ~/.config/ghostty/themes/noctalia，换主题/切亮暗时自动重渲。
+# 运行中的窗口不重读配置（ghostty 无外部 reload 入口），新窗口/分屏天然跟随。
 # 其它取值（字体、内置着色器、quick terminal、shell 集成等）见各条注释。
 { lib, config, ... }:
 let
@@ -22,8 +20,12 @@ in
     programs.ghostty = {
       enable = true;
       settings = {
-        # 亮/暗两套主题由 ghostty 自己按桌面主题选，见文件头说明
-        theme = "light:Catppuccin Latte,dark:Catppuccin Frappe";
+        # 主题由 Noctalia 统一管理（gui/wm/noctalia.nix 启用 builtin "ghostty" 模板）：
+        # Noctalia 把当前调色板渲染成 ~/.config/ghostty/themes/noctalia，其 apply.sh 会把本键
+        # 改成 "noctalia"。这里先写好最终值，apply.sh 检测到已是目标值即不写 —— 于是对 HM 的
+        # 只读软链没有任何写操作（否则实测报「只读文件系统」）。亮/暗由调色板切换带出。
+        # ghostty 无外部 reload 入口，新窗口/分屏天然跟随。
+        theme = "noctalia";
 
         # === 字体与度量 ===
         font-family = [

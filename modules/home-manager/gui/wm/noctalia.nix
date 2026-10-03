@@ -55,6 +55,14 @@ in
       map (w: lib.nameValuePair "${wallpaperSetRel}/${baseNameOf w}" { source = w; }) wallpapers
     );
 
+    # 本仓库自带的 Noctalia 用户模板（上游没有 eza / fish）。
+    # 放在 ~/.config/noctalia/templates/ 下：Noctalia 的 input_path 相对配置目录解析，
+    # template 的注册见下方 settings.theme.templates.user。
+    xdg.configFile = {
+      "noctalia/templates/eza.yml".source = ../themes/noctalia-templates/eza.yml;
+      "noctalia/templates/fish.fish".source = ../themes/noctalia-templates/fish.fish;
+    };
+
     programs.noctalia = {
       enable = true;
 
@@ -77,6 +85,41 @@ in
           #   noctalia msg color-scheme-set custom mactahoe
           source = lib.mkForce "custom";
           custom_palette = lib.mkForce "mactahoe";
+
+          # 模板：Noctalia 是配色的唯一真源，它按当前调色板渲染各应用的主题文件。
+          # 各应用的主配置里已写好最终值（ghostty theme = "noctalia"、btop color_theme
+          # = "noctalia"、yazi [flavor] = noctalia），所以模板的 apply.sh 检测到已是
+          # 目标值即不写，不会去动那些 HM 只读软链。
+          #
+          # ⚠️ 运行时 ~/.local/state/noctalia/settings.toml 里若已有 [theme.templates]
+          # 段，会**覆盖**这里（与上面 bar.default 同一个坑）。首次生效需把运行时那段
+          # 删一次再 `noctalia msg config-reload`；之后归本模块管。
+          templates = {
+            # 只列本仓库实际用的：gtk3/gtk4/qt 故意不启用 —— GTK/Qt 保持
+            # MacTahoe（自打包完整主题），见 docs/themes.md。starship 本机没装也不在
+            # 配置里，故不列。
+            builtin_ids = [
+              "btop"
+              "ghostty"
+              "niri" # niri 窗口装饰跟随（写 ~/.config/niri/noctalia.kdl）
+            ];
+            # 社区模板只启用实测安全的：yazi 的 apply.sh 把 [flavor] 改成 noctalia，
+            # 主配置里已是该值 → 不写。其它社区模板（fastfetch/bat/…）的 apply.sh 可能
+            # 改写 HM 只读的配置文件，逐个核实后再加，见 docs/themes.md。
+            community_ids = [ "yazi" ];
+            # 上游没有 eza / fish 模板，用本仓库自带的用户模板补上（见下方
+            # noctalia/templates/ 的部署）。input_path 相对 ~/.config/noctalia/ 解析。
+            user = {
+              eza = {
+                input_path = "templates/eza.yml";
+                output_path = "$XDG_CONFIG_HOME/eza/theme.yml";
+              };
+              fish = {
+                input_path = "templates/fish.fish";
+                output_path = "$XDG_CONFIG_HOME/fish/conf.d/noctalia-colors.fish";
+              };
+            };
+          };
         };
         wallpaper = {
           # picker 面板按此目录列图，不写则回落到 XDG Pictures（多一层目录）
@@ -163,10 +206,10 @@ in
           mOnHover = "#FFFFFF";
           mShadow = "#000000";
 
-          # 终端色槽属于"工作区"一族而不是壳层。填成 Catppuccin Frappe（取值对齐
-          # modules/home-manager/gui/apps/ghostty.nix）是为了万一将来开启 Noctalia 的
-          # 终端模板时，它生成的东西与本仓库 ghostty/btop 的配色一致；
-          # 模板目前是关的（settings.toml 里 enable_builtin_templates = false）。
+          # 终端色槽属于"工作区"一族而不是壳层。这里就是 Catppuccin Frappe
+          # （terminal 模板现在开着，见本文件顶部的 theme.templates）—— Noctalia 按它
+          # 渲染 ghostty/btop/yazi 与 eza/fish，故终端配色与本文件同源；
+          # 亮色那一份是 Latte（见下面 light 块）。
           terminal = {
             background = "#303446";
             foreground = "#C6D0F5";
@@ -221,9 +264,40 @@ in
           mHover = "#EDEDED";
           mOnHover = "#242424";
           mShadow = "#000000";
-          # terminal 槽位暂不填：工作区一族（ghostty/btop/yazi/nvim/tmux/fastfetch/fcitx5）
-          # 目前仍钉死 Catppuccin Frappe，亮色是否一并切 Latte 尚未决定；
-          # 且该槽位只在 Noctalia 的终端模板开启时才被使用（当前是关的）。
+          # 终端 16 色：亮色态用 Catppuccin **Latte**（暗色态那份是 Frappe）。
+          # 必须显式填：Noctalia 渲染终端类模板时，若当前模式的色块没有 terminal，
+          # 它会**自行推导**一套，而推导结果色相是错的
+          # （实测 mactahoe 只填 dark.terminal 时，亮色渲染出 palette2 = #0076df —— 绿色槽给成蓝色）。
+          # 取值 = 上游 Latte 调色板（catppuccin/palette）。语义槽位对齐与 Frappe 那份一致：
+          #   foreground=text, cursor=rosewater, selection=mauve（见 docs/themes.md「双层配色模型」）。
+          terminal = {
+            background = "#EFF1F5";
+            foreground = "#4C4F69";
+            cursor = "#DC8A78";
+            cursorText = "#EFF1F5";
+            selectionBg = "#8839EF";
+            selectionFg = "#EFF1F5";
+            normal = {
+              black = "#5C5F77";
+              red = "#D20F39";
+              green = "#40A02B";
+              yellow = "#DF8E1D";
+              blue = "#1E66F5";
+              magenta = "#EA76CB";
+              cyan = "#179299";
+              white = "#ACB0BE";
+            };
+            bright = {
+              black = "#6C6F85";
+              red = "#D20F39";
+              green = "#40A02B";
+              yellow = "#DF8E1D";
+              blue = "#1E66F5";
+              magenta = "#EA76CB";
+              cyan = "#179299";
+              white = "#BCC0CC";
+            };
+          };
         };
       };
     };

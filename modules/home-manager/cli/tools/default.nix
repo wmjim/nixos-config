@@ -106,31 +106,20 @@ in
       # 包由本模块提供，故上面 home.packages 里不再列 btop
       enable = true;
       settings = {
-        # 主题名固定为 catppuccin，亮/暗由**主题文件本身**换（下面两个变体 + theme-apply
-        # 翻软链）：btop 的 color_theme 只是个名字，写成固定名才能运行时切换。
-        color_theme = "catppuccin";
+        # 主题由 Noctalia 统一管理（gui/wm/noctalia.nix 启用 builtin "btop" 模板）：
+        # Noctalia 把当前调色板渲染成 ~/.config/btop/themes/noctalia.theme，其 apply.sh 会把这个
+        # 键改成 "noctalia"。这里先写好最终值，apply.sh 检测到已是目标值即不写 —— 于是对 HM 的
+        # 只读软链没有任何写操作（否则实测报「只读文件系统」）。亮/暗由调色板切换带出。
+        color_theme = "noctalia";
         # btop 内嵌配置说明：set to False if you want terminal background
         # transparency
         theme_background = false;
       };
-      # 初始值 = 暗色（与改造前一致）；rebuild 后被还原，登录时 theme-apply 再按模式纠正。
-      # 注意不能用 programs.btop.themes：那个选项写出来的软链不允许被覆盖，而 theme-apply
-      # 运行时要把这里指到亮/暗变体，HM 的 checkLinkTargets 会判成外来文件而整份激活失败。
-    };
-
-    # 两套 btop 主题变体（Frappe / Latte）+ 登记给 theme-apply 翻软链。
-    # 运行中的 btop 没有热重载，下次启动生效。
-    xdg.configFile = {
-      "theme-variants/btop/dark.theme".source = ./btop/catppuccin-frappe.theme;
-      "theme-variants/btop/light.theme".source = ./btop/catppuccin-latte.theme;
+      # 不能用 programs.btop.themes：那个选项写出的软链不允许被覆盖（HM 的 checkLinkTargets
+      # 会判成外来文件而整份激活失败）。主题文件交给 Noctalia。
     };
 
     mengw.appearance.switchTargets = [
-      {
-        live = ".config/btop/themes/catppuccin.theme";
-        dark = ".config/theme-variants/btop/dark.theme";
-        light = ".config/theme-variants/btop/light.theme";
-      }
       {
         live = ".config/fastfetch/config.jsonc";
         dark = ".config/theme-variants/fastfetch/dark.jsonc";
@@ -159,13 +148,6 @@ in
       # https://github.com/ccch1mneyyy/dsh-TUI （MIT, Copyright (c) 2026 chimney）。
       # 两套变体的文件名与源文件同名，只靠软链区分，所以 jsonc 里那句 source 路径
       # （~/.config/fastfetch/logo/deepseek_whale.txt）不用变。
-      # btop 主题：初始值 = 暗色（与改造前一致），theme-apply 运行时按模式指到亮/暗变体。
-      # 不能用 programs.btop.themes —— 那个选项写出的软链不允许覆盖，而这里会被接管，
-      # HM 的 checkLinkTargets 判成外来文件「would be clobbered」会让整份激活失败。
-      ".config/btop/themes/catppuccin.theme" = {
-        source = ./btop/catppuccin-frappe.theme;
-        force = true;
-      };
       ".config/fastfetch/logo/deepseek_whale.txt" = {
         source = ../../../../assets/fastfetch/logo/deepseek_whale.txt;
         force = true;

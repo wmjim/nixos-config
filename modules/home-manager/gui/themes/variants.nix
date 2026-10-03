@@ -248,12 +248,8 @@ in
         dark = ".config/${variantDir}/kvantum/dark.kvconfig";
         light = ".config/${variantDir}/kvantum/light.kvconfig";
       }
-      # niri 的配色是 include 进来的两个文件，niri 自己会 watch 到并重载
-      {
-        live = ".config/niri-colors/layout.kdl";
-        dark = ".config/${variantDir}/niri/layout-dark.kdl";
-        light = ".config/${variantDir}/niri/layout-light.kdl";
-      }
+      # niri 概览底色，niri 自己会 watch 到 include 的文件并重载。
+      # （窗口装饰颜色不在此：由 Noctalia 写 ~/.config/niri/noctalia.kdl，见原 niri 模板。）
       {
         live = ".config/niri-colors/overview.kdl";
         dark = ".config/${variantDir}/niri/overview-dark.kdl";

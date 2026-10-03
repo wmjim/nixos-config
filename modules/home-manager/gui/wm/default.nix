@@ -11,52 +11,24 @@ let
   guiCfg = config.mengw.gui;
   niriConfigPath = "${config.home.homeDirectory}/Projects/nixos-config/modules/home-manager/gui/wm/config";
 
-  # ── 桌面壳层调色板 ──────────────────────────────────────────────────────
-  # 只服务于 niri 自身的窗口装饰（焦点环 / 标签指示器 / 概览背景 / 插入提示）。
-  # 全部取自 GTK/Qt 侧同一来源：MacTahoe-Dark 的
-  #   share/themes/MacTahoe-Dark/gtk-4.0/gtk.css
-  # 括号内是该色在上述 CSS 里的出现次数，可直接 grep 复核。
-  #
-  # 此前这里用的是 Gruvbox Dark：暖调、高饱和，而它驱动的偏偏是桌面饱和度最高的
-  # 像素（当时是 3px 的焦点环），与窗口内容（Catppuccin Frappe，冷调低饱和）色相
-  # 相反，结果是装饰抢了内容的注意力。现按 macOS 范式收敛：强调色只用**一个**
-  # 扁平色、不再用红→橙双色渐变；而窗口边界（焦点环）根本不用强调色，
-  # 改中性发丝线 —— 理由见 layoutKdl 里的 focus-ring 注释。
-  #
-  # 终端 / 编辑器 / Noctalia 各自的配色不在此列（见各自模块）：
-  # 壳层不引入第二套品牌色。
+  # ── 概览底色 ────────────────────────────────────────────────────────────
+  # niri 装饰颜色现已全部交给 Noctalia（builtin "niri" 模板 → noctalia.kdl），
+  # HM 只保留它**不接管**的一项：概览（overview）的工作区底色。
+  # 取自 GTK/Qt 侧同一来源 MacTahoe：暗色 view_bg #242424、亮色 view_bg #FFFFFF
+  # （share/themes/MacTahoe-{Dark,Light}/gtk-4.0/gtk.css 的 @define-color）。
   shell = {
-    accent = "#0088FF"; # 主强调色 (112)
-    dim = "#afafaf"; # 次要前景，用于非焦点标签指示器 (13)
-    surface = "#333333"; # 次级表面，用于非焦点焦点环 (54)
-    backdrop = "#242424"; # 主表面，用于概览背景 (73)
-    red = "#ED5F5D"; # 错误 / 紧急 (30)
-    # 中性发丝线，只给焦点环用（见 layoutKdl 里的说明）。
-    # 两个依据：MacTahoe-Dark 的 gtk-4.0/gtk.css 里有 #999999；
-    # niri 自己也把这个中性灰当作 recent-windows 高亮框的默认色
-    # （default-config.kdl 的 highlight { active-color "#999999ff" }）。
-    hairline = "#999999";
+    backdrop = "#242424";
   };
-
-  # 亮色版本的同一组值，取自 MacTahoe-Light/gtk-4.0/gtk.css 的 @define-color
-  # （与上面 shell 一一对应，写的是角色名而非“看着像”的取色）：
-  #   accent   同 accent_bg_color（两态同色）
-  #   dim      同 headerbar_fg_color（亮色下是中性灰）
-  #   surface  同 window_bg_color（= 窗口底）
-  #   backdrop 同 view_bg_color（= 内容面，暗色态反而是更深的那一个）
-  #   red      同 destructive_bg_color（两态同色）
-  #   hairline 两态共用：它只给焦点环用，中性灰在亮/暗底上都能看见
   shellLight = {
-    accent = "#0088FF";
-    dim = "#575757";
-    surface = "#F5F5F5";
     backdrop = "#FFFFFF";
-    red = "#ED5F5D";
-    hairline = "#999999";
   };
 
-  # 生成的 layout.kdl（shell 与 shellLight 各生成一份，见下方 home.file）
-  mkLayout = shell: ''
+  # 生成的 layout.kdl：**只留结构**（间距、焦点环宽度、标签指示器几何、阴影参数），
+  # 颜色全部删掉 —— 那些键由 noctalia.kdl 提供（niri 合并两个 layout{} 段）。
+  # 曾在这里维护的 MacTahoe 取色（焦点环发丝线 / 标签指示器 / 插入提示 / 最近窗口
+  # 高亮）连同取舍理由一并移到 Noctalia 调色板的 mPrimary / mError 等语义角色，
+  # 见 modules/home-manager/gui/wm/noctalia.nix 的 customPalettes.mactahoe。
+  mkLayout = ''
     // niri 窗口布局配置
     // https://niri-wm.github.io/niri/Configuration%3A-Layout.html
     layout {
@@ -80,29 +52,15 @@ let
 
         // 焦点环，用于指示活动窗口
         //
-        // 颜色用中性发丝线而不是强调色，为何 —— 含不透明度压到壁纸上的对照表
-        // —— 见 docs/themes.md「焦点环为何是中性发丝线，而不是强调色」。
-        //
         // 宽度取 1（发丝线语义）：niri 会把逻辑像素按缩放取整到物理像素。
         //   width 1 → desktop 2 倍 = 2 物理 ✅ 发丝线
         //              laptop 1.25 倍 = 1.25 → 取整 1 物理（更细，仍是一条线）
         //   width 2 → desktop 4 物理，已经明显粗于发丝线
         //           （laptop 2.5 → 取整 2 或 3）
-        //
-        // 减重只能靠宽度与色相：降不透明度在亮壁纸下会让提示失效。
-        // 想换回强调色就把 active-color 改回 ${shell.accent}；想加粗就把 width 改成 2（desktop 下为 4 物理像素）。
+        // 颜色（active/inactive/urgent）由 noctalia.kdl 提供，见 config.kdl 末尾。
         focus-ring {
             on          // 开启焦点环
             width 1     // desktop 2 倍 = 2 物理像素（发丝线）
-            active-color "${shell.hairline}"
-            // 注意：焦点环只围绕每块显示器上的活动窗口，inactive-color 仅在
-            // **非焦点显示器**上可见，单显示器永远看不到（niri wiki:
-            // Configuration: Layout）。故取中性表面色，让非焦点显示器上的窗口
-            // 轮廓退到背景里，而不是像原来那样用饱和青蓝。
-            inactive-color "${shell.surface}"
-            // niri 默认是深栗色 #9b0000，在深色桌面上几乎看不见；
-            // 这一条是语义色不是装饰色，维持红色
-            urgent-color "${shell.red}"
         }
 
         // 边框：与焦点环作用重叠，保持关闭，窗口指示只保留焦点环一种
@@ -111,6 +69,7 @@ let
         }
 
         // 标签指示器：仅当列进入 tabbed 显示模式时出现（Mod+W）
+        // 颜色（active/inactive/urgent）由 noctalia.kdl 提供。
         tab-indicator {
             on
             place-within-column // 指示器绘制列内部
@@ -122,17 +81,11 @@ let
             // 指示器宽度 3px，半径 2 ≥ 半宽 ⇒ 两端仍是胶囊（“药丸”语义），
             // 同时不超过窗口圆角 8 —— 内层不会比外层更圆。
             corner-radius 2 // 指示器圆角半径
-            active-color "${shell.accent}" // 焦点列
-            // 非焦点列：指示器要说明"此列是 tabbed"，需在深色壁纸上可见，
-            // 故用次要前景色而不是表面色
-            inactive-color "${shell.dim}"
-            urgent-color "${shell.red}" // 紧急
         }
 
-        // 窗口插入提升
+        // 窗口插入提升：颜色由 noctalia.kdl 提供。
         insert-hint {
             on
-            color "${shell.accent}80"
         }
 
         // 阴影：由合成器统一提供。
@@ -175,8 +128,8 @@ let
     }
   '';
 
-  # 生成的 overview.kdl
-  mkOverview = shell: ''
+  # 生成的 overview.kdl；backdrop 是 Noctalia 不管、HM 仍按亮/暗两态生成的颜色
+  mkOverview = backdrop: ''
     // 概览
     overview {
         // 0.50：文字可读，保留一定信息量，兼顾全局视野
@@ -184,9 +137,8 @@ let
         // 概览里工作区背后、以及切换工作区时露出的底色。
         // 注意 niri 会**忽略此色的 alpha 通道**（niri wiki: Configuration:
         // Miscellaneous），所以这里只能给不透明色，写成 #242424cc 无效。
-        // 原来是 Gruvbox 的暖灰棕 #665c54：一大片中饱和暖色与所有窗口的冷调
-        // 内容色温相反，缩略图会显得"糊在泥里"。改用中性深色。
-        backdrop-color "${shell.backdrop}"
+        // 用中性深/浅色，避免一大片中饱和色与窗口的冷调内容色温相反（缩略图"糊在泥里"）。
+        backdrop-color "${backdrop}"
     }
 
     // 带缩略图的 Super+Tab 窗口切换器
@@ -195,11 +147,9 @@ let
         open-delay-ms 150
 
         highlight {
-            // 焦点预览的高亮框；不设时是 niri 默认的中性灰 #999999
-            active-color "${shell.accent}"
-            urgent-color "${shell.red}"
+            // 焦点预览的高亮框的颜色由 noctalia.kdl 提供。
             padding 30
-            // 8：与窗口圆角同档（Omarchy 无对应项，按阶梯取 ≤ 窗口圆角）
+            // 8：与窗口圆角同档（按阶梯取 ≤ 窗口圆角）
             corner-radius 8
         }
 
@@ -335,23 +285,26 @@ in
     # ../niri-colors/ 相对路径，因为 niri 解析 include 时会跟随
     # symlink 链，导致 .. 解析到 git 仓库父目录而非 ~/.config/。
     # outputs.kdl 同理：按主机区分的内容也无法放进被 symlink 的共享目录。
-    # force：这两个软链归 theme-apply 运行时接管（light 模式会指到 light 变体），
+    #
+    # layout.kdl 现在与亮/暗无关（只剩结构），直接由 HM 持有，不进 theme-apply。
+    # force：仍需要 —— 老机器的这个软链正指向 theme-apply 的变体（layout-light.kdl），
+    # 不带 force 的话 HM 的 checkLinkTargets 会判成外来文件、整份激活失败。
+    xdg.configFile."niri-colors/layout.kdl".text = mkLayout;
+    xdg.configFile."niri-colors/layout.kdl".force = true;
+    # overview.kdl 仍随亮/暗切换（概览底色），故走 theme-apply 的软链机制。
+    # force：这个软链归 theme-apply 运行时接管（light 模式会指到 light 变体），
     # 而 HM 的 checkLinkTargets 只认「指向本 generation」的软链，指到变体就判成
     # 外来文件「would be clobbered」而整个激活失败。force 只跳过碰撞检查，
     # HM 仍会把自己那份先按普通软链铺好（= 初始暗色）。
-    xdg.configFile."niri-colors/layout.kdl".text = mkLayout shell;
-    xdg.configFile."niri-colors/layout.kdl".force = true;
-    xdg.configFile."niri-colors/overview.kdl".text = mkOverview shell;
+    xdg.configFile."niri-colors/overview.kdl".text = mkOverview shell.backdrop;
     xdg.configFile."niri-colors/overview.kdl".force = true;
     xdg.configFile."niri-outputs/outputs.kdl".text = outputsKdl;
 
-    # 亮/暗两套配色也各生成一份到 store：运行时由 theme-apply 把上面两个软链
+    # overview 的亮/暗两套也各生成一份到 store：运行时由 theme-apply 把上面的软链
     # 指过来（见 gui/themes/variants.nix，那里是唯一的切换入口）
     xdg.configFile = {
-      "theme-variants/niri/layout-dark.kdl".text = mkLayout shell;
-      "theme-variants/niri/layout-light.kdl".text = mkLayout shellLight;
-      "theme-variants/niri/overview-dark.kdl".text = mkOverview shell;
-      "theme-variants/niri/overview-light.kdl".text = mkOverview shellLight;
+      "theme-variants/niri/overview-dark.kdl".text = mkOverview shell.backdrop;
+      "theme-variants/niri/overview-light.kdl".text = mkOverview shellLight.backdrop;
     };
 
     home.packages = [
