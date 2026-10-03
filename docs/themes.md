@@ -90,7 +90,7 @@ apply.sh 只负责首渲。
 | GTK4 / libadwaita | **MacTahoe-Dark** | 须显式设 `gtk.gtk4.theme`：HM 26.05 起其默认值为 `null`，不设就不会生成 `gtk-4.0/gtk.css`，应用会退回原生 Adwaita |
 | color-scheme | **dark** | `gtk.colorScheme`；写 dconf `color-scheme=prefer-dark` 与 GTK4 的 `gtk-interface-color-scheme=2`，libadwaita 依此判定深色 |
 | 图标 | **MacTahoe-dark** | 自定义打包图标（`pkgs/mactahoe-icon-theme`），为深色背景设计 |
-| 光标 | **Bibata-Modern-Classic** | 20px，XWayland 亦生效（软链到 `~/.local/share/icons`）；Bibata 只内嵌 16/20/22/24/28/32/40/… 整数档 |
+| 光标 | **Bibata-Modern-Classic** | 24px，XWayland 亦生效（软链到 `~/.local/share/icons`）；Bibata 只内嵌 16/20/22/24/28/32/40/… 整数档 |
 | Qt | **Kvantum + MacTahoeDark** | `QT_STYLE_OVERRIDE=kvantum`；主题来自自打包的 `pkgs/mactahoe-kvantum`（与 GTK 侧同一个上游作者），见下文 |
 | GDM 登录界面 | MacTahoe | 本仓库不再装 GNOME 会话，只留 GDM 做登录器；其 greeter 用的 gnome-shell 由 GDM 自己的闭包提供，靠 overlay 覆盖 `gnome-shell-theme.gresource` 换肤，**字体 / 图标 / 光标 / 壁纸**也一并声明（不然 greeter 会退回 Adwaita 默认），全部在 `modules/nixos/desktop/gdm.nix` |
 | Niri 装饰配色 | **Noctalia 调色板** | 由 builtin `niri` 模板写 `~/.config/niri/noctalia.kdl`（焦点环 / 标签指示器 / 插入提示 / 最近窗口高亮）；HM 只留结构项（宽度、几何、阴影），见下文 |
@@ -172,7 +172,7 @@ shadow {
 
 窗口圆角是 8px（`windowrules.kdl` 的 `geometry-corner-radius`），间距若小于圆角的一半，相邻
 两窗的圆角弧比自己半径还靠得近，缝隙看上去是"被掐住"而不是留白 —— 8 就是这条判据在圆角 8 下
-的下限（原来 12 配的是 24；桌面 2 倍缩放下 8 逻辑 = 16 物理，正是圆角 8 逻辑的一半）。
+的下限（原来 12 配的是 24）。
 
 `gaps` 同时作用于内缝隙与外留白。想分开（如 Omarchy 的 `gaps_in 5` / `gaps_out 10`）用
 `struts`（niri wiki: Layout#struts，**正值 = 外间隙**；负值是把窗口推出屏幕外那条路，方向相反），
@@ -191,7 +191,7 @@ shadow {
 > Nix 侧（`modules/home-manager/gui/wm/default.nix`）只留结构项。下表的对比度算据是当初选
 > `#999999` 时算的，换成 `mOutline` 后量级相当。
 
-**宽度取 1**：niri 把逻辑像素按缩放取整到物理像素。宽度 1 在 desktop 的 2 倍下 = 2 物理像素，符合发丝线语义；laptop 的 1.25 倍下为 1.25 → 取整到 1 物理（更细，仍可见）。宽度 2 在 desktop 下是 4 物理像素，已明显粗于发丝线。取整表在 `modules/home-manager/gui/wm/default.nix` 的 `mkLayout`（表只此一份）。
+**宽度取 1**：niri 把逻辑像素按缩放取整到物理像素。宽度 1 在 desktop 的 1.5 倍下为 1.5 → 取整 2 物理；laptop 的 1.25 倍下为 1.25 → 取整 1 物理（更细，仍可见）。宽度 2 在 desktop 下是 3 物理像素，已明显粗于发丝线。取整表在 `modules/home-manager/gui/wm/default.nix` 的 `mkLayout`（表只此一份）。
 
 **为何不靠降不透明度来减重**：焦点环画在 8px 缝隙上，背景就是壁纸，而降不透明度在亮壁纸下会让它消失：
 

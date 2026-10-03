@@ -53,14 +53,14 @@ let
         // 焦点环，用于指示活动窗口
         //
         // 宽度取 1（发丝线语义）：niri 会把逻辑像素按缩放取整到物理像素。
-        //   width 1 → desktop 2 倍 = 2 物理 ✅ 发丝线
+        //   width 1 → desktop 1.5 倍 = 1.5 → 取整 2 物理 ✅ 发丝线
         //              laptop 1.25 倍 = 1.25 → 取整 1 物理（更细，仍是一条线）
-        //   width 2 → desktop 4 物理，已经明显粗于发丝线
+        //   width 2 → desktop 3 物理，已经明显粗于发丝线
         //           （laptop 2.5 → 取整 2 或 3）
         // 颜色（active/inactive/urgent）由 noctalia.kdl 提供，见 config.kdl 末尾。
         focus-ring {
             on          // 开启焦点环
-            width 1     // desktop 2 倍 = 2 物理像素（发丝线）
+            width 1     // desktop 1.5 倍 → 取整 2 物理像素（发丝线）
         }
 
         // 边框：与焦点环作用重叠，保持关闭，窗口指示只保留焦点环一种

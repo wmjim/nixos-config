@@ -290,7 +290,7 @@ winapps cleanrdp                    # 清理孤儿进程跟踪文件
 ### 8.2 高 DPI 与缩放
 
 `RDP_SCALE` 只接受 `100`/`140`/`180`；本仓库按 `mySystem.desktop.scale` 自动取值
-（2 倍屏 → `180`）。若文字偏大/偏小，改 `mengw.gui.winapps.rdpScale` 后 `nixos-rebuild switch`。
+（1.5 倍屏 → `140`）。若文字偏大/偏小，改 `mengw.gui.winapps.rdpScale` 后 `nixos-rebuild switch`。
 
 ---
 

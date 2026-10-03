@@ -65,7 +65,7 @@ let
       ${
         lib.optionalString (mode == "dark") "gtk-application-prefer-dark-theme=true\n"
       }gtk-cursor-theme-name=Bibata-Modern-Classic
-      gtk-cursor-theme-size=20
+      gtk-cursor-theme-size=24
       gtk-decoration-layout=${buttonLayout}
       gtk-font-name=HarmonyOS Sans SC 12
       gtk-icon-theme-name=${m.icons}

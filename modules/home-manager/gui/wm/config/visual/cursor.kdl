@@ -4,7 +4,7 @@ cursor {
     xcursor-theme "Bibata-Modern-Classic";
     // 大小（逻辑像素；Bibata 内嵌 16/20/22/24/28/… 整数档，别的值会取最接近的一档）
     // 改这一处不够：GTK / XWayland / GDM 各写了一份，见 modules/home-manager/gui/themes/default.nix
-    xcursor-size 20
+    xcursor-size 24
     // 按下键盘按键时将隐藏光标
     hide-when-typing
     // 在无活动后一秒钟隐藏光标

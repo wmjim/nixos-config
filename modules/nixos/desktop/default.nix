@@ -12,14 +12,14 @@ in
 {
   options.mySystem.desktop.niri.enable = lib.mkEnableOption "Niri 窗口管理器";
 
-  # 显示器逻辑缩放（逻辑→物理的倍率；整数如 2，分数如 1.25）。
+  # 显示器逻辑缩放（Niri 的 fractional scaling 值，如 4K 屏的 1.5）。
   # AWT 的 sun.java2d.uiScale 只接受整数，此处统一声明桌面缩放，
   # 由 env.nix 向上取整后喂给 JVM，避免各处重复推导或硬编码无效值。
   # 默认从下方 monitors 首项派生（单一数据源），主机可显式覆盖。
   options.mySystem.desktop.scale = lib.mkOption {
     type = lib.types.numbers.positive;
     default = 1;
-    description = "显示器逻辑缩放（如 2 = 整数 2 倍，1.25 = 分数）；AWT 应用会向上取整为整数 uiScale";
+    description = "显示器逻辑缩放（分数缩放值，如 1.5）；AWT 应用会向上取整为整数 uiScale";
   };
 
   # 显示器声明：主机数据，驱动 niri outputs.kdl 生成与 Noctalia 的 DDC 亮度

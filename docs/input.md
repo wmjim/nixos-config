@@ -49,7 +49,7 @@ DPI 只取自 X11 的 `Xft.dpi` 资源（RESOURCE_MANAGER）。xwayland-satellit
 
 | 主机 | `mySystem.desktop.scale` | 写入的 `Xft.dpi` |
 | --- | --- | --- |
-| desktop | 2（monitors 派生） | 192 |
+| desktop | 1.5（monitors 派生） | 144 |
 | laptop | 1.25（monitors 派生） | 120 |
 
 > 注：laptop 此前未声明 scale（默认 1），wrapper 在该机为空转，而 niri 实际按
@@ -59,7 +59,7 @@ DPI 只取自 X11 的 `Xft.dpi` 资源（RESOURCE_MANAGER）。xwayland-satellit
 验证：
 
 ```bash
-xrdb -query                     # 应显示 Xft.dpi:<TAB>192
+xrdb -query                     # 应显示 Xft.dpi:<TAB>144
 displays=$(fcitx5-diagnose | grep -c 'Group \[x11::0\]')   # 微信等 X11 客户端所在分组
 ```
 

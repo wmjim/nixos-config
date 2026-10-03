@@ -19,12 +19,12 @@
     hardware.enable = true;
     hardware.nvidia.enable = true;
     desktop.enable = true;
-    # 4K@150Hz 显示器，整数 2 倍缩放（desktop.scale 由此派生，无需重复声明）
+    # 4K@150Hz 显示器，分数缩放 1.5（desktop.scale 由此派生，无需重复声明）
     desktop.monitors = [
       {
         name = "DP-2";
         mode = "3840x2160@150.000";
-        scale = 2;
+        scale = 1.5;
         # 外接显示器走 DDC/CI 调亮度（本机 hardware.i2c.enable = true）
         ddc = true;
       }

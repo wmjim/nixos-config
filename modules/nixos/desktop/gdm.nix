@@ -29,7 +29,7 @@ let
         font-name = "HarmonyOS Sans SC 12";
         icon-theme = "MacTahoe-dark";
         cursor-theme = "Bibata-Modern-Classic";
-        cursor-size = lib.gvariant.mkInt32 20;
+        cursor-size = lib.gvariant.mkInt32 24;
       };
     }
   ]
