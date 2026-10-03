@@ -23,6 +23,22 @@ in
       force = true;
     };
 
+    # direnv：只装 pkgs.direnv 不会生效——它需要 shell hook 才会在进出目录时
+    # 装载/卸载 .envrc，而 hook 由本模块注入（enableFishIntegration 本可省，
+    # 它默认跟随 programs.fish.enable，这里写明是为了让依赖关系一眼可见）。
+    # nix-direnv 默认为真，写明是因为仓库本身走 flake：它把 use flake 的 devShell
+    # 缓存到 .direnv/，避免每次重算。
+    programs.direnv = {
+      enable = true;
+      enableFishIntegration = true;
+      # 加速 use flake（生成 ~/.config/direnv/lib/hm-nix-direnv.sh）
+      nix-direnv.enable = true;
+      # Git 全局忽略 .direnv/：否则 use flake 产生的工作树会让 git 树变脏
+      enableGitIntegration = true;
+      # 不在提示符里回显环境变量差异
+      config.global.hide_env_diff = true;
+    };
+
     # ls 的现代替代；fish 的 ls / ll / la / lla / lt 别名由该模块生成
     programs.eza = {
       # 启用 eza
@@ -73,7 +89,6 @@ in
       yq # yaml/xml/toml 处理器
       sysstat # Linux的性能监控工具集（如sar、iostat和pidstat）
       git-repo # android 的仓库管理工具
-      direnv # 管理环境的 shell 扩展
     ];
 
     # Git
