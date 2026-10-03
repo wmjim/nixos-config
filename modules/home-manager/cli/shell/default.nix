@@ -71,7 +71,6 @@ in
       tldr # man 的现代替代
       jq # json 处理器
       yq # yaml/xml/toml 处理器
-      fzf # 命令行模糊查找
       sysstat # Linux的性能监控工具集（如sar、iostat和pidstat）
       git-repo # android 的仓库管理工具
       direnv # 管理环境的 shell 扩展

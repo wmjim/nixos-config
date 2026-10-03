@@ -2,7 +2,6 @@
 {
   lib,
   config,
-  pkgs,
   ...
 }:
 let
@@ -17,17 +16,57 @@ in
   };
 
   config = lib.mkIf (cfg.enable && cliCfg.enable) {
+    # 用官方 fish 集成（source (fzf --fish)）：Ctrl-T 选文件、Ctrl-R 历史、Alt-C 切目录。
+    # 注意它会盖掉 fish 预设的 Ctrl-T 交换字符、Alt-C capitalize-word；
+    # 不再装 fzf-fish 插件（那套 Ctrl-Alt-F/L/S/P、Ctrl-V 已随之去掉）。
+    # FZF_* 走 sessionVariables（babelfish 转成 set -gx），对所有 shell 与子进程生效。
+    programs.fzf = {
+      enable = true;
+      # 启用 Fish 集成
+      enableFishIntegration = true;
+      # 默认 UI
+      defaultOptions = [
+        "--height 40%"
+        "--layout=reverse"
+        "--border"
+        "--info=inline"
+        "--prompt='> '"
+        "--pointer='▶'"
+        "--marker='✓'"
+      ];
+      # Ctrl-T：搜索文件
+      fileWidget = {
+        command = "fd --type f --hidden --follow --exclude .git";
+
+        options = [
+          "--preview 'bat --color=always --style=numbers --line-range=:200 {} 2>/dev/null'"
+          "--preview-window=right:50%:wrap"
+        ];
+      };
+
+      # Alt-C：搜索目录
+      changeDirWidget = {
+        command = "fd --type d --hidden --follow --exclude .git";
+
+        options = [
+          "--no-preview"
+        ];
+      };
+
+      # Ctrl-R：Shell history
+      historyWidget = {
+        options = [
+          "--no-preview"
+          "--sort"
+          "--exact"
+          "--tac"
+        ];
+      };
+      # 默认数据源
+      defaultCommand = "fd --type f --hidden --follow --exclude .git";
+    };
     programs.fish = {
       enable = true;
-      plugins = [
-        # 默认绑定: Ctrl-Alt-F 目录搜索 / Ctrl-R 历史 / Ctrl-Alt-L git log /
-        # Ctrl-Alt-S git status / Ctrl-Alt-P 进程 / Ctrl-V 变量
-        # 本仓库锁定的 home-manager 要求 { name, src }，不能直接传包
-        {
-          name = "fzf-fish";
-          src = pkgs.fishPlugins.fzf-fish.src;
-        }
-      ];
       # decors/fish-colored-man 未入 nixpkgs，该插件整体即这一个函数，直接托管
       # 上游: https://github.com/decors/fish-colored-man/blob/master/functions/man.fish
       functions.man = {
@@ -133,11 +172,6 @@ in
         fish_add_path ${config.home.homeDirectory}/.local/bin
         set -gx NPM_CONFIG_PREFIX ${config.home.homeDirectory}/.npm-global
         fish_add_path ${config.home.homeDirectory}/.npm-global/bin
-
-        if type -q fzf
-          set -gx FZF_DEFAULT_OPTS '--height 40% --layout=reverse --border --preview "bat --color=always {}" --preview-window=right:60%'
-          set -gx FZF_DEFAULT_COMMAND 'fd --type f --hidden --follow --exclude .git'
-        end
 
         function fish_command_picker
           set -l commands_file ~/.config/fish/commands

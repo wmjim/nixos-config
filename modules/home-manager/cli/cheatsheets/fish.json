@@ -73,12 +73,6 @@
         "action": " "
       },
       {
-        "key": "Ctrl + T",
-        "desc": "交换前后两个字符",
-        "subcat": "交换",
-        "action": " "
-      },
-      {
         "key": "Alt + T",
         "desc": "交换前后两个单词",
         "subcat": "交换",
@@ -178,28 +172,13 @@
         "action": " "
       },
       {
-        "key": "Ctrl + Alt + F",
-        "desc": "fzf 搜索当前目录文件/目录并插入命令行",
+        "key": "Ctrl + T",
+        "desc": "fzf 选择文件/目录并插入命令行",
         "action": " "
       },
       {
-        "key": "Ctrl + Alt + L",
-        "desc": "fzf 搜索 git log 提交并 checkout",
-        "action": " "
-      },
-      {
-        "key": "Ctrl + Alt + S",
-        "desc": "fzf 搜索 git status 改动文件",
-        "action": " "
-      },
-      {
-        "key": "Ctrl + Alt + P",
-        "desc": "fzf 搜索进程并发送信号",
-        "action": " "
-      },
-      {
-        "key": "Ctrl + V",
-        "desc": "fzf 搜索 fish 变量",
+        "key": "Alt + C",
+        "desc": "fzf 选择目录并 cd",
         "action": " "
       }
     ]
