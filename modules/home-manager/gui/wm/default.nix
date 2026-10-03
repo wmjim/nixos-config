@@ -208,66 +208,6 @@ let
         done
   '';
 
-  # Super+C/X/V 的终端例外（键位本体定义在
-  # modules/nixos/desktop/niri/default.nix 的 keyd 配置里）
-  # keyd 在 evdev 层把 Super+C/X/V 重映射成 Ctrl+C/X/V，对所有客户端一视同仁，
-  # 但它看不到谁有焦点；而终端要的是 Ctrl+Shift+C/X/V（Ctrl+C 在终端是 SIGINT，
-  # 会直接把前台进程打断）。这里监听 niri 的焦点变化，用 `keyd bind` 覆写 meta
-  # 层的这三个键：焦点是终端 → C-S-*，其余（含没有窗口获得焦点的面板态）→
-  # reset 回 keyd 的静态配置。换终端只需改下面的 TERMINALS。
-  keydAppNiri = pkgs.writeShellScriptBin "keyd-app-niri" ''
-    set -u
-
-    # 视为终端的 app_id，统一转小写后匹配
-    # btop 是 ghostty 用 --class=btop 起的监控窗口，同样按终端按键处理
-    TERMINALS="ghostty com.mitchellh.ghostty btop kitty org.gnome.terminal gnome-terminal-server blackbox com.gexperts.blackbox xterm org.wezfurl.wezterm"
-
-    niri=${pkgs.niri}/bin/niri
-    keyd=${pkgs.keyd}/bin/keyd
-    jq=${pkgs.jq}/bin/jq
-
-    # 上一次生效的映射，用来吃掉重复的焦点事件
-    state=
-    apply() {
-      appid=$("$niri" msg -j focused-window 2>/dev/null \
-        | "$jq" -r '.app_id // ""' | tr '[:upper:]' '[:lower:]')
-
-      want=gui
-      for t in $TERMINALS; do
-        if [ "$appid" = "$t" ]; then
-          want=term
-          break
-        fi
-      done
-      if [ "$want" = "$state" ]; then
-        return 0
-      fi
-
-      if [ "$want" = term ]; then
-        set -- 'meta.c = C-S-c' 'meta.x = C-S-x' 'meta.v = C-S-v'
-      else
-        set -- reset
-      fi
-
-      # 只在成功时记状态：keyd 未就绪（或无 socket 权限）时留待下次焦点变化重试
-      if "$keyd" bind "$@"; then
-        state=$want
-      else
-        echo "[keyd-app-niri] keyd bind 失败：keyd 未运行或缺 socket 权限（keyd 组）" >&2
-      fi
-    }
-
-    # 先按启动时的焦点定一次，避免首个焦点变化前落在静态（GUI）映射上
-    apply
-
-    # event-stream 是逐行 JSON。只拿焦点变化当触发，app_id 一律现查：
-    # WindowFocusChanged 只带 id，且并发切换时以最新焦点为准更安全。
-    "$niri" msg -j event-stream | while read -r event; do
-      case "$event" in
-        *WindowFocusChanged*) apply ;;
-      esac
-    done
-  '';
 in
 {
   imports = [
@@ -308,29 +248,7 @@ in
     };
 
     home.packages = [
-      # keyd CLI：watcher 用 `keyd bind` 切换键位，手动排查也用得上
-      # （`keyd bind reset` 复位、`keyd listen` 看层状态）
-      pkgs.keyd
-      keydAppNiri
       niriCloseAll
     ];
-
-    # 焦点变化时切换 keyd 的键位（终端走 Ctrl+Shift+C/X/V）
-    # 键位本体在 NixOS 侧的 services.keyd 里；主机没开 keydClipboard
-    # （默认会话不是 niri，watcher 收不到焦点事件）就不必起这个服务。
-    systemd.user.services.keyd-app-niri = lib.mkIf osConfig.mySystem.desktop.niri.keydClipboard.enable {
-      Unit = {
-        Description = "按焦点应用切换 keyd 的 Super+C/X/V 映射";
-        After = [ "graphical-session.target" ];
-        PartOf = [ "graphical-session.target" ];
-      };
-      Service = {
-        ExecStart = "${keydAppNiri}/bin/keyd-app-niri";
-        # niri 的 socket 与 keyd 都可能尚未就绪，失败即重来
-        Restart = "always";
-        RestartSec = 2;
-      };
-      Install.WantedBy = [ "graphical-session.target" ];
-    };
   };
 }

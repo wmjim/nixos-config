@@ -7,7 +7,7 @@
   ...
 }:
 {
-  # 主用户：configDir、trusted-users、home-manager 集成、keyd 组授权等
+  # 主用户：configDir、trusted-users、home-manager 集成等
   # 系统级接线均由此派生（见 core/default.nix 与 flake.nix 的 mkHomeManager），
   # 改用户名只动这一处。
   options.mySystem.primaryUser = lib.mkOption {
