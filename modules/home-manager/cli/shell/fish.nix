@@ -237,9 +237,6 @@ in
       '';
     };
 
-    programs.zoxide.enable = true;
-    programs.zoxide.enableFishIntegration = true;
-
     xdg.configFile."fish/commands".source = ./fish-commands;
   };
 }

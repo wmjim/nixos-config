@@ -60,6 +60,40 @@ in
       ];
     };
 
+    # cd 的现代替代；接管内置 cd（--cmd cd）并注入补全，包也由模块安装，
+    # 故 home.packages 里不再重复列。
+    programs.zoxide = {
+      enable = true;
+      # 本可省（默认跟随 programs.fish.enable），写明是为了让依赖关系一眼可见
+      enableFishIntegration = true;
+      options = [
+        # 接管 cd：得到 `cd <关键字>` 跳转与 `cdi` 交互选择
+        # （不加则为 z / zi 两个新名字，见 docs/fish.md）
+        "--cmd cd"
+      ];
+    };
+
+    # zoxide 内置默认只把 $HOME 自身排除在库外，这里再排掉系统目录，免得补全
+    # 候选里混进 /usr/bin、/nix/store、/var/log 这种一辈子不会 cd 进去的路径
+    # （实测本机库中已积累 /etc、/usr、/var、/run、/dev 等条目）。
+    # 注意**没有排 /etc**：/etc/nixos 是要进去看的真实目录，排掉它就完全进不来；
+    # 代价是 /etc/fonts 之类也会进候选。
+    # ⚠️ 两个实测坑：① 设置 _ZO_EXCLUDE_DIRS 是**替换**内置的 $HOME 默认值、
+    # 不是追加，所以 home 必须显式写回；② zoxide 不展开 $HOME / ~，只认绝对
+    # 路径。通配符 * 会跨越 `/`，故 `/usr*` 同时覆盖 /usr 自身与其全部子目录。
+    home.sessionVariables._ZO_EXCLUDE_DIRS = lib.concatStringsSep ":" [
+      # 写回内置默认：只排 $HOME 自身，故 ~/Projects 这类子目录仍会入库
+      config.home.homeDirectory
+      "/nix*"
+      "/usr*"
+      "/var*"
+      "/run*"
+      "/dev*"
+      "/proc*"
+      "/sys*"
+      "/.snapshots*"
+    ];
+
     # GitHub CLI；config.yml 由 HM 生成（gh config set 的改动会被下次激活覆盖，改配置回仓库），
     # hosts.yml 与认证状态留给 gh 自己；gitCredentialHelper.enable 默认为 true，helper 自动写入
     programs.gh = {
@@ -165,7 +199,6 @@ in
 
     # 终端工具
     home.packages = with pkgs; [
-      zoxide # cd 的现代替代
       dust # du 的现代替代
       tldr # man 的现代替代
       yq # yaml/xml/toml 处理器
