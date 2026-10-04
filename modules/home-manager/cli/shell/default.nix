@@ -16,6 +16,8 @@ in
   ];
 
   config = lib.mkIf cliCfg.enable {
+    # ── 一、shell 环境与目录导航（速查表 / direnv / ls / cd） ───────────────────────
+
     # 快捷键速查表
     xdg.configFile."cheatsheets/" = {
       source = ./../cheatsheets;
@@ -93,6 +95,8 @@ in
       "/sys*"
       "/.snapshots*"
     ];
+
+    # ── 二、常用 CLI 工具（gh / bat / ripgrep / fd / jq / tldr） ──────────────
 
     # GitHub CLI；config.yml 由 HM 生成（gh config set 的改动会被下次激活覆盖，改配置回仓库），
     # hosts.yml 与认证状态留给 gh 自己；gitCredentialHelper.enable 默认为 true，helper 自动写入
@@ -210,7 +214,8 @@ in
       settings.updates.auto_update = true;
     };
 
-    # 终端工具
+    # ── 三、裸装包与 Git ────────────────────────────────────────────────────
+
     # dust / yq / sysstat / git-repo 上游没有 programs.<name> 模块（查过
     # pinned HM 的全部 programs.* 选项），只能裸装：前两个的配置靠各自 env /
     # 配置文件，sysstat 是系统级采集（NixOS 侧只有 services.sysstat，且它是
