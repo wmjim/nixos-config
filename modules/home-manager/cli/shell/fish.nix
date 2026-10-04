@@ -158,8 +158,6 @@ in
         gc = "git commit";
         gp = "git push";
         gl = "git log --oneline --graph --decorate";
-        bat = "bat --style=plain";
-        cat = "bat --style=plain --paging=never";
         df = "duf --only local";
         duf = "duf --sort usage";
         dufall = "duf --all";

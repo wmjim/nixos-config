@@ -77,15 +77,97 @@ in
       };
     };
 
+    # 现代 CLI 工具：bat / ripgrep / fd / jq 一律走 programs.<name>，
+    # 不再在 home.packages 里裸装 —— 模块负责装包，并把「配置放哪」也定下来
+    # （别名、hook、环境变量由模块接线，见各自的注释）。
+    # 配色统一跟终端调色板（Noctalia 渲染的那 16 色，见 docs/themes.md）：bat 用
+    # Catppuccin Frappe/Latte（终端 16 色的同源上游），jq 直接用 ANSI 槽号。
+
+    # cat 的现代替代。
+    #
+    # ⚠️ 接管 ~/.config/bat/config 后，Noctalia 的 bat 社区模板就失效了：那个模板往这个
+    # 文件里写 --theme=noctalia，并按当前调色板渲染 themes/noctalia.tmTheme。它的
+    # apply.sh 开头是 `touch "$config_file"`，落在 HM 的只读软链上会以非 0 退出
+    # （实测 exit 1：touch: Read-only file system）。Noctalia 只把它记进日志、不会损坏
+    # 文件，bat 从此按下面这份配置走。旧模板若仍开着，建议在 Noctalia 模板列表里关掉
+    # —— 那张表存在运行时 state 里，改 Nix 不生效（见 docs/themes.md）。
+    #
+    # theme = "auto"：bat 查终端背景色（OSC 10/11），暗色用 theme-dark、亮色用 theme-light。
+    # 这是 bat 的默认取值，这里钉的是两态都用 Catppuccin：暗 = Frappe、亮 = Latte，
+    # 与 Noctalia 的 terminal 16 色同源，故 `cat` / `bat` 与终端配色一致。
+    # 注意：stdout 不是终端时（管道、fzf 预览）bat 不做探测，会回落自带默认主题；
+    # 要强制某个主题就设 BAT_THEME。
+    programs.bat = {
+      enable = true;
+      config = {
+        tabs = "2";
+        pager = "less -FR";
+        style = "numbers";
+        color = "always";
+        theme = "auto";
+        theme-dark = "Catppuccin Frappe";
+        theme-light = "Catppuccin Latte";
+      };
+    };
+
+    # grep 的现代替代；模块把 RIPGREP_CONFIG_PATH 指向生成的 ~/.config/ripgrep/ripgreprc
+    programs.ripgrep = {
+      enable = true;
+      arguments = [
+        "--smart-case"
+        # 连隐藏文件一起搜（.github/、.env 之类），但别钻进 .git
+        "--hidden"
+        "--glob=!.git/"
+        "--glob=!.direnv/"
+        "--glob=!result/"
+        "--max-columns=200"
+        "--max-columns-preview"
+      ];
+    };
+
+    # find 的现代替代
+    programs.fd = {
+      enable = true;
+      # 模块据此生成别名 fd → `fd --hidden`，点文件默认可见
+      hidden = true;
+      # 全局忽略文件（~/.config/fd/ignore）：省得每个项目再写 .fdignore。
+      # 只是「默认」，fd -u / --no-ignore 可绕过
+      ignores = [
+        ".git/"
+        ".direnv/"
+        "result"
+        "node_modules/"
+        "target/"
+        "__pycache__/"
+        ".venv/"
+      ];
+    };
+
+    # json 处理器；颜色由模块写进 sessionVariables 的 JQ_COLORS 生效（对所有 shell 一致）
+    programs.jq = {
+      enable = true;
+      # 槽位顺序固定：null:false:true:numbers:strings:arrays:objects:objectKeys。
+      # 用 ANSI 16 色槽号而不是写死真彩色：具体色值由终端调色板提供，切亮/暗
+      # （Noctalia 重渲终端 16 色）时 jq 输出跟着变 —— 与 tmux「颜色全用 ANSI 名称」
+      # 同一口径。jq 默认只给 null / 字符串 / 键上色，这里把布尔与数字也分开：
+      #   null 暗色、false 红、true 绿、数字青、字符串黄、数组品红、对象与括号白、键蓝
+      colors = {
+        null = "90";
+        false = "31";
+        true = "32";
+        numbers = "36";
+        strings = "33";
+        arrays = "35";
+        objects = "37";
+        objectKeys = "34";
+      };
+    };
+
     # 终端工具
     home.packages = with pkgs; [
       zoxide # cd 的现代替代
-      bat # cat 的现代替代
-      ripgrep # grep 的现代替代
-      fd # find 的现代替代
       dust # du 的现代替代
       tldr # man 的现代替代
-      jq # json 处理器
       yq # yaml/xml/toml 处理器
       sysstat # Linux的性能监控工具集（如sar、iostat和pidstat）
       git-repo # android 的仓库管理工具

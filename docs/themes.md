@@ -37,7 +37,7 @@
 | nvim | 翻一份 `mode.lua`，`theme.lua` 据此设 `vim.o.background`，catppuccin `flavour="auto"` | 要重进（或 `:colorscheme catppuccin`） |
 | tmux | 颜色全用 ANSI 名称，配色由终端提供 | 随终端自动跟 |
 
-**降级 / 不跟随的两个面**（有意为之，写在这里免得以后重复怀疑）：
+**降级 / 不跟随的三个面**（有意为之，写在这里免得以后重复怀疑）：
 
 - **fastfetch 不跟随 Noctalia。** 上游有 community 模板，但它的 `apply.sh` 要求 `config.jsonc`
   是**严格 JSON**（带注释直接报错退出），而本仓库那份的注释里写着 10 阶渐变的对比度算据、
@@ -45,6 +45,16 @@
   继续走 `theme-apply` 翻软链：亮色那份的 10 阶渐变是**重算**的，不是换色值（推导见
   `assets/fastfetch/nixos-01-light.jsonc` 顶部注释）。
 - **gtk3/gtk4/qt 三个 builtin 模板不启用** —— GTK/Qt 保持 MacTahoe 自打包完整主题，见「主题栈」。
+- **bat 不跟随 Noctalia（社区模板已失效）。** 上游 `bat` 社区模板往 `~/.config/bat/config`
+  写 `--theme=noctalia` 并渲染 `themes/noctalia.tmTheme`，但那个文件现由 `programs.bat`
+  接管（`modules/home-manager/cli/shell/default.nix`），它的 `apply.sh` 开头
+  `touch "$config_file"` 打在 HM 只读软链上会以非 0 退出（实测 `Read-only file system`，
+  Noctalia 只记日志、不损坏文件）。改为 HM 侧固定 `theme = "auto"` +
+  `theme-dark = "Catppuccin Frappe"` / `theme-light = "Catppuccin Latte"`：bat 查终端背景色
+  （OSC 10/11）自己选，两态仍是 Catppuccin（与终端 16 色同源），亮/暗照样跟。
+  **已知边界**：stdout 不是终端时（管道、fzf 的 Ctrl-T 预览）bat 不做探测，会回落自带默认
+  主题（Monokai）—— 与跟随无关，是 bat 自身行为；要固定主题就显式 `--theme=` 或设
+  `BAT_THEME`。旧社区模板若还开着，建议在 Noctalia 模板面板里关掉。
 
 ## Noctalia 统一渲染各应用主题
 

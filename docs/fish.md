@@ -25,7 +25,10 @@
 | `..` / `...` | 上级 / 上上级目录 |
 | `ls` / `ll` / `la` / `lla` | eza 增强列表 |
 | `lt` | 目录树 |
-| `cat` | bat 分页显示 |
+| `fd` | fd 带 `--hidden`（点文件默认可见，由 `programs.fd.hidden` 生成） |
+
+> `bat` / `cat` 不再设别名：bat 的行为统一由 `programs.bat.config` 决定（见
+> `modules/home-manager/cli/shell/default.nix`），`cat` 即系统 cat。
 
 ## Git
 
