@@ -197,10 +197,26 @@ in
       };
     };
 
+    # man 的现代替代。它有官方 HM 模块，故走 programs.<name>。
+    # ⚠️ 模块装的是 Rust 实现的 tealdeer（命令名仍叫 tldr），与原先裸装的
+    # pkgs.tldr（Python 客户端）不是同一个程序：缓存从 ~/.cache/tldr 换到
+    # ~/.cache/tealdeer，配置落在 ~/.config/tealdeer/config.toml。
+    programs.tealdeer = {
+      enable = true;
+      # 默认即 true，写出来是因为它有可感知的副作用：装一个 systemd user
+      # timer（weekly 跑 tldr --update 拉页），darwin 上对应 launchd agent
+      enableAutoUpdates = true;
+      # 没有缓存时首次调用自己拉一份，否则要等 timer 到点才可用
+      settings.updates.auto_update = true;
+    };
+
     # 终端工具
+    # dust / yq / sysstat / git-repo 上游没有 programs.<name> 模块（查过
+    # pinned HM 的全部 programs.* 选项），只能裸装：前两个的配置靠各自 env /
+    # 配置文件，sysstat 是系统级采集（NixOS 侧只有 services.sysstat，且它是
+    # root 定时采集、不装 CLI），git-repo 无配置面。
     home.packages = with pkgs; [
       dust # du 的现代替代
-      tldr # man 的现代替代
       yq # yaml/xml/toml 处理器
       sysstat # Linux的性能监控工具集（如sar、iostat和pidstat）
       git-repo # android 的仓库管理工具

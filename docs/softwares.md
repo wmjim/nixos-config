@@ -82,6 +82,13 @@
 
 eza、zoxide、bat、fzf、ripgrep、fd、jq、yq、tldr、duf、btop、glow、hugo、ffmpeg、yt-dlp、net-tools、tree、unzip、sysstat
 
+其中 `tldr` 由 `programs.tealdeer` 提供，装的是 Rust 实现的 tealdeer（命令名仍叫 `tldr`）：
+页缓存落在 `~/.cache/tealdeer`（不再是 Python 客户端的 `~/.cache/tldr`），配置在
+`~/.config/tealdeer/config.toml`，并由 `services.tldr-update`（weekly systemd user timer；
+darwin 上是 launchd agent）定期 `tldr --update`。缓存缺失时首次调用会自己拉一份
+（`settings.updates.auto_update = true`）。dust / yq / sysstat / git-repo 上游没有
+`programs.<name>` 模块，仍在 `home.packages`。
+
 ## 字体
 
 | 字体 | 用途 |
