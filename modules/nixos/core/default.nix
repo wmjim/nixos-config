@@ -38,6 +38,11 @@ in
     boot.loader.systemd-boot.enable = lib.mkIf (!config.boot.isContainer) (lib.mkDefault true);
     # 保留历史版本数量：10
     boot.loader.systemd-boot.configurationLimit = lib.mkDefault 10;
+    # 控制台分辨率取固件支持的最高模式。默认的 "keep" 会沿用固件选的低分辨率
+    # （本机实测 128x48 网格），该信号被 4K 显示器放大铺满整屏 → 开机日志字极大；
+    # nvidia 接管控制台后切到原生 3840x2160（240x67），关机日志字恢复正常大小，
+    # 两段不一致。取最高模式让早期控制台也跑原生分辨率，两段观感一致。
+    boot.loader.systemd-boot.consoleMode = lib.mkDefault "max";
     boot.loader.efi.canTouchEfiVariables = lib.mkIf (!config.boot.isContainer) (lib.mkDefault true);
     # WSL2 内核由 Windows 宿主提供，容器内设置此项无功能影响
     boot.kernelPackages = lib.mkIf (!config.boot.isContainer) pkgs.linuxPackages_latest;
