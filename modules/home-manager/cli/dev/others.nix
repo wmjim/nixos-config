@@ -35,8 +35,9 @@ in
       # === yaml ===
       yaml-language-server # yaml lsp
 
-      # === docker compose ===
-      docker-compose-language-service # docker lsp
+      # === docker ===
+      docker-compose-language-service # docker compose lsp
+      dockerfile-language-server # dockerfile lsp（LazyVim 的 lang.docker extra 需要）
 
       # === lua ===
       lua-language-server # lua lsp
@@ -45,6 +46,7 @@ in
       # === Nix ===
       nil # nix lsp
       nixfmt # nix fmt
+      statix # nix linter（LazyVim 的 lang.nix extra 需要）
 
       # === markdown ===
       marksman # markdown lsp
