@@ -75,6 +75,16 @@ buildGoModule rec {
 
   env.CGO_ENABLED = if gui then 1 else 0;
 
+  # 上游不安装任何图标：它自己写的桌面文件（internal/gui/scheme_linux.go，用于
+  # 抢占 magpie:// 协议）里 Icon=magpie 指向一个从不存在的图标名，应用启动器
+  # （Noctalia / GNOME 等）匹配不到就回退成通用齿轮图标。上游仓库自带
+  # build/icon/magpie.svg，按 hicolor 规范装进 scalable/apps，图标名即 "magpie"。
+  # 终端版没有桌面文件，不需要。
+  postInstall = lib.optionalString gui ''
+    install -Dm644 $src/build/icon/magpie.svg \
+      $out/share/icons/hicolor/scalable/apps/magpie.svg
+  '';
+
   doCheck = false;
 
   meta = {
