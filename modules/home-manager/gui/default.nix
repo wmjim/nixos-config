@@ -28,6 +28,7 @@ in
     ./apps
     ./wm
     ./fcitx5.nix
+    ./mimeapps.nix
     ./vscode.nix
     ./winapps.nix
   ];

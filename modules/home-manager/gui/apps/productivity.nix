@@ -87,6 +87,12 @@ in
         // 由 Home Manager 生成（modules/home-manager/gui/apps/productivity.nix），
         // 不要手改：TB 每次启动都会按这里的内容覆盖同名 prefs。
         user_pref("toolkit.legacyUserProfileCustomizations.stylesheets", true);
+
+        // 阻止 TB 每次启动重抢邮件默认程序。打包默认是 true，一旦它认为默认程序
+        // 不是自己，就调 libgio 在 ~/.local/share/applications/ 里 mkstemp 出新的
+        // userapp-Thunderbird-XXXXXX.desktop（不复用），于是不断堆积。邮件默认程序
+        // 已由 mimeapps.nix 声明式指定，无需 TB 再插手。
+        user_pref("mail.shell.checkDefaultClient", false);
       '';
     };
   };
