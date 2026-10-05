@@ -46,12 +46,17 @@ let
     };
   };
 
-  # 窗口按钮放左侧、macOS 顺序（红黄绿）—— 与 Thunderbird 统一（LiquidBird 用 order
-  # 把三个点钉在物理左边缘，见其 linux/titlebuttons.css）。
-  # 只有这条路管用：实测把 gtk-decoration-layout 写进 settings.ini 对 libadwaita 应用
-  # 无效（GTK4 的这个值不从 ini 读），真正被读的是 dconf 的
-  # org.gnome.desktop.wm.preferences button-layout —— GNOME Tweaks 改的也是它。
-  buttonLayout = "close,minimize,maximize:";
+  # 窗口按钮在右侧、macOS 顺序（左起 红-黄-绿，与 Thunderbird/LiquidBird 一致）。
+  # 语法是 `左侧:右侧`（GNOME 约定）；前导冒号表示左侧留空、三个按钮全在右侧。
+  # GTK 把右侧列表**从左到右**铺开，故要得到 红黄绿 视觉效果，列表须写成
+  # close,minimize,maximize（close=红、minimize=黄、maximize=绿，实测）。
+  # 真源是 dconf 的 org.gnome.desktop.wm.preferences button-layout —— GNOME Tweaks
+  # 改的也是它；写 settings.ini 的 gtk-decoration-layout 对 libadwaita 无效。
+  #
+  # 为何不放左侧：这条键是**全局**的，除 GTK 外还驱动 Qt（qadwaitadecorations 读
+  # 同一键）与跟随的其它框架。只有 GTK 能渲染 macOS 红黄绿灯；Qt/Electron/X11
+  # 画的是各自原生装饰，把按钮摆到左边只会显得错位。故统一回右侧。
+  buttonLayout = ":close,minimize,maximize";
 
   # 与 HM 的 gtk 模块对同一模式写出的内容保持一致（modules/misc/gtk/lib.nix）：
   # gtk-application-prefer-dark-theme 只在暗色出现，gtk-interface-color-scheme 只 GTK4 有。
@@ -81,9 +86,8 @@ let
   #
   # 内联那份的相对 url("windows-assets/…") 必须改写成绝对 file://：相对路径以
   # **本文件**的 URI 为基准解析，不改写则亮色下红黄绿灯那套 PNG 全找不到（实测消失）。
-  # 另：黄灯“不亮”不在这里改 —— 最小化按钮在 niri 上无对应动作、被 GTK 置为 disabled，
-  # 减淡由 GTK 自身施加（opacity/filter/-gtk-icon-filter 加 !important 覆盖后像素
-  # 完全不变，已实测）。
+  # 另：黄灯“不亮”见文件末尾那段 override —— 根因是 GTK 4.x 对 disabled 控件
+  # 施加 `filter: opacity(.5)`，只认 `filter` 这一个属性（`opacity`/`-gtk-icon-filter` 无效）。
   gtk4UserCss = pkgs.runCommand "gtk-user.css" { } ''
         theme=${pkgs.mactahoe-gtk-theme}/share/themes
         light="$theme/MacTahoe-Light/gtk-4.0"
@@ -99,18 +103,16 @@ let
           sed -E 's|url\("([a-zA-Z][^":]*)"\)|url("file://'"$light"'/\1")|g' "$light/gtk.css"
           echo '}'
 
-          # 最小化按钮在 niri 上没有对应动作（niri 无 minimize），GTK 把它置为 disabled；
-          # MacTahoe 没给这三个窗口按钮写 :disabled 样式，于是落到基础样式表的
-          # ~30% 不透明度 —— 黄灯看起来“不亮”（实测采样：亮黄 #F1AE1B 被压到 97,77,33）。
-          # 这里把它改回实心，与红/绿两灯一致；代价是点它没有反应（动作本就不存在），
-          # 不想要这种“视觉上说谎”就删掉下面这段。
+          # 最小化按钮在 niri 上没有对应动作（niri 无 minimize），GTK 把它置为 disabled。
+          # GTK 4.x 对 insensitive 控件施加的是 `filter: opacity(.5)`（不是 opacity、
+          # 也不是 -gtk-icon-filter —— 那两个属性覆盖后像素完全不变，实测），于是黄灯被
+          # 压淡到 97,77,33。只认 `filter: none` 一个属性，写它即恢复实心 241,174,27（实测）。
+          # 代价：点它没有反应（动作本就不存在）；不想要这种“视觉上说谎”就删掉下面这段。
           cat <<'CSS'
 
-    /* 黄灯（minimize）：niri 无最小化，去掉 disabled 的减淡，让它与红/绿一致 */
-    headerbar windowcontrols button.minimize:disabled,
-    headerbar windowcontrols button.minimize:disabled image {
-      -gtk-icon-filter: none;
-      opacity: 1;
+    /* 黄灯（minimize）：niri 无最小化，GTK 给 disabled 控件加 filter: opacity(.5) 压淡它 */
+    headerbar windowcontrols button.minimize:disabled {
+      filter: none;
     }
     CSS
         } > $out
@@ -264,7 +266,7 @@ in
 
     home.packages = [ applyScript ];
 
-    # 窗口按钮放左侧：dconf 才是真源（settings.ini 那个键对 libadwaita 应用无效，
+    # 窗口按钮位置：dconf 才是真源（settings.ini 那个键对 libadwaita 应用无效，
     # 见上面 buttonLayout 的注释）
     dconf.settings."org/gnome/desktop/wm/preferences".button-layout = buttonLayout;
 

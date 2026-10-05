@@ -66,8 +66,7 @@ in
     # ── LiquidBird：Thunderbird 的 Liquid Glass 主题 ──────────────────────
     # 由 pkgs/liquidbird 提供文件（钉在上游 main 的 commit，见该包顶部），这里
     # 按上游要求的 chrome/ 布局摆进 profile。store 软链即可：chrome 下全是只读
-    # 素材，TB 只读不写；个人覆盖走同目录的 custom.css（上游 loader 最后 import
-    # 它，故意不由 HM 管理，模板是旁边的 custom.css.example）。
+    # 素材，TB 只读不写。
     home.file = {
       "${tbProfile}/chrome/liquidbird.css".source = "${lbChrome}/liquidbird.css";
       "${tbProfile}/chrome/liquidbird-content.css".source = "${lbChrome}/liquidbird-content.css";
@@ -78,6 +77,19 @@ in
       "${tbProfile}/chrome/Icons".source = "${lbChrome}/Icons";
       "${tbProfile}/chrome/linux".source = "${lbChrome}/linux";
       "${tbProfile}/chrome/custom.css.example".source = "${lbChrome}/custom.css.example";
+
+      # 覆盖层：上游 loader 最后 import 的 custom.css，原为个人手改留的槽位，
+      # 现由 HM 持有（唯一用途见下）。想加个人 tweaks 请改本模块，别直接编辑该文件
+      # （store 软链，手改会在下次 rebuild 被覆盖）。
+      "${tbProfile}/chrome/custom.css".text = ''
+        /* 由 Home Manager 生成（modules/home-manager/gui/apps/productivity.nix） */
+        /* LiquidBird 的 linux/titlebuttons.css 用 row-reverse 把红黄绿灯钉在物理左缘
+           （见其注释），与桌面其余部分（dconf button-layout 放右侧）不一致。
+           TB 模板本就把按钮盒放在 #unifiedToolbar 之后，改回 row 即回到右侧。 */
+        :root[customtitlebar] #unifiedToolbarContainer {
+          flex-direction: row !important;
+        }
+      '';
 
       # 主题开关。写 user.js 而不是 prefs.js：后者是 TB 自己维护的文件（它随时
       # 重写），HM 插手会与 TB 相互覆盖；user.js 由 Gecko 在每次启动时应用。
