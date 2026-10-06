@@ -43,6 +43,7 @@ in
       gapless # 本地音乐播放器
       xunlei-uos # 迅雷
       qview # 图片查看
+      disktree # 磁盘使用情况树状图
       nautilus
       logisim-evolution
       localsend
