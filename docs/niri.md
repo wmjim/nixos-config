@@ -88,6 +88,5 @@ Niri 配置分两半，`Mod` = `Super`（Windows 键）：
 ## 窗口规则（自动行为）
 
 - **最大化打开**：VSCode、Logisim、Brave、Zotero
-- **浮动打开**：Fcitx5 配置、PicGo、btop、qView、LocalSend、微信、QQ、Telegram、Discord、欧陆词典
-- **侧边浮动**：Pot（右侧 20% 宽长条）
+- **浮动打开（居中，统一 0.50×0.60）**：Fcitx5 配置、PicGo、btop、qView、LocalSend、微信、QQ、Telegram、Discord、欧陆词典、gnome-text-editor、Pot（含其偏好面板）、Thunderbird、magpie、Anki、gapless、Clash Verge、disktree、bilibili
 - 全局默认平铺，圆角 8px（`geometry-corner-radius`，原为 24，理由见 `docs/themes.md`）
