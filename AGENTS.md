@@ -24,6 +24,52 @@
 - `docs/quirks.md` — 平台适配的坑与 workaround（改对应模块前必读）
 - `docs/README.md` — 全部文档索引；改某个子系统前先读对应那篇
 
+## AI 工作流系统
+
+### 快速入门路径（按序执行，覆盖大多数任务）
+
+1. **读本文** → 知道命令边界、验证、提交纪律。
+2. **读 `docs/architecture.md`** → 仓库地图：结构、选项约定（就近 `mkEnableOption` /
+   聚合 `mkDefault` / 主机只写例外）、主机差异、overlay 与 HM 接线。
+3. **改某个子系统** → 查 `docs/README.md` 索引表，先读对应那篇（如改 niri → `docs/niri.md`）。
+4. **遇到构建失败 / 注释掉的包 / 平台 hack** → 查 `docs/quirks.md`（是什么+根因+移除条件）。
+5. **动手前**：用下面的命令找现有选项与惯例；无先例的改动先与用户确认。
+
+### 选项/模块清单查询（唯一权威，不在文档维护清单）
+
+```bash
+rg 'mkEnableOption|mkOption' modules/    # 每个选项的定义位置
+rg 'mySystem\.' hosts/                   # 主机差异用法
+rg 'mkDefault|mkForce' modules/ hosts/   # 默认值聚合与覆盖点
+```
+
+### 验证命令（改动后按风险递进，选合适深度）
+
+```bash
+nix fmt <改动的 .nix 文件>   # 必做（或全树 nix fmt）
+nix flake check              # 必做（含 niri validate checks）
+nix build --dry-run .#nixosConfigurations.<host>.config.system.build.toplevel
+                             # 改对应主机时做；要真实产物就去掉 --dry-run
+./tests/tmux-persistence.sh  # 改 tmux 时做（rebuild switch 后）
+```
+
+主机名单（`flake.nix` 枚举）：`desktop` / `laptop` / `wsl`（NixOS）、`macbook`（darwin）。
+
+### 构建失败 / 上游回归处置
+
+1. 先查 `docs/quirks.md` —— 已知坑位多数已记录（含根因与移除条件）。
+2. 活跃注释包参考：`modules/home-manager/cli/dev/cpp.nix:56` 的 `ltrace`、
+   `modules/home-manager/gui/apps/productivity.nix` 的 `zotero`（2026-10-04 起，均有上游 issue）。
+3. 新发现的上游回归 → 照 ltrace 模式注释掉包，并在 `docs/quirks.md` 补一行。
+
+### 记录纪律（改变仓库状态时的最低要求）
+
+- 提交信息：`<type>(<scope>): 中文描述`，type 取 feat/fix/chore/style/revert，
+  scope 是子系统（gui/cli/nvim/boot/desktop/magpie 等）—— `git log --oneline` 可见惯例。
+- 涉及平台坑位/workaround 的改动 → 同一提交或紧随其后在 `docs/quirks.md` 补一行
+  （是什么+根因+移除条件，≤3 行）。
+- 新增/改名文件 → 同步 `docs/README.md` 索引表（如适用）。
+
 ## 通用规则
 
 ### 优先使用现有配置
